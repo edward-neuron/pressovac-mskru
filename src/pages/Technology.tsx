@@ -123,20 +123,24 @@ const Technology = () => {
 
           {/* Category Tabs */}
           <div className="flex flex-wrap justify-center gap-4 mb-10">
-            {videoCategories.map((category) => (
+            {videoCategories.map((category, index) => (
               <motion.button
                 key={category.id}
                 onClick={() => setActiveCategory(category.id)}
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.98 }}
-                animate={activeCategory === category.id ? { 
-                  scale: 1.05,
-                  boxShadow: '0 10px 30px -10px hsl(var(--primary) / 0.4)'
-                } : { 
-                  scale: 1,
-                  boxShadow: '0 4px 12px -4px hsl(var(--foreground) / 0.1)'
+                animate={{
+                  scale: activeCategory === category.id ? [1.05, 1.1, 1.05] : [1, 1.03, 1],
+                  boxShadow: activeCategory === category.id 
+                    ? ['0 8px 25px -8px hsl(var(--primary) / 0.4)', '0 12px 35px -10px hsl(var(--primary) / 0.5)', '0 8px 25px -8px hsl(var(--primary) / 0.4)']
+                    : ['0 4px 12px -4px hsl(var(--foreground) / 0.1)', '0 6px 18px -6px hsl(var(--foreground) / 0.15)', '0 4px 12px -4px hsl(var(--foreground) / 0.1)']
                 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                  delay: index * 0.3
+                }}
+                whileHover={{ scale: 1.12, y: -3 }}
+                whileTap={{ scale: 0.98 }}
                 className={`px-6 py-3 rounded-xl text-sm font-semibold border-2 ${
                   activeCategory === category.id
                     ? 'bg-primary text-primary-foreground border-primary'

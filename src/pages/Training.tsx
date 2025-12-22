@@ -282,7 +282,7 @@ const Training = () => {
                 </Link>
               </Button>
               <Button size="lg" variant="outline" asChild>
-                <Link to="/inquiry">
+                <Link to="/contacts">
                   Связаться с нами
                 </Link>
               </Button>

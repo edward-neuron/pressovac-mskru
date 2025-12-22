@@ -124,17 +124,27 @@ const Technology = () => {
           {/* Category Tabs */}
           <div className="flex flex-wrap justify-center gap-4 mb-10">
             {videoCategories.map((category) => (
-              <button
+              <motion.button
                 key={category.id}
                 onClick={() => setActiveCategory(category.id)}
-                className={`px-6 py-3 rounded-xl text-sm font-semibold transition-all border-2 ${
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                animate={activeCategory === category.id ? { 
+                  scale: 1.05,
+                  boxShadow: '0 10px 30px -10px hsl(var(--primary) / 0.4)'
+                } : { 
+                  scale: 1,
+                  boxShadow: '0 4px 12px -4px hsl(var(--foreground) / 0.1)'
+                }}
+                transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                className={`px-6 py-3 rounded-xl text-sm font-semibold border-2 ${
                   activeCategory === category.id
-                    ? 'bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/30 scale-105'
-                    : 'bg-card text-foreground border-border hover:border-primary hover:text-primary hover:shadow-md'
+                    ? 'bg-primary text-primary-foreground border-primary'
+                    : 'bg-card text-foreground border-border hover:border-primary hover:text-primary'
                 }`}
               >
                 {category.title}
-              </button>
+              </motion.button>
             ))}
           </div>
 

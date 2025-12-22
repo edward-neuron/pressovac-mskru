@@ -39,7 +39,7 @@ export const VideoPreview = () => {
         >
           {/* Platform Switcher */}
           <div className="flex justify-center mb-6">
-            <div className="inline-flex rounded-full bg-muted p-1">
+            <div className="inline-flex gap-3 rounded-full bg-muted p-2">
               <button
                 onClick={() => setPlatform('rutube')}
                 className={`px-6 py-2 rounded-full text-sm font-medium transition-all bg-blue-600 text-white ${

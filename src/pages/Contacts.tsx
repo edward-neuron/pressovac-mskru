@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 
 const contactInfo = [
   { icon: Phone, label: 'Телефон', value: '(499) 677-2010', href: 'tel:+74996772010' },
-  { icon: Mail, label: 'Email', value: 'info@pressovac-msk.ru', href: 'mailto:info@pressovac-msk.ru' },
+  { icon: Mail, label: 'Email', value: 'sales@pressovac-moscow.ru', href: 'mailto:sales@pressovac-moscow.ru' },
   { icon: MapPin, label: 'Адрес', value: 'Москва, Россия', href: '#' },
   { icon: Clock, label: 'Время работы', value: 'Пн-Пт: 09:00-21:00', href: '#' },
 ];

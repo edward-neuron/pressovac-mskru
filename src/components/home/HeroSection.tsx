@@ -1,0 +1,126 @@
+import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import { ArrowRight, Play, CheckCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import equipmentHero from '@/assets/equipment-hero.png';
+
+const features = [
+  'Финское качество с 1990 года',
+  'Официальная гарантия',
+  'Сервисная поддержка',
+  'Обучение персонала',
+];
+
+export const HeroSection = () => {
+  return (
+    <section className="relative hero-gradient overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute top-0 left-0 w-full h-full" 
+             style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)', backgroundSize: '40px 40px' }} />
+      </div>
+      
+      <div className="container-custom section-padding relative">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+          {/* Content */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
+            className="space-y-8"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
+              <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+              <span className="text-sm font-medium text-primary">Официальный дистрибьютор в России</span>
+            </div>
+
+            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+              Оборудование для{' '}
+              <span className="text-gradient">очистки вентиляции</span>
+            </h1>
+
+            <p className="text-lg text-muted-foreground leading-relaxed max-w-lg">
+              Профессиональное финское оборудование PRESSOVAC для очистки и дезинфекции 
+              систем вентиляции. Надёжность и качество с 1990 года.
+            </p>
+
+            <ul className="grid grid-cols-2 gap-3">
+              {features.map((feature, index) => (
+                <motion.li
+                  key={feature}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0.3 + index * 0.1 }}
+                  className="flex items-center gap-2 text-sm text-foreground"
+                >
+                  <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
+                  {feature}
+                </motion.li>
+              ))}
+            </ul>
+
+            <div className="flex flex-wrap gap-4">
+              <Button variant="hero" size="lg" asChild>
+                <Link to="/catalog">
+                  Каталог оборудования
+                  <ArrowRight className="w-5 h-5" />
+                </Link>
+              </Button>
+              <Button variant="outline" size="lg" asChild>
+                <Link to="/technology">
+                  <Play className="w-5 h-5" />
+                  Как это работает
+                </Link>
+              </Button>
+            </div>
+          </motion.div>
+
+          {/* Image */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="relative"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 rounded-3xl blur-3xl transform scale-110" />
+            <div className="relative bg-card rounded-3xl p-8 shadow-card">
+              <img
+                src={equipmentHero}
+                alt="Оборудование Pressovac для очистки вентиляции"
+                className="w-full h-auto object-contain animate-float"
+              />
+            </div>
+            
+            {/* Stats Badge */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.6 }}
+              className="absolute -bottom-6 -left-6 bg-card rounded-2xl p-4 shadow-card border border-border"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                  <span className="font-display font-bold text-xl text-primary">30+</span>
+                </div>
+                <div>
+                  <p className="font-display font-semibold text-foreground">лет опыта</p>
+                  <p className="text-sm text-muted-foreground">на рынке</p>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Quality Badge */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.7 }}
+              className="absolute -top-4 -right-4 bg-primary text-primary-foreground rounded-2xl px-4 py-3 shadow-lg"
+            >
+              <p className="text-sm font-semibold">Made in Finland 🇫🇮</p>
+            </motion.div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+};

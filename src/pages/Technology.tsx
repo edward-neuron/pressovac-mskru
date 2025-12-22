@@ -122,15 +122,15 @@ const Technology = () => {
           </motion.div>
 
           {/* Category Tabs */}
-          <div className="flex flex-wrap justify-center gap-3 mb-10">
+          <div className="flex flex-wrap justify-center gap-4 mb-10">
             {videoCategories.map((category) => (
               <button
                 key={category.id}
                 onClick={() => setActiveCategory(category.id)}
-                className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all ${
+                className={`px-6 py-3 rounded-xl text-sm font-semibold transition-all border-2 ${
                   activeCategory === category.id
-                    ? 'bg-primary text-primary-foreground shadow-md'
-                    : 'bg-muted text-muted-foreground hover:text-foreground hover:bg-muted/80'
+                    ? 'bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/30 scale-105'
+                    : 'bg-card text-foreground border-border hover:border-primary hover:text-primary hover:shadow-md'
                 }`}
               >
                 {category.title}

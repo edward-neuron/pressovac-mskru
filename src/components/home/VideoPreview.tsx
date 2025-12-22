@@ -42,20 +42,20 @@ export const VideoPreview = () => {
             <div className="inline-flex rounded-full bg-muted p-1">
               <button
                 onClick={() => setPlatform('rutube')}
-                className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+                className={`px-6 py-2 rounded-full text-sm font-medium transition-all bg-blue-600 text-white ${
                   platform === 'rutube'
-                    ? 'bg-primary text-primary-foreground shadow-md'
-                    : 'text-muted-foreground hover:text-foreground'
+                    ? 'shadow-lg ring-2 ring-blue-400 ring-offset-2 ring-offset-background'
+                    : 'opacity-70 hover:opacity-100'
                 }`}
               >
                 RuTube
               </button>
               <button
                 onClick={() => setPlatform('youtube')}
-                className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+                className={`px-6 py-2 rounded-full text-sm font-medium transition-all bg-red-600 text-white ${
                   platform === 'youtube'
-                    ? 'bg-red-600 text-white shadow-md'
-                    : 'text-muted-foreground hover:text-foreground'
+                    ? 'shadow-lg ring-2 ring-red-400 ring-offset-2 ring-offset-background'
+                    : 'opacity-70 hover:opacity-100'
                 }`}
               >
                 YouTube

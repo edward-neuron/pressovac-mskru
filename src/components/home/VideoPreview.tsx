@@ -54,7 +54,7 @@ export const VideoPreview = () => {
                 onClick={() => setPlatform('youtube')}
                 className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
                   platform === 'youtube'
-                    ? 'bg-primary text-primary-foreground shadow-md'
+                    ? 'bg-red-600 text-white shadow-md'
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
               >

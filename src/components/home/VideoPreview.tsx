@@ -1,7 +1,16 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Play } from 'lucide-react';
+
+type Platform = 'rutube' | 'youtube';
+
+const VIDEO_URLS = {
+  rutube: 'https://rutube.ru/play/embed/3597bd9053d7a1ab63430e4118fb43c8',
+  youtube: 'https://www.youtube.com/embed/wf2sqiJv_20',
+};
 
 export const VideoPreview = () => {
+  const [platform, setPlatform] = useState<Platform>('rutube');
+
   return (
     <section className="section-padding">
       <div className="container-custom">
@@ -15,10 +24,10 @@ export const VideoPreview = () => {
             Видео
           </span>
           <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-            Как это <span className="text-gradient">работает</span>
+            Почему выбирают <span className="text-gradient">нас</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Посмотрите демонстрацию работы оборудования Pressovac в реальных условиях
+            Владелец компании рассказывает о преимуществах работы с нами
           </p>
         </motion.div>
 
@@ -28,19 +37,42 @@ export const VideoPreview = () => {
           viewport={{ once: true }}
           className="relative max-w-4xl mx-auto"
         >
-          <div className="aspect-video bg-gradient-to-br from-primary/20 to-accent/20 rounded-3xl overflow-hidden relative group cursor-pointer">
-            <div className="absolute inset-0 bg-foreground/5" />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-20 h-20 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-glow group-hover:scale-110 transition-transform">
-                <Play className="w-8 h-8 ml-1" />
-              </div>
+          {/* Platform Switcher */}
+          <div className="flex justify-center mb-6">
+            <div className="inline-flex rounded-full bg-muted p-1">
+              <button
+                onClick={() => setPlatform('rutube')}
+                className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+                  platform === 'rutube'
+                    ? 'bg-primary text-primary-foreground shadow-md'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                RuTube
+              </button>
+              <button
+                onClick={() => setPlatform('youtube')}
+                className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+                  platform === 'youtube'
+                    ? 'bg-primary text-primary-foreground shadow-md'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                YouTube
+              </button>
             </div>
-            <div className="absolute bottom-6 left-6 right-6">
-              <div className="bg-card/90 backdrop-blur-sm rounded-xl p-4">
-                <h3 className="font-display font-semibold text-foreground">Демонстрация очистки вентиляции</h3>
-                <p className="text-sm text-muted-foreground">Полный процесс работы с оборудованием Pressovac</p>
-              </div>
-            </div>
+          </div>
+
+          {/* Video Embed */}
+          <div className="aspect-video rounded-3xl overflow-hidden shadow-xl">
+            <iframe
+              key={platform}
+              src={VIDEO_URLS[platform]}
+              className="w-full h-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              title="Видео о компании Веконт-М"
+            />
           </div>
         </motion.div>
       </div>

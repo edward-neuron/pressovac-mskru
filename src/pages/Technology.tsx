@@ -1,7 +1,42 @@
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
-import { Play, CheckCircle, ArrowRight } from 'lucide-react';
+import { Play, CheckCircle, ArrowRight, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
+
+const videoCategories = [
+  {
+    id: 'dry-cleaning',
+    title: 'Сухая очистка вентиляции',
+    videos: [
+      { id: '9927894db7f21eb0aad294b3d45a9bf7', title: 'Пневматические щёточные машины' },
+      { id: 'd34463dd502fded108c07ff35e9e3445', title: 'Центрирующее устройство' },
+      { id: 'e9ceafa50aa2258c93f95ed42afdec4e', title: 'Т-Адаптер для пневматических машин' },
+      { id: '84bd1b10f818e2250c4b9010d5877c2d', title: 'Супер гибкие валы "Мини"' },
+      { id: '4e301ddd18c5caeec1488831b7b933fc', title: 'Гибкие валы для очистки воздухозаборников' },
+      { id: '3fb6512f5ef1d2e1cf9de5a0826a9cff', title: 'Гибкие гофрированные шланги' },
+      { id: 'abe24c45d7eeb37830d4ee165991c589', title: 'Врезки, Конусы, Адаптеры для обслуживания' },
+    ],
+  },
+  {
+    id: 'grease-removal',
+    title: 'Удаление жира и нагара',
+    videos: [
+      { id: '29c9698b4f13746ed1111019f6d9002a', title: 'Концепция удаления жира (полная версия)' },
+      { id: '28358cf4ae9c77e935f729f075aa9321', title: 'Удаление жира под низким давлением (8,9 бар)' },
+      { id: 'fdaa2d1687b357ce3284a55028303765', title: 'Удаление жира (низкое и высокое давление)' },
+      { id: '4a4400790ad9a371e889d7a335e7c3ab', title: 'Agent X1 - Активная пена для удаления жира' },
+    ],
+  },
+  {
+    id: 'video-inspection',
+    title: 'Видеоинспекция',
+    videos: [
+      { id: '3bbe573cf96573a7006dc3dd96519976', title: 'Видеоинспекционная камера VS350 HD' },
+      { id: '8689bf881499e6c6f1d2812dd99b66da', title: 'Видеоинспекционная камера VS700 FHD PRO' },
+    ],
+  },
+];
 
 const steps = [
   { 
@@ -41,6 +76,9 @@ const advantages = [
 ];
 
 const Technology = () => {
+  const [selectedVideo, setSelectedVideo] = useState<{ id: string; title: string } | null>(null);
+  const [activeCategory, setActiveCategory] = useState(videoCategories[0].id);
+
   return (
     <Layout>
       {/* Hero */}
@@ -65,26 +103,122 @@ const Technology = () => {
         </div>
       </section>
 
-      {/* Video */}
+      {/* Video Gallery */}
       <section className="section-padding">
         <div className="container-custom">
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="relative max-w-4xl mx-auto"
+            className="text-center mb-12"
           >
-            <div className="aspect-video bg-gradient-to-br from-primary/20 to-accent/20 rounded-3xl overflow-hidden relative group cursor-pointer">
-              <div className="absolute inset-0 bg-foreground/5" />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-24 h-24 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-glow group-hover:scale-110 transition-transform">
-                  <Play className="w-10 h-10 ml-1" />
-                </div>
-              </div>
-            </div>
+            <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">
+              Видео о технологиях
+            </h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              Посмотрите демонстрацию работы оборудования Pressovac
+            </p>
           </motion.div>
+
+          {/* Category Tabs */}
+          <div className="flex flex-wrap justify-center gap-3 mb-10">
+            {videoCategories.map((category) => (
+              <button
+                key={category.id}
+                onClick={() => setActiveCategory(category.id)}
+                className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all ${
+                  activeCategory === category.id
+                    ? 'bg-primary text-primary-foreground shadow-md'
+                    : 'bg-muted text-muted-foreground hover:text-foreground hover:bg-muted/80'
+                }`}
+              >
+                {category.title}
+              </button>
+            ))}
+          </div>
+
+          {/* Video Grid */}
+          {videoCategories.map((category) => (
+            <AnimatePresence key={category.id} mode="wait">
+              {activeCategory === category.id && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                >
+                  {category.videos.map((video, index) => (
+                    <motion.div
+                      key={video.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                      onClick={() => setSelectedVideo(video)}
+                      className="group cursor-pointer"
+                    >
+                      <div className="relative aspect-video rounded-2xl overflow-hidden bg-gradient-to-br from-primary/10 to-accent/10 mb-3">
+                        <img
+                          src={`https://rutube.ru/api/video/${video.id}/thumbnail/?redirect=1`}
+                          alt={video.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                        <div className="absolute inset-0 bg-foreground/20 group-hover:bg-foreground/10 transition-colors flex items-center justify-center">
+                          <div className="w-14 h-14 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                            <Play className="w-6 h-6 ml-0.5" />
+                          </div>
+                        </div>
+                      </div>
+                      <h3 className="font-medium text-foreground group-hover:text-primary transition-colors line-clamp-2">
+                        {video.title}
+                      </h3>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          ))}
         </div>
       </section>
+
+      {/* Video Modal */}
+      <AnimatePresence>
+        {selectedVideo && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm"
+            onClick={() => setSelectedVideo(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="relative w-full max-w-4xl bg-card rounded-2xl overflow-hidden shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setSelectedVideo(null)}
+                className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-background/80 text-foreground flex items-center justify-center hover:bg-background transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+              <div className="aspect-video">
+                <iframe
+                  src={`https://rutube.ru/play/embed/${selectedVideo.id}`}
+                  className="w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  title={selectedVideo.title}
+                />
+              </div>
+              <div className="p-4">
+                <h3 className="font-display font-semibold text-lg">{selectedVideo.title}</h3>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Steps */}
       <section className="section-padding bg-card">

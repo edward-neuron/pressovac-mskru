@@ -18,79 +18,30 @@ const Contacts = () => {
 
   return (
     <Layout>
-      {/* Hero */}
-      <section className="section-padding hero-gradient">
-        <div className="container-custom">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="max-w-3xl mx-auto text-center"
-          >
-            <span className="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
-              Контакты
-            </span>
-            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-              Свяжитесь <span className="text-gradient">с нами</span>
-            </h1>
-            <p className="text-lg text-muted-foreground leading-relaxed">
-              Мы всегда готовы ответить на ваши вопросы и помочь с выбором оборудования
-            </p>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Contact Info Cards */}
-      <section className="section-padding pb-8">
-        <div className="container-custom">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {contactInfo.map((item, index) => (
-              <motion.a
-                key={item.label}
-                href={item.href}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="flex items-start gap-4 p-5 rounded-2xl bg-card border border-border card-hover"
-              >
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                  <item.icon className="w-6 h-6 text-primary" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">{item.label}</p>
-                  <p className="font-semibold">{item.value}</p>
-                </div>
-              </motion.a>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Form Type Selection */}
+      {/* Form Type Selection - Right at the top */}
       {!formType && (
-        <section className="section-padding pt-8">
+        <section className="section-padding">
           <div className="container-custom">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              animate={{ opacity: 1, y: 0 }}
               className="text-center mb-12"
             >
-              <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">
+              <h1 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
                 Выберите способ обращения
-              </h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto">
+              </h1>
+              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
                 Отправьте быструю заявку или заполните расширенную форму для точного подбора оборудования
               </p>
             </motion.div>
 
-            <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-16">
               {/* Simple Form Option */}
               <motion.button
                 onClick={() => setFormType('simple')}
                 initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.1 }}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="text-left p-8 rounded-2xl bg-card border-2 border-border hover:border-primary transition-all group"
@@ -112,8 +63,8 @@ const Contacts = () => {
               <motion.button
                 onClick={() => setFormType('extended')}
                 initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2 }}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="text-left p-8 rounded-2xl bg-gradient-to-br from-primary/5 to-accent/5 border-2 border-primary/30 hover:border-primary transition-all group"
@@ -131,9 +82,32 @@ const Contacts = () => {
                 </div>
               </motion.button>
             </div>
+
+            {/* Contact Info Cards */}
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {contactInfo.map((item, index) => (
+                <motion.a
+                  key={item.label}
+                  href={item.href}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 + index * 0.1 }}
+                  className="flex items-start gap-4 p-5 rounded-2xl bg-card border border-border card-hover"
+                >
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <item.icon className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">{item.label}</p>
+                    <p className="font-semibold">{item.value}</p>
+                  </div>
+                </motion.a>
+              ))}
+            </div>
           </div>
         </section>
       )}
+
 
       {/* Simple Form */}
       {formType === 'simple' && (

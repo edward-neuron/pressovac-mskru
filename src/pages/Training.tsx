@@ -1,35 +1,46 @@
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
-import { GraduationCap, Users, Clock, Award, CheckCircle, ArrowRight } from 'lucide-react';
+import { GraduationCap, Users, Clock, Award, CheckCircle, ArrowRight, Gift, FileText, Video, Calculator, Briefcase, BookOpen, Headphones } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 
-const programs = [
-  {
-    title: 'Базовый курс',
-    duration: '2 дня',
-    description: 'Основы работы с оборудованием Pressovac для начинающих специалистов',
-    topics: ['Принципы работы оборудования', 'Базовые техники очистки', 'Техника безопасности', 'Обслуживание оборудования'],
-  },
-  {
-    title: 'Продвинутый курс',
-    duration: '3 дня',
-    description: 'Углублённое обучение для опытных специалистов и руководителей',
-    topics: ['Сложные системы вентиляции', 'Работа с жировыми отложениями', 'Дезинфекция и санобработка', 'Диагностика проблем'],
-  },
-  {
-    title: 'Бизнес-курс',
-    duration: '5 дней',
-    description: 'Полный курс для запуска собственного бизнеса по очистке вентиляции',
-    topics: ['Бизнес-планирование', 'Маркетинг и продажи', 'Ценообразование', 'Сертификация и лицензии'],
-  },
+const benefits = [
+  { icon: Gift, title: 'Бесплатно', description: 'Предоставляется бесплатно при покупке оборудования' },
+  { icon: Headphones, title: 'Поддержка', description: 'Ежедневные консультации и помощь экспертов' },
+  { icon: Users, title: 'Сообщество', description: 'Доступ к сообществу профессионалов' },
+  { icon: Award, title: 'Результат', description: 'Полная готовность к успешной работе' },
 ];
 
-const benefits = [
-  { icon: GraduationCap, title: 'Сертификат', description: 'Официальный сертификат о прохождении обучения' },
-  { icon: Users, title: 'Практика', description: 'Работа с реальным оборудованием на объектах' },
-  { icon: Clock, title: 'Поддержка', description: 'Консультации после окончания курса' },
-  { icon: Award, title: 'Материалы', description: 'Учебные материалы и бизнес-план в подарок' },
+const trainingAreas = [
+  { icon: BookOpen, title: 'Техническая', subtitle: 'Теория', description: 'Полное понимание технологий и методов работы' },
+  { icon: Calculator, title: 'Управление', subtitle: 'Бюджеты', description: 'Финансовое планирование и расчёт стоимости' },
+  { icon: Briefcase, title: 'Коммерческая', subtitle: 'Продажи', description: 'Привлечение клиентов и ведение переговоров' },
+];
+
+const planContents = [
+  { icon: FileText, title: 'Технологическая карта', description: 'Методические рекомендации и пошаговые инструкции' },
+  { icon: Video, title: 'Видео-курс', description: 'Обучающий вводный видео-курс подготовки и очистки' },
+  { icon: Calculator, title: 'ПО «Расчёт стоимости работ»', description: 'Уникальное программное обеспечение для калькуляции' },
+  { icon: Briefcase, title: 'Бизнес-план', description: 'Развёрнутый практический пример для старта' },
+  { icon: FileText, title: 'Техническая документация', description: 'Примеры исполнительной документации' },
+  { icon: FileText, title: 'Коммерческие предложения', description: 'Варианты КП и калькуляций для клиентов' },
+];
+
+const businessDocuments = [
+  'Договоры на оказание услуг',
+  'Акты технической экспертизы',
+  'Акты обследования',
+  'Соглашения о тестовых очистках',
+  'Журналы учёта работ',
+  'Каталоги и брошюры',
+];
+
+const ourHelp = [
+  'Делимся опытом',
+  'Предоставляем обучающие курсы',
+  'Проводим аудит действующей компании',
+  'Даём конструктивные советы и лайфхаки',
+  'Отвечаем на любые вопросы',
 ];
 
 const Training = () => {
@@ -41,97 +52,242 @@ const Training = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="max-w-3xl mx-auto text-center"
+            className="max-w-4xl mx-auto text-center"
           >
             <span className="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
-              Обучение
+              Комплексное обучение
             </span>
             <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-              Комплексное <span className="text-gradient">обучение</span>
+              Помощь <span className="text-gradient">бизнес-партнёру</span>
             </h1>
-            <p className="text-lg text-muted-foreground leading-relaxed">
-              Профессиональное обучение работе с оборудованием Pressovac для специалистов 
-              и предпринимателей
+            <p className="text-lg text-muted-foreground leading-relaxed mb-8">
+              Наша цель — добиться успеха наших клиентов. Мы хотим, чтобы вы получали 
+              наилучшие результаты от работы на оборудовании Pressovac
             </p>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 }}
+              className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-primary/10 border border-primary/20"
+            >
+              <Gift className="w-6 h-6 text-primary" />
+              <span className="font-semibold text-primary">Бесплатно при покупке оборудования</span>
+            </motion.div>
           </motion.div>
         </div>
       </section>
 
-      {/* Benefits */}
+      {/* Our Mission */}
       <section className="section-padding">
         <div className="container-custom">
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {benefits.map((benefit, index) => (
-              <motion.div
-                key={benefit.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="bg-card rounded-2xl p-6 border border-border text-center card-hover"
-              >
-                <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                  <benefit.icon className="w-7 h-7 text-primary" />
-                </div>
-                <h3 className="font-display font-semibold text-lg mb-2">{benefit.title}</h3>
-                <p className="text-sm text-muted-foreground">{benefit.description}</p>
-              </motion.div>
-            ))}
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="font-display text-3xl md:text-4xl font-bold mb-6">
+                Приходите в сообщество профессионалов — <span className="text-gradient">вместе мы сила!</span>
+              </h2>
+              <p className="text-muted-foreground text-lg mb-8">
+                Мы здесь, чтобы помочь вам любым возможным способом. Экспертный совет 
+                и рекомендации по всему, что связано с этой линией бизнеса.
+              </p>
+              <ul className="space-y-4">
+                {ourHelp.map((item, index) => (
+                  <motion.li
+                    key={item}
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.1 }}
+                    className="flex items-center gap-3"
+                  >
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                      <CheckCircle className="w-4 h-4 text-primary" />
+                    </div>
+                    <span className="font-medium">{item}</span>
+                  </motion.li>
+                ))}
+              </ul>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="grid grid-cols-2 gap-4"
+            >
+              {benefits.map((benefit, index) => (
+                <motion.div
+                  key={benefit.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  className="bg-card rounded-2xl p-5 border border-border card-hover"
+                >
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+                    <benefit.icon className="w-6 h-6 text-primary" />
+                  </div>
+                  <h3 className="font-display font-semibold text-lg mb-1">{benefit.title}</h3>
+                  <p className="text-sm text-muted-foreground">{benefit.description}</p>
+                </motion.div>
+              ))}
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Programs */}
+      {/* Training Areas */}
       <section className="section-padding bg-card">
         <div className="container-custom">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="text-center mb-12"
           >
             <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">
-              Программы обучения
+              Направления обучения
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Выберите программу, соответствующую вашим целям и уровню подготовки
+              Индивидуальные программы обучения и инструктажа для вашей компании
             </p>
           </motion.div>
 
           <div className="grid md:grid-cols-3 gap-6">
-            {programs.map((program, index) => (
+            {trainingAreas.map((area, index) => (
               <motion.div
-                key={program.title}
+                key={area.title}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-background rounded-2xl p-6 border border-border card-hover flex flex-col"
+                className="relative bg-background rounded-2xl p-8 border border-border overflow-hidden group card-hover"
               >
-                <div className="flex items-center justify-between mb-4">
-                  <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium">
-                    {program.duration}
-                  </span>
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-500" />
+                <div className="relative">
+                  <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-6">
+                    <area.icon className="w-8 h-8 text-primary" />
+                  </div>
+                  <div className="text-sm font-medium text-primary mb-2">{area.subtitle}</div>
+                  <h3 className="font-display font-bold text-2xl mb-3">{area.title}</h3>
+                  <p className="text-muted-foreground">{area.description}</p>
                 </div>
-                <h3 className="font-display font-bold text-xl mb-2">{program.title}</h3>
-                <p className="text-muted-foreground text-sm mb-6">{program.description}</p>
-                <ul className="space-y-2 mb-6 flex-1">
-                  {program.topics.map((topic) => (
-                    <li key={topic} className="flex items-start gap-2 text-sm">
-                      <CheckCircle className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                      {topic}
-                    </li>
-                  ))}
-                </ul>
-                <Button variant="outline" className="w-full" asChild>
-                  <Link to="/inquiry">
-                    Записаться
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
-                </Button>
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Plan Contents */}
+      <section className="section-padding">
+        <div className="container-custom">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">
+              Что входит в план обучения
+            </h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              Полный комплект материалов для успешного старта и развития бизнеса
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            {planContents.map((item, index) => (
+              <motion.div
+                key={item.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.05 }}
+                className="flex gap-4 p-5 rounded-2xl bg-card border border-border card-hover"
+              >
+                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <item.icon className="w-6 h-6 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-1">{item.title}</h3>
+                  <p className="text-sm text-muted-foreground">{item.description}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Business Documents */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="bg-gradient-to-br from-primary/5 to-accent/5 rounded-3xl p-8 md:p-10 border border-border"
+          >
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center">
+                <FileText className="w-7 h-7 text-primary" />
+              </div>
+              <div>
+                <h3 className="font-display font-bold text-xl">Готовые бизнес-документы</h3>
+                <p className="text-muted-foreground">Большое количество шаблонов для работы</p>
+              </div>
+            </div>
+            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
+              {businessDocuments.map((doc, index) => (
+                <motion.div
+                  key={doc}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.05 }}
+                  className="flex items-center gap-2 px-4 py-3 rounded-xl bg-background border border-border"
+                >
+                  <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
+                  <span className="text-sm font-medium">{doc}</span>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="section-padding bg-card">
+        <div className="container-custom">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="max-w-3xl mx-auto text-center"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
+              <Gift className="w-4 h-4" />
+              <span>Бесплатно при покупке оборудования</span>
+            </div>
+            <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">
+              Готовы начать свой бизнес?
+            </h2>
+            <p className="text-muted-foreground text-lg mb-8">
+              План обучения предоставляется бесплатно всем, кто приобрёл оборудование Pressovac. 
+              Ежедневная поддержка и консультации включены.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button size="lg" asChild>
+                <Link to="/catalog">
+                  Посмотреть оборудование
+                  <ArrowRight className="w-5 h-5" />
+                </Link>
+              </Button>
+              <Button size="lg" variant="outline" asChild>
+                <Link to="/inquiry">
+                  Связаться с нами
+                </Link>
+              </Button>
+            </div>
+          </motion.div>
         </div>
       </section>
     </Layout>

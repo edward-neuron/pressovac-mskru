@@ -41,10 +41,9 @@ const videoCategories = [
 ];
 
 // YouTube использует другие ID, не такие как RuTube.
-// Добавьте сюда соответствия "rutubeId" -> "youtubeId" (11 символов).
+// Соответствия "rutubeId" -> "youtubeId"
 const YOUTUBE_IDS: Record<string, string> = {
-  // пример:
-  // '9927894db7f21eb0aad294b3d45a9bf7': 'dQw4w9WgXcQ',
+  '9927894db7f21eb0aad294b3d45a9bf7': 'IURiZ30KPsA', // Пневматические щёточные машины
 };
 
 const steps = [

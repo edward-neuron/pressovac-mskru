@@ -53,10 +53,20 @@ export const ProductDrawer = ({
         </SheetHeader>
 
         <div className="space-y-6 mt-6">
-          {/* Image placeholder */}
-          <div className="w-full h-40 bg-gradient-to-br from-primary/20 to-accent/20 rounded-xl flex items-center justify-center">
-            <span className="text-muted-foreground text-sm">Изображение товара</span>
-          </div>
+          {/* Product Image */}
+          {product.image ? (
+            <div className="w-full aspect-video bg-muted rounded-xl overflow-hidden">
+              <img 
+                src={product.image} 
+                alt={product.name}
+                className="w-full h-full object-contain"
+              />
+            </div>
+          ) : (
+            <div className="w-full h-40 bg-gradient-to-br from-primary/20 to-accent/20 rounded-xl flex items-center justify-center">
+              <span className="text-muted-foreground text-sm">Изображение товара</span>
+            </div>
+          )}
 
           {/* Description */}
           <div>

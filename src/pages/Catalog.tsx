@@ -131,13 +131,13 @@ const Catalog = () => {
               >
                 <div className="grid md:grid-cols-3 gap-0">
                   {/* Изображение слева */}
-                  <div className={`${category.id === 'brush-machines' ? 'bg-muted' : `bg-gradient-to-br ${category.image}`} flex items-center justify-center min-h-[280px] md:min-h-[320px] relative overflow-hidden`}>
+                  <div className={`${category.id === 'brush-machines' ? 'bg-muted' : `bg-gradient-to-br ${category.image}`} flex items-center justify-center relative overflow-hidden ${category.id === 'brush-machines' ? 'aspect-square' : 'min-h-[280px] md:min-h-[320px]'}`}>
                     {category.id === 'brush-machines' ? (
                       <motion.img 
                         key={brushEquipmentImage}
                         src={brushEquipmentImages[brushEquipmentImage]} 
                         alt={category.title}
-                        className="w-full h-full object-contain object-center p-6"
+                        className="w-full h-full object-cover object-center"
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.3 }}

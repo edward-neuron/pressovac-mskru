@@ -34,8 +34,8 @@ export const ProductDrawer = ({
   if (!product) return null;
 
   const hasLengths = product.availableLengths && product.availableLengths.length > 0;
-  const ymlPrice = findPrice(product.shopUrl, product.name);
-  const ymlShopUrl = findShopUrl(product.name);
+  const ymlPrice = findPrice(product.shopUrl, product.name, product.article);
+  const ymlShopUrl = findShopUrl(product.name, product.article);
   const displayPrice = ymlPrice || product.price;
   const effectiveShopUrl = (product.shopUrl && product.shopUrl !== '#') ? product.shopUrl : ymlShopUrl;
 

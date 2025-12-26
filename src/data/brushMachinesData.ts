@@ -9,6 +9,7 @@ import p25p40Image from '@/assets/products/p25-p40.png';
 export interface Product {
   id: string;
   name: string;
+  article: string; // Артикул для сопоставления с YML (E20, P25, PDW40 и т.д.)
   description: string;
   features: string[];
   specifications: Record<string, string>;
@@ -40,6 +41,7 @@ export const brushMachinesData: BrushMachinesCategory = {
         {
           id: 'shaft-mini',
           name: 'Гибкий вал Мини',
+          article: 'SHAFT-MINI',
           description: 'Компактный гибкий вал для очистки воздуховодов малого диаметра. Идеален для труднодоступных мест.',
           features: [
             'Диаметр воздуховодов: 50-150 мм',
@@ -57,6 +59,7 @@ export const brushMachinesData: BrushMachinesCategory = {
         {
           id: 'shaft-standard',
           name: 'Гибкий вал Стандарт',
+          article: 'SHAFT-STD',
           description: 'Универсальный гибкий вал для стандартных воздуховодов круглого и прямоугольного сечения.',
           features: [
             'Диаметр воздуховодов: 100-400 мм',
@@ -74,6 +77,7 @@ export const brushMachinesData: BrushMachinesCategory = {
         {
           id: 'shaft-steel',
           name: 'Гибкий вал Сталь',
+          article: 'SHAFT-STEEL',
           description: 'Усиленный стальной вал для интенсивной эксплуатации и тяжёлых загрязнений.',
           features: [
             'Диаметр воздуховодов: 200-600 мм',
@@ -98,6 +102,7 @@ export const brushMachinesData: BrushMachinesCategory = {
         {
           id: 'dry-electric-e20',
           name: 'Pressovac E-20',
+          article: 'E20',
           description: 'Электрическая щёточная машина для очистки воздуховодов диаметром до 500 мм.',
           features: [
             'Длина вала: 20 м',
@@ -118,6 +123,7 @@ export const brushMachinesData: BrushMachinesCategory = {
         {
           id: 'dry-electric-e30',
           name: 'Pressovac E-30',
+          article: 'E30',
           description: 'Электрическая щёточная машина с увеличенной длиной вала для очистки воздуховодов диаметром до 500 мм.',
           features: [
             'Длина вала: 30 м',
@@ -137,6 +143,7 @@ export const brushMachinesData: BrushMachinesCategory = {
         {
           id: 'dry-electric-e25l',
           name: 'Pressovac E-25L',
+          article: 'E25L',
           description: 'Электрическая щёточная машина для очистки воздуховодов большого диаметра до 800 мм.',
           features: [
             'Длина вала: 25 м',
@@ -156,6 +163,7 @@ export const brushMachinesData: BrushMachinesCategory = {
         {
           id: 'dry-pneumatic-p25',
           name: 'Pressovac P-25',
+          article: 'P25',
           description: 'Пневматическая щёточная машина для очистки и дезинфекции воздуховодов диаметром до 1200 мм.',
           features: [
             'Длина вала: 25 м',
@@ -175,6 +183,7 @@ export const brushMachinesData: BrushMachinesCategory = {
         {
           id: 'dry-pneumatic-p40',
           name: 'Pressovac P-40',
+          article: 'P40',
           description: 'Пневматическая щёточная машина с максимальной длиной вала для очистки и дезинфекции крупных воздуховодов.',
           features: [
             'Длина вала: 40 м',
@@ -201,6 +210,7 @@ export const brushMachinesData: BrushMachinesCategory = {
         {
           id: 'grease-electric-cs8',
           name: 'Pressovac CS-8',
+          article: 'CS8',
           description: 'Электрическая машина для удаления жировых отложений из воздуховодов диаметром до 350 мм.',
           features: [
             'Длина вала: 8 м',
@@ -219,6 +229,7 @@ export const brushMachinesData: BrushMachinesCategory = {
         {
           id: 'grease-electric-edw15',
           name: 'Pressovac EDW-15',
+          article: 'EDW15',
           description: 'Электрическая машина с увеличенной длиной вала для очистки жировых отложений.',
           features: [
             'Длина вала: 15 м',
@@ -237,6 +248,7 @@ export const brushMachinesData: BrushMachinesCategory = {
         {
           id: 'grease-pneumatic-pdw25',
           name: 'Pressovac PDW-25',
+          article: 'PDW25',
           description: 'Пневматическая моющая машина для универсальной очистки воздуховодов диаметром до 1200 мм.',
           features: [
             'Длина вала: 25 м',
@@ -255,6 +267,7 @@ export const brushMachinesData: BrushMachinesCategory = {
         {
           id: 'grease-pneumatic-pdw30',
           name: 'Pressovac PDW-30',
+          article: 'PDW30',
           description: 'Пневматическая моющая машина с увеличенной длиной вала для крупных систем.',
           features: [
             'Длина вала: 30 м',
@@ -273,6 +286,7 @@ export const brushMachinesData: BrushMachinesCategory = {
         {
           id: 'grease-pneumatic-pdw40',
           name: 'Pressovac PDW-40',
+          article: 'PDW40',
           description: 'Пневматическая моющая машина максимальной длины для очистки протяжённых вентиляционных систем.',
           features: [
             'Длина вала: 40 м',

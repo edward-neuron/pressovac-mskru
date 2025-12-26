@@ -99,8 +99,8 @@ export const BrushMachinesCatalog = ({ onSubcategoryChange }: BrushMachinesCatal
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {selectedSubcategory.products.map((product) => {
-                const ymlPrice = findPrice(product.shopUrl, product.name);
-                const ymlShopUrl = findShopUrl(product.name);
+                const ymlPrice = findPrice(product.shopUrl, product.name, product.article);
+                const ymlShopUrl = findShopUrl(product.name, product.article);
                 const displayPrice = ymlPrice || product.price;
                 const hasShopLink = (product.shopUrl && product.shopUrl !== '#') || ymlShopUrl;
                 

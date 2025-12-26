@@ -68,37 +68,71 @@ export function useYmlPrices() {
     fetchPrices();
   }, []);
 
-  // Helper function to find price by product URL or name
+  // Extract model code from product name (E-20 → E20, P-25 → P25, PDW-40 → PDW40, etc.)
+  const extractModelCode = (name: string): string | null => {
+    // Match patterns like E-20, E20, P-25, P25, PDW-40, EDW-15, CS-8, E-25L, etc.
+    const match = name.match(/\b([A-Z]{1,3}-?\d+[A-Z]?)\b/i);
+    if (match) {
+      // Normalize: remove dashes and uppercase
+      return match[1].replace(/-/g, '').toUpperCase();
+    }
+    return null;
+  };
+
+  // Helper function to find price by model code or URL
   const findPrice = (shopUrl?: string, productName?: string): string | null => {
     if (!shopUrl && !productName) return null;
     
-    const product = state.products.find(p => {
-      // Match by URL
-      if (shopUrl && shopUrl !== '#') {
-        // Normalize URLs for comparison
-        const normalizedShopUrl = shopUrl.replace(/\/$/, '').toLowerCase();
+    // First try to match by URL (most reliable)
+    if (shopUrl && shopUrl !== '#') {
+      const normalizedShopUrl = shopUrl.replace(/\/$/, '').toLowerCase();
+      const productByUrl = state.products.find(p => {
         const normalizedProductUrl = p.url.replace(/\/$/, '').toLowerCase();
-        if (normalizedShopUrl === normalizedProductUrl) {
-          return true;
-        }
+        return normalizedShopUrl === normalizedProductUrl;
+      });
+      if (productByUrl) {
+        return productByUrl.price;
       }
-      // Match by name (fuzzy match)
-      if (productName) {
-        const normalizedName = productName.toLowerCase();
-        const normalizedProductName = p.name.toLowerCase();
-        if (normalizedProductName.includes(normalizedName) || 
-            normalizedName.includes(normalizedProductName)) {
-          return true;
-        }
-      }
-      return false;
-    });
+    }
     
-    return product?.price || null;
+    // Then try to match by model code (E-20 → E20)
+    if (productName) {
+      const ourModelCode = extractModelCode(productName);
+      if (ourModelCode) {
+        const productByModel = state.products.find(p => {
+          const ymlModelCode = extractModelCode(p.name);
+          return ymlModelCode === ourModelCode;
+        });
+        if (productByModel) {
+          return productByModel.price;
+        }
+      }
+    }
+    
+    return null;
+  };
+
+  // Helper to find shop URL by model code
+  const findShopUrl = (productName?: string): string | null => {
+    if (!productName) return null;
+    
+    const ourModelCode = extractModelCode(productName);
+    if (ourModelCode) {
+      const product = state.products.find(p => {
+        const ymlModelCode = extractModelCode(p.name);
+        return ymlModelCode === ourModelCode;
+      });
+      if (product) {
+        return product.url;
+      }
+    }
+    
+    return null;
   };
 
   return {
     ...state,
-    findPrice
+    findPrice,
+    findShopUrl
   };
 }

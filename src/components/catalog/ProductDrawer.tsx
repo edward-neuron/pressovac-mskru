@@ -29,13 +29,15 @@ export const ProductDrawer = ({
 }: ProductDrawerProps) => {
   const [selectedLength, setSelectedLength] = useState<string | null>(null);
   const [showShopModal, setShowShopModal] = useState(false);
-  const { findPrice } = useYmlPrices();
+  const { findPrice, findShopUrl } = useYmlPrices();
 
   if (!product) return null;
 
   const hasLengths = product.availableLengths && product.availableLengths.length > 0;
   const ymlPrice = findPrice(product.shopUrl, product.name);
+  const ymlShopUrl = findShopUrl(product.name);
   const displayPrice = ymlPrice || product.price;
+  const effectiveShopUrl = (product.shopUrl && product.shopUrl !== '#') ? product.shopUrl : ymlShopUrl;
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
@@ -133,7 +135,7 @@ export const ProductDrawer = ({
           {/* Actions */}
           <div className="flex flex-col gap-3 pt-4 border-t border-border">
             {/* View Price Button */}
-            {product.shopUrl && product.shopUrl !== '#' && (
+            {effectiveShopUrl && (
               <Button 
                 variant="default" 
                 className="w-full" 
@@ -169,11 +171,11 @@ export const ProductDrawer = ({
         </div>
 
         {/* Shop Redirect Modal */}
-        {product.shopUrl && product.shopUrl !== '#' && (
+        {effectiveShopUrl && (
           <ShopRedirectModal
             isOpen={showShopModal}
             onClose={() => setShowShopModal(false)}
-            shopUrl={product.shopUrl}
+            shopUrl={effectiveShopUrl}
             productName={product.name}
             price={displayPrice || undefined}
           />

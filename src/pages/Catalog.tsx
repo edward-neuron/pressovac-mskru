@@ -1,7 +1,12 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Zap, Shield, Wrench, Sparkles, Camera, Settings, Package } from 'lucide-react';
+import { ArrowRight, Zap, Shield, Wrench, Sparkles, Camera, Settings, Package, LayoutGrid, PanelRight } from 'lucide-react';
+import { BrushMachinesCatalog } from '@/components/catalog/BrushMachinesCatalog';
+import { Button } from '@/components/ui/button';
+
+type ViewMode = 'modal' | 'drawer';
 
 const categories = [
   {
@@ -9,7 +14,7 @@ const categories = [
     icon: Zap,
     title: 'Щёточные машины Pressovac',
     description: 'Профессиональные щёточные машины для механической очистки воздуховодов круглого и прямоугольного сечения. Эффективное удаление пыли, жира и загрязнений.',
-    products: ['Pressovac S35', 'Pressovac S40', 'Pressovac S60'],
+    hasDetailedCatalog: true,
     image: 'from-blue-500 to-blue-600',
   },
   {
@@ -63,6 +68,8 @@ const categories = [
 ];
 
 const Catalog = () => {
+  const [viewMode, setViewMode] = useState<ViewMode>('modal');
+
   return (
     <Layout>
       {/* Hero */}
@@ -83,6 +90,35 @@ const Catalog = () => {
               Полный ассортимент профессионального финского оборудования для очистки 
               и дезинфекции систем вентиляции
             </p>
+          </motion.div>
+
+          {/* View Mode Switcher */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="flex justify-center gap-2 mt-8"
+          >
+            <div className="inline-flex bg-muted rounded-lg p-1">
+              <Button
+                variant={viewMode === 'modal' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setViewMode('modal')}
+                className="gap-2"
+              >
+                <LayoutGrid className="w-4 h-4" />
+                Модалка
+              </Button>
+              <Button
+                variant={viewMode === 'drawer' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setViewMode('drawer')}
+                className="gap-2"
+              >
+                <PanelRight className="w-4 h-4" />
+                Drawer
+              </Button>
+            </div>
           </motion.div>
         </div>
       </section>
@@ -108,23 +144,33 @@ const Catalog = () => {
                   <div className="md:col-span-2 p-6 md:p-8 space-y-4">
                     <h2 className="font-display text-2xl font-bold">{category.title}</h2>
                     <p className="text-muted-foreground leading-relaxed">{category.description}</p>
-                    <div className="flex flex-wrap gap-2">
-                      {category.products.map((product) => (
-                        <span 
-                          key={product}
-                          className="px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium"
+                    
+                    {/* Детальный каталог для щёточных машин */}
+                    {category.hasDetailedCatalog ? (
+                      <div className="pt-4">
+                        <BrushMachinesCatalog viewMode={viewMode} />
+                      </div>
+                    ) : (
+                      <>
+                        <div className="flex flex-wrap gap-2">
+                          {category.products?.map((product) => (
+                            <span 
+                              key={product}
+                              className="px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium"
+                            >
+                              {product}
+                            </span>
+                          ))}
+                        </div>
+                        <Link
+                          to="/contacts"
+                          className="inline-flex items-center gap-2 text-primary font-semibold hover:gap-3 transition-all pt-2"
                         >
-                          {product}
-                        </span>
-                      ))}
-                    </div>
-                    <Link
-                      to="/inquiry"
-                      className="inline-flex items-center gap-2 text-primary font-semibold hover:gap-3 transition-all pt-2"
-                    >
-                      Запросить информацию
-                      <ArrowRight className="w-5 h-5" />
-                    </Link>
+                          Запросить информацию
+                          <ArrowRight className="w-5 h-5" />
+                        </Link>
+                      </>
+                    )}
                   </div>
                 </div>
               </motion.div>

@@ -1,5 +1,9 @@
 // Данные для раздела "Щёточные машины Pressovac"
 
+// Импорт изображений продуктов
+import e20Image from '@/assets/products/e-20.png';
+import e30Image from '@/assets/products/e-30.png';
+
 export interface Product {
   id: string;
   name: string;
@@ -104,6 +108,7 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Тип привода': 'Электрический',
             'Страна': 'Финляндия'
           },
+          image: e20Image,
           shopUrl: '#'
         },
         {
@@ -122,6 +127,7 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Тип привода': 'Электрический',
             'Страна': 'Финляндия'
           },
+          image: e30Image,
           shopUrl: '#'
         },
         {

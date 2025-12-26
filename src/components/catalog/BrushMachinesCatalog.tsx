@@ -2,17 +2,10 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, ArrowLeft } from 'lucide-react';
 import { brushMachinesData, Product, Subcategory } from '@/data/brushMachinesData';
-import { ProductModal } from './ProductModal';
 import { ProductDrawer } from './ProductDrawer';
 import { Button } from '@/components/ui/button';
 
-type ViewMode = 'modal' | 'drawer';
-
-interface BrushMachinesCatalogProps {
-  viewMode?: ViewMode;
-}
-
-export const BrushMachinesCatalog = ({ viewMode = 'modal' }: BrushMachinesCatalogProps) => {
+export const BrushMachinesCatalog = () => {
   const [selectedSubcategory, setSelectedSubcategory] = useState<Subcategory | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isProductOpen, setIsProductOpen] = useState(false);
@@ -119,24 +112,13 @@ export const BrushMachinesCatalog = ({ viewMode = 'modal' }: BrushMachinesCatalo
         )}
       </AnimatePresence>
 
-      {/* Modal или Drawer в зависимости от viewMode */}
-      {viewMode === 'modal' ? (
-        <ProductModal
-          product={selectedProduct}
-          isOpen={isProductOpen}
-          onClose={handleCloseProduct}
-          onBack={handleBackToSubcategory}
-          showBackButton={true}
-        />
-      ) : (
-        <ProductDrawer
-          product={selectedProduct}
-          isOpen={isProductOpen}
-          onClose={handleCloseProduct}
-          onBack={handleBackToSubcategory}
-          showBackButton={true}
-        />
-      )}
+      <ProductDrawer
+        product={selectedProduct}
+        isOpen={isProductOpen}
+        onClose={handleCloseProduct}
+        onBack={handleBackToSubcategory}
+        showBackButton={true}
+      />
     </div>
   );
 };

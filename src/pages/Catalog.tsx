@@ -1,12 +1,8 @@
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Zap, Shield, Wrench, Sparkles, Camera, Settings, Package, LayoutGrid, PanelRight } from 'lucide-react';
+import { ArrowRight, Zap, Shield, Wrench, Sparkles, Camera, Settings, Package } from 'lucide-react';
 import { BrushMachinesCatalog } from '@/components/catalog/BrushMachinesCatalog';
-import { Button } from '@/components/ui/button';
-
-type ViewMode = 'modal' | 'drawer';
 
 const categories = [
   {
@@ -68,7 +64,6 @@ const categories = [
 ];
 
 const Catalog = () => {
-  const [viewMode, setViewMode] = useState<ViewMode>('modal');
 
   return (
     <Layout>
@@ -92,34 +87,6 @@ const Catalog = () => {
             </p>
           </motion.div>
 
-          {/* View Mode Switcher */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="flex justify-center gap-2 mt-8"
-          >
-            <div className="inline-flex bg-muted rounded-lg p-1">
-              <Button
-                variant={viewMode === 'modal' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setViewMode('modal')}
-                className="gap-2"
-              >
-                <LayoutGrid className="w-4 h-4" />
-                Модалка
-              </Button>
-              <Button
-                variant={viewMode === 'drawer' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setViewMode('drawer')}
-                className="gap-2"
-              >
-                <PanelRight className="w-4 h-4" />
-                Drawer
-              </Button>
-            </div>
-          </motion.div>
         </div>
       </section>
 
@@ -148,7 +115,7 @@ const Catalog = () => {
                     {/* Детальный каталог для щёточных машин */}
                     {category.hasDetailedCatalog ? (
                       <div className="pt-4">
-                        <BrushMachinesCatalog viewMode={viewMode} />
+                        <BrushMachinesCatalog />
                       </div>
                     ) : (
                       <>

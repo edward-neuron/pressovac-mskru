@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
 import { Play, CheckCircle, ArrowRight, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { toast } from '@/hooks/use-toast';
 
 const videoCategories = [
   {
@@ -38,6 +39,13 @@ const videoCategories = [
     ],
   },
 ];
+
+// YouTube использует другие ID, не такие как RuTube.
+// Добавьте сюда соответствия "rutubeId" -> "youtubeId" (11 символов).
+const YOUTUBE_IDS: Record<string, string> = {
+  // пример:
+  // '9927894db7f21eb0aad294b3d45a9bf7': 'dQw4w9WgXcQ',
+};
 
 const steps = [
   { 
@@ -171,7 +179,10 @@ const Technology = () => {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.05 }}
-                      onClick={() => setSelectedVideo(video)}
+                      onClick={() => {
+                        setPlatform('rutube');
+                        setSelectedVideo(video);
+                      }}
                       className="group cursor-pointer"
                     >
                       <div className="relative aspect-video rounded-2xl overflow-hidden bg-gradient-to-br from-primary/10 to-accent/10 mb-3">
@@ -233,30 +244,55 @@ const Technology = () => {
                 >
                   RuTube
                 </button>
-                <button
-                  onClick={() => setPlatform('youtube')}
-                  className={`px-6 py-2 rounded-full text-sm font-medium transition-all bg-red-600 text-white ${
-                    platform === 'youtube'
-                      ? 'shadow-lg ring-2 ring-red-400 ring-offset-2 ring-offset-background'
-                      : 'opacity-70 hover:opacity-100'
-                  }`}
-                >
-                  YouTube
-                </button>
+
+                {(() => {
+                  const ytId = selectedVideo ? YOUTUBE_IDS[selectedVideo.id] : undefined;
+                  const disabled = !ytId;
+
+                  return (
+                    <button
+                      onClick={() => {
+                        if (disabled) {
+                          toast({
+                            title: 'YouTube-версия не настроена',
+                            description: 'Пришлите ссылку/ID YouTube для этого ролика — добавлю и кнопка заработает.',
+                          });
+                          return;
+                        }
+                        setPlatform('youtube');
+                      }}
+                      disabled={disabled}
+                      className={`px-6 py-2 rounded-full text-sm font-medium transition-all bg-red-600 text-white ${
+                        platform === 'youtube'
+                          ? 'shadow-lg ring-2 ring-red-400 ring-offset-2 ring-offset-background'
+                          : 'opacity-70 hover:opacity-100'
+                      } ${disabled ? 'opacity-40 cursor-not-allowed hover:opacity-40' : ''}`}
+                    >
+                      YouTube
+                    </button>
+                  );
+                })()}
               </div>
               
               <div className="aspect-video">
-                <iframe
-                  key={`${selectedVideo.id}-${platform}`}
-                  src={platform === 'rutube' 
-                    ? `https://rutube.ru/play/embed/${selectedVideo.id}`
-                    : `https://www.youtube.com/embed/${selectedVideo.id}`
-                  }
-                  className="w-full h-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  title={selectedVideo.title}
-                />
+                {(() => {
+                  const ytId = YOUTUBE_IDS[selectedVideo.id];
+                  const effectivePlatform = platform === 'youtube' && ytId ? 'youtube' : 'rutube';
+
+                  return (
+                    <iframe
+                      key={`${selectedVideo.id}-${effectivePlatform}-${ytId ?? 'no-yt'}`}
+                      src={effectivePlatform === 'rutube'
+                        ? `https://rutube.ru/play/embed/${selectedVideo.id}`
+                        : `https://www.youtube.com/embed/${ytId}`
+                      }
+                      className="w-full h-full"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      title={selectedVideo.title}
+                    />
+                  );
+                })()}
               </div>
               <div className="p-4">
                 <h3 className="font-display font-semibold text-lg">{selectedVideo.title}</h3>

@@ -1,15 +1,27 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Zap, Shield, Wrench, Sparkles, Camera, Settings, Package } from 'lucide-react';
 import { BrushMachinesCatalog } from '@/components/catalog/BrushMachinesCatalog';
-import brushMachinesBanner from '@/assets/brush-machines-banner.png';
+import brushEquipmentCombined from '@/assets/brush-equipment-combined.png';
+import flexibleShafts from '@/assets/flexible-shafts.png';
+import dryCleaningMachines from '@/assets/dry-cleaning-machines.png';
+import greaseRemovalMachines from '@/assets/grease-removal-machines.png';
+
+const brushEquipmentImages: Record<string, string> = {
+  'default': brushEquipmentCombined,
+  'flexible-shafts': flexibleShafts,
+  'dry-cleaning': dryCleaningMachines,
+  'grease-removal': greaseRemovalMachines,
+};
+
 const categories = [
   {
     id: 'brush-machines',
     icon: Zap,
-    title: 'Щёточные машины Pressovac',
-    description: 'Профессиональные щёточные машины для механической очистки воздуховодов круглого и прямоугольного сечения. Эффективное удаление пыли, жира и загрязнений.',
+    title: 'Щёточное оборудование Pressovac',
+    description: 'Профессиональное щёточное оборудование для механической очистки воздуховодов круглого и прямоугольного сечения. Эффективное удаление пыли, жира и загрязнений.',
     hasDetailedCatalog: true,
     image: 'from-blue-500 to-blue-600',
   },
@@ -64,6 +76,19 @@ const categories = [
 ];
 
 const Catalog = () => {
+  const [brushEquipmentImage, setBrushEquipmentImage] = useState<string>('default');
+
+  const handleSubcategoryChange = (subcategoryId: string | null) => {
+    if (!subcategoryId) {
+      setBrushEquipmentImage('default');
+    } else if (subcategoryId === 'flexible-shafts') {
+      setBrushEquipmentImage('flexible-shafts');
+    } else if (subcategoryId === 'dry-cleaning') {
+      setBrushEquipmentImage('dry-cleaning');
+    } else if (subcategoryId === 'grease-removal') {
+      setBrushEquipmentImage('grease-removal');
+    }
+  };
 
   return (
     <Layout>
@@ -108,10 +133,14 @@ const Catalog = () => {
                   {/* Изображение слева */}
                   <div className={`bg-gradient-to-br ${category.image} p-8 md:p-12 flex items-center justify-center min-h-[200px] relative overflow-hidden`}>
                     {category.id === 'brush-machines' ? (
-                      <img 
-                        src={brushMachinesBanner} 
+                      <motion.img 
+                        key={brushEquipmentImage}
+                        src={brushEquipmentImages[brushEquipmentImage]} 
                         alt={category.title}
-                        className="absolute inset-0 w-full h-full object-cover object-center"
+                        className="absolute inset-0 w-full h-full object-contain object-center p-4"
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.3 }}
                       />
                     ) : (
                       <category.icon className="w-24 h-24 text-white/90" />
@@ -122,10 +151,10 @@ const Catalog = () => {
                     <h2 className="font-display text-2xl font-bold">{category.title}</h2>
                     <p className="text-muted-foreground leading-relaxed">{category.description}</p>
                     
-                    {/* Детальный каталог для щёточных машин */}
+                    {/* Детальный каталог для щёточного оборудования */}
                     {category.hasDetailedCatalog ? (
                       <div className="pt-4">
-                        <BrushMachinesCatalog />
+                        <BrushMachinesCatalog onSubcategoryChange={handleSubcategoryChange} />
                       </div>
                     ) : (
                       <>

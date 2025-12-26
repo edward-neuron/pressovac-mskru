@@ -1,1 +1,4 @@
 project_id = "khuqrtjdnbjfmysasjrr"
+
+[functions.fetch-yml-prices]
+verify_jwt = false

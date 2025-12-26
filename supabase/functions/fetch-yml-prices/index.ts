@@ -97,6 +97,12 @@ serve(async (req) => {
     const products = parseYmlProducts(xmlText);
     console.log("Parsed products:", products.length);
     
+    // Log vendorCodes for debugging
+    const vendorCodes = products
+      .filter(p => p.vendorCode)
+      .map(p => ({ name: p.name, vendorCode: p.vendorCode, price: p.price }));
+    console.log("Products with vendorCodes:", JSON.stringify(vendorCodes, null, 2));
+    
     return new Response(
       JSON.stringify({ 
         success: true, 

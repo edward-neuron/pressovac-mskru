@@ -161,8 +161,8 @@ export const brushMachinesData: BrushMachinesCategory = {
           shopUrl: '#'
         },
         {
-          id: 'dry-pneumatic-e40',
-          name: 'Pressovac E-40',
+          id: 'dry-pneumatic-p40',
+          name: 'Pressovac P-40',
           description: 'Пневматическая щёточная машина с максимальной длиной вала для очистки и дезинфекции крупных воздуховодов.',
           features: [
             'Длина вала: 40 м',

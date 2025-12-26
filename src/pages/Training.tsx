@@ -1,8 +1,10 @@
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
-import { GraduationCap, Users, Clock, Award, CheckCircle, ArrowRight, Gift, FileText, Video, Calculator, Briefcase, BookOpen, Headphones } from 'lucide-react';
+import { GraduationCap, Users, Clock, Award, CheckCircle, ArrowRight, Gift, FileText, Video, Calculator, Briefcase, BookOpen, Headphones, X, ZoomIn } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import calculationSoftwareImg from '@/assets/calculation-software.png';
 
 const benefits = [
   { icon: Gift, title: 'Бесплатно', description: 'Предоставляется бесплатно при покупке оборудования' },
@@ -44,8 +46,46 @@ const ourHelp = [
 ];
 
 const Training = () => {
+  const [showSoftwarePopup, setShowSoftwarePopup] = useState(false);
+
   return (
     <Layout>
+      {/* Software Popup */}
+      <AnimatePresence>
+        {showSoftwarePopup && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+            onClick={() => setShowSoftwarePopup(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ type: 'spring', duration: 0.5 }}
+              className="relative max-w-5xl w-full"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setShowSoftwarePopup(false)}
+                className="absolute -top-12 right-0 text-white/80 hover:text-white transition-colors"
+              >
+                <X className="w-8 h-8" />
+              </button>
+              <img
+                src={calculationSoftwareImg}
+                alt="ПО Расчёт стоимости работ"
+                className="w-full rounded-xl shadow-2xl"
+              />
+              <p className="text-center text-white/80 mt-4 text-sm">
+                Программное обеспечение для расчёта стоимости работ по очистке вентиляции
+              </p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       {/* Hero */}
       <section className="section-padding hero-gradient">
         <div className="container-custom">
@@ -199,24 +239,34 @@ const Training = () => {
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            {planContents.map((item, index) => (
-              <motion.div
-                key={item.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.05 }}
-                className="flex gap-4 p-5 rounded-2xl bg-card border border-border card-hover"
-              >
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                  <item.icon className="w-6 h-6 text-primary" />
-                </div>
-                <div>
-                  <h3 className="font-semibold mb-1">{item.title}</h3>
-                  <p className="text-sm text-muted-foreground">{item.description}</p>
-                </div>
-              </motion.div>
-            ))}
+            {planContents.map((item, index) => {
+              const isCalculator = item.title === 'ПО «Расчёт стоимости работ»';
+              
+              return (
+                <motion.div
+                  key={item.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.05 }}
+                  className={`flex gap-4 p-5 rounded-2xl bg-card border border-border card-hover ${isCalculator ? 'cursor-pointer group' : ''}`}
+                  onClick={isCalculator ? () => setShowSoftwarePopup(true) : undefined}
+                >
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <item.icon className="w-6 h-6 text-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-semibold mb-1">{item.title}</h3>
+                      {isCalculator && (
+                        <ZoomIn className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                      )}
+                    </div>
+                    <p className="text-sm text-muted-foreground">{item.description}</p>
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
 
           {/* Business Documents */}

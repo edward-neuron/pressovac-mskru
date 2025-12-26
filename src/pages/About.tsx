@@ -1,6 +1,7 @@
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
-import { Award, Users, Target, Heart, CheckCircle } from 'lucide-react';
+import { Award, Users, Target, Heart, CheckCircle, Play, X } from 'lucide-react';
 
 const values = [
   { icon: Award, title: 'Качество', description: 'Только оригинальное финское оборудование высочайшего качества' },
@@ -8,6 +9,14 @@ const values = [
   { icon: Target, title: 'Экспертиза', description: 'Глубокие знания в области очистки вентиляции' },
   { icon: Heart, title: 'Забота', description: 'Индивидуальный подход к каждому клиенту' },
 ];
+
+type Platform = 'rutube' | 'youtube';
+
+const ownerVideo = {
+  rutubeId: '3597bd9053d7a1ab63430e4118fb43c8',
+  youtubeId: 'wf2sqiJv_20',
+  title: 'Выступление владельца компании',
+};
 
 const benefits = [
   'Официальный дистрибьютор PRESSOVAC Oy',
@@ -21,6 +30,9 @@ const benefits = [
 ];
 
 const About = () => {
+  const [showVideo, setShowVideo] = useState(false);
+  const [platform, setPlatform] = useState<Platform>('rutube');
+
   return (
     <Layout>
       {/* Hero */}
@@ -104,7 +116,117 @@ const About = () => {
         </div>
       </section>
 
-      {/* Values */}
+      {/* Owner Video Section */}
+      <section className="section-padding">
+        <div className="container-custom">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">
+              Слово владельца
+            </h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              Узнайте больше о нашей компании из первых уст
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="max-w-3xl mx-auto"
+          >
+            <div
+              onClick={() => setShowVideo(true)}
+              className="relative aspect-video rounded-2xl overflow-hidden bg-gradient-to-br from-primary/10 to-accent/10 cursor-pointer group"
+            >
+              <img
+                src={`https://rutube.ru/api/video/${ownerVideo.rutubeId}/thumbnail/?redirect=1`}
+                alt={ownerVideo.title}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+              <div className="absolute inset-0 bg-foreground/20 group-hover:bg-foreground/10 transition-colors flex items-center justify-center">
+                <div className="w-20 h-20 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                  <Play className="w-8 h-8 ml-1" />
+                </div>
+              </div>
+            </div>
+            <p className="text-center mt-4 font-medium text-foreground">{ownerVideo.title}</p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Video Modal */}
+      <AnimatePresence>
+        {showVideo && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm"
+            onClick={() => setShowVideo(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="relative w-full max-w-4xl bg-card rounded-2xl overflow-hidden shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setShowVideo(false)}
+                className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-background/80 text-foreground flex items-center justify-center hover:bg-background transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+              {/* Platform Switcher */}
+              <div className="flex justify-center gap-3 p-4 border-b border-border">
+                <button
+                  onClick={() => setPlatform('rutube')}
+                  className={`px-6 py-2 rounded-full text-sm font-medium transition-all bg-blue-600 text-white ${
+                    platform === 'rutube'
+                      ? 'shadow-lg ring-2 ring-blue-400 ring-offset-2 ring-offset-background'
+                      : 'opacity-70 hover:opacity-100'
+                  }`}
+                >
+                  RuTube
+                </button>
+                <button
+                  onClick={() => setPlatform('youtube')}
+                  className={`px-6 py-2 rounded-full text-sm font-medium transition-all bg-red-600 text-white ${
+                    platform === 'youtube'
+                      ? 'shadow-lg ring-2 ring-red-400 ring-offset-2 ring-offset-background'
+                      : 'opacity-70 hover:opacity-100'
+                  }`}
+                >
+                  YouTube
+                </button>
+              </div>
+              <div className="aspect-video">
+                <iframe
+                  key={`${ownerVideo.rutubeId}-${platform}`}
+                  src={platform === 'rutube'
+                    ? `https://rutube.ru/play/embed/${ownerVideo.rutubeId}`
+                    : `https://www.youtube.com/embed/${ownerVideo.youtubeId}`
+                  }
+                  className="w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  title={ownerVideo.title}
+                />
+              </div>
+              <div className="p-4">
+                <h3 className="font-display font-semibold text-lg">{ownerVideo.title}</h3>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+
       <section className="section-padding bg-card">
         <div className="container-custom">
           <motion.div

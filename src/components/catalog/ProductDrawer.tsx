@@ -1,4 +1,5 @@
-import { FileText, ArrowLeft } from 'lucide-react';
+import { useState } from 'react';
+import { FileText, ArrowLeft, ExternalLink } from 'lucide-react';
 import { Product } from '@/data/brushMachinesData';
 import { Button } from '@/components/ui/button';
 import {
@@ -24,7 +25,11 @@ export const ProductDrawer = ({
   onBack,
   showBackButton = false 
 }: ProductDrawerProps) => {
+  const [selectedLength, setSelectedLength] = useState<string | null>(null);
+
   if (!product) return null;
+
+  const hasLengths = product.availableLengths && product.availableLengths.length > 0;
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
@@ -61,6 +66,28 @@ export const ProductDrawer = ({
             </p>
           </div>
 
+          {/* Available Lengths */}
+          {hasLengths && (
+            <div>
+              <h4 className="font-semibold mb-3">Доступные длины валов</h4>
+              <div className="flex flex-wrap gap-2">
+                {product.availableLengths!.map((length) => (
+                  <button
+                    key={length}
+                    onClick={() => setSelectedLength(length === selectedLength ? null : length)}
+                    className={`px-4 py-2 rounded-lg border text-sm font-medium transition-all ${
+                      selectedLength === length
+                        ? 'bg-primary text-primary-foreground border-primary'
+                        : 'bg-muted/50 border-border hover:border-primary/50 hover:bg-muted'
+                    }`}
+                  >
+                    {length}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Features */}
           <div>
             <h4 className="font-semibold mb-3">Особенности</h4>
@@ -89,6 +116,17 @@ export const ProductDrawer = ({
 
           {/* Actions */}
           <div className="flex flex-col gap-3 pt-4 border-t border-border">
+            {/* View Price Button */}
+            {product.shopUrl && (
+              <Button variant="default" className="w-full" asChild>
+                <a href={product.shopUrl} target="_blank" rel="noopener noreferrer">
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  Посмотреть цену
+                </a>
+              </Button>
+            )}
+
+            {/* Brochure Button */}
             {product.brochureUrl ? (
               <Button variant="outline" className="w-full" asChild>
                 <a href={product.brochureUrl} target="_blank" rel="noopener noreferrer">
@@ -102,7 +140,9 @@ export const ProductDrawer = ({
                 Брошюра (скоро)
               </Button>
             )}
-            <Button className="w-full" asChild>
+
+            {/* Contact Button */}
+            <Button variant="secondary" className="w-full" asChild>
               <Link to="/contacts">
                 Запросить информацию
               </Link>

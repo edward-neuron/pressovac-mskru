@@ -104,19 +104,28 @@ const Catalog = () => {
                 transition={{ delay: index * 0.05 }}
                 className="bg-card rounded-2xl border border-border overflow-hidden card-hover"
               >
-                <div className="grid md:grid-cols-3 gap-0">
-                  <div className={`bg-gradient-to-br ${category.image} p-8 md:p-12 flex items-center justify-center`}>
-                    <category.icon className="w-24 h-24 text-white/90" />
+                {/* Горизонтальный layout — изображение сверху */}
+                <div className="flex flex-col">
+                  {/* Изображение / баннер категории */}
+                  <div className={`bg-gradient-to-br ${category.image} h-48 md:h-56 flex items-center justify-center relative overflow-hidden`}>
+                    <category.icon className="w-20 h-20 text-white/90" />
+                    {/* Заголовок поверх изображения */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent flex items-center">
+                      <div className="p-6 md:p-8">
+                        <h2 className="font-display text-2xl md:text-3xl font-bold text-white">{category.title}</h2>
+                        <p className="text-white/80 mt-2 max-w-lg leading-relaxed hidden md:block">{category.description}</p>
+                      </div>
+                    </div>
                   </div>
-                  <div className="md:col-span-2 p-6 md:p-8 space-y-4">
-                    <h2 className="font-display text-2xl font-bold">{category.title}</h2>
-                    <p className="text-muted-foreground leading-relaxed">{category.description}</p>
+                  
+                  {/* Контент */}
+                  <div className="p-6 md:p-8 space-y-4">
+                    {/* Описание на мобильных */}
+                    <p className="text-muted-foreground leading-relaxed md:hidden">{category.description}</p>
                     
                     {/* Детальный каталог для щёточных машин */}
                     {category.hasDetailedCatalog ? (
-                      <div className="pt-4">
-                        <BrushMachinesCatalog />
-                      </div>
+                      <BrushMachinesCatalog />
                     ) : (
                       <>
                         <div className="flex flex-wrap gap-2">

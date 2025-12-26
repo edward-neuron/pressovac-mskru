@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/sheet';
 import { Link } from 'react-router-dom';
 import { ShopRedirectModal } from './ShopRedirectModal';
+import { useYmlPrices } from '@/hooks/useYmlPrices';
 
 interface ProductDrawerProps {
   product: Product | null;
@@ -28,10 +29,13 @@ export const ProductDrawer = ({
 }: ProductDrawerProps) => {
   const [selectedLength, setSelectedLength] = useState<string | null>(null);
   const [showShopModal, setShowShopModal] = useState(false);
+  const { findPrice } = useYmlPrices();
 
   if (!product) return null;
 
   const hasLengths = product.availableLengths && product.availableLengths.length > 0;
+  const ymlPrice = findPrice(product.shopUrl, product.name);
+  const displayPrice = ymlPrice || product.price;
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
@@ -136,7 +140,7 @@ export const ProductDrawer = ({
                 onClick={() => setShowShopModal(true)}
               >
                 <ShoppingCart className="w-4 h-4 mr-2" />
-                {product.price ? `Цена: ${product.price}` : 'Посмотреть цену'}
+                {displayPrice ? `Оформить заказ — ${displayPrice}` : 'Оформить заказ'}
               </Button>
             )}
 
@@ -171,7 +175,7 @@ export const ProductDrawer = ({
             onClose={() => setShowShopModal(false)}
             shopUrl={product.shopUrl}
             productName={product.name}
-            price={product.price}
+            price={displayPrice || undefined}
           />
         )}
       </SheetContent>

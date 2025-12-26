@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, ArrowLeft } from 'lucide-react';
+import { ChevronRight, ArrowLeft, ShoppingCart } from 'lucide-react';
 import { brushMachinesData, Product, Subcategory } from '@/data/brushMachinesData';
 import { ProductDrawer } from './ProductDrawer';
 import { Button } from '@/components/ui/button';
+import { useYmlPrices } from '@/hooks/useYmlPrices';
 
 interface BrushMachinesCatalogProps {
   onSubcategoryChange?: (subcategoryId: string | null) => void;
@@ -13,6 +14,7 @@ export const BrushMachinesCatalog = ({ onSubcategoryChange }: BrushMachinesCatal
   const [selectedSubcategory, setSelectedSubcategory] = useState<Subcategory | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isProductOpen, setIsProductOpen] = useState(false);
+  const { findPrice, isLoading: pricesLoading } = useYmlPrices();
 
   useEffect(() => {
     onSubcategoryChange?.(selectedSubcategory?.id || null);
@@ -96,25 +98,43 @@ export const BrushMachinesCatalog = ({ onSubcategoryChange }: BrushMachinesCatal
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {selectedSubcategory.products.map((product) => (
-                <button
-                  key={product.id}
-                  onClick={() => handleProductClick(product)}
-                  className="group p-4 bg-card hover:bg-primary/5 rounded-xl border border-border hover:border-primary/30 transition-all text-left"
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1 min-w-0">
-                      <h5 className="font-medium group-hover:text-primary transition-colors truncate">
-                        {product.name}
-                      </h5>
-                      <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                        {product.description}
-                      </p>
+              {selectedSubcategory.products.map((product) => {
+                const ymlPrice = findPrice(product.shopUrl, product.name);
+                const displayPrice = ymlPrice || product.price;
+                
+                return (
+                  <button
+                    key={product.id}
+                    onClick={() => handleProductClick(product)}
+                    className="group p-4 bg-card hover:bg-primary/5 rounded-xl border border-border hover:border-primary/30 transition-all text-left"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1 min-w-0">
+                        <h5 className="font-medium group-hover:text-primary transition-colors truncate">
+                          {product.name}
+                        </h5>
+                        <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                          {product.description}
+                        </p>
+                        {displayPrice && product.shopUrl && product.shopUrl !== '#' && (
+                          <div className="flex items-center gap-2 mt-2">
+                            <ShoppingCart className="w-4 h-4 text-primary" />
+                            <span className="text-sm font-semibold text-primary">
+                              {displayPrice}
+                            </span>
+                          </div>
+                        )}
+                        {pricesLoading && product.shopUrl && product.shopUrl !== '#' && !displayPrice && (
+                          <div className="flex items-center gap-2 mt-2">
+                            <div className="w-16 h-4 bg-muted animate-pulse rounded" />
+                          </div>
+                        )}
+                      </div>
+                      <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all shrink-0 mt-1" />
                     </div>
-                    <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all shrink-0 mt-1" />
-                  </div>
-                </button>
-              ))}
+                  </button>
+                );
+              })}
             </div>
           </motion.div>
         )}

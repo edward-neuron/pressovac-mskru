@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Phone, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import pressovacLogo from '@/assets/pressovac-logo.png';
 
 const navigation = [
   { name: 'Главная', href: '/' },
@@ -24,9 +25,11 @@ export const Header = () => {
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-              <span className="text-primary-foreground font-display font-bold text-xl">P</span>
-            </div>
+            <img 
+              src={pressovacLogo} 
+              alt="Pressovac" 
+              className="w-12 h-12 object-contain"
+            />
             <div className="hidden sm:block">
               <span className="font-display font-bold text-xl text-foreground">Pressovac</span>
               <p className="text-xs text-muted-foreground">Финское оборудование</p>

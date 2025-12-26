@@ -68,7 +68,7 @@ export function useYmlPrices() {
     fetchPrices();
   }, []);
 
-  // Extract model code from product name (E-20 → E20, P-25 → P25, PDW-40 → PDW40, etc.)
+  // Extract model code from YML product name (E20, P25, PDW40, E25-L, etc.)
   const extractModelCode = (name: string): string | null => {
     // Match patterns like E-20, E20, P-25, P25, PDW-40, EDW-15, CS-8, E-25L, etc.
     const match = name.match(/\b([A-Z]{1,3}-?\d+[A-Z]?)\b/i);
@@ -79,10 +79,13 @@ export function useYmlPrices() {
     return null;
   };
 
-  // Helper function to find price by model code or URL
-  const findPrice = (shopUrl?: string, productName?: string): string | null => {
-    if (!shopUrl && !productName) return null;
-    
+  // Normalize article code (remove dashes, uppercase)
+  const normalizeArticle = (article: string): string => {
+    return article.replace(/-/g, '').toUpperCase();
+  };
+
+  // Helper function to find price by article or URL
+  const findPrice = (shopUrl?: string, productName?: string, article?: string): string | null => {
     // First try to match by URL (most reliable)
     if (shopUrl && shopUrl !== '#') {
       const normalizedShopUrl = shopUrl.replace(/\/$/, '').toLowerCase();
@@ -95,7 +98,19 @@ export function useYmlPrices() {
       }
     }
     
-    // Then try to match by model code (E-20 → E20)
+    // Then try to match by article code (E20, P25, PDW40, etc.)
+    if (article) {
+      const normalizedArticle = normalizeArticle(article);
+      const productByArticle = state.products.find(p => {
+        const ymlModelCode = extractModelCode(p.name);
+        return ymlModelCode === normalizedArticle;
+      });
+      if (productByArticle) {
+        return productByArticle.price;
+      }
+    }
+    
+    // Fallback: try to extract from product name
     if (productName) {
       const ourModelCode = extractModelCode(productName);
       if (ourModelCode) {
@@ -112,18 +127,31 @@ export function useYmlPrices() {
     return null;
   };
 
-  // Helper to find shop URL by model code
-  const findShopUrl = (productName?: string): string | null => {
-    if (!productName) return null;
-    
-    const ourModelCode = extractModelCode(productName);
-    if (ourModelCode) {
+  // Helper to find shop URL by article
+  const findShopUrl = (productName?: string, article?: string): string | null => {
+    // First try by article
+    if (article) {
+      const normalizedArticle = normalizeArticle(article);
       const product = state.products.find(p => {
         const ymlModelCode = extractModelCode(p.name);
-        return ymlModelCode === ourModelCode;
+        return ymlModelCode === normalizedArticle;
       });
       if (product) {
         return product.url;
+      }
+    }
+    
+    // Fallback: try to extract from product name
+    if (productName) {
+      const ourModelCode = extractModelCode(productName);
+      if (ourModelCode) {
+        const product = state.products.find(p => {
+          const ymlModelCode = extractModelCode(p.name);
+          return ymlModelCode === ourModelCode;
+        });
+        if (product) {
+          return product.url;
+        }
       }
     }
     

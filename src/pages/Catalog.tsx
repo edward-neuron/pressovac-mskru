@@ -129,9 +129,9 @@ const Catalog = () => {
                 transition={{ delay: index * 0.05 }}
                 className="bg-card rounded-2xl border border-border overflow-hidden card-hover"
               >
-                <div className="grid md:grid-cols-3 gap-0">
+                <div className="grid md:grid-cols-3 gap-0 md:items-stretch">
                   {/* Изображение слева */}
-                  <div className={`${category.id === 'brush-machines' ? 'bg-muted' : `bg-gradient-to-br ${category.image}`} flex items-center justify-center relative overflow-hidden ${category.id === 'brush-machines' ? (brushEquipmentImage === 'default' ? 'aspect-square' : 'aspect-[3/4]') : 'min-h-[280px] md:min-h-[320px]'}`}>
+                  <div className={`${category.id === 'brush-machines' ? 'bg-muted' : `bg-gradient-to-br ${category.image}`} flex items-center justify-center relative overflow-hidden min-h-[280px] md:min-h-0`}>
                     {category.id === 'brush-machines' ? (
                       <motion.img 
                         key={brushEquipmentImage}

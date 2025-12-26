@@ -3,6 +3,7 @@
 // Импорт изображений продуктов
 import e20Image from '@/assets/products/e-20.png';
 import e30Image from '@/assets/products/e-30.png';
+import e25lImage from '@/assets/products/e-25l.png';
 
 export interface Product {
   id: string;
@@ -146,6 +147,7 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Тип привода': 'Электрический',
             'Страна': 'Финляндия'
           },
+          image: e25lImage,
           shopUrl: '#'
         },
         {

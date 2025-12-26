@@ -3,7 +3,7 @@ import { Layout } from '@/components/layout/Layout';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Zap, Shield, Wrench, Sparkles, Camera, Settings, Package } from 'lucide-react';
 import { BrushMachinesCatalog } from '@/components/catalog/BrushMachinesCatalog';
-
+import brushMachinesBanner from '@/assets/brush-machines-banner.png';
 const categories = [
   {
     id: 'brush-machines',
@@ -108,12 +108,20 @@ const Catalog = () => {
                 <div className="flex flex-col">
                   {/* Изображение / баннер категории */}
                   <div className={`bg-gradient-to-br ${category.image} h-48 md:h-56 flex items-center justify-center relative overflow-hidden`}>
-                    <category.icon className="w-20 h-20 text-white/90" />
+                    {category.id === 'brush-machines' ? (
+                      <img 
+                        src={brushMachinesBanner} 
+                        alt={category.title}
+                        className="w-full h-full object-cover object-center"
+                      />
+                    ) : (
+                      <category.icon className="w-20 h-20 text-white/90" />
+                    )}
                     {/* Заголовок поверх изображения */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent flex items-center">
+                    <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent flex items-center">
                       <div className="p-6 md:p-8">
                         <h2 className="font-display text-2xl md:text-3xl font-bold text-white">{category.title}</h2>
-                        <p className="text-white/80 mt-2 max-w-lg leading-relaxed hidden md:block">{category.description}</p>
+                        <p className="text-white/90 mt-2 max-w-lg leading-relaxed hidden md:block">{category.description}</p>
                       </div>
                     </div>
                   </div>

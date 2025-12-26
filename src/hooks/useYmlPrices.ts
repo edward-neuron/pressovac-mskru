@@ -123,9 +123,34 @@ export function useYmlPrices() {
     return null;
   };
 
+  // Helper to find minimum price by vendorCode pattern (e.g., "205.001" matches "205.001.002", "205.001.003", etc.)
+  const findMinPriceByPattern = (vendorCodePattern: string): string | null => {
+    const matchingProducts = state.products.filter(p => 
+      p.vendorCode && p.vendorCode.startsWith(vendorCodePattern)
+    );
+    
+    if (matchingProducts.length === 0) return null;
+    
+    // Parse prices and find minimum
+    const prices = matchingProducts.map(p => {
+      // Extract numeric value from price string like "32 600 ₽"
+      const numericPrice = parseInt(p.price.replace(/\s/g, '').replace(/[^\d]/g, ''), 10);
+      return { price: p.price, numericPrice };
+    }).filter(p => !isNaN(p.numericPrice));
+    
+    if (prices.length === 0) return null;
+    
+    const minPrice = prices.reduce((min, p) => 
+      p.numericPrice < min.numericPrice ? p : min
+    );
+    
+    return minPrice.price;
+  };
+
   return {
     ...state,
     findPrice,
-    findShopUrl
+    findShopUrl,
+    findMinPriceByPattern
   };
 }

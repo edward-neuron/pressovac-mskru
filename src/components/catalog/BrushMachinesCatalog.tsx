@@ -14,7 +14,7 @@ export const BrushMachinesCatalog = ({ onSubcategoryChange }: BrushMachinesCatal
   const [selectedSubcategory, setSelectedSubcategory] = useState<Subcategory | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isProductOpen, setIsProductOpen] = useState(false);
-  const { findPrice, findShopUrl, isLoading: pricesLoading } = useYmlPrices();
+  const { findPrice, findShopUrl, findMinPriceByPattern, isLoading: pricesLoading } = useYmlPrices();
 
   useEffect(() => {
     onSubcategoryChange?.(selectedSubcategory?.id || null);
@@ -99,10 +99,14 @@ export const BrushMachinesCatalog = ({ onSubcategoryChange }: BrushMachinesCatal
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {selectedSubcategory.products.map((product) => {
-                const ymlPrice = findPrice(product.shopUrl, product.name, product.article);
+                // Для товаров с паттерном (гибкие валы) - ищем минимальную цену
+                const ymlPrice = product.vendorCodePattern 
+                  ? findMinPriceByPattern(product.vendorCodePattern)
+                  : findPrice(product.shopUrl, product.name, product.article);
                 const ymlShopUrl = findShopUrl(product.name, product.article);
                 const displayPrice = ymlPrice || product.price;
                 const hasShopLink = (product.shopUrl && product.shopUrl !== '#') || ymlShopUrl;
+                const pricePrefix = product.pricePrefix || '';
                 
                 return (
                   <button
@@ -122,6 +126,7 @@ export const BrushMachinesCatalog = ({ onSubcategoryChange }: BrushMachinesCatal
                           <div className="flex items-center gap-2 mt-2">
                             <ShoppingCart className="w-4 h-4 text-primary" />
                             <span className="text-sm font-semibold text-primary">
+                              {pricePrefix && <span className="font-normal">{pricePrefix} </span>}
                               {displayPrice}
                             </span>
                           </div>

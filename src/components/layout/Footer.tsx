@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Phone, Mail, MapPin, ExternalLink } from 'lucide-react';
+import pressovacLogo from '@/assets/pressovac-logo.png';
 
 const navigation = {
   main: [
@@ -24,9 +25,11 @@ export const Footer = () => {
           {/* Brand */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-                <span className="text-primary-foreground font-display font-bold text-xl">P</span>
-              </div>
+              <img 
+                src={pressovacLogo} 
+                alt="Pressovac" 
+                className="w-12 h-12 object-contain"
+              />
               <div>
                 <span className="font-display font-bold text-xl">Pressovac</span>
                 <p className="text-xs opacity-70">Официальный дистрибьютор</p>

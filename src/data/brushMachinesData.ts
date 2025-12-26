@@ -16,6 +16,7 @@ export interface Product {
   image?: string;
   brochureUrl?: string;
   shopUrl?: string;
+  price?: string;
 }
 
 export interface Subcategory {
@@ -111,7 +112,8 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Страна': 'Финляндия'
           },
           image: e20Image,
-          shopUrl: '#'
+          shopUrl: 'https://shop-pressovac.ru/p/1417441793-elektricheskaya-shchetochnaya-mashina-e20/',
+          price: '925 560 ₽'
         },
         {
           id: 'dry-electric-e30',

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FileText, ArrowLeft, ExternalLink } from 'lucide-react';
+import { FileText, ArrowLeft, ShoppingCart } from 'lucide-react';
 import { Product } from '@/data/brushMachinesData';
 import { Button } from '@/components/ui/button';
 import {
@@ -9,6 +9,7 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet';
 import { Link } from 'react-router-dom';
+import { ShopRedirectModal } from './ShopRedirectModal';
 
 interface ProductDrawerProps {
   product: Product | null;
@@ -26,6 +27,7 @@ export const ProductDrawer = ({
   showBackButton = false 
 }: ProductDrawerProps) => {
   const [selectedLength, setSelectedLength] = useState<string | null>(null);
+  const [showShopModal, setShowShopModal] = useState(false);
 
   if (!product) return null;
 
@@ -127,12 +129,14 @@ export const ProductDrawer = ({
           {/* Actions */}
           <div className="flex flex-col gap-3 pt-4 border-t border-border">
             {/* View Price Button */}
-            {product.shopUrl && (
-              <Button variant="default" className="w-full" asChild>
-                <a href={product.shopUrl} target="_blank" rel="noopener noreferrer">
-                  <ExternalLink className="w-4 h-4 mr-2" />
-                  Посмотреть цену
-                </a>
+            {product.shopUrl && product.shopUrl !== '#' && (
+              <Button 
+                variant="default" 
+                className="w-full" 
+                onClick={() => setShowShopModal(true)}
+              >
+                <ShoppingCart className="w-4 h-4 mr-2" />
+                {product.price ? `Цена: ${product.price}` : 'Посмотреть цену'}
               </Button>
             )}
 
@@ -159,6 +163,17 @@ export const ProductDrawer = ({
             </Button>
           </div>
         </div>
+
+        {/* Shop Redirect Modal */}
+        {product.shopUrl && product.shopUrl !== '#' && (
+          <ShopRedirectModal
+            isOpen={showShopModal}
+            onClose={() => setShowShopModal(false)}
+            shopUrl={product.shopUrl}
+            productName={product.name}
+            price={product.price}
+          />
+        )}
       </SheetContent>
     </Sheet>
   );

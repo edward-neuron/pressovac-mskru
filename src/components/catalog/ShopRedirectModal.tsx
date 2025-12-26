@@ -66,7 +66,7 @@ export const ShopRedirectModal = ({
             className="sm:flex-1 gap-2"
           >
             <ExternalLink className="w-4 h-4" />
-            Перейти в магазин
+            Оформить заказ
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

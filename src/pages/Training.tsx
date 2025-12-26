@@ -249,10 +249,16 @@ const Training = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.05 }}
-                  className={`flex gap-4 p-5 rounded-2xl bg-card border border-border card-hover ${isCalculator ? 'cursor-pointer group' : ''}`}
+                  className={`flex gap-4 p-5 rounded-2xl border card-hover ${
+                    isCalculator 
+                      ? 'cursor-pointer group bg-primary/5 border-primary/30 shadow-[0_0_15px_rgba(var(--primary-rgb),0.15)] animate-pulse hover:animate-none hover:shadow-[0_0_25px_rgba(var(--primary-rgb),0.25)]' 
+                      : 'bg-card border-border'
+                  }`}
                   onClick={isCalculator ? () => setShowSoftwarePopup(true) : undefined}
                 >
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                    isCalculator ? 'bg-primary/20' : 'bg-primary/10'
+                  }`}>
                     <item.icon className="w-6 h-6 text-primary" />
                   </div>
                   <div className="flex-1">

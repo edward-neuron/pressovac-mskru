@@ -102,7 +102,7 @@ export const brushMachinesData: BrushMachinesCategory = {
         {
           id: 'dry-electric-e20',
           name: 'Pressovac E-20',
-          article: 'E20',
+          article: '201.002.003',
           description: 'Электрическая щёточная машина для очистки воздуховодов диаметром до 500 мм.',
           features: [
             'Длина вала: 20 м',
@@ -116,14 +116,12 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Тип привода': 'Электрический',
             'Страна': 'Финляндия'
           },
-          image: e20Image,
-          shopUrl: 'https://shop-pressovac.ru/p/1417441793-elektricheskaya-shchetochnaya-mashina-e20/',
-          price: '925 560 ₽'
+          image: e20Image
         },
         {
           id: 'dry-electric-e30',
           name: 'Pressovac E-30',
-          article: 'E30',
+          article: '201.002.014',
           description: 'Электрическая щёточная машина с увеличенной длиной вала для очистки воздуховодов диаметром до 500 мм.',
           features: [
             'Длина вала: 30 м',
@@ -137,13 +135,12 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Тип привода': 'Электрический',
             'Страна': 'Финляндия'
           },
-          image: e30Image,
-          shopUrl: '#'
+          image: e30Image
         },
         {
           id: 'dry-electric-e25l',
           name: 'Pressovac E-25L',
-          article: 'E25L',
+          article: '201.006.001',
           description: 'Электрическая щёточная машина для очистки воздуховодов большого диаметра до 800 мм.',
           features: [
             'Длина вала: 25 м',
@@ -157,13 +154,12 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Тип привода': 'Электрический',
             'Страна': 'Финляндия'
           },
-          image: e25lImage,
-          shopUrl: '#'
+          image: e25lImage
         },
         {
           id: 'dry-pneumatic-p25',
           name: 'Pressovac P-25',
-          article: 'P25',
+          article: '201.001.101',
           description: 'Пневматическая щёточная машина для очистки и дезинфекции воздуховодов диаметром до 1200 мм.',
           features: [
             'Длина вала: 25 м',
@@ -177,13 +173,12 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Тип привода': 'Пневматический',
             'Страна': 'Финляндия'
           },
-          image: p25p40Image,
-          shopUrl: '#'
+          image: p25p40Image
         },
         {
           id: 'dry-pneumatic-p40',
           name: 'Pressovac P-40',
-          article: 'P40',
+          article: '201.001.102',
           description: 'Пневматическая щёточная машина с максимальной длиной вала для очистки и дезинфекции крупных воздуховодов.',
           features: [
             'Длина вала: 40 м',
@@ -197,8 +192,7 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Тип привода': 'Пневматический',
             'Страна': 'Финляндия'
           },
-          image: p25p40Image,
-          shopUrl: '#'
+          image: p25p40Image
         }
       ]
     },
@@ -209,28 +203,26 @@ export const brushMachinesData: BrushMachinesCategory = {
       products: [
         {
           id: 'grease-electric-cs8',
-          name: 'Pressovac CS-8',
-          article: 'CS8',
-          description: 'Электрическая машина для удаления жировых отложений из воздуховодов диаметром до 350 мм.',
+          name: 'Pressovac CS-8 Combi',
+          article: '205.008.008',
+          description: 'Комбинированный моющий вал для удаления жировых отложений из воздуховодов.',
           features: [
             'Длина вала: 8 м',
-            'Очистка воздуховодов до Ø350 мм',
+            'Комбинированная очистка',
             'Электрический привод',
             'Для кухонных вытяжек'
           ],
           specifications: {
             'Длина вала': '8 м',
-            'Макс. диаметр': 'Ø350 мм',
-            'Тип привода': 'Электрический',
+            'Тип': 'Комбинированный',
             'Страна': 'Финляндия'
-          },
-          shopUrl: '#'
+          }
         },
         {
           id: 'grease-electric-edw15',
           name: 'Pressovac EDW-15',
-          article: 'EDW15',
-          description: 'Электрическая машина с увеличенной длиной вала для очистки жировых отложений.',
+          article: '201.005.001',
+          description: 'Электрическая моющая машина для очистки жировых отложений из воздуховодов.',
           features: [
             'Длина вала: 15 м',
             'Очистка воздуховодов до Ø350 мм',
@@ -242,13 +234,12 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Макс. диаметр': 'Ø350 мм',
             'Тип привода': 'Электрический',
             'Страна': 'Финляндия'
-          },
-          shopUrl: '#'
+          }
         },
         {
           id: 'grease-pneumatic-pdw25',
           name: 'Pressovac PDW-25',
-          article: 'PDW25',
+          article: '201.004.011',
           description: 'Пневматическая моющая машина для универсальной очистки воздуховодов диаметром до 1200 мм.',
           features: [
             'Длина вала: 25 м',
@@ -261,13 +252,12 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Макс. диаметр': 'Ø1200 мм',
             'Тип привода': 'Пневматический',
             'Страна': 'Финляндия'
-          },
-          shopUrl: '#'
+          }
         },
         {
           id: 'grease-pneumatic-pdw30',
           name: 'Pressovac PDW-30',
-          article: 'PDW30',
+          article: '201.004.012',
           description: 'Пневматическая моющая машина с увеличенной длиной вала для крупных систем.',
           features: [
             'Длина вала: 30 м',
@@ -280,13 +270,12 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Макс. диаметр': 'Ø1200 мм',
             'Тип привода': 'Пневматический',
             'Страна': 'Финляндия'
-          },
-          shopUrl: '#'
+          }
         },
         {
           id: 'grease-pneumatic-pdw40',
           name: 'Pressovac PDW-40',
-          article: 'PDW40',
+          article: '201.004.013',
           description: 'Пневматическая моющая машина максимальной длины для очистки протяжённых вентиляционных систем.',
           features: [
             'Длина вала: 40 м',
@@ -299,8 +288,7 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Макс. диаметр': 'Ø1200 мм',
             'Тип привода': 'Пневматический',
             'Страна': 'Финляндия'
-          },
-          shopUrl: '#'
+          }
         }
       ]
     }

@@ -6,6 +6,7 @@ export interface YmlProduct {
   name: string;
   price: string;
   url: string;
+  vendorCode?: string; // Заводской артикул (201.002.003)
   picture?: string;
 }
 
@@ -84,7 +85,7 @@ export function useYmlPrices() {
     return article.replace(/-/g, '').toUpperCase();
   };
 
-  // Helper function to find price by article or URL
+  // Helper function to find price by vendorCode (factory article) or URL
   const findPrice = (shopUrl?: string, productName?: string, article?: string): string | null => {
     // First try to match by URL (most reliable)
     if (shopUrl && shopUrl !== '#') {
@@ -98,60 +99,24 @@ export function useYmlPrices() {
       }
     }
     
-    // Then try to match by article code (E20, P25, PDW40, etc.)
+    // Then try to match by vendorCode (factory article like 201.002.003)
     if (article) {
-      const normalizedArticle = normalizeArticle(article);
-      const productByArticle = state.products.find(p => {
-        const ymlModelCode = extractModelCode(p.name);
-        return ymlModelCode === normalizedArticle;
-      });
-      if (productByArticle) {
-        return productByArticle.price;
-      }
-    }
-    
-    // Fallback: try to extract from product name
-    if (productName) {
-      const ourModelCode = extractModelCode(productName);
-      if (ourModelCode) {
-        const productByModel = state.products.find(p => {
-          const ymlModelCode = extractModelCode(p.name);
-          return ymlModelCode === ourModelCode;
-        });
-        if (productByModel) {
-          return productByModel.price;
-        }
+      const productByVendorCode = state.products.find(p => p.vendorCode === article);
+      if (productByVendorCode) {
+        return productByVendorCode.price;
       }
     }
     
     return null;
   };
 
-  // Helper to find shop URL by article
+  // Helper to find shop URL by vendorCode
   const findShopUrl = (productName?: string, article?: string): string | null => {
-    // First try by article
+    // Try by vendorCode (factory article)
     if (article) {
-      const normalizedArticle = normalizeArticle(article);
-      const product = state.products.find(p => {
-        const ymlModelCode = extractModelCode(p.name);
-        return ymlModelCode === normalizedArticle;
-      });
+      const product = state.products.find(p => p.vendorCode === article);
       if (product) {
         return product.url;
-      }
-    }
-    
-    // Fallback: try to extract from product name
-    if (productName) {
-      const ourModelCode = extractModelCode(productName);
-      if (ourModelCode) {
-        const product = state.products.find(p => {
-          const ymlModelCode = extractModelCode(p.name);
-          return ymlModelCode === ourModelCode;
-        });
-        if (product) {
-          return product.url;
-        }
       }
     }
     

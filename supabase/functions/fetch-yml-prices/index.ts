@@ -12,6 +12,7 @@ interface YmlProduct {
   name: string;
   price: string;
   url: string;
+  vendorCode?: string; // Заводской артикул (Код: 201.002.003)
   picture?: string;
 }
 
@@ -39,6 +40,11 @@ function parseYmlProducts(xmlText: string): YmlProduct[] {
     const urlMatch = offerContent.match(/<url>(.*?)<\/url>/);
     const url = urlMatch ? urlMatch[1] : null;
     
+    // Extract vendorCode (заводской артикул)
+    const vendorCodeMatch = offerContent.match(/<vendorCode><!\[CDATA\[(.*?)\]\]><\/vendorCode>/) ||
+                            offerContent.match(/<vendorCode>(.*?)<\/vendorCode>/);
+    const vendorCode = vendorCodeMatch ? vendorCodeMatch[1].trim() : undefined;
+    
     // Extract picture
     const pictureMatch = offerContent.match(/<picture>(.*?)<\/picture>/);
     const picture = pictureMatch ? pictureMatch[1] : undefined;
@@ -49,6 +55,7 @@ function parseYmlProducts(xmlText: string): YmlProduct[] {
         name: name.trim(),
         price: formatPrice(parseFloat(price)),
         url,
+        vendorCode,
         picture
       });
     }

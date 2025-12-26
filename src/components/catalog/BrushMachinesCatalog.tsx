@@ -14,7 +14,7 @@ export const BrushMachinesCatalog = ({ onSubcategoryChange }: BrushMachinesCatal
   const [selectedSubcategory, setSelectedSubcategory] = useState<Subcategory | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isProductOpen, setIsProductOpen] = useState(false);
-  const { findPrice, isLoading: pricesLoading } = useYmlPrices();
+  const { findPrice, findShopUrl, isLoading: pricesLoading } = useYmlPrices();
 
   useEffect(() => {
     onSubcategoryChange?.(selectedSubcategory?.id || null);
@@ -100,7 +100,9 @@ export const BrushMachinesCatalog = ({ onSubcategoryChange }: BrushMachinesCatal
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {selectedSubcategory.products.map((product) => {
                 const ymlPrice = findPrice(product.shopUrl, product.name);
+                const ymlShopUrl = findShopUrl(product.name);
                 const displayPrice = ymlPrice || product.price;
+                const hasShopLink = (product.shopUrl && product.shopUrl !== '#') || ymlShopUrl;
                 
                 return (
                   <button
@@ -116,7 +118,7 @@ export const BrushMachinesCatalog = ({ onSubcategoryChange }: BrushMachinesCatal
                         <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
                           {product.description}
                         </p>
-                        {displayPrice && product.shopUrl && product.shopUrl !== '#' && (
+                        {displayPrice && hasShopLink && (
                           <div className="flex items-center gap-2 mt-2">
                             <ShoppingCart className="w-4 h-4 text-primary" />
                             <span className="text-sm font-semibold text-primary">
@@ -124,7 +126,7 @@ export const BrushMachinesCatalog = ({ onSubcategoryChange }: BrushMachinesCatal
                             </span>
                           </div>
                         )}
-                        {pricesLoading && product.shopUrl && product.shopUrl !== '#' && !displayPrice && (
+                        {pricesLoading && !displayPrice && (
                           <div className="flex items-center gap-2 mt-2">
                             <div className="w-16 h-4 bg-muted animate-pulse rounded" />
                           </div>

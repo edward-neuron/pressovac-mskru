@@ -64,12 +64,14 @@ function parseYmlProducts(xmlText: string): YmlProduct[] {
   return products;
 }
 
-function formatPrice(price: number): string {
+function formatPrice(priceWithoutVat: number): string {
+  // Добавляем НДС 20% к цене
+  const priceWithVat = Math.round(priceWithoutVat * 1.2);
   return new Intl.NumberFormat('ru-RU', {
     style: 'decimal',
     minimumFractionDigits: 0,
     maximumFractionDigits: 0
-  }).format(price) + ' ₽';
+  }).format(priceWithVat) + ' ₽';
 }
 
 serve(async (req) => {

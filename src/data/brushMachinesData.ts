@@ -4,6 +4,7 @@
 import e20Image from '@/assets/products/e-20.png';
 import e30Image from '@/assets/products/e-30.png';
 import e25lImage from '@/assets/products/e-25l.png';
+import p25p40Image from '@/assets/products/p25-p40.png';
 
 export interface Product {
   id: string;
@@ -166,6 +167,7 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Тип привода': 'Пневматический',
             'Страна': 'Финляндия'
           },
+          image: p25p40Image,
           shopUrl: '#'
         },
         {
@@ -184,6 +186,7 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Тип привода': 'Пневматический',
             'Страна': 'Финляндия'
           },
+          image: p25p40Image,
           shopUrl: '#'
         }
       ]

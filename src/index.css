@@ -18,6 +18,7 @@
 
     /* Primary - Pressovac Blue */
     --primary: 212 100% 40%;
+    --primary-rgb: 0, 102, 204;
     --primary-foreground: 0 0% 100%;
     --primary-light: 212 100% 50%;
     --primary-dark: 212 100% 30%;

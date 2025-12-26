@@ -44,7 +44,7 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Материал': 'Сталь с покрытием',
             'Вес': '2.5 кг'
           },
-          availableLengths: ['10 м', '15 м', '20 м'],
+          availableLengths: ['3 м', '6 м', '9 м'],
           shopUrl: '#'
         },
         {
@@ -61,7 +61,7 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Материал': 'Высокопрочная сталь',
             'Вес': '5 кг'
           },
-          availableLengths: ['20 м', '25 м', '30 м'],
+          availableLengths: ['3 м', '5 м', '8 м', '12 м', '15 м', '20 м'],
           shopUrl: '#'
         },
         {
@@ -78,7 +78,7 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Материал': 'Легированная сталь',
             'Вес': '8 кг'
           },
-          availableLengths: ['25 м', '35 м', '45 м'],
+          availableLengths: ['3 м', '5 м', '8 м', '12 м', '15 м', '20 м'],
           shopUrl: '#'
         }
       ]

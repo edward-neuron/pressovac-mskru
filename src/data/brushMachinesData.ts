@@ -6,8 +6,10 @@ export interface Product {
   description: string;
   features: string[];
   specifications: Record<string, string>;
+  availableLengths?: string[];
   image?: string;
-  brochureUrl?: string; // URL для PDF брошюры
+  brochureUrl?: string;
+  shopUrl?: string;
 }
 
 export interface Subcategory {
@@ -34,16 +36,16 @@ export const brushMachinesData: BrushMachinesCategory = {
           description: 'Компактный гибкий вал для очистки воздуховодов малого диаметра. Идеален для труднодоступных мест.',
           features: [
             'Диаметр воздуховодов: 50-150 мм',
-            'Длина вала: до 15 м',
             'Высокая гибкость',
             'Лёгкий вес'
           ],
           specifications: {
-            'Длина': '15 м',
             'Диаметр': '8 мм',
             'Материал': 'Сталь с покрытием',
             'Вес': '2.5 кг'
-          }
+          },
+          availableLengths: ['10 м', '15 м', '20 м'],
+          shopUrl: '#'
         },
         {
           id: 'shaft-standard',
@@ -51,16 +53,16 @@ export const brushMachinesData: BrushMachinesCategory = {
           description: 'Универсальный гибкий вал для стандартных воздуховодов круглого и прямоугольного сечения.',
           features: [
             'Диаметр воздуховодов: 100-400 мм',
-            'Длина вала: до 30 м',
             'Универсальное применение',
             'Надёжная конструкция'
           ],
           specifications: {
-            'Длина': '30 м',
             'Диаметр': '12 мм',
             'Материал': 'Высокопрочная сталь',
             'Вес': '5 кг'
-          }
+          },
+          availableLengths: ['20 м', '25 м', '30 м'],
+          shopUrl: '#'
         },
         {
           id: 'shaft-steel',
@@ -68,16 +70,16 @@ export const brushMachinesData: BrushMachinesCategory = {
           description: 'Усиленный стальной вал для интенсивной эксплуатации и тяжёлых загрязнений.',
           features: [
             'Диаметр воздуховодов: 200-600 мм',
-            'Длина вала: до 45 м',
             'Повышенная прочность',
             'Для тяжёлых условий'
           ],
           specifications: {
-            'Длина': '45 м',
             'Диаметр': '16 мм',
             'Материал': 'Легированная сталь',
             'Вес': '8 кг'
-          }
+          },
+          availableLengths: ['25 м', '35 м', '45 м'],
+          shopUrl: '#'
         }
       ]
     },
@@ -102,7 +104,9 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Скорость': '0-400 об/мин',
             'Вес': '12 кг',
             'Страна': 'Финляндия'
-          }
+          },
+          availableLengths: ['20 м', '25 м', '30 м', '40 м'],
+          shopUrl: '#'
         },
         {
           id: 'dry-electric-s60',
@@ -120,10 +124,32 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Скорость': '0-500 об/мин',
             'Вес': '18 кг',
             'Страна': 'Финляндия'
-          }
+          },
+          availableLengths: ['20 м', '25 м', '30 м', '40 м'],
+          shopUrl: '#'
         },
         {
-          id: 'dry-pneumatic',
+          id: 'dry-electric-s80',
+          name: 'Pressovac S80 Электрический',
+          description: 'Профессиональная машина повышенной мощности для крупных вентиляционных систем.',
+          features: [
+            'Мощность: 2400 Вт',
+            'Скорость вращения: 0-600 об/мин',
+            'Усиленный редуктор',
+            'Промышленное применение'
+          ],
+          specifications: {
+            'Мощность': '2400 Вт',
+            'Напряжение': '230 В',
+            'Скорость': '0-600 об/мин',
+            'Вес': '24 кг',
+            'Страна': 'Финляндия'
+          },
+          availableLengths: ['20 м', '25 м', '30 м', '40 м'],
+          shopUrl: '#'
+        },
+        {
+          id: 'dry-pneumatic-p40',
           name: 'Pressovac P40 Пневматический',
           description: 'Пневматическая щёточная машина для работы в условиях повышенной влажности и запылённости.',
           features: [
@@ -138,25 +164,69 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Скорость': '0-350 об/мин',
             'Вес': '8 кг',
             'Страна': 'Финляндия'
-          }
+          },
+          availableLengths: ['20 м', '25 м', '30 м', '40 м'],
+          shopUrl: '#'
         },
         {
-          id: 'dry-atex',
-          name: 'Pressovac ATEX Взрывозащита',
-          description: 'Взрывозащищённая щёточная машина для работы во взрывоопасных зонах (ATEX сертификация).',
+          id: 'dry-pneumatic-p60',
+          name: 'Pressovac P60 Пневматический',
+          description: 'Мощная пневматическая машина для профессиональной очистки без использования электричества.',
           features: [
-            'Сертификат ATEX Zone 1/21',
+            'Давление воздуха: 6-10 бар',
+            'Расход воздуха: 500 л/мин',
+            'Повышенный крутящий момент',
+            'Надёжная конструкция'
+          ],
+          specifications: {
+            'Давление': '6-10 бар',
+            'Расход воздуха': '500 л/мин',
+            'Скорость': '0-400 об/мин',
+            'Вес': '10 кг',
+            'Страна': 'Финляндия'
+          },
+          availableLengths: ['20 м', '25 м', '30 м', '40 м'],
+          shopUrl: '#'
+        },
+        {
+          id: 'dry-atex-zone1',
+          name: 'Pressovac ATEX Zone 1',
+          description: 'Взрывозащищённая щёточная машина для работы во взрывоопасных зонах класса 1.',
+          features: [
+            'Сертификат ATEX Zone 1',
             'Полностью пневматическая',
             'Антистатические материалы',
             'Искробезопасность'
           ],
           specifications: {
-            'Сертификация': 'ATEX Zone 1/21',
+            'Сертификация': 'ATEX Zone 1',
             'Давление': '6-8 бар',
             'Расход воздуха': '350 л/мин',
             'Вес': '10 кг',
             'Страна': 'Финляндия'
-          }
+          },
+          availableLengths: ['20 м', '25 м', '30 м', '40 м'],
+          shopUrl: '#'
+        },
+        {
+          id: 'dry-atex-zone21',
+          name: 'Pressovac ATEX Zone 21',
+          description: 'Взрывозащищённая машина для зон с пылевзрывоопасными смесями.',
+          features: [
+            'Сертификат ATEX Zone 21',
+            'Для пылевзрывоопасных сред',
+            'Полная пневматика',
+            'Максимальная безопасность'
+          ],
+          specifications: {
+            'Сертификация': 'ATEX Zone 21',
+            'Давление': '6-8 бар',
+            'Расход воздуха': '350 л/мин',
+            'Вес': '11 кг',
+            'Страна': 'Финляндия'
+          },
+          availableLengths: ['20 м', '25 м', '30 м', '40 м'],
+          shopUrl: '#'
         }
       ]
     },
@@ -166,7 +236,7 @@ export const brushMachinesData: BrushMachinesCategory = {
       description: 'Специализированные машины для очистки кухонных вытяжек и жировых отложений',
       products: [
         {
-          id: 'grease-electric',
+          id: 'grease-electric-g50',
           name: 'Pressovac G50 Электрический',
           description: 'Электрическая машина для удаления жировых отложений с нагревом рабочего элемента.',
           features: [
@@ -181,10 +251,12 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Объём бака': '10 л',
             'Вес': '22 кг',
             'Страна': 'Финляндия'
-          }
+          },
+          availableLengths: ['3 м', '6 м', '9 м', '15 м', '25 м', '30 м', '40 м'],
+          shopUrl: '#'
         },
         {
-          id: 'grease-pneumatic',
+          id: 'grease-pneumatic-g40',
           name: 'Pressovac G40 Пневматический',
           description: 'Пневматическая машина для удаления жира в условиях, где нельзя использовать электричество.',
           features: [
@@ -199,7 +271,29 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Объём бака': '8 л',
             'Вес': '15 кг',
             'Страна': 'Финляндия'
-          }
+          },
+          availableLengths: ['3 м', '6 м', '9 м', '15 м', '25 м', '30 м', '40 м'],
+          shopUrl: '#'
+        },
+        {
+          id: 'grease-combo-gc60',
+          name: 'Pressovac GC60 Комбинированный',
+          description: 'Универсальная машина с возможностью работы как от электричества, так и от пневматики.',
+          features: [
+            'Двойной привод',
+            'Максимальная гибкость',
+            'Подходит для любых условий',
+            'Профессиональное решение'
+          ],
+          specifications: {
+            'Мощность': '2000 Вт / 6-10 бар',
+            'Температура': 'до 90°C',
+            'Объём бака': '12 л',
+            'Вес': '28 кг',
+            'Страна': 'Финляндия'
+          },
+          availableLengths: ['3 м', '6 м', '9 м', '15 м', '25 м', '30 м', '40 м'],
+          shopUrl: '#'
         }
       ]
     }

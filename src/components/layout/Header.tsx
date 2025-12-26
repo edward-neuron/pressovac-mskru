@@ -63,7 +63,7 @@ export const Header = () => {
               <span>(499) 677-2010</span>
             </a>
             <Button size="sm" asChild>
-              <a href="https://shop.pressovac-msk.ru" target="_blank" rel="noopener noreferrer">
+              <a href="https://shop-pressovac.ru" target="_blank" rel="noopener noreferrer">
                 <ExternalLink className="w-4 h-4" />
                 Магазин
               </a>
@@ -113,7 +113,7 @@ export const Header = () => {
                   </a>
                   <div className="px-4">
                     <Button className="w-full" asChild>
-                      <a href="https://shop.pressovac-msk.ru" target="_blank" rel="noopener noreferrer">
+                      <a href="https://shop-pressovac.ru" target="_blank" rel="noopener noreferrer">
                         <ExternalLink className="w-4 h-4" />
                         Интернет-магазин
                       </a>

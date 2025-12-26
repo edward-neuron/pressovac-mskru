@@ -18,6 +18,8 @@ export interface Product {
   brochureUrl?: string;
   shopUrl?: string;
   price?: string;
+  pricePrefix?: string; // "от" для товаров с разными ценами по длинам
+  vendorCodePattern?: string; // Паттерн для поиска минимальной цены (например "205.001" для гибких валов Стандарт)
 }
 
 export interface Subcategory {
@@ -40,7 +42,7 @@ export const brushMachinesData: BrushMachinesCategory = {
       products: [
         {
           id: 'shaft-mini',
-          name: 'Гибкий вал Мини',
+          name: 'Супер гибкий вал Мини',
           article: 'SHAFT-MINI',
           description: 'Компактный гибкий вал для очистки воздуховодов малого диаметра. Идеален для труднодоступных мест.',
           features: [
@@ -50,11 +52,12 @@ export const brushMachinesData: BrushMachinesCategory = {
           ],
           specifications: {
             'Диаметр': '8 мм',
-            'Материал': 'Сталь с покрытием',
-            'Вес': '2.5 кг'
+            'Материал': 'Сталь с покрытием'
           },
-          availableLengths: ['3 м', '6 м', '9 м'],
-          shopUrl: '#'
+          availableLengths: ['3 м', '6 м'],
+          shopUrl: 'https://shop-pressovac.ru/products/gibkie-vrashchayushchiesya-valy-pressovac-f88504918/',
+          pricePrefix: 'от',
+          vendorCodePattern: '205.004'
         },
         {
           id: 'shaft-standard',
@@ -68,15 +71,16 @@ export const brushMachinesData: BrushMachinesCategory = {
           ],
           specifications: {
             'Диаметр': '12 мм',
-            'Материал': 'Высокопрочная сталь',
-            'Вес': '5 кг'
+            'Материал': 'Высокопрочная сталь'
           },
           availableLengths: ['3 м', '5 м', '8 м', '12 м', '15 м', '20 м'],
-          shopUrl: '#'
+          shopUrl: 'https://shop-pressovac.ru/products/gibkie-vrashchayushchiesya-valy-pressovac-f88504918/',
+          pricePrefix: 'от',
+          vendorCodePattern: '205.001'
         },
         {
           id: 'shaft-steel',
-          name: 'Гибкий вал Сталь',
+          name: 'Стальной вал',
           article: 'SHAFT-STEEL',
           description: 'Усиленный стальной вал для интенсивной эксплуатации и тяжёлых загрязнений.',
           features: [
@@ -86,11 +90,12 @@ export const brushMachinesData: BrushMachinesCategory = {
           ],
           specifications: {
             'Диаметр': '16 мм',
-            'Материал': 'Легированная сталь',
-            'Вес': '8 кг'
+            'Материал': 'Легированная сталь'
           },
           availableLengths: ['3 м', '5 м', '8 м', '12 м', '15 м', '20 м'],
-          shopUrl: '#'
+          shopUrl: 'https://shop-pressovac.ru/products/gibkie-vrashchayushchiesya-valy-pressovac-f88504918/',
+          pricePrefix: 'от',
+          vendorCodePattern: '205.002'
         }
       ]
     },

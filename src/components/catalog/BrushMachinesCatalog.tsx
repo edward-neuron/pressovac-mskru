@@ -1,14 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, ArrowLeft } from 'lucide-react';
 import { brushMachinesData, Product, Subcategory } from '@/data/brushMachinesData';
 import { ProductDrawer } from './ProductDrawer';
 import { Button } from '@/components/ui/button';
 
-export const BrushMachinesCatalog = () => {
+interface BrushMachinesCatalogProps {
+  onSubcategoryChange?: (subcategoryId: string | null) => void;
+}
+
+export const BrushMachinesCatalog = ({ onSubcategoryChange }: BrushMachinesCatalogProps) => {
   const [selectedSubcategory, setSelectedSubcategory] = useState<Subcategory | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isProductOpen, setIsProductOpen] = useState(false);
+
+  useEffect(() => {
+    onSubcategoryChange?.(selectedSubcategory?.id || null);
+  }, [selectedSubcategory, onSubcategoryChange]);
 
   const handleProductClick = (product: Product) => {
     setSelectedProduct(product);

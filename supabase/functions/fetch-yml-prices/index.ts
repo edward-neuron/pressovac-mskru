@@ -16,6 +16,15 @@ interface YmlProduct {
   picture?: string;
 }
 
+// Проверяем, нужно ли добавлять НДС к товару
+// НДС добавляем ТОЛЬКО к "моющим" машинам и валам (PDW, EDW, CS Combi)
+// "Щёточные" машины (P-25, P-40, E-20, E-25L, E-30, E-BOX) уже имеют цены с НДС
+function needsVat(name: string): boolean {
+  const nameLower = name.toLowerCase();
+  // "моющая" или "моющий" в названии = цена без НДС, нужно добавить
+  return nameLower.includes('моющ');
+}
+
 function parseYmlProducts(xmlText: string): YmlProduct[] {
   const products: YmlProduct[] = [];
   
@@ -50,10 +59,11 @@ function parseYmlProducts(xmlText: string): YmlProduct[] {
     const picture = pictureMatch ? pictureMatch[1] : undefined;
     
     if (price && name && url) {
+      const productName = name.trim();
       products.push({
         id: offerId,
-        name: name.trim(),
-        price: formatPrice(parseFloat(price)),
+        name: productName,
+        price: formatPrice(parseFloat(price), productName),
         url,
         vendorCode,
         picture
@@ -64,14 +74,14 @@ function parseYmlProducts(xmlText: string): YmlProduct[] {
   return products;
 }
 
-function formatPrice(priceWithoutVat: number): string {
-  // Добавляем НДС 20% к цене
-  const priceWithVat = Math.round(priceWithoutVat * 1.2);
+function formatPrice(price: number, productName: string): string {
+  // Добавляем НДС 20% только к "моющим" машинам
+  const finalPrice = needsVat(productName) ? Math.round(price * 1.2) : price;
   return new Intl.NumberFormat('ru-RU', {
     style: 'decimal',
     minimumFractionDigits: 0,
     maximumFractionDigits: 0
-  }).format(priceWithVat) + ' ₽';
+  }).format(finalPrice) + ' ₽';
 }
 
 serve(async (req) => {

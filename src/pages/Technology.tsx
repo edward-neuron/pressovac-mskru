@@ -76,9 +76,12 @@ const advantages = [
   'Экономия электроэнергии',
 ];
 
+type Platform = 'rutube' | 'youtube';
+
 const Technology = () => {
   const [selectedVideo, setSelectedVideo] = useState<{ id: string; title: string } | null>(null);
   const [activeCategory, setActiveCategory] = useState(videoCategories[0].id);
+  const [platform, setPlatform] = useState<Platform>('rutube');
 
   return (
     <Layout>
@@ -218,9 +221,37 @@ const Technology = () => {
               >
                 <X className="w-5 h-5" />
               </button>
+              {/* Platform Switcher */}
+              <div className="flex justify-center gap-3 p-4 border-b border-border">
+                <button
+                  onClick={() => setPlatform('rutube')}
+                  className={`px-6 py-2 rounded-full text-sm font-medium transition-all bg-blue-600 text-white ${
+                    platform === 'rutube'
+                      ? 'shadow-lg ring-2 ring-blue-400 ring-offset-2 ring-offset-background'
+                      : 'opacity-70 hover:opacity-100'
+                  }`}
+                >
+                  RuTube
+                </button>
+                <button
+                  onClick={() => setPlatform('youtube')}
+                  className={`px-6 py-2 rounded-full text-sm font-medium transition-all bg-red-600 text-white ${
+                    platform === 'youtube'
+                      ? 'shadow-lg ring-2 ring-red-400 ring-offset-2 ring-offset-background'
+                      : 'opacity-70 hover:opacity-100'
+                  }`}
+                >
+                  YouTube
+                </button>
+              </div>
+              
               <div className="aspect-video">
                 <iframe
-                  src={`https://rutube.ru/play/embed/${selectedVideo.id}`}
+                  key={`${selectedVideo.id}-${platform}`}
+                  src={platform === 'rutube' 
+                    ? `https://rutube.ru/play/embed/${selectedVideo.id}`
+                    : `https://www.youtube.com/embed/${selectedVideo.id}`
+                  }
                   className="w-full h-full"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen

@@ -6,12 +6,14 @@ import { ArrowRight, Zap, Wind, Wrench, Sparkles, Camera, Settings, Package } fr
 import { BrushMachinesCatalog } from '@/components/catalog/BrushMachinesCatalog';
 import { VacuumEquipmentCatalog } from '@/components/catalog/VacuumEquipmentCatalog';
 import { FilterEquipmentCatalog } from '@/components/catalog/FilterEquipmentCatalog';
+import { DisinfectionEquipmentCatalog } from '@/components/catalog/DisinfectionEquipmentCatalog';
 import brushEquipmentCombined from '@/assets/brush-equipment-combined.png';
 import flexibleShafts from '@/assets/flexible-shafts.png';
 import dryCleaningMachines from '@/assets/dry-cleaning-machines.png';
 import greaseRemovalMachines from '@/assets/grease-removal-machines.png';
 import vacuumEquipmentSquare from '@/assets/vacuum-equipment-square.png';
 import filterEquipmentSquare from '@/assets/filter-equipment-square.png';
+import disinfectionEquipmentBanner from '@/assets/disinfection-equipment-banner.png';
 
 const brushEquipmentImages: Record<string, string> = {
   'default': brushEquipmentCombined,
@@ -26,6 +28,10 @@ const vacuumEquipmentImages: Record<string, string> = {
 
 const filterEquipmentImages: Record<string, string> = {
   'default': filterEquipmentSquare,
+};
+
+const disinfectionEquipmentImages: Record<string, string> = {
+  'default': disinfectionEquipmentBanner,
 };
 
 const categories = [
@@ -58,7 +64,7 @@ const categories = [
     icon: Sparkles,
     title: 'Оборудование для дезинфекции',
     description: 'Специализированное оборудование для антибактериальной обработки и дезинфекции вентиляционных систем и воздуховодов.',
-    products: ['Pressovac D100', 'Pressovac D200'],
+    hasDetailedCatalog: true,
     image: 'from-indigo-500 to-indigo-600',
   },
   {
@@ -143,7 +149,7 @@ const Catalog = () => {
               >
                 <div className="grid md:grid-cols-3 gap-0 md:items-stretch">
                   {/* Изображение слева */}
-                  <div className={`${(category.id === 'brush-machines' || category.id === 'vacuum' || category.id === 'filters') ? 'bg-muted' : `bg-gradient-to-br ${category.image}`} flex items-center justify-center relative overflow-hidden min-h-[280px] md:min-h-0`}>
+                  <div className={`${(category.id === 'brush-machines' || category.id === 'vacuum' || category.id === 'filters' || category.id === 'disinfection') ? 'bg-muted' : `bg-gradient-to-br ${category.image}`} flex items-center justify-center relative overflow-hidden min-h-[280px] md:min-h-0`}>
                     {category.id === 'brush-machines' ? (
                       <motion.img 
                         key={brushEquipmentImage}
@@ -163,6 +169,12 @@ const Catalog = () => {
                     ) : category.id === 'filters' ? (
                       <img 
                         src={filterEquipmentImages['default']} 
+                        alt={category.title}
+                        className="w-full h-full object-cover object-center"
+                      />
+                    ) : category.id === 'disinfection' ? (
+                      <img 
+                        src={disinfectionEquipmentImages['default']} 
                         alt={category.title}
                         className="w-full h-full object-cover object-center"
                       />
@@ -186,6 +198,9 @@ const Catalog = () => {
                         )}
                         {category.id === 'filters' && (
                           <FilterEquipmentCatalog />
+                        )}
+                        {category.id === 'disinfection' && (
+                          <DisinfectionEquipmentCatalog />
                         )}
                       </div>
                     ) : (

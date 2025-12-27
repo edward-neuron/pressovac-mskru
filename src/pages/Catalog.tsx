@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Zap, Shield, Wrench, Sparkles, Camera, Settings, Package } from 'lucide-react';
+import { ArrowRight, Zap, Wind, Wrench, Sparkles, Camera, Settings, Package } from 'lucide-react';
 import { BrushMachinesCatalog } from '@/components/catalog/BrushMachinesCatalog';
+import { VacuumEquipmentCatalog } from '@/components/catalog/VacuumEquipmentCatalog';
 import brushEquipmentCombined from '@/assets/brush-equipment-combined.png';
 import flexibleShafts from '@/assets/flexible-shafts.png';
 import dryCleaningMachines from '@/assets/dry-cleaning-machines.png';
@@ -27,10 +28,10 @@ const categories = [
   },
   {
     id: 'vacuum',
-    icon: Shield,
+    icon: Wind,
     title: 'Вакуумные установки',
     description: 'Мощные вакуумные системы для эффективного сбора загрязнений при очистке вентиляции. Высокая производительность и надёжность.',
-    products: ['Pressovac V1000', 'Pressovac V2000', 'Pressovac V3000'],
+    hasDetailedCatalog: true,
     image: 'from-cyan-500 to-cyan-600',
   },
   {
@@ -151,10 +152,15 @@ const Catalog = () => {
                     <h2 className="font-display text-2xl font-bold">{category.title}</h2>
                     <p className="text-muted-foreground leading-relaxed">{category.description}</p>
                     
-                    {/* Детальный каталог для щёточного оборудования */}
+                    {/* Детальный каталог для оборудования */}
                     {category.hasDetailedCatalog ? (
                       <div className="pt-4">
-                        <BrushMachinesCatalog onSubcategoryChange={handleSubcategoryChange} />
+                        {category.id === 'brush-machines' && (
+                          <BrushMachinesCatalog onSubcategoryChange={handleSubcategoryChange} />
+                        )}
+                        {category.id === 'vacuum' && (
+                          <VacuumEquipmentCatalog />
+                        )}
                       </div>
                     ) : (
                       <>

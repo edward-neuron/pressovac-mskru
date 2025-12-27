@@ -93,17 +93,6 @@ export const BrushMachinesCatalog = ({ onSubcategoryChange }: BrushMachinesCatal
               <h4 className="font-semibold">{selectedSubcategory.title}</h4>
             </div>
 
-            {/* Изображение подкатегории (3:1) */}
-            {selectedSubcategory.image && (
-              <div className="rounded-xl overflow-hidden">
-                <img 
-                  src={selectedSubcategory.image} 
-                  alt={selectedSubcategory.title}
-                  className="w-full h-auto object-cover"
-                />
-              </div>
-            )}
-
             <p className="text-sm text-muted-foreground">
               {selectedSubcategory.description}
             </p>

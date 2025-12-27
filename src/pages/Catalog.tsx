@@ -10,9 +10,9 @@ import { DisinfectionEquipmentCatalog } from '@/components/catalog/DisinfectionE
 import { VideoInspectionCatalog } from '@/components/catalog/VideoInspectionCatalog';
 import { CompressorEquipmentCatalog } from '@/components/catalog/CompressorEquipmentCatalog';
 import brushMachinesMain from '@/assets/brush-machines-main-1-1.png';
-import flexibleShafts from '@/assets/flexible-shafts.png';
-import dryCleaningMachines from '@/assets/dry-cleaning-machines.png';
-import greaseRemovalMachines from '@/assets/grease-removal-machines.png';
+import flexibleShafts31 from '@/assets/flexible-shafts-3-1.png';
+import dryCleaning31 from '@/assets/dry-cleaning-3-1.png';
+import greaseRemoval31 from '@/assets/grease-removal-3-1.png';
 import vacuumEquipmentMain11 from '@/assets/vacuum-equipment-main-1-1.png';
 import vacuumEquipment31 from '@/assets/vacuum-equipment-3-1.png';
 import filterEquipmentSquare from '@/assets/filter-equipment-square.png';
@@ -24,9 +24,9 @@ import compressorSquareV2 from '@/assets/compressor-square-v2.png';
 
 const brushEquipmentImages: Record<string, string> = {
   'default': brushMachinesMain,
-  'flexible-shafts': flexibleShafts,
-  'dry-cleaning': dryCleaningMachines,
-  'grease-removal': greaseRemovalMachines,
+  'flexible-shafts': flexibleShafts31,
+  'dry-cleaning': dryCleaning31,
+  'grease-removal': greaseRemoval31,
 };
 
 const vacuumEquipmentImages: Record<string, string> = {
@@ -184,6 +184,7 @@ const Catalog = () => {
                   {/* Изображение слева */}
                   <div
                     className={`${
+                      (category.id === 'brush-machines' && brushEquipmentImage !== 'default') ||
                       (category.id === 'vacuum' && vacuumImage === 'inside') ||
                       (category.id === 'disinfection' && disinfectionImage === 'inside') ||
                       (category.id === 'video' && videoImage === 'inside')

@@ -7,6 +7,7 @@ import { BrushMachinesCatalog } from '@/components/catalog/BrushMachinesCatalog'
 import { VacuumEquipmentCatalog } from '@/components/catalog/VacuumEquipmentCatalog';
 import { FilterEquipmentCatalog } from '@/components/catalog/FilterEquipmentCatalog';
 import { DisinfectionEquipmentCatalog } from '@/components/catalog/DisinfectionEquipmentCatalog';
+import { VideoInspectionCatalog } from '@/components/catalog/VideoInspectionCatalog';
 import brushEquipmentCombined from '@/assets/brush-equipment-combined.png';
 import flexibleShafts from '@/assets/flexible-shafts.png';
 import dryCleaningMachines from '@/assets/dry-cleaning-machines.png';
@@ -14,6 +15,7 @@ import greaseRemovalMachines from '@/assets/grease-removal-machines.png';
 import vacuumEquipmentSquare from '@/assets/vacuum-equipment-square.png';
 import filterEquipmentSquare from '@/assets/filter-equipment-square.png';
 import disinfectionEquipmentBanner from '@/assets/disinfection-equipment-banner.png';
+import videoInspectionBanner from '@/assets/video-inspection-banner.png';
 
 const brushEquipmentImages: Record<string, string> = {
   'default': brushEquipmentCombined,
@@ -32,6 +34,10 @@ const filterEquipmentImages: Record<string, string> = {
 
 const disinfectionEquipmentImages: Record<string, string> = {
   'default': disinfectionEquipmentBanner,
+};
+
+const videoInspectionImages: Record<string, string> = {
+  'default': videoInspectionBanner,
 };
 
 const categories = [
@@ -72,7 +78,7 @@ const categories = [
     icon: Camera,
     title: 'Видеоинспекция и диагностика',
     description: 'Оборудование для видеоинспекции воздуховодов, позволяющее оценить степень загрязнения и качество выполненных работ.',
-    products: ['Pressovac CAM100', 'Pressovac CAM200'],
+    hasDetailedCatalog: true,
     image: 'from-violet-500 to-violet-600',
   },
   {
@@ -149,7 +155,7 @@ const Catalog = () => {
               >
                 <div className="grid md:grid-cols-3 gap-0 md:items-stretch">
                   {/* Изображение слева */}
-                  <div className={`${(category.id === 'brush-machines' || category.id === 'vacuum' || category.id === 'filters' || category.id === 'disinfection') ? 'bg-muted' : `bg-gradient-to-br ${category.image}`} flex items-center justify-center relative overflow-hidden min-h-[280px] md:min-h-0`}>
+                  <div className={`${(category.id === 'brush-machines' || category.id === 'vacuum' || category.id === 'filters' || category.id === 'disinfection' || category.id === 'video') ? 'bg-muted' : `bg-gradient-to-br ${category.image}`} flex items-center justify-center relative overflow-hidden min-h-[280px] md:min-h-0`}>
                     {category.id === 'brush-machines' ? (
                       <motion.img 
                         key={brushEquipmentImage}
@@ -178,6 +184,12 @@ const Catalog = () => {
                         alt={category.title}
                         className="w-full h-full object-cover object-center"
                       />
+                    ) : category.id === 'video' ? (
+                      <img 
+                        src={videoInspectionImages['default']} 
+                        alt={category.title}
+                        className="w-full h-full object-cover object-center"
+                      />
                     ) : (
                       <category.icon className="w-24 h-24 text-white/90" />
                     )}
@@ -201,6 +213,9 @@ const Catalog = () => {
                         )}
                         {category.id === 'disinfection' && (
                           <DisinfectionEquipmentCatalog />
+                        )}
+                        {category.id === 'video' && (
+                          <VideoInspectionCatalog />
                         )}
                       </div>
                     ) : (

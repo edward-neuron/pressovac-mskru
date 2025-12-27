@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, ArrowLeft, ShoppingCart } from 'lucide-react';
 import { videoInspectionData, VideoInspectionProduct, VideoInspectionSubcategory } from '@/data/videoInspectionData';
-import videoInspectionBanner from '@/assets/video-inspection-banner.png';
+import videoInspectionBannerV2 from '@/assets/video-inspection-banner-v2.png';
 import { ProductDrawer } from './ProductDrawer';
 import { Button } from '@/components/ui/button';
 import { useYmlPrices } from '@/hooks/useYmlPrices';
@@ -83,7 +83,7 @@ export function VideoInspectionCatalog({ onSubcategoryChange }: VideoInspectionC
               {/* Внутренний баннер (3:1) */}
               <div className="relative overflow-hidden rounded-xl border border-border bg-muted aspect-[3/1]">
                 <img
-                  src={videoInspectionBanner}
+                  src={videoInspectionBannerV2}
                   alt="Видеоинспекция Pressovac — баннер"
                   className="absolute inset-0 h-full w-full object-cover"
                   loading="lazy"

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, ArrowLeft, ShoppingCart } from 'lucide-react';
 import { disinfectionEquipmentData, DisinfectionProduct, DisinfectionSubcategory } from '@/data/disinfectionEquipmentData';
-import disinfectionEquipmentBanner from '@/assets/disinfection-equipment-banner.png';
+import disinfectionBannerV2 from '@/assets/disinfection-banner-v2.png';
 import { ProductDrawer } from './ProductDrawer';
 import { Button } from '@/components/ui/button';
 import { useYmlPrices } from '@/hooks/useYmlPrices';
@@ -85,7 +85,7 @@ export function DisinfectionEquipmentCatalog({ onSubcategoryChange }: Disinfecti
               {/* Внутренний баннер (3:1) */}
               <div className="relative overflow-hidden rounded-xl border border-border bg-muted aspect-[3/1]">
                 <img
-                  src={disinfectionEquipmentBanner}
+                  src={disinfectionBannerV2}
                   alt="Оборудование для дезинфекции Pressovac — баннер"
                   className="absolute inset-0 h-full w-full object-cover"
                   loading="lazy"

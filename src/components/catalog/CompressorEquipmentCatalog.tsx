@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ChevronRight } from 'lucide-react';
 import { ProductDrawer } from './ProductDrawer';
 import { compressorEquipmentData } from '@/data/compressorEquipmentData';
+import compressorSquareV2 from '@/assets/compressor-square-v2.png';
 
 export function CompressorEquipmentCatalog() {
   const [selectedProduct, setSelectedProduct] = useState(compressorEquipmentData.products[0] ?? null);
@@ -21,21 +22,12 @@ export function CompressorEquipmentCatalog() {
 
   return (
     <div className="space-y-4">
-      {/* Внутренний баннер (3:1) */}
-      <div className="relative overflow-hidden rounded-xl border border-border bg-muted aspect-[3/1]">
-        {/* фон из того же изображения */}
+      {/* Внутренний баннер (1:1 для компрессоров) */}
+      <div className="relative overflow-hidden rounded-xl border border-border bg-muted aspect-square max-w-md">
         <img
-          src={product.image}
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 h-full w-full object-cover blur-2xl scale-110 opacity-60"
-          loading="lazy"
-        />
-        <div className="absolute inset-0 bg-background/40" />
-        <img
-          src={product.image}
+          src={compressorSquareV2}
           alt="Компрессор Pressovac K-370 Premium Car"
-          className="relative z-10 h-full w-full object-contain p-4"
+          className="absolute inset-0 h-full w-full object-cover"
           loading="lazy"
         />
       </div>

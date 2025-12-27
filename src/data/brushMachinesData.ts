@@ -6,6 +6,10 @@ import e30Image from '@/assets/products/e-30.png';
 import e25lImage from '@/assets/products/e-25l.png';
 import p25p40Image from '@/assets/products/p25-p40.png';
 
+// Импорт изображений подкатегорий (3:1)
+import flexibleShafts31 from '@/assets/flexible-shafts-3-1.png';
+import dryCleaning31 from '@/assets/dry-cleaning-3-1.png';
+import greaseRemoval31 from '@/assets/grease-removal-3-1.png';
 export interface Product {
   id: string;
   name: string;
@@ -26,6 +30,7 @@ export interface Subcategory {
   id: string;
   title: string;
   description: string;
+  image?: string; // Изображение подкатегории (3:1)
   products: Product[];
 }
 
@@ -39,6 +44,7 @@ export const brushMachinesData: BrushMachinesCategory = {
       id: 'flexible-shafts',
       title: 'Гибкие валы',
       description: 'Гибкие валы для щёточных машин разных типов и размеров',
+      image: flexibleShafts31,
       products: [
         {
           id: 'shaft-mini',
@@ -103,6 +109,7 @@ export const brushMachinesData: BrushMachinesCategory = {
       id: 'dry-cleaning',
       title: 'Машины для сухой очистки',
       description: 'Щёточные машины для сухой очистки воздуховодов от пыли и сухих загрязнений',
+      image: dryCleaning31,
       products: [
         {
           id: 'dry-electric-e20',
@@ -205,6 +212,7 @@ export const brushMachinesData: BrushMachinesCategory = {
       id: 'grease-removal',
       title: 'Машины для удаления жира',
       description: 'Специализированные машины для очистки кухонных вытяжек и жировых отложений',
+      image: greaseRemoval31,
       products: [
         {
           id: 'grease-electric-cs8',

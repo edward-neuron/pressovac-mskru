@@ -16,6 +16,7 @@ export interface VacuumSubcategory {
   id: string;
   title: string;
   description: string;
+  image?: string; // Изображение подкатегории (3:1)
   products: VacuumProduct[];
 }
 

@@ -18,6 +18,7 @@ import filterEquipmentSquare from '@/assets/filter-equipment-square.png';
 import disinfectionSquareV2 from '@/assets/disinfection-square-v2.png';
 import disinfectionBannerV2 from '@/assets/disinfection-banner-v2.png';
 import videoInspectionSquareV2 from '@/assets/video-inspection-square-v2.png';
+import videoInspectionBannerV2 from '@/assets/video-inspection-banner-v2.png';
 import compressorSquareV2 from '@/assets/compressor-square-v2.png';
 
 const brushEquipmentImages: Record<string, string> = {
@@ -42,6 +43,7 @@ const disinfectionEquipmentImages: Record<string, string> = {
 
 const videoInspectionImages: Record<string, string> = {
   'default': videoInspectionSquareV2,
+  'inside': videoInspectionBannerV2,
 };
 
 const compressorEquipmentImages: Record<string, string> = {
@@ -110,6 +112,7 @@ const categories = [
 const Catalog = () => {
   const [brushEquipmentImage, setBrushEquipmentImage] = useState<string>('default');
   const [disinfectionImage, setDisinfectionImage] = useState<string>('default');
+  const [videoImage, setVideoImage] = useState<string>('default');
 
   const handleSubcategoryChange = (subcategoryId: string | null) => {
     if (!subcategoryId) {
@@ -125,6 +128,10 @@ const Catalog = () => {
 
   const handleDisinfectionSubcategoryChange = (subcategoryId: string | null) => {
     setDisinfectionImage(subcategoryId ? 'inside' : 'default');
+  };
+
+  const handleVideoSubcategoryChange = (subcategoryId: string | null) => {
+    setVideoImage(subcategoryId ? 'inside' : 'default');
   };
 
   return (
@@ -170,7 +177,7 @@ const Catalog = () => {
                   {/* Изображение слева */}
                   <div
                     className={`${
-                      (category.id === 'disinfection' && disinfectionImage === 'inside')
+                      (category.id === 'disinfection' && disinfectionImage === 'inside') || (category.id === 'video' && videoImage === 'inside')
                         ? 'bg-muted aspect-[3/1]'
                         : (category.id === 'brush-machines' || category.id === 'vacuum' || category.id === 'filters' || category.id === 'disinfection' || category.id === 'video' || category.id === 'compressor')
                           ? 'bg-muted aspect-square self-start md:self-start'
@@ -213,10 +220,14 @@ const Catalog = () => {
                         loading="lazy"
                       />
                     ) : category.id === 'video' ? (
-                      <img 
-                        src={videoInspectionImages['default']} 
+                      <motion.img
+                        key={videoImage}
+                        src={videoInspectionImages[videoImage]} 
                         alt={category.title}
                         className="w-full h-full object-cover object-center"
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.3 }}
                         loading="lazy"
                       />
                     ) : category.id === 'compressor' ? (
@@ -251,7 +262,7 @@ const Catalog = () => {
                           <DisinfectionEquipmentCatalog onSubcategoryChange={handleDisinfectionSubcategoryChange} />
                         )}
                         {category.id === 'video' && (
-                          <VideoInspectionCatalog />
+                          <VideoInspectionCatalog onSubcategoryChange={handleVideoSubcategoryChange} />
                         )}
                         {category.id === 'compressor' && (
                           <CompressorEquipmentCatalog />

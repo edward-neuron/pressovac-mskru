@@ -78,14 +78,16 @@ function parseYmlProducts(xmlText: string): YmlProduct[] {
   return products;
 }
 
-function formatPrice(basePrice: number): string {
-  // Добавляем торговую наценку магазина 20% к базовой цене из YML
-  const finalPrice = Math.round(basePrice * 1.2);
-  return new Intl.NumberFormat('ru-RU', {
-    style: 'decimal',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-  }).format(finalPrice) + ' ₽';
+function formatPrice(priceFromYml: number): string {
+  // В YML используем цену как итоговую (с НДС), без дополнительной наценки.
+  const finalPrice = Math.round(priceFromYml);
+  return (
+    new Intl.NumberFormat('ru-RU', {
+      style: 'decimal',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(finalPrice) + ' ₽'
+  );
 }
 
 serve(async (req) => {

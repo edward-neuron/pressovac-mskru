@@ -44,7 +44,6 @@ export const filterEquipmentData: FilterEquipmentCategory = {
           specifications: {
             'Производительность': '4 300/5 000 м³/час',
             'Класс фильтра': 'G3 + F7',
-            'Мощность': '2,2 кВт',
             'Страна': 'Финляндия'
           }
         },
@@ -62,7 +61,6 @@ export const filterEquipmentData: FilterEquipmentCategory = {
           specifications: {
             'Производительность': '8 600/10 000 м³/час',
             'Класс фильтра': 'G3 + F7',
-            'Мощность': '4 кВт',
             'Страна': 'Финляндия'
           }
         }
@@ -87,7 +85,6 @@ export const filterEquipmentData: FilterEquipmentCategory = {
           specifications: {
             'Производительность': '1 000 м³/час',
             'Класс фильтра': 'HEPA',
-            'Мощность': '0,75 кВт',
             'Страна': 'Финляндия'
           }
         }

@@ -15,7 +15,9 @@ import greaseRemovalMachines from '@/assets/grease-removal-machines.png';
 import vacuumEquipmentSquare from '@/assets/vacuum-equipment-square.png';
 import filterEquipmentSquare from '@/assets/filter-equipment-square.png';
 import disinfectionEquipmentSquare from '@/assets/disinfection-equipment-square.png';
+import disinfectionEquipmentBanner from '@/assets/disinfection-equipment-banner.png';
 import videoInspectionSquare from '@/assets/video-inspection-square.png';
+import videoInspectionBanner from '@/assets/video-inspection-banner.png';
 
 const brushEquipmentImages: Record<string, string> = {
   'default': brushEquipmentCombined,
@@ -34,10 +36,12 @@ const filterEquipmentImages: Record<string, string> = {
 
 const disinfectionEquipmentImages: Record<string, string> = {
   'default': disinfectionEquipmentSquare,
+  'detail': disinfectionEquipmentBanner,
 };
 
 const videoInspectionImages: Record<string, string> = {
   'default': videoInspectionSquare,
+  'detail': videoInspectionBanner,
 };
 
 const categories = [
@@ -101,6 +105,8 @@ const categories = [
 
 const Catalog = () => {
   const [brushEquipmentImage, setBrushEquipmentImage] = useState<string>('default');
+  const [disinfectionEquipmentImage, setDisinfectionEquipmentImage] = useState<'default' | 'detail'>('default');
+  const [videoInspectionImage, setVideoInspectionImage] = useState<'default' | 'detail'>('default');
 
   const handleSubcategoryChange = (subcategoryId: string | null) => {
     if (!subcategoryId) {
@@ -112,6 +118,14 @@ const Catalog = () => {
     } else if (subcategoryId === 'grease-removal') {
       setBrushEquipmentImage('grease-removal');
     }
+  };
+
+  const handleDisinfectionSubcategoryChange = (subcategoryId: string | null) => {
+    setDisinfectionEquipmentImage(subcategoryId ? 'detail' : 'default');
+  };
+
+  const handleVideoSubcategoryChange = (subcategoryId: string | null) => {
+    setVideoInspectionImage(subcategoryId ? 'detail' : 'default');
   };
 
   return (
@@ -180,13 +194,13 @@ const Catalog = () => {
                       />
                     ) : category.id === 'disinfection' ? (
                       <img 
-                        src={disinfectionEquipmentImages['default']} 
+                        src={disinfectionEquipmentImages[disinfectionEquipmentImage]} 
                         alt={category.title}
                         className="w-full h-full object-cover object-center"
                       />
                     ) : category.id === 'video' ? (
                       <img 
-                        src={videoInspectionImages['default']} 
+                        src={videoInspectionImages[videoInspectionImage]} 
                         alt={category.title}
                         className="w-full h-full object-cover object-center"
                       />
@@ -212,10 +226,10 @@ const Catalog = () => {
                           <FilterEquipmentCatalog />
                         )}
                         {category.id === 'disinfection' && (
-                          <DisinfectionEquipmentCatalog />
+                          <DisinfectionEquipmentCatalog onSubcategoryChange={handleDisinfectionSubcategoryChange} />
                         )}
                         {category.id === 'video' && (
-                          <VideoInspectionCatalog />
+                          <VideoInspectionCatalog onSubcategoryChange={handleVideoSubcategoryChange} />
                         )}
                       </div>
                     ) : (

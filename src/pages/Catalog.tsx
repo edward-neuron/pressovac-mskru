@@ -13,7 +13,7 @@ import brushMachinesMain from '@/assets/brush-machines-main-1-1.png';
 import flexibleShafts from '@/assets/flexible-shafts.png';
 import dryCleaningMachines from '@/assets/dry-cleaning-machines.png';
 import greaseRemovalMachines from '@/assets/grease-removal-machines.png';
-import vacuumEquipmentSquare from '@/assets/vacuum-equipment-square.png';
+import vacuumEquipmentMain11 from '@/assets/vacuum-equipment-main-1-1.png';
 import vacuumEquipment31 from '@/assets/vacuum-equipment-3-1.png';
 import filterEquipmentSquare from '@/assets/filter-equipment-square.png';
 import disinfectionSquareV2 from '@/assets/disinfection-square-v2.png';
@@ -30,7 +30,7 @@ const brushEquipmentImages: Record<string, string> = {
 };
 
 const vacuumEquipmentImages: Record<string, string> = {
-  'default': vacuumEquipment31,
+  'default': vacuumEquipmentMain11,
   'inside': vacuumEquipment31,
 };
 
@@ -184,11 +184,11 @@ const Catalog = () => {
                   {/* Изображение слева */}
                   <div
                     className={`${
-                      category.id === 'vacuum' ||
+                      (category.id === 'vacuum' && vacuumImage === 'inside') ||
                       (category.id === 'disinfection' && disinfectionImage === 'inside') ||
                       (category.id === 'video' && videoImage === 'inside')
                         ? 'bg-muted aspect-[3/1] self-start md:self-start'
-                        : (category.id === 'brush-machines' || category.id === 'filters' || category.id === 'disinfection' || category.id === 'video' || category.id === 'compressor')
+                        : (category.id === 'brush-machines' || category.id === 'vacuum' || category.id === 'filters' || category.id === 'disinfection' || category.id === 'video' || category.id === 'compressor')
                           ? 'bg-muted aspect-square self-start md:self-start'
                           : `bg-gradient-to-br ${category.image} min-h-[280px] md:min-h-0`
                     } flex items-center justify-center relative overflow-hidden`}

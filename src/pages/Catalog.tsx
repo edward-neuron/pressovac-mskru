@@ -186,14 +186,13 @@ const Catalog = () => {
                     className={`${
                       // Внутренние (подкатегории): изображение должно заполнять высоту блока слева
                       (category.id === 'brush-machines' && brushEquipmentImage !== 'default') ||
-                      (category.id === 'vacuum' && vacuumImage === 'inside')
+                      (category.id === 'vacuum' && vacuumImage === 'inside') ||
+                      (category.id === 'disinfection' && disinfectionImage === 'inside') ||
+                      (category.id === 'video' && videoImage === 'inside')
                         ? 'bg-muted min-h-[320px] md:min-h-0'
-                        : (category.id === 'disinfection' && disinfectionImage === 'inside') ||
-                          (category.id === 'video' && videoImage === 'inside')
-                          ? 'bg-muted aspect-[3/1] self-start md:self-start'
-                          : (category.id === 'brush-machines' || category.id === 'vacuum' || category.id === 'filters' || category.id === 'disinfection' || category.id === 'video' || category.id === 'compressor')
-                            ? 'bg-muted aspect-square self-start md:self-start'
-                            : `bg-gradient-to-br ${category.image} min-h-[280px] md:min-h-0`
+                        : (category.id === 'brush-machines' || category.id === 'vacuum' || category.id === 'filters' || category.id === 'disinfection' || category.id === 'video' || category.id === 'compressor')
+                          ? 'bg-muted aspect-square self-start md:self-start'
+                          : `bg-gradient-to-br ${category.image} min-h-[280px] md:min-h-0`
                     } flex items-center justify-center relative overflow-hidden`}
                   >
                     {category.id === 'brush-machines' ? (
@@ -229,7 +228,7 @@ const Catalog = () => {
                         key={disinfectionImage}
                         src={disinfectionEquipmentImages[disinfectionImage]} 
                         alt={category.title}
-                        className="w-full h-full object-cover object-center"
+                        className={`w-full h-full ${disinfectionImage === 'default' ? 'object-cover' : 'object-contain'} object-center`}
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.3 }}
@@ -240,7 +239,7 @@ const Catalog = () => {
                         key={videoImage}
                         src={videoInspectionImages[videoImage]} 
                         alt={category.title}
-                        className="w-full h-full object-cover object-center"
+                        className={`w-full h-full ${videoImage === 'default' ? 'object-cover' : 'object-contain'} object-center`}
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.3 }}

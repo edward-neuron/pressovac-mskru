@@ -16,6 +16,7 @@ import greaseRemovalMachines from '@/assets/grease-removal-machines.png';
 import vacuumEquipmentSquare from '@/assets/vacuum-equipment-square.png';
 import filterEquipmentSquare from '@/assets/filter-equipment-square.png';
 import disinfectionSquareV2 from '@/assets/disinfection-square-v2.png';
+import disinfectionBannerV2 from '@/assets/disinfection-banner-v2.png';
 import videoInspectionSquareV2 from '@/assets/video-inspection-square-v2.png';
 import compressorSquareV2 from '@/assets/compressor-square-v2.png';
 
@@ -36,6 +37,7 @@ const filterEquipmentImages: Record<string, string> = {
 
 const disinfectionEquipmentImages: Record<string, string> = {
   'default': disinfectionSquareV2,
+  'inside': disinfectionBannerV2,
 };
 
 const videoInspectionImages: Record<string, string> = {
@@ -107,6 +109,7 @@ const categories = [
 
 const Catalog = () => {
   const [brushEquipmentImage, setBrushEquipmentImage] = useState<string>('default');
+  const [disinfectionImage, setDisinfectionImage] = useState<string>('default');
 
   const handleSubcategoryChange = (subcategoryId: string | null) => {
     if (!subcategoryId) {
@@ -118,6 +121,10 @@ const Catalog = () => {
     } else if (subcategoryId === 'grease-removal') {
       setBrushEquipmentImage('grease-removal');
     }
+  };
+
+  const handleDisinfectionSubcategoryChange = (subcategoryId: string | null) => {
+    setDisinfectionImage(subcategoryId ? 'inside' : 'default');
   };
 
   return (
@@ -162,9 +169,12 @@ const Catalog = () => {
                 <div className="grid md:grid-cols-3 gap-0 md:items-stretch">
                   {/* Изображение слева */}
                   <div
-                    className={`${(category.id === 'brush-machines' || category.id === 'vacuum' || category.id === 'filters' || category.id === 'disinfection' || category.id === 'video' || category.id === 'compressor')
-                      ? 'bg-muted aspect-square self-start md:self-start'
-                      : `bg-gradient-to-br ${category.image} min-h-[280px] md:min-h-0`
+                    className={`${
+                      (category.id === 'disinfection' && disinfectionImage === 'inside')
+                        ? 'bg-muted aspect-[3/1]'
+                        : (category.id === 'brush-machines' || category.id === 'vacuum' || category.id === 'filters' || category.id === 'disinfection' || category.id === 'video' || category.id === 'compressor')
+                          ? 'bg-muted aspect-square self-start md:self-start'
+                          : `bg-gradient-to-br ${category.image} min-h-[280px] md:min-h-0`
                     } flex items-center justify-center relative overflow-hidden`}
                   >
                     {category.id === 'brush-machines' ? (
@@ -192,10 +202,14 @@ const Catalog = () => {
                         loading="lazy"
                       />
                     ) : category.id === 'disinfection' ? (
-                      <img 
-                        src={disinfectionEquipmentImages['default']} 
+                      <motion.img
+                        key={disinfectionImage}
+                        src={disinfectionEquipmentImages[disinfectionImage]} 
                         alt={category.title}
                         className="w-full h-full object-cover object-center"
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.3 }}
                         loading="lazy"
                       />
                     ) : category.id === 'video' ? (
@@ -234,7 +248,7 @@ const Catalog = () => {
                           <FilterEquipmentCatalog />
                         )}
                         {category.id === 'disinfection' && (
-                          <DisinfectionEquipmentCatalog />
+                          <DisinfectionEquipmentCatalog onSubcategoryChange={handleDisinfectionSubcategoryChange} />
                         )}
                         {category.id === 'video' && (
                           <VideoInspectionCatalog />

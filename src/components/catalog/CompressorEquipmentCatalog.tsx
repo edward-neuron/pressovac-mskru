@@ -22,16 +22,6 @@ export function CompressorEquipmentCatalog() {
 
   return (
     <div className="space-y-4">
-      {/* Внутренний баннер (1:1 для компрессоров) */}
-      <div className="relative overflow-hidden rounded-xl border border-border bg-muted aspect-square max-w-md">
-        <img
-          src={compressorSquareV2}
-          alt="Компрессор Pressovac K-370 Premium Car"
-          className="absolute inset-0 h-full w-full object-cover"
-          loading="lazy"
-        />
-      </div>
-
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <button
           onClick={handleOpen}

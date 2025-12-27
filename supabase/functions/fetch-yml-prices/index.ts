@@ -16,8 +16,7 @@ interface YmlProduct {
   picture?: string;
 }
 
-// Все товары в YML экспортируются с пометкой "без НДС"
-// Поэтому ко всем ценам добавляем +20% НДС
+// Цены в YML уже указаны с НДС, берём их напрямую без модификаций
 
 function parseYmlProducts(xmlText: string): YmlProduct[] {
   const products: YmlProduct[] = [];
@@ -69,13 +68,12 @@ function parseYmlProducts(xmlText: string): YmlProduct[] {
 }
 
 function formatPrice(price: number): string {
-  // Все товары в YML без НДС, добавляем 20%
-  const finalPrice = Math.round(price * 1.2);
+  // Цены в YML уже с НДС, берём напрямую
   return new Intl.NumberFormat('ru-RU', {
     style: 'decimal',
     minimumFractionDigits: 0,
     maximumFractionDigits: 0
-  }).format(finalPrice) + ' ₽';
+  }).format(price) + ' ₽';
 }
 
 serve(async (req) => {

@@ -9,6 +9,7 @@ import { FilterEquipmentCatalog } from '@/components/catalog/FilterEquipmentCata
 import { DisinfectionEquipmentCatalog } from '@/components/catalog/DisinfectionEquipmentCatalog';
 import { VideoInspectionCatalog } from '@/components/catalog/VideoInspectionCatalog';
 import { CompressorEquipmentCatalog } from '@/components/catalog/CompressorEquipmentCatalog';
+import { AccessoriesCatalog } from '@/components/catalog/AccessoriesCatalog';
 import brushMachinesMain from '@/assets/brush-machines-main-1-1.png';
 import flexibleShafts31 from '@/assets/flexible-shafts-3-1.png';
 import dryCleaning31 from '@/assets/dry-cleaning-3-1.png';
@@ -52,7 +53,17 @@ const compressorEquipmentImages: Record<string, string> = {
   'default': compressorSquareV2,
 };
 
-const categories = [
+interface Category {
+  id: string;
+  icon: React.ComponentType<{ className?: string }>;
+  title: string;
+  description: string;
+  hasDetailedCatalog?: boolean;
+  products?: string[];
+  image: string;
+}
+
+const categories: Category[] = [
   {
     id: 'brush-machines',
     icon: Zap,
@@ -105,8 +116,8 @@ const categories = [
     id: 'accessories',
     icon: Package,
     title: 'Комплектующие и аксессуары',
-    description: 'Щётки различного диаметра, штанги, насадки и другие комплектующие для оборудования Pressovac.',
-    products: ['Щётки', 'Штанги', 'Насадки', 'Адаптеры'],
+    description: 'Щётки, центраторы, адаптеры, заглушки и другие комплектующие для оборудования Pressovac.',
+    hasDetailedCatalog: true,
     image: 'from-emerald-500 to-emerald-600',
   },
 ];
@@ -281,6 +292,9 @@ const Catalog = () => {
                         )}
                         {category.id === 'compressor' && (
                           <CompressorEquipmentCatalog />
+                        )}
+                        {category.id === 'accessories' && (
+                          <AccessoriesCatalog />
                         )}
                       </div>
                     ) : (

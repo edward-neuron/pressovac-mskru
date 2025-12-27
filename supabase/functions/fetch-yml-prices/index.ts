@@ -16,21 +16,8 @@ interface YmlProduct {
   picture?: string;
 }
 
-// Проверяем, нужно ли добавлять НДС к товару
-// НДС добавляем к позициям, где в YML цена без НДС (например: моющие машины/валы и гибкие/стальные валы)
-// "Щёточные" машины (P-25, P-40, E-20, E-25L, E-30, E-BOX) уже имеют цены с НДС
-function needsVat(name: string, vendorCode?: string): boolean {
-  const nameLower = name.toLowerCase();
-  const code = (vendorCode ?? '').trim();
-
-  const isShaft =
-    code.startsWith('205.001.') || // Гибкие валы (Стандарт)
-    code.startsWith('205.002.') || // Стальные валы
-    code.startsWith('205.004.');   // Супер гибкий вал (Мини)
-
-  // "моющая" или "моющий" в названии = цена без НДС, нужно добавить
-  return nameLower.includes('моющ') || isShaft;
-}
+// Все товары в YML экспортируются с пометкой "без НДС"
+// Поэтому ко всем ценам добавляем +20% НДС
 
 function parseYmlProducts(xmlText: string): YmlProduct[] {
   const products: YmlProduct[] = [];
@@ -70,7 +57,7 @@ function parseYmlProducts(xmlText: string): YmlProduct[] {
       products.push({
         id: offerId,
         name: productName,
-        price: formatPrice(parseFloat(price), productName, vendorCode),
+        price: formatPrice(parseFloat(price)),
         url,
         vendorCode,
         picture
@@ -81,9 +68,9 @@ function parseYmlProducts(xmlText: string): YmlProduct[] {
   return products;
 }
 
-function formatPrice(price: number, productName: string, vendorCode?: string): string {
-  // Добавляем НДС 20% только к категориям, где в YML цена без НДС
-  const finalPrice = needsVat(productName, vendorCode) ? Math.round(price * 1.2) : price;
+function formatPrice(price: number): string {
+  // Все товары в YML без НДС, добавляем 20%
+  const finalPrice = Math.round(price * 1.2);
   return new Intl.NumberFormat('ru-RU', {
     style: 'decimal',
     minimumFractionDigits: 0,

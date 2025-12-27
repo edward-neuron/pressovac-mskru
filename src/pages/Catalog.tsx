@@ -161,7 +161,12 @@ const Catalog = () => {
               >
                 <div className="grid md:grid-cols-3 gap-0 md:items-stretch">
                   {/* Изображение слева */}
-                  <div className={`${(category.id === 'brush-machines' || category.id === 'vacuum' || category.id === 'filters' || category.id === 'disinfection' || category.id === 'video' || category.id === 'compressor') ? 'bg-muted' : `bg-gradient-to-br ${category.image}`} flex items-center justify-center relative overflow-hidden min-h-[280px] md:min-h-0`}>
+                  <div
+                    className={`${(category.id === 'brush-machines' || category.id === 'vacuum' || category.id === 'filters' || category.id === 'disinfection' || category.id === 'video' || category.id === 'compressor')
+                      ? 'bg-muted aspect-square self-start md:self-start'
+                      : `bg-gradient-to-br ${category.image} min-h-[280px] md:min-h-0`
+                    } flex items-center justify-center relative overflow-hidden`}
+                  >
                     {category.id === 'brush-machines' ? (
                       <motion.img 
                         key={brushEquipmentImage}

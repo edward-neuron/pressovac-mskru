@@ -147,8 +147,9 @@ export function VideoInspectionCatalog({ onSubcategoryChange }: VideoInspectionC
                   </button>
                 );
               })}
+             </div>
             </div>
-          </motion.div>
+           </motion.div>
         )}
       </AnimatePresence>
 

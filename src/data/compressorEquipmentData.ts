@@ -10,7 +10,7 @@ export const compressorEquipmentData: CompressorEquipmentCategory = {
     {
       id: 'k-370-premium-car',
       name: 'K-370 Premium Car',
-      article: '',
+      article: 'K-370-PREMIUM-CAR',
       description:
         'Профессиональный компрессор Pressovac для питания пневмоинструмента и оборудования очистки вентиляции.',
       image: k370Square,

@@ -1,12 +1,13 @@
 import { useState } from 'react';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, ShoppingCart } from 'lucide-react';
 import { ProductDrawer } from './ProductDrawer';
 import { compressorEquipmentData } from '@/data/compressorEquipmentData';
-import compressorSquareV2 from '@/assets/compressor-square-v2.png';
+import { useYmlPrices } from '@/hooks/useYmlPrices';
 
 export function CompressorEquipmentCatalog() {
   const [selectedProduct, setSelectedProduct] = useState(compressorEquipmentData.products[0] ?? null);
   const [isProductOpen, setIsProductOpen] = useState(false);
+  const { findPrice, findShopUrl, isLoading: pricesLoading } = useYmlPrices();
 
   const product = compressorEquipmentData.products[0];
 
@@ -19,6 +20,11 @@ export function CompressorEquipmentCatalog() {
   };
 
   if (!product) return null;
+
+  const ymlPrice = findPrice(product.shopUrl, product.name, product.article);
+  const ymlShopUrl = findShopUrl(product.name, product.article);
+  const displayPrice = ymlPrice || null;
+  const hasShopLink = (product.shopUrl && product.shopUrl !== '#') || ymlShopUrl;
 
   return (
     <div className="space-y-4">
@@ -35,6 +41,19 @@ export function CompressorEquipmentCatalog() {
               <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
                 {product.description}
               </p>
+              {displayPrice && hasShopLink && (
+                <div className="flex items-center gap-2 mt-2">
+                  <ShoppingCart className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-semibold text-primary">
+                    {displayPrice}
+                  </span>
+                </div>
+              )}
+              {pricesLoading && !displayPrice && (
+                <div className="flex items-center gap-2 mt-2">
+                  <div className="w-16 h-4 bg-muted animate-pulse rounded" />
+                </div>
+              )}
             </div>
             <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all shrink-0 mt-1" />
           </div>

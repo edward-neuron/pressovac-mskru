@@ -14,8 +14,8 @@ import dryCleaningMachines from '@/assets/dry-cleaning-machines.png';
 import greaseRemovalMachines from '@/assets/grease-removal-machines.png';
 import vacuumEquipmentSquare from '@/assets/vacuum-equipment-square.png';
 import filterEquipmentSquare from '@/assets/filter-equipment-square.png';
-import disinfectionEquipmentBanner from '@/assets/disinfection-equipment-banner.png';
-import videoInspectionBanner from '@/assets/video-inspection-banner.png';
+import disinfectionEquipmentSquare from '@/assets/disinfection-equipment-square.png';
+import videoInspectionSquare from '@/assets/video-inspection-square.png';
 
 const brushEquipmentImages: Record<string, string> = {
   'default': brushEquipmentCombined,
@@ -33,11 +33,11 @@ const filterEquipmentImages: Record<string, string> = {
 };
 
 const disinfectionEquipmentImages: Record<string, string> = {
-  'default': disinfectionEquipmentBanner,
+  'default': disinfectionEquipmentSquare,
 };
 
 const videoInspectionImages: Record<string, string> = {
-  'default': videoInspectionBanner,
+  'default': videoInspectionSquare,
 };
 
 const categories = [

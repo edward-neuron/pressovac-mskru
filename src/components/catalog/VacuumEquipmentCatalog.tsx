@@ -1,36 +1,24 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, ExternalLink, ChevronRight, Wind, Filter } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
+import { ChevronRight, ArrowLeft, ShoppingCart } from 'lucide-react';
 import { vacuumEquipmentData, VacuumProduct, VacuumSubcategory } from '@/data/vacuumEquipmentData';
-import { useYmlPrices } from '@/hooks/useYmlPrices';
 import { ProductDrawer } from './ProductDrawer';
+import { Button } from '@/components/ui/button';
+import { useYmlPrices } from '@/hooks/useYmlPrices';
 
 interface VacuumEquipmentCatalogProps {
   onSubcategoryChange?: (subcategoryId: string | null) => void;
 }
 
-const subcategoryIcons: Record<string, React.ReactNode> = {
-  'su-vacuum': <Wind className="w-6 h-6" />,
-  'sfu-vacuum': <Filter className="w-6 h-6" />
-};
-
 export function VacuumEquipmentCatalog({ onSubcategoryChange }: VacuumEquipmentCatalogProps) {
   const [selectedSubcategory, setSelectedSubcategory] = useState<VacuumSubcategory | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<VacuumProduct | null>(null);
   const [isProductOpen, setIsProductOpen] = useState(false);
-  const { findPrice, findShopUrl, isLoading } = useYmlPrices();
+  const { findPrice, findShopUrl, isLoading: pricesLoading } = useYmlPrices();
 
   useEffect(() => {
     onSubcategoryChange?.(selectedSubcategory?.id || null);
   }, [selectedSubcategory, onSubcategoryChange]);
-
-  const handleSubcategoryClick = (subcategory: VacuumSubcategory) => {
-    setSelectedSubcategory(subcategory);
-  };
 
   const handleProductClick = (product: VacuumProduct) => {
     setSelectedProduct(product);
@@ -42,147 +30,111 @@ export function VacuumEquipmentCatalog({ onSubcategoryChange }: VacuumEquipmentC
     setSelectedProduct(null);
   };
 
-  const handleBackToSubcategories = () => {
+  const handleBackToSubcategory = () => {
+    setIsProductOpen(false);
+    setSelectedProduct(null);
+  };
+
+  const handleBackToMain = () => {
     setSelectedSubcategory(null);
   };
 
-  const getProductPrice = (product: VacuumProduct): string | null => {
-    return findPrice(product.shopUrl, product.name, product.article);
-  };
-
-  const getProductShopUrl = (product: VacuumProduct): string | null => {
-    return product.shopUrl || findShopUrl(product.name, product.article);
-  };
-
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <AnimatePresence mode="wait">
         {!selectedSubcategory ? (
-          // Subcategories list
+          // Подкатегории
           <motion.div
             key="subcategories"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.3 }}
-            className="grid gap-4 md:grid-cols-2"
+            exit={{ opacity: 0, x: -20 }}
+            className="grid grid-cols-1 sm:grid-cols-2 gap-3"
           >
             {vacuumEquipmentData.subcategories.map((subcategory) => (
-              <Card
+              <button
                 key={subcategory.id}
-                className="cursor-pointer transition-all duration-300 hover:shadow-lg hover:border-primary/50 group"
-                onClick={() => handleSubcategoryClick(subcategory)}
+                onClick={() => setSelectedSubcategory(subcategory)}
+                className="group p-4 bg-muted/50 hover:bg-primary/10 rounded-xl border border-border hover:border-primary/30 transition-all text-left"
               >
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-start gap-4">
-                      <div className="p-3 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                        {subcategoryIcons[subcategory.id]}
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-lg mb-1 group-hover:text-primary transition-colors">
-                          {subcategory.title}
-                        </h3>
-                        <p className="text-sm text-muted-foreground">
-                          {subcategory.description}
-                        </p>
-                        <Badge variant="secondary" className="mt-2">
-                          {subcategory.products.length} модел{subcategory.products.length === 1 ? 'ь' : subcategory.products.length < 5 ? 'и' : 'ей'}
-                        </Badge>
-                      </div>
-                    </div>
-                    <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="font-semibold group-hover:text-primary transition-colors">
+                      {subcategory.title}
+                    </h4>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {subcategory.products.length} модел{subcategory.products.length === 1 ? 'ь' : subcategory.products.length < 5 ? 'и' : 'ей'}
+                    </p>
                   </div>
-                </CardContent>
-              </Card>
+                  <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                </div>
+              </button>
             ))}
           </motion.div>
         ) : (
-          // Products list
+          // Список товаров в подкатегории
           <motion.div
             key="products"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.3 }}
-            className="space-y-6"
+            exit={{ opacity: 0, x: 20 }}
+            className="space-y-4"
           >
-            <Button
-              variant="ghost"
-              onClick={handleBackToSubcategories}
-              className="mb-4 -ml-2"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Назад к категориям
-            </Button>
-
-            <div className="mb-6">
-              <h3 className="text-xl font-semibold mb-2">{selectedSubcategory.title}</h3>
-              <p className="text-muted-foreground">{selectedSubcategory.description}</p>
+            <div className="flex items-center gap-3">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleBackToMain}
+                className="gap-2"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Назад
+              </Button>
+              <h4 className="font-semibold">{selectedSubcategory.title}</h4>
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {selectedSubcategory.products.map((product) => {
-                const price = getProductPrice(product);
-                const shopUrl = getProductShopUrl(product);
+            <p className="text-sm text-muted-foreground">
+              {selectedSubcategory.description}
+            </p>
 
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {selectedSubcategory.products.map((product) => {
+                const ymlPrice = findPrice(product.shopUrl, product.name, product.article);
+                const ymlShopUrl = findShopUrl(product.name, product.article);
+                const displayPrice = ymlPrice || product.price;
+                const hasShopLink = (product.shopUrl && product.shopUrl !== '#') || ymlShopUrl;
+                
                 return (
-                  <Card
+                  <button
                     key={product.id}
-                    className="cursor-pointer transition-all duration-300 hover:shadow-lg hover:border-primary/50 group overflow-hidden"
                     onClick={() => handleProductClick(product)}
+                    className="group p-4 bg-card hover:bg-primary/5 rounded-xl border border-border hover:border-primary/30 transition-all text-left"
                   >
-                    <CardContent className="p-0">
-                      {/* Placeholder for product image */}
-                      <div className="aspect-video bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center">
-                        <Wind className="w-16 h-16 text-muted-foreground/30" />
-                      </div>
-                      
-                      <div className="p-4">
-                        <h4 className="font-semibold text-lg mb-1 group-hover:text-primary transition-colors">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1 min-w-0">
+                        <h5 className="font-medium group-hover:text-primary transition-colors truncate">
                           {product.name}
-                        </h4>
-                        <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+                        </h5>
+                        <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
                           {product.description}
                         </p>
-                        
-                        {/* Key specs preview */}
-                        <div className="flex flex-wrap gap-1 mb-3">
-                          {Object.entries(product.specifications).slice(0, 2).map(([key, value]) => (
-                            <Badge key={key} variant="outline" className="text-xs">
-                              {value}
-                            </Badge>
-                          ))}
-                        </div>
-
-                        {/* Price */}
-                        <div className="flex items-center justify-between">
-                          {isLoading ? (
-                            <Skeleton className="h-6 w-24" />
-                          ) : price ? (
-                            <span className="text-lg font-bold text-primary">{price}</span>
-                          ) : (
-                            <span className="text-sm text-muted-foreground">Цена по запросу</span>
-                          )}
-                          
-                          {shopUrl && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="text-xs"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                window.open(shopUrl, '_blank');
-                              }}
-                            >
-                              <ExternalLink className="w-3 h-3 mr-1" />
-                              Купить
-                            </Button>
-                          )}
-                        </div>
+                        {displayPrice && hasShopLink && (
+                          <div className="flex items-center gap-2 mt-2">
+                            <ShoppingCart className="w-4 h-4 text-primary" />
+                            <span className="text-sm font-semibold text-primary">
+                              {displayPrice}
+                            </span>
+                          </div>
+                        )}
+                        {pricesLoading && !displayPrice && (
+                          <div className="flex items-center gap-2 mt-2">
+                            <div className="w-16 h-4 bg-muted animate-pulse rounded" />
+                          </div>
+                        )}
                       </div>
-                    </CardContent>
-                  </Card>
+                      <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all shrink-0 mt-1" />
+                    </div>
+                  </button>
                 );
               })}
             </div>
@@ -190,15 +142,16 @@ export function VacuumEquipmentCatalog({ onSubcategoryChange }: VacuumEquipmentC
         )}
       </AnimatePresence>
 
-      {/* Product drawer */}
       <ProductDrawer
-        isOpen={isProductOpen}
-        onClose={handleCloseProduct}
         product={selectedProduct ? {
           ...selectedProduct,
-          price: getProductPrice(selectedProduct) || undefined,
-          shopUrl: getProductShopUrl(selectedProduct) || undefined
+          price: findPrice(selectedProduct.shopUrl, selectedProduct.name, selectedProduct.article) || undefined,
+          shopUrl: selectedProduct.shopUrl || findShopUrl(selectedProduct.name, selectedProduct.article) || undefined
         } : null}
+        isOpen={isProductOpen}
+        onClose={handleCloseProduct}
+        onBack={handleBackToSubcategory}
+        showBackButton={true}
       />
     </div>
   );

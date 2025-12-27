@@ -14,6 +14,7 @@ import flexibleShafts from '@/assets/flexible-shafts.png';
 import dryCleaningMachines from '@/assets/dry-cleaning-machines.png';
 import greaseRemovalMachines from '@/assets/grease-removal-machines.png';
 import vacuumEquipmentSquare from '@/assets/vacuum-equipment-square.png';
+import vacuumEquipment31 from '@/assets/vacuum-equipment-3-1.png';
 import filterEquipmentSquare from '@/assets/filter-equipment-square.png';
 import disinfectionSquareV2 from '@/assets/disinfection-square-v2.png';
 import disinfectionBannerV2 from '@/assets/disinfection-banner-v2.png';
@@ -29,7 +30,8 @@ const brushEquipmentImages: Record<string, string> = {
 };
 
 const vacuumEquipmentImages: Record<string, string> = {
-  'default': vacuumEquipmentSquare,
+  'default': vacuumEquipment31,
+  'inside': vacuumEquipment31,
 };
 
 const filterEquipmentImages: Record<string, string> = {
@@ -111,6 +113,7 @@ const categories = [
 
 const Catalog = () => {
   const [brushEquipmentImage, setBrushEquipmentImage] = useState<string>('default');
+  const [vacuumImage, setVacuumImage] = useState<string>('default');
   const [disinfectionImage, setDisinfectionImage] = useState<string>('default');
   const [videoImage, setVideoImage] = useState<string>('default');
 
@@ -124,6 +127,10 @@ const Catalog = () => {
     } else if (subcategoryId === 'grease-removal') {
       setBrushEquipmentImage('grease-removal');
     }
+  };
+
+  const handleVacuumSubcategoryChange = (subcategoryId: string | null) => {
+    setVacuumImage(subcategoryId ? 'inside' : 'default');
   };
 
   const handleDisinfectionSubcategoryChange = (subcategoryId: string | null) => {
@@ -177,9 +184,11 @@ const Catalog = () => {
                   {/* Изображение слева */}
                   <div
                     className={`${
-                      (category.id === 'disinfection' && disinfectionImage === 'inside') || (category.id === 'video' && videoImage === 'inside')
-                        ? 'bg-muted aspect-[3/1]'
-                        : (category.id === 'brush-machines' || category.id === 'vacuum' || category.id === 'filters' || category.id === 'disinfection' || category.id === 'video' || category.id === 'compressor')
+                      category.id === 'vacuum' ||
+                      (category.id === 'disinfection' && disinfectionImage === 'inside') ||
+                      (category.id === 'video' && videoImage === 'inside')
+                        ? 'bg-muted aspect-[3/1] self-start md:self-start'
+                        : (category.id === 'brush-machines' || category.id === 'filters' || category.id === 'disinfection' || category.id === 'video' || category.id === 'compressor')
                           ? 'bg-muted aspect-square self-start md:self-start'
                           : `bg-gradient-to-br ${category.image} min-h-[280px] md:min-h-0`
                     } flex items-center justify-center relative overflow-hidden`}
@@ -195,10 +204,14 @@ const Catalog = () => {
                         transition={{ duration: 0.3 }}
                       />
                     ) : category.id === 'vacuum' ? (
-                      <img 
-                        src={vacuumEquipmentImages['default']} 
+                      <motion.img 
+                        key={vacuumImage}
+                        src={vacuumEquipmentImages[vacuumImage]} 
                         alt={category.title}
                         className="w-full h-full object-cover object-center"
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.3 }}
                         loading="lazy"
                       />
                     ) : category.id === 'filters' ? (
@@ -253,7 +266,7 @@ const Catalog = () => {
                           <BrushMachinesCatalog onSubcategoryChange={handleSubcategoryChange} />
                         )}
                         {category.id === 'vacuum' && (
-                          <VacuumEquipmentCatalog />
+                          <VacuumEquipmentCatalog onSubcategoryChange={handleVacuumSubcategoryChange} />
                         )}
                         {category.id === 'filters' && (
                           <FilterEquipmentCatalog />

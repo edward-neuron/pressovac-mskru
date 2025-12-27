@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, ArrowLeft, ShoppingCart } from 'lucide-react';
 import { disinfectionEquipmentData, DisinfectionProduct, DisinfectionSubcategory } from '@/data/disinfectionEquipmentData';
-import disinfectionBannerV2 from '@/assets/disinfection-banner-v2.png';
+
 import { ProductDrawer } from './ProductDrawer';
 import { Button } from '@/components/ui/button';
 import { useYmlPrices } from '@/hooks/useYmlPrices';
@@ -81,33 +81,22 @@ export function DisinfectionEquipmentCatalog({ onSubcategoryChange }: Disinfecti
             exit={{ opacity: 0, x: 20 }}
             className="space-y-4"
           >
-            <div className="space-y-4">
-              {/* Внутренний баннер (3:1) */}
-              <div className="relative overflow-hidden rounded-xl border border-border bg-muted aspect-[3/1]">
-                <img
-                  src={disinfectionBannerV2}
-                  alt="Оборудование для дезинфекции Pressovac — баннер"
-                  className="absolute inset-0 h-full w-full object-cover"
-                  loading="lazy"
-                />
-              </div>
+            <div className="flex items-center gap-3">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleBackToMain}
+                className="gap-2"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Назад
+              </Button>
+              <h4 className="font-semibold">{selectedSubcategory.title}</h4>
+            </div>
 
-              <div className="flex items-center gap-3">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleBackToMain}
-                  className="gap-2"
-                >
-                  <ArrowLeft className="w-4 h-4" />
-                  Назад
-                </Button>
-                <h4 className="font-semibold">{selectedSubcategory.title}</h4>
-              </div>
-
-              <p className="text-sm text-muted-foreground">
-                {selectedSubcategory.description}
-              </p>
+            <p className="text-sm text-muted-foreground">
+              {selectedSubcategory.description}
+            </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {selectedSubcategory.products.map((product) => {
@@ -149,9 +138,8 @@ export function DisinfectionEquipmentCatalog({ onSubcategoryChange }: Disinfecti
                   </button>
                 );
               })}
-             </div>
             </div>
-           </motion.div>
+          </motion.div>
         )}
       </AnimatePresence>
 

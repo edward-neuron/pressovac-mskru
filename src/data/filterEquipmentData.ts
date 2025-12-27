@@ -97,7 +97,7 @@ export const filterEquipmentData: FilterEquipmentCategory = {
       products: [
         {
           id: 'g3f7-kit-fu50-fu100',
-          name: 'G3+F7 Комплект фильтров для FU-50 / FU-100',
+          name: 'G3+F7 фильтры FU-50 / FU-100',
           article: '207.002.001',
           description: 'Комплект фильтров класса G3 + F7 для установок FU-50 / FU-100.',
           features: ['Класс фильтра: G3 + F7'],

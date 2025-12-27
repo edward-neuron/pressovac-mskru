@@ -98,7 +98,7 @@ export const filterEquipmentData: FilterEquipmentCategory = {
         {
           id: 'g3f7-kit-fu50-fu100',
           name: 'G3+F7 Комплект фильтров для FU-50 / FU-100',
-          article: '',
+          article: '207.002.001',
           description: 'Комплект фильтров класса G3 + F7 для установок FU-50 / FU-100.',
           features: ['Класс фильтра: G3 + F7'],
           specifications: {
@@ -110,7 +110,7 @@ export const filterEquipmentData: FilterEquipmentCategory = {
         {
           id: 'g3f7-pocket-sfu50',
           name: 'G3 + F7 карманный фильтр для SFU-50',
-          article: '',
+          article: '207.002.012',
           description: 'Карманный фильтр класса G3 + F7 для установки SFU-50.',
           features: ['Класс фильтра: G3 + F7'],
           specifications: {

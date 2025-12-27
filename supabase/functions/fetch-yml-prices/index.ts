@@ -5,7 +5,16 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const YML_URL = "https://shop-pressovac.ru/yml-export/02513391f110e59858a2403c4b3bed42/?full=1";
+const YML_BASE_URL = "https://shop-pressovac.ru/yml-export/02513391f110e59858a2403c4b3bed42/";
+
+function buildYmlUrl(): string {
+  // Некоторые серверы/прокси могут кешировать YML.
+  // Добавляем cache-buster, чтобы всегда получать самые свежие цены.
+  const url = new URL(YML_BASE_URL);
+  url.searchParams.set("full", "1");
+  url.searchParams.set("_", Date.now().toString());
+  return url.toString();
+}
 
 interface YmlProduct {
   id: string;
@@ -83,11 +92,14 @@ serve(async (req) => {
   }
 
   try {
-    console.log("Fetching YML from:", YML_URL);
+    const ymlUrl = buildYmlUrl();
+    console.log("Fetching YML from:", ymlUrl);
     
-    const response = await fetch(YML_URL, {
+    const response = await fetch(ymlUrl, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; Pressovac/1.0)'
+        'User-Agent': 'Mozilla/5.0 (compatible; Pressovac/1.0)',
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache'
       }
     });
     

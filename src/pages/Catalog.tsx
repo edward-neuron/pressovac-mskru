@@ -9,7 +9,7 @@ import { FilterEquipmentCatalog } from '@/components/catalog/FilterEquipmentCata
 import { DisinfectionEquipmentCatalog } from '@/components/catalog/DisinfectionEquipmentCatalog';
 import { VideoInspectionCatalog } from '@/components/catalog/VideoInspectionCatalog';
 import { CompressorEquipmentCatalog } from '@/components/catalog/CompressorEquipmentCatalog';
-import brushEquipmentCombined from '@/assets/brush-equipment-combined.png';
+import brushMachinesMain from '@/assets/brush-machines-main-1-1.png';
 import flexibleShafts from '@/assets/flexible-shafts.png';
 import dryCleaningMachines from '@/assets/dry-cleaning-machines.png';
 import greaseRemovalMachines from '@/assets/grease-removal-machines.png';
@@ -22,7 +22,7 @@ import videoInspectionBannerV2 from '@/assets/video-inspection-banner-v2.png';
 import compressorSquareV2 from '@/assets/compressor-square-v2.png';
 
 const brushEquipmentImages: Record<string, string> = {
-  'default': brushEquipmentCombined,
+  'default': brushMachinesMain,
   'flexible-shafts': flexibleShafts,
   'dry-cleaning': dryCleaningMachines,
   'grease-removal': greaseRemovalMachines,

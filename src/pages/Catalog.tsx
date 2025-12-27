@@ -9,12 +9,17 @@ import brushEquipmentCombined from '@/assets/brush-equipment-combined.png';
 import flexibleShafts from '@/assets/flexible-shafts.png';
 import dryCleaningMachines from '@/assets/dry-cleaning-machines.png';
 import greaseRemovalMachines from '@/assets/grease-removal-machines.png';
+import vacuumEquipmentSquare from '@/assets/vacuum-equipment-square.png';
 
 const brushEquipmentImages: Record<string, string> = {
   'default': brushEquipmentCombined,
   'flexible-shafts': flexibleShafts,
   'dry-cleaning': dryCleaningMachines,
   'grease-removal': greaseRemovalMachines,
+};
+
+const vacuumEquipmentImages: Record<string, string> = {
+  'default': vacuumEquipmentSquare,
 };
 
 const categories = [
@@ -132,7 +137,7 @@ const Catalog = () => {
               >
                 <div className="grid md:grid-cols-3 gap-0 md:items-stretch">
                   {/* Изображение слева */}
-                  <div className={`${category.id === 'brush-machines' ? 'bg-muted' : `bg-gradient-to-br ${category.image}`} flex items-center justify-center relative overflow-hidden min-h-[280px] md:min-h-0`}>
+                  <div className={`${(category.id === 'brush-machines' || category.id === 'vacuum') ? 'bg-muted' : `bg-gradient-to-br ${category.image}`} flex items-center justify-center relative overflow-hidden min-h-[280px] md:min-h-0`}>
                     {category.id === 'brush-machines' ? (
                       <motion.img 
                         key={brushEquipmentImage}
@@ -142,6 +147,12 @@ const Catalog = () => {
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.3 }}
+                      />
+                    ) : category.id === 'vacuum' ? (
+                      <img 
+                        src={vacuumEquipmentImages['default']} 
+                        alt={category.title}
+                        className="w-full h-full object-cover object-center"
                       />
                     ) : (
                       <category.icon className="w-24 h-24 text-white/90" />

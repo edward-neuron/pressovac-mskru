@@ -149,8 +149,9 @@ export function DisinfectionEquipmentCatalog({ onSubcategoryChange }: Disinfecti
                   </button>
                 );
               })}
+             </div>
             </div>
-          </motion.div>
+           </motion.div>
         )}
       </AnimatePresence>
 

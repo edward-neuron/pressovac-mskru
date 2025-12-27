@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { FileText, ArrowLeft, ShoppingCart } from 'lucide-react';
-import { Product } from '@/data/brushMachinesData';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
@@ -12,8 +11,25 @@ import { Link } from 'react-router-dom';
 import { ShopRedirectModal } from './ShopRedirectModal';
 import { useYmlPrices } from '@/hooks/useYmlPrices';
 
+// Общий тип для продуктов из разных каталогов
+export interface DrawerProduct {
+  id: string;
+  name: string;
+  article?: string;
+  description: string;
+  image?: string;
+  shopUrl?: string;
+  price?: string;
+  pricePrefix?: string;
+  features?: string[];
+  specifications?: Record<string, string>;
+  brochureUrl?: string;
+  availableLengths?: string[];
+  vendorCodePattern?: string;
+}
+
 interface ProductDrawerProps {
-  product: Product | null;
+  product: DrawerProduct | null;
   isOpen: boolean;
   onClose: () => void;
   onBack?: () => void;
@@ -107,30 +123,34 @@ export const ProductDrawer = ({
           )}
 
           {/* Features */}
-          <div>
-            <h4 className="font-semibold mb-3">Особенности</h4>
-            <ul className="space-y-2">
-              {product.features.map((feature, index) => (
-                <li key={index} className="flex items-start gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
-                  <span className="text-muted-foreground text-sm">{feature}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {product.features && product.features.length > 0 && (
+            <div>
+              <h4 className="font-semibold mb-3">Особенности</h4>
+              <ul className="space-y-2">
+                {product.features.map((feature, index) => (
+                  <li key={index} className="flex items-start gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
+                    <span className="text-muted-foreground text-sm">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {/* Specifications */}
-          <div>
-            <h4 className="font-semibold mb-3">Технические характеристики</h4>
-            <div className="space-y-2">
-              {Object.entries(product.specifications).map(([key, value]) => (
-                <div key={key} className="flex justify-between p-3 bg-muted/50 rounded-lg">
-                  <span className="text-muted-foreground text-sm">{key}</span>
-                  <span className="font-medium text-sm">{value}</span>
-                </div>
-              ))}
+          {product.specifications && Object.keys(product.specifications).length > 0 && (
+            <div>
+              <h4 className="font-semibold mb-3">Технические характеристики</h4>
+              <div className="space-y-2">
+                {Object.entries(product.specifications).map(([key, value]) => (
+                  <div key={key} className="flex justify-between p-3 bg-muted/50 rounded-lg">
+                    <span className="text-muted-foreground text-sm">{key}</span>
+                    <span className="font-medium text-sm">{value}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Actions */}
           <div className="flex flex-col gap-3 pt-4 border-t border-border">

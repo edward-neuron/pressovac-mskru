@@ -8,6 +8,7 @@ import { VacuumEquipmentCatalog } from '@/components/catalog/VacuumEquipmentCata
 import { FilterEquipmentCatalog } from '@/components/catalog/FilterEquipmentCatalog';
 import { DisinfectionEquipmentCatalog } from '@/components/catalog/DisinfectionEquipmentCatalog';
 import { VideoInspectionCatalog } from '@/components/catalog/VideoInspectionCatalog';
+import { CompressorEquipmentCatalog } from '@/components/catalog/CompressorEquipmentCatalog';
 import brushEquipmentCombined from '@/assets/brush-equipment-combined.png';
 import flexibleShafts from '@/assets/flexible-shafts.png';
 import dryCleaningMachines from '@/assets/dry-cleaning-machines.png';
@@ -15,9 +16,8 @@ import greaseRemovalMachines from '@/assets/grease-removal-machines.png';
 import vacuumEquipmentSquare from '@/assets/vacuum-equipment-square.png';
 import filterEquipmentSquare from '@/assets/filter-equipment-square.png';
 import disinfectionEquipmentSquare from '@/assets/disinfection-equipment-square.png';
-import disinfectionEquipmentBanner from '@/assets/disinfection-equipment-banner.png';
 import videoInspectionSquare from '@/assets/video-inspection-square.png';
-import videoInspectionBanner from '@/assets/video-inspection-banner.png';
+import k370Square from '@/assets/products/k-370-premium-car-square.png';
 
 const brushEquipmentImages: Record<string, string> = {
   'default': brushEquipmentCombined,
@@ -36,12 +36,14 @@ const filterEquipmentImages: Record<string, string> = {
 
 const disinfectionEquipmentImages: Record<string, string> = {
   'default': disinfectionEquipmentSquare,
-  'detail': disinfectionEquipmentBanner,
 };
 
 const videoInspectionImages: Record<string, string> = {
   'default': videoInspectionSquare,
-  'detail': videoInspectionBanner,
+};
+
+const compressorEquipmentImages: Record<string, string> = {
+  'default': k370Square,
 };
 
 const categories = [
@@ -90,7 +92,7 @@ const categories = [
     icon: Settings,
     title: 'Компрессорное оборудование',
     description: 'Компрессоры и пневматическое оборудование для работы щёточных машин и других устройств очистки.',
-    products: ['Pressovac C100', 'Pressovac C200'],
+    hasDetailedCatalog: true,
     image: 'from-sky-500 to-sky-600',
   },
   {
@@ -105,8 +107,6 @@ const categories = [
 
 const Catalog = () => {
   const [brushEquipmentImage, setBrushEquipmentImage] = useState<string>('default');
-  const [disinfectionEquipmentImage, setDisinfectionEquipmentImage] = useState<'default' | 'detail'>('default');
-  const [videoInspectionImage, setVideoInspectionImage] = useState<'default' | 'detail'>('default');
 
   const handleSubcategoryChange = (subcategoryId: string | null) => {
     if (!subcategoryId) {
@@ -118,14 +118,6 @@ const Catalog = () => {
     } else if (subcategoryId === 'grease-removal') {
       setBrushEquipmentImage('grease-removal');
     }
-  };
-
-  const handleDisinfectionSubcategoryChange = (subcategoryId: string | null) => {
-    setDisinfectionEquipmentImage(subcategoryId ? 'detail' : 'default');
-  };
-
-  const handleVideoSubcategoryChange = (subcategoryId: string | null) => {
-    setVideoInspectionImage(subcategoryId ? 'detail' : 'default');
   };
 
   return (
@@ -169,7 +161,7 @@ const Catalog = () => {
               >
                 <div className="grid md:grid-cols-3 gap-0 md:items-stretch">
                   {/* Изображение слева */}
-                  <div className={`${(category.id === 'brush-machines' || category.id === 'vacuum' || category.id === 'filters' || category.id === 'disinfection' || category.id === 'video') ? 'bg-muted' : `bg-gradient-to-br ${category.image}`} flex items-center justify-center relative overflow-hidden min-h-[280px] md:min-h-0`}>
+                  <div className={`${(category.id === 'brush-machines' || category.id === 'vacuum' || category.id === 'filters' || category.id === 'disinfection' || category.id === 'video' || category.id === 'compressor') ? 'bg-muted' : `bg-gradient-to-br ${category.image}`} flex items-center justify-center relative overflow-hidden min-h-[280px] md:min-h-0`}>
                     {category.id === 'brush-machines' ? (
                       <motion.img 
                         key={brushEquipmentImage}
@@ -185,24 +177,35 @@ const Catalog = () => {
                         src={vacuumEquipmentImages['default']} 
                         alt={category.title}
                         className="w-full h-full object-cover object-center"
+                        loading="lazy"
                       />
                     ) : category.id === 'filters' ? (
                       <img 
                         src={filterEquipmentImages['default']} 
                         alt={category.title}
                         className="w-full h-full object-cover object-center"
+                        loading="lazy"
                       />
                     ) : category.id === 'disinfection' ? (
                       <img 
-                        src={disinfectionEquipmentImages[disinfectionEquipmentImage]} 
+                        src={disinfectionEquipmentImages['default']} 
                         alt={category.title}
                         className="w-full h-full object-cover object-center"
+                        loading="lazy"
                       />
                     ) : category.id === 'video' ? (
                       <img 
-                        src={videoInspectionImages[videoInspectionImage]} 
+                        src={videoInspectionImages['default']} 
                         alt={category.title}
                         className="w-full h-full object-cover object-center"
+                        loading="lazy"
+                      />
+                    ) : category.id === 'compressor' ? (
+                      <img 
+                        src={compressorEquipmentImages['default']} 
+                        alt="Компрессор Pressovac K-370 Premium Car"
+                        className="w-full h-full object-cover object-center"
+                        loading="lazy"
                       />
                     ) : (
                       <category.icon className="w-24 h-24 text-white/90" />
@@ -226,10 +229,13 @@ const Catalog = () => {
                           <FilterEquipmentCatalog />
                         )}
                         {category.id === 'disinfection' && (
-                          <DisinfectionEquipmentCatalog onSubcategoryChange={handleDisinfectionSubcategoryChange} />
+                          <DisinfectionEquipmentCatalog />
                         )}
                         {category.id === 'video' && (
-                          <VideoInspectionCatalog onSubcategoryChange={handleVideoSubcategoryChange} />
+                          <VideoInspectionCatalog />
+                        )}
+                        {category.id === 'compressor' && (
+                          <CompressorEquipmentCatalog />
                         )}
                       </div>
                     ) : (

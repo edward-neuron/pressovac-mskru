@@ -25,7 +25,9 @@ interface YmlProduct {
   picture?: string;
 }
 
-// Цены в YML уже указаны с НДС, берём их напрямую без модификаций
+// В YML выгружается базовая цена без торговой наценки магазина.
+// Магазин shop-pressovac.ru добавляет наценку 20% к базовой цене.
+// Поэтому умножаем цены из YML на 1.2 для получения итоговой стоимости.
 
 function parseYmlProducts(xmlText: string): YmlProduct[] {
   const products: YmlProduct[] = [];
@@ -76,13 +78,14 @@ function parseYmlProducts(xmlText: string): YmlProduct[] {
   return products;
 }
 
-function formatPrice(price: number): string {
-  // Цены в YML уже с НДС, берём напрямую
+function formatPrice(basePrice: number): string {
+  // Добавляем торговую наценку магазина 20% к базовой цене из YML
+  const finalPrice = Math.round(basePrice * 1.2);
   return new Intl.NumberFormat('ru-RU', {
     style: 'decimal',
     minimumFractionDigits: 0,
     maximumFractionDigits: 0
-  }).format(price) + ' ₽';
+  }).format(finalPrice) + ' ₽';
 }
 
 serve(async (req) => {

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
-import { Phone, Mail, MapPin, Clock, Send, FileText, MessageSquare, CheckCircle, ArrowRight } from 'lucide-react';
+import { Phone, Mail, MapPin, Clock, Send, FileText, MessageSquare, CheckCircle, ArrowRight, User, PhoneCall, Building } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const contactInfo = [
@@ -369,26 +369,79 @@ const Contacts = () => {
         </section>
       )}
 
-      {/* Office Card */}
+      {/* Company Info & Expert Consultant */}
       <section className="section-padding">
         <div className="container-custom">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="max-w-2xl mx-auto p-8 rounded-2xl bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/20 text-center"
-          >
-            <h3 className="font-display font-bold text-2xl mb-3">Офис продаж</h3>
-            <p className="text-muted-foreground mb-6">
-              Приглашаем вас посетить наш офис для демонстрации оборудования и личной консультации со специалистом
-            </p>
-            <a href="tel:+74996772010">
-              <Button size="lg">
-                <Phone className="w-5 h-5" />
-                Записаться на демонстрацию
-              </Button>
-            </a>
-          </motion.div>
+          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            {/* Legal Address */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="p-8 rounded-2xl bg-card border border-border"
+            >
+              <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-6">
+                <Building className="w-7 h-7 text-primary" />
+              </div>
+              <h3 className="font-display font-bold text-xl mb-3">Юридический адрес</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                123308, Россия, г. Москва,<br />
+                3-й Силикатный проезд, д. 4, кор. 1
+              </p>
+              <p className="text-sm text-muted-foreground mt-4">
+                ООО «Веконт-М»
+              </p>
+            </motion.div>
+
+            {/* Expert Consultant */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="p-8 rounded-2xl bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/20"
+            >
+              <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-6">
+                <User className="w-7 h-7 text-primary" />
+              </div>
+              <h3 className="font-display font-bold text-xl mb-4">Консультант-эксперт</h3>
+              <ul className="space-y-2 text-muted-foreground mb-6">
+                <li className="flex items-start gap-2">
+                  <CheckCircle className="w-4 h-4 text-primary mt-1 flex-shrink-0" />
+                  <span>Опыт профессионального трубочиста</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle className="w-4 h-4 text-primary mt-1 flex-shrink-0" />
+                  <span>Знание бизнеса по очистке</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle className="w-4 h-4 text-primary mt-1 flex-shrink-0" />
+                  <span>Консультации новичков и профессионалов</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle className="w-4 h-4 text-primary mt-1 flex-shrink-0" />
+                  <span>Аудит, выявление боли, решение задач</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle className="w-4 h-4 text-primary mt-1 flex-shrink-0" />
+                  <span>Консультации по подбору оборудования</span>
+                </li>
+              </ul>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <a href="tel:+79258534974" className="flex-1">
+                  <Button size="lg" className="w-full">
+                    <Phone className="w-5 h-5" />
+                    Позвонить
+                  </Button>
+                </a>
+                <a href="tel:+74996772010" className="flex-1">
+                  <Button variant="outline" size="lg" className="w-full">
+                    <PhoneCall className="w-5 h-5" />
+                    Обратный звонок
+                  </Button>
+                </a>
+              </div>
+            </motion.div>
+          </div>
         </div>
       </section>
     </Layout>

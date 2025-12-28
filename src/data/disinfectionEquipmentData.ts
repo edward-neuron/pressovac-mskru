@@ -6,6 +6,7 @@ import disinfectionNozzles31 from '@/assets/disinfection-nozzles-3-1.png';
 
 // Импорт изображений продуктов (3:1)
 import dTanksImage from '@/assets/products/d-tanks.png';
+import dNozzleImage from '@/assets/products/d-nozzle.png';
 
 export interface DisinfectionProduct {
   id: string;
@@ -108,7 +109,8 @@ export const disinfectionEquipmentData: DisinfectionEquipmentCategory = {
           specifications: {
             'Тип': 'Насадка',
             'Страна': 'Финляндия'
-          }
+          },
+          image: dNozzleImage
         }
       ]
     }

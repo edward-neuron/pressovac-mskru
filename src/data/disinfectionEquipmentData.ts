@@ -1,5 +1,8 @@
 // Данные для раздела "Оборудование для дезинфекции"
 
+// Импорт изображений подкатегорий (3:1)
+import disinfectionTanks31 from '@/assets/disinfection-tanks-3-1.png';
+
 export interface DisinfectionProduct {
   id: string;
   name: string;
@@ -16,6 +19,7 @@ export interface DisinfectionSubcategory {
   id: string;
   title: string;
   description: string;
+  image?: string;
   products: DisinfectionProduct[];
 }
 
@@ -29,6 +33,7 @@ export const disinfectionEquipmentData: DisinfectionEquipmentCategory = {
       id: 'disinfection-tanks',
       title: 'Дезинфекционные баки',
       description: 'Профессиональные баки для дезинфекции вентиляционных систем',
+      image: disinfectionTanks31,
       products: [
         {
           id: 'disinfection-tank-5l',

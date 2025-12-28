@@ -13,6 +13,7 @@ import Articles from "./pages/Articles";
 import Contacts from "./pages/Contacts";
 import Inquiry from "./pages/Inquiry";
 import Delivery from "./pages/Delivery";
+import Privacy from "./pages/Privacy";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ const App = () => (
           <Route path="/contacts" element={<Contacts />} />
           <Route path="/inquiry" element={<Inquiry />} />
           <Route path="/delivery" element={<Delivery />} />
+          <Route path="/privacy" element={<Privacy />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

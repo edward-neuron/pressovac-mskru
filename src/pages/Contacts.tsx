@@ -426,14 +426,14 @@ const Contacts = () => {
                   <span>Консультации по подбору оборудования</span>
                 </li>
               </ul>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <a href="tel:+79258534974" className="flex-1">
+              <div className="flex flex-col gap-3">
+                <a href="tel:+79258534974">
                   <Button size="lg" className="w-full">
                     <Phone className="w-5 h-5" />
                     Позвонить
                   </Button>
                 </a>
-                <a href="tel:+74996772010" className="flex-1">
+                <a href="tel:+74996772010">
                   <Button variant="outline" size="lg" className="w-full">
                     <PhoneCall className="w-5 h-5" />
                     Обратный звонок

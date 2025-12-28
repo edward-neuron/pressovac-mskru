@@ -212,7 +212,7 @@ const Catalog = () => {
                       (category.id === 'video' && videoImage !== 'default')
                         ? 'bg-muted min-h-[320px] md:min-h-0'
                         : category.id === 'accessories'
-                          ? 'bg-muted aspect-[3/1] self-start md:self-start'
+                          ? 'bg-muted min-h-[320px] md:min-h-0'
                           : (category.id === 'brush-machines' || category.id === 'vacuum' || category.id === 'filters' || category.id === 'disinfection' || category.id === 'video' || category.id === 'compressor')
                             ? 'bg-muted aspect-square self-start md:self-start'
                             : `bg-gradient-to-br ${category.image} min-h-[280px] md:min-h-0`
@@ -279,7 +279,7 @@ const Catalog = () => {
                       <img 
                         src={accessoriesImages['default']} 
                         alt="Комплектующие и аксессуары Pressovac"
-                        className="w-full h-full object-cover object-center"
+                        className="w-full h-full object-contain object-center"
                         loading="lazy"
                       />
                     ) : (

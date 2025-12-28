@@ -246,7 +246,7 @@ const Privacy = () => {
           </p>
 
           <p className="text-muted-foreground mb-6">
-            Актуальная версия Политики в свободном доступе расположена в сети Интернет по адресу: <a href="https://pressovac-msk.ru/privacy_policy/" className="text-primary hover:underline">https://pressovac-msk.ru/privacy_policy/</a>
+            Актуальная версия Политики в свободном доступе расположена в сети Интернет по адресу: <a href="https://pressovac-msk.ru/privacy" className="text-primary hover:underline">https://pressovac-msk.ru/privacy</a>
           </p>
 
           <div className="border-t pt-6 mt-8">

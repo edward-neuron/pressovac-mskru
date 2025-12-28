@@ -1,5 +1,7 @@
 // Данные для раздела "Фильтрующие установки Pressovac"
 
+// Импорт изображений продуктов (3:1)
+import f50Image from '@/assets/products/f-50.png';
 export interface FilterProduct {
   id: string;
   name: string;
@@ -45,7 +47,8 @@ export const filterEquipmentData: FilterEquipmentCategory = {
             'Производительность': '4 300/5 000 м³/час',
             'Класс фильтра': 'G3 + F7',
             'Страна': 'Финляндия'
-          }
+          },
+          image: f50Image
         },
         {
           id: 'f-100',

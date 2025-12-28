@@ -338,7 +338,6 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Длина вала: 40 м',
             'Взрывозащищённое исполнение ATEX',
             'Пневматический привод',
-            'Искробезопасность',
             'Сертификат ATEX'
           ],
           specifications: {

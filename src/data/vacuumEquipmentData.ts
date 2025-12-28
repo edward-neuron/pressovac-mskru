@@ -3,6 +3,9 @@
 // Импорт изображений подкатегорий (3:1)
 import vacuumSu31 from '@/assets/vacuum-su-3-1.png';
 
+// Импорт изображений продуктов (3:1)
+import suImage from '@/assets/products/su.png';
+
 export interface VacuumProduct {
   id: string;
   name: string;
@@ -51,7 +54,8 @@ export const vacuumEquipmentData: VacuumEquipmentCategory = {
             'Мощность': '1,1 кВт',
             'Напряжение': '380 В',
             'Страна': 'Финляндия'
-          }
+          },
+          image: suImage
         },
         {
           id: 'su-24',
@@ -69,7 +73,8 @@ export const vacuumEquipmentData: VacuumEquipmentCategory = {
             'Мощность': '1,5 кВт',
             'Напряжение': '380 В',
             'Страна': 'Финляндия'
-          }
+          },
+          image: suImage
         },
         {
           id: 'su-2-2',

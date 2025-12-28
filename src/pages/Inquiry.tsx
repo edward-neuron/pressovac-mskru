@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
-import { FileText, Send, CheckCircle, Loader2 } from 'lucide-react';
+import { FileText, Send, CheckCircle, Loader2, Paperclip, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { Link } from 'react-router-dom';
 
 interface FormData {
   company: string;
@@ -18,10 +20,13 @@ interface FormData {
   budget: string;
   comments: string;
   needsTraining: boolean;
+  privacyAccepted: boolean;
 }
 
 const Inquiry = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [attachment, setAttachment] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState<FormData>({
     company: '',
     contactPerson: '',
@@ -34,6 +39,7 @@ const Inquiry = () => {
     budget: '',
     comments: '',
     needsTraining: false,
+    privacyAccepted: false,
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -51,6 +57,24 @@ const Inquiry = () => {
     });
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error('Файл слишком большой. Максимальный размер: 10 МБ');
+        return;
+      }
+      setAttachment(file);
+    }
+  };
+
+  const removeAttachment = () => {
+    setAttachment(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -59,16 +83,43 @@ const Inquiry = () => {
       return;
     }
 
+    if (!formData.privacyAccepted) {
+      toast.error('Необходимо согласие с политикой обработки персональных данных');
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
+      let attachmentUrl: string | undefined;
+
+      // Upload file if present
+      if (attachment) {
+        const fileExt = attachment.name.split('.').pop();
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+        
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('inquiry-attachments')
+          .upload(fileName, attachment);
+
+        if (uploadError) {
+          console.error('File upload error:', uploadError);
+          toast.error('Ошибка загрузки файла');
+        } else {
+          const { data: urlData } = supabase.storage
+            .from('inquiry-attachments')
+            .getPublicUrl(fileName);
+          attachmentUrl = urlData.publicUrl;
+        }
+      }
+
       const { data, error } = await supabase.functions.invoke('send-inquiry', {
-        body: formData,
+        body: { ...formData, attachmentUrl },
       });
 
       if (error) throw error;
 
-      toast.success('Заявка успешно отправлена! Мы свяжемся с вами в ближайшее время.');
+      toast.success('Заявка успешно отправлена! Проверьте почту для подтверждения.');
       
       // Reset form
       setFormData({
@@ -83,7 +134,12 @@ const Inquiry = () => {
         budget: '',
         comments: '',
         needsTraining: false,
+        privacyAccepted: false,
       });
+      setAttachment(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     } catch (error: any) {
       console.error('Error submitting inquiry:', error);
       toast.error('Ошибка при отправке заявки. Попробуйте позже.');
@@ -313,10 +369,66 @@ const Inquiry = () => {
                         Интересует обучение работе с оборудованием
                       </span>
                     </label>
+
+                    {/* File attachment */}
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Прикрепить файл (реквизиты, ТЗ и др.)</label>
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        onChange={handleFileChange}
+                        className="hidden"
+                        accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
+                      />
+                      {attachment ? (
+                        <div className="flex items-center gap-3 p-3 rounded-lg bg-background border border-border">
+                          <Paperclip className="w-4 h-4 text-muted-foreground" />
+                          <span className="text-sm flex-1 truncate">{attachment.name}</span>
+                          <button
+                            type="button"
+                            onClick={removeAttachment}
+                            className="text-muted-foreground hover:text-destructive transition-colors"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      ) : (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => fileInputRef.current?.click()}
+                          className="w-full"
+                        >
+                          <Paperclip className="w-4 h-4 mr-2" />
+                          Выбрать файл
+                        </Button>
+                      )}
+                      <p className="text-xs text-muted-foreground mt-1">
+                        PDF, DOC, DOCX, XLS, XLSX, JPG, PNG. Максимум 10 МБ
+                      </p>
+                    </div>
                   </div>
                 </div>
 
-                <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
+                {/* Privacy consent */}
+                <div className="flex items-start gap-3 p-4 rounded-lg bg-muted/50 border border-border">
+                  <Checkbox
+                    id="privacy"
+                    checked={formData.privacyAccepted}
+                    onCheckedChange={(checked) => 
+                      setFormData(prev => ({ ...prev, privacyAccepted: checked === true }))
+                    }
+                    className="mt-0.5"
+                  />
+                  <label htmlFor="privacy" className="text-sm cursor-pointer">
+                    Я согласен с{' '}
+                    <Link to="/privacy" className="text-primary hover:underline">
+                      Политикой обработки персональных данных
+                    </Link>
+                  </label>
+                </div>
+
+                <Button type="submit" size="lg" className="w-full" disabled={isSubmitting || !formData.privacyAccepted}>
                   {isSubmitting ? (
                     <>
                       <Loader2 className="w-5 h-5 animate-spin" />
@@ -329,10 +441,6 @@ const Inquiry = () => {
                     </>
                   )}
                 </Button>
-
-                <p className="text-sm text-muted-foreground text-center">
-                  Нажимая кнопку, вы соглашаетесь с обработкой персональных данных
-                </p>
               </form>
             </motion.div>
 

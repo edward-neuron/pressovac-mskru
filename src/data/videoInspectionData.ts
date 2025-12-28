@@ -10,6 +10,7 @@ import vs250Image from '@/assets/products/vs-250.png';
 import vs25030mImage from '@/assets/products/vs-250-30m.png';
 import vs350Image from '@/assets/products/vs-350.png';
 import vs700Image from '@/assets/products/vs-700.png';
+import l200Image from '@/assets/products/l-200.png';
 
 export interface VideoInspectionProduct {
   id: string;
@@ -161,7 +162,8 @@ export const videoInspectionData: VideoInspectionCategory = {
           specifications: {
             'Совместимость': 'Все модели VS',
             'Страна': 'Финляндия'
-          }
+          },
+          image: l200Image
         }
       ]
     },

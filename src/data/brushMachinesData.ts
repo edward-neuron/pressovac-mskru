@@ -10,6 +10,7 @@ import fsStandartImage from '@/assets/products/fs-standart.png';
 import fsSteelImage from '@/assets/products/fs-steel.png';
 import scCombi8Image from '@/assets/products/sc-combi-8.png';
 import edw15Image from '@/assets/products/edw-15.png';
+import pdwImage from '@/assets/products/pdw.png';
 
 // Импорт изображений подкатегорий (3:1)
 import flexibleShafts31 from '@/assets/flexible-shafts-3-1.png';
@@ -275,7 +276,8 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Макс. диаметр': 'Ø1200 мм',
             'Тип привода': 'Пневматический',
             'Страна': 'Финляндия'
-          }
+          },
+          image: pdwImage
         },
         {
           id: 'grease-pneumatic-pdw30',
@@ -293,7 +295,8 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Макс. диаметр': 'Ø1200 мм',
             'Тип привода': 'Пневматический',
             'Страна': 'Финляндия'
-          }
+          },
+          image: pdwImage
         },
         {
           id: 'grease-pneumatic-pdw40',
@@ -311,7 +314,8 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Макс. диаметр': 'Ø1200 мм',
             'Тип привода': 'Пневматический',
             'Страна': 'Финляндия'
-          }
+          },
+          image: pdwImage
         }
       ]
     }

@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
 import { Phone, Mail, MapPin, Clock, Send, FileText, MessageSquare, CheckCircle, ArrowRight, User, PhoneCall, Building } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-
+import CallbackFormModal from '@/components/CallbackFormModal';
 const contactInfo = [
   { icon: Phone, label: 'Телефон', value: '(499) 677-2010', href: 'tel:+74996772010' },
   { icon: Mail, label: 'Email', value: 'sales@pressovac-moscow.ru', href: 'mailto:sales@pressovac-moscow.ru' },
@@ -433,12 +433,12 @@ const Contacts = () => {
                     Позвонить
                   </Button>
                 </a>
-                <a href="tel:+74996772010">
+                <CallbackFormModal>
                   <Button variant="outline" size="lg" className="w-full">
                     <PhoneCall className="w-5 h-5" />
                     Обратный звонок
                   </Button>
-                </a>
+                </CallbackFormModal>
               </div>
             </motion.div>
           </div>

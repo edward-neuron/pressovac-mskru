@@ -1,9 +1,100 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
-import { FileText, Send, CheckCircle } from 'lucide-react';
+import { FileText, Send, CheckCircle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
+
+interface FormData {
+  company: string;
+  contactPerson: string;
+  phone: string;
+  email: string;
+  businessType: string;
+  experience: string;
+  ventilationTypes: string[];
+  equipmentTypes: string[];
+  budget: string;
+  comments: string;
+  needsTraining: boolean;
+}
 
 const Inquiry = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState<FormData>({
+    company: '',
+    contactPerson: '',
+    phone: '',
+    email: '',
+    businessType: '',
+    experience: '',
+    ventilationTypes: [],
+    equipmentTypes: [],
+    budget: '',
+    comments: '',
+    needsTraining: false,
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleCheckboxChange = (type: 'ventilationTypes' | 'equipmentTypes', value: string) => {
+    setFormData(prev => {
+      const current = prev[type];
+      const updated = current.includes(value)
+        ? current.filter(item => item !== value)
+        : [...current, value];
+      return { ...prev, [type]: updated };
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.contactPerson || !formData.phone || !formData.email) {
+      toast.error('Заполните обязательные поля');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const { data, error } = await supabase.functions.invoke('send-inquiry', {
+        body: formData,
+      });
+
+      if (error) throw error;
+
+      toast.success('Заявка успешно отправлена! Мы свяжемся с вами в ближайшее время.');
+      
+      // Reset form
+      setFormData({
+        company: '',
+        contactPerson: '',
+        phone: '',
+        email: '',
+        businessType: '',
+        experience: '',
+        ventilationTypes: [],
+        equipmentTypes: [],
+        budget: '',
+        comments: '',
+        needsTraining: false,
+      });
+    } catch (error: any) {
+      console.error('Error submitting inquiry:', error);
+      toast.error('Ошибка при отправке заявки. Попробуйте позже.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const ventilationOptions = ['Приточная вентиляция', 'Вытяжная вентиляция', 'Жировые вытяжки', 'Кондиционирование', 'Промышленная вентиляция', 'Другое'];
+  const equipmentOptions = ['Щёточные машины', 'Вакуумные установки', 'Фильтрующие установки', 'Дезинфекция', 'Видеоинспекция', 'Полный комплект'];
+
   return (
     <Layout>
       {/* Hero */}
@@ -48,7 +139,7 @@ const Inquiry = () => {
                 </div>
               </div>
 
-              <form className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Contact Info */}
                 <div>
                   <h3 className="font-semibold mb-4 pb-2 border-b border-border">Контактная информация</h3>
@@ -57,6 +148,9 @@ const Inquiry = () => {
                       <label className="block text-sm font-medium mb-2">Компания</label>
                       <input
                         type="text"
+                        name="company"
+                        value={formData.company}
+                        onChange={handleInputChange}
                         className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:border-primary transition-colors"
                         placeholder="Название компании"
                       />
@@ -65,6 +159,9 @@ const Inquiry = () => {
                       <label className="block text-sm font-medium mb-2">Контактное лицо *</label>
                       <input
                         type="text"
+                        name="contactPerson"
+                        value={formData.contactPerson}
+                        onChange={handleInputChange}
                         required
                         className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:border-primary transition-colors"
                         placeholder="ФИО"
@@ -74,6 +171,9 @@ const Inquiry = () => {
                       <label className="block text-sm font-medium mb-2">Телефон *</label>
                       <input
                         type="tel"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleInputChange}
                         required
                         className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:border-primary transition-colors"
                         placeholder="+7 (___) ___-____"
@@ -83,6 +183,9 @@ const Inquiry = () => {
                       <label className="block text-sm font-medium mb-2">Email *</label>
                       <input
                         type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
                         required
                         className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:border-primary transition-colors"
                         placeholder="email@company.com"
@@ -97,23 +200,33 @@ const Inquiry = () => {
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium mb-2">Сфера деятельности</label>
-                      <select className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:border-primary transition-colors">
-                        <option>Выберите сферу</option>
-                        <option>Клининговая компания</option>
-                        <option>Обслуживание зданий</option>
-                        <option>Ресторанный бизнес</option>
-                        <option>Промышленное производство</option>
-                        <option>Другое</option>
+                      <select 
+                        name="businessType"
+                        value={formData.businessType}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:border-primary transition-colors"
+                      >
+                        <option value="">Выберите сферу</option>
+                        <option value="Клининговая компания">Клининговая компания</option>
+                        <option value="Обслуживание зданий">Обслуживание зданий</option>
+                        <option value="Ресторанный бизнес">Ресторанный бизнес</option>
+                        <option value="Промышленное производство">Промышленное производство</option>
+                        <option value="Другое">Другое</option>
                       </select>
                     </div>
                     <div>
                       <label className="block text-sm font-medium mb-2">Опыт работы в сфере очистки вентиляции</label>
-                      <select className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:border-primary transition-colors">
-                        <option>Выберите опыт</option>
-                        <option>Нет опыта, начинаю с нуля</option>
-                        <option>Менее 1 года</option>
-                        <option>1-3 года</option>
-                        <option>Более 3 лет</option>
+                      <select 
+                        name="experience"
+                        value={formData.experience}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:border-primary transition-colors"
+                      >
+                        <option value="">Выберите опыт</option>
+                        <option value="Нет опыта, начинаю с нуля">Нет опыта, начинаю с нуля</option>
+                        <option value="Менее 1 года">Менее 1 года</option>
+                        <option value="1-3 года">1-3 года</option>
+                        <option value="Более 3 лет">Более 3 лет</option>
                       </select>
                     </div>
                   </div>
@@ -126,9 +239,14 @@ const Inquiry = () => {
                     <div>
                       <label className="block text-sm font-medium mb-3">Типы вентиляционных систем для работы</label>
                       <div className="grid sm:grid-cols-2 gap-3">
-                        {['Приточная вентиляция', 'Вытяжная вентиляция', 'Жировые вытяжки', 'Кондиционирование', 'Промышленная вентиляция', 'Другое'].map((item) => (
+                        {ventilationOptions.map((item) => (
                           <label key={item} className="flex items-center gap-3 p-3 rounded-lg bg-background border border-border cursor-pointer hover:border-primary transition-colors">
-                            <input type="checkbox" className="w-4 h-4 text-primary rounded" />
+                            <input 
+                              type="checkbox" 
+                              checked={formData.ventilationTypes.includes(item)}
+                              onChange={() => handleCheckboxChange('ventilationTypes', item)}
+                              className="w-4 h-4 text-primary rounded" 
+                            />
                             <span className="text-sm">{item}</span>
                           </label>
                         ))}
@@ -137,9 +255,14 @@ const Inquiry = () => {
                     <div>
                       <label className="block text-sm font-medium mb-3">Интересующее оборудование</label>
                       <div className="grid sm:grid-cols-2 gap-3">
-                        {['Щёточные машины', 'Вакуумные установки', 'Фильтрующие установки', 'Дезинфекция', 'Видеоинспекция', 'Полный комплект'].map((item) => (
+                        {equipmentOptions.map((item) => (
                           <label key={item} className="flex items-center gap-3 p-3 rounded-lg bg-background border border-border cursor-pointer hover:border-primary transition-colors">
-                            <input type="checkbox" className="w-4 h-4 text-primary rounded" />
+                            <input 
+                              type="checkbox" 
+                              checked={formData.equipmentTypes.includes(item)}
+                              onChange={() => handleCheckboxChange('equipmentTypes', item)}
+                              className="w-4 h-4 text-primary rounded" 
+                            />
                             <span className="text-sm">{item}</span>
                           </label>
                         ))}
@@ -147,13 +270,18 @@ const Inquiry = () => {
                     </div>
                     <div>
                       <label className="block text-sm font-medium mb-2">Планируемый бюджет</label>
-                      <select className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:border-primary transition-colors">
-                        <option>Выберите бюджет</option>
-                        <option>До 500 000 ₽</option>
-                        <option>500 000 - 1 000 000 ₽</option>
-                        <option>1 000 000 - 2 000 000 ₽</option>
-                        <option>Более 2 000 000 ₽</option>
-                        <option>Требуется консультация</option>
+                      <select 
+                        name="budget"
+                        value={formData.budget}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:border-primary transition-colors"
+                      >
+                        <option value="">Выберите бюджет</option>
+                        <option value="До 500 000 ₽">До 500 000 ₽</option>
+                        <option value="500 000 - 1 000 000 ₽">500 000 - 1 000 000 ₽</option>
+                        <option value="1 000 000 - 2 000 000 ₽">1 000 000 - 2 000 000 ₽</option>
+                        <option value="Более 2 000 000 ₽">Более 2 000 000 ₽</option>
+                        <option value="Требуется консультация">Требуется консультация</option>
                       </select>
                     </div>
                   </div>
@@ -166,13 +294,21 @@ const Inquiry = () => {
                     <div>
                       <label className="block text-sm font-medium mb-2">Комментарии и пожелания</label>
                       <textarea
+                        name="comments"
+                        value={formData.comments}
+                        onChange={handleInputChange}
                         rows={4}
                         className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:border-primary transition-colors resize-none"
                         placeholder="Опишите ваши задачи, особенности объектов, любые дополнительные пожелания..."
                       />
                     </div>
                     <label className="flex items-start gap-3 p-4 rounded-lg bg-primary/5 border border-primary/20 cursor-pointer">
-                      <input type="checkbox" className="w-4 h-4 text-primary rounded mt-0.5" />
+                      <input 
+                        type="checkbox" 
+                        checked={formData.needsTraining}
+                        onChange={(e) => setFormData(prev => ({ ...prev, needsTraining: e.target.checked }))}
+                        className="w-4 h-4 text-primary rounded mt-0.5" 
+                      />
                       <span className="text-sm">
                         Интересует обучение работе с оборудованием
                       </span>
@@ -180,9 +316,18 @@ const Inquiry = () => {
                   </div>
                 </div>
 
-                <Button type="submit" size="lg" className="w-full">
-                  <Send className="w-5 h-5" />
-                  Отправить заявку
+                <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      Отправка...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-5 h-5" />
+                      Отправить заявку
+                    </>
+                  )}
                 </Button>
 
                 <p className="text-sm text-muted-foreground text-center">

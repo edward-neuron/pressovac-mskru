@@ -2,3 +2,6 @@ project_id = "khuqrtjdnbjfmysasjrr"
 
 [functions.fetch-yml-prices]
 verify_jwt = false
+
+[functions.send-inquiry]
+verify_jwt = false

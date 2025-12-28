@@ -6,6 +6,7 @@ import scannerLocators31 from '@/assets/scanner-locators-3-1.png';
 
 // Импорт изображений продуктов (3:1)
 import vs200Image from '@/assets/products/vs-200.png';
+import vs250Image from '@/assets/products/vs-250.png';
 
 export interface VideoInspectionProduct {
   id: string;
@@ -73,7 +74,8 @@ export const videoInspectionData: VideoInspectionCategory = {
             'Видео': 'Да',
             'Батареи': '1',
             'Страна': 'Финляндия'
-          }
+          },
+          image: vs250Image
         },
         {
           id: 'vs250-30m',

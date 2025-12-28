@@ -4,6 +4,9 @@
 import disinfectionTanks31 from '@/assets/disinfection-tanks-3-1.png';
 import disinfectionNozzles31 from '@/assets/disinfection-nozzles-3-1.png';
 
+// Импорт изображений продуктов (3:1)
+import dTanksImage from '@/assets/products/d-tanks.png';
+
 export interface DisinfectionProduct {
   id: string;
   name: string;
@@ -49,7 +52,8 @@ export const disinfectionEquipmentData: DisinfectionEquipmentCategory = {
           specifications: {
             'Объём': '5 л',
             'Страна': 'Финляндия'
-          }
+          },
+          image: dTanksImage
         },
         {
           id: 'disinfection-tank-10l',
@@ -64,7 +68,8 @@ export const disinfectionEquipmentData: DisinfectionEquipmentCategory = {
           specifications: {
             'Объём': '10 л',
             'Страна': 'Финляндия'
-          }
+          },
+          image: dTanksImage
         },
         {
           id: 'disinfection-tank-20l',
@@ -79,7 +84,8 @@ export const disinfectionEquipmentData: DisinfectionEquipmentCategory = {
           specifications: {
             'Объём': '20 л',
             'Страна': 'Финляндия'
-          }
+          },
+          image: dTanksImage
         }
       ]
     },

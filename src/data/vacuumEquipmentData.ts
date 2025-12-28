@@ -169,7 +169,7 @@ export const vacuumEquipmentData: VacuumEquipmentCategory = {
         {
           id: 'su-7-5-atex',
           name: 'SU-7,5 кВт АТЕХ',
-          article: '206.006.001',
+          article: '206.004.006',
           description: 'Мощная взрывозащищённая вакуумная установка производительностью 8000 м³/час для работы с взрывоопасными пылевоздушными смесями.',
           features: [
             'Производительность: 8000 м³/час',

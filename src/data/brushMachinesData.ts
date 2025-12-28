@@ -331,7 +331,7 @@ export const brushMachinesData: BrushMachinesCategory = {
         {
           id: 'atex-p40',
           name: 'Установка АTEX Air Brushing Reel P40',
-          article: '201.001.201',
+          article: '201.001.202',
           description: 'Пневматическая щёточная машина во взрывозащищённом исполнении для очистки воздуховодов в зонах с взрывоопасными средами.',
           features: [
             'Длина вала: 40 м',

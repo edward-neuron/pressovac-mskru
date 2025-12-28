@@ -8,6 +8,7 @@ import suImage from '@/assets/products/su.png';
 import s300Image from '@/assets/products/s-300.png';
 import su50Image from '@/assets/products/su-50.png';
 import su100Image from '@/assets/products/su-100.png';
+import suAtexImage from '@/assets/products/su-atex.png';
 
 export interface VacuumProduct {
   id: string;
@@ -27,6 +28,7 @@ export interface VacuumSubcategory {
   description: string;
   image?: string; // Изображение подкатегории (3:1)
   products: VacuumProduct[];
+  isAtex?: boolean; // Взрывозащищённое оборудование
 }
 
 export interface VacuumEquipmentCategory {
@@ -154,6 +156,36 @@ export const vacuumEquipmentData: VacuumEquipmentCategory = {
             'Страна': 'Финляндия'
           },
           image: su100Image
+        }
+      ]
+    },
+    {
+      id: 'su-atex',
+      title: 'Взрывозащищённые установки SU ATEX',
+      description: 'Вакуумные установки во взрывозащищённом исполнении для работы с взрывоопасными средами',
+      image: vacuumSu31,
+      isAtex: true,
+      products: [
+        {
+          id: 'su-7-5-atex',
+          name: 'SU-7,5 кВт АТЕХ',
+          article: '206.006.001',
+          description: 'Мощная взрывозащищённая вакуумная установка производительностью 8000 м³/час для работы с взрывоопасными пылевоздушными смесями.',
+          features: [
+            'Производительность: 8000 м³/час',
+            'Взрывозащищённое исполнение ATEX',
+            'Мощность 7,5 кВт',
+            'Для работы с взрывоопасными средами',
+            'Сертификат ATEX'
+          ],
+          specifications: {
+            'Производительность': '8 000 м³/час',
+            'Мощность': '7,5 кВт',
+            'Напряжение': '380 В',
+            'Защита': 'ATEX',
+            'Страна': 'Финляндия'
+          },
+          image: suAtexImage
         }
       ]
     },

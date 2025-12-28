@@ -8,6 +8,7 @@ import p25p40Image from '@/assets/products/p25-p40.png';
 import fsMiniImage from '@/assets/products/fs-mini.png';
 import fsStandartImage from '@/assets/products/fs-standart.png';
 import fsSteelImage from '@/assets/products/fs-steel.png';
+import scCombi8Image from '@/assets/products/sc-combi-8.png';
 
 // Импорт изображений подкатегорий (3:1)
 import flexibleShafts31 from '@/assets/flexible-shafts-3-1.png';
@@ -235,7 +236,8 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Длина вала': '8 м',
             'Тип': 'Комбинированный',
             'Страна': 'Финляндия'
-          }
+          },
+          image: scCombi8Image
         },
         {
           id: 'grease-electric-edw15',

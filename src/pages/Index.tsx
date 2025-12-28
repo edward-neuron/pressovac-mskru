@@ -23,7 +23,7 @@ const organizationSchema = {
   },
   "contactPoint": {
     "@type": "ContactPoint",
-    "telephone": "+7-495-XXX-XX-XX",
+    "telephone": "+7-499-677-20-10",
     "contactType": "sales",
     "areaServed": ["RU", "BY", "KZ"],
     "availableLanguage": "Russian"

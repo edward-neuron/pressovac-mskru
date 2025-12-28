@@ -118,10 +118,10 @@ export const Footer = () => {
         {/* Bottom */}
         <div className="mt-16 pt-8 border-t border-background/10">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-sm opacity-70">
+            <p className="text-sm opacity-70 text-center md:text-left">
               © {new Date().getFullYear()} Pressovac. Все права защищены.
             </p>
-            <div className="flex items-center gap-6">
+            <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-6">
               <Link to="/privacy" className="text-sm opacity-70 hover:opacity-100 transition-opacity">
                 Политика конфиденциальности
               </Link>

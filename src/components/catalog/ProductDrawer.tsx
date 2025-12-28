@@ -79,15 +79,15 @@ export const ProductDrawer = ({
         <div className="space-y-6 mt-6">
           {/* Product Image */}
           {product.image ? (
-            <div className="w-full aspect-video bg-muted rounded-xl overflow-hidden">
+            <div className="w-full aspect-[3/1] bg-muted rounded-xl overflow-hidden">
               <img 
                 src={product.image} 
                 alt={product.name}
-                className="w-full h-full object-contain"
+                className="w-full h-full object-cover"
               />
             </div>
           ) : (
-            <div className="w-full h-40 bg-gradient-to-br from-primary/20 to-accent/20 rounded-xl flex items-center justify-center">
+            <div className="w-full aspect-[3/1] bg-gradient-to-br from-primary/20 to-accent/20 rounded-xl flex items-center justify-center">
               <span className="text-muted-foreground text-sm">Изображение товара</span>
             </div>
           )}

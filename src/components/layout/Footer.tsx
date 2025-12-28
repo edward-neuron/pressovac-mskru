@@ -122,6 +122,9 @@ export const Footer = () => {
               © {new Date().getFullYear()} Pressovac. Все права защищены.
             </p>
             <div className="flex items-center gap-6">
+              <Link to="/privacy" className="text-sm opacity-70 hover:opacity-100 transition-opacity">
+                Политика конфиденциальности
+              </Link>
               <Link to="/delivery" className="text-sm opacity-70 hover:opacity-100 transition-opacity">
                 Условия поставки
               </Link>

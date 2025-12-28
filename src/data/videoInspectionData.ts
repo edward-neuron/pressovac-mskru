@@ -2,6 +2,7 @@
 
 // Импорт изображений подкатегорий (3:1)
 import videoCameras31 from '@/assets/video-cameras-3-1.png';
+import scannerLocators31 from '@/assets/scanner-locators-3-1.png';
 
 export interface VideoInspectionProduct {
   id: string;
@@ -133,6 +134,7 @@ export const videoInspectionData: VideoInspectionCategory = {
       id: 'locators',
       title: 'Сканер-локаторы',
       description: 'Оборудование для локации и сканирования',
+      image: scannerLocators31,
       products: [
         {
           id: 'l200-locator',

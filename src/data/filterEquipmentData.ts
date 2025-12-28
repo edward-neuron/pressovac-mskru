@@ -3,6 +3,7 @@
 // Импорт изображений продуктов (3:1)
 import f50Image from '@/assets/products/f-50.png';
 import f100Image from '@/assets/products/f-100.png';
+import hepa10Image from '@/assets/products/hepa-10.png';
 export interface FilterProduct {
   id: string;
   name: string;
@@ -91,7 +92,8 @@ export const filterEquipmentData: FilterEquipmentCategory = {
             'Производительность': '1 000 м³/час',
             'Класс фильтра': 'HEPA',
             'Страна': 'Финляндия'
-          }
+          },
+          image: hepa10Image
         }
       ]
     },

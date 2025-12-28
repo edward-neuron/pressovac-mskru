@@ -2,6 +2,7 @@
 
 // Импорт изображений подкатегорий (3:1)
 import disinfectionTanks31 from '@/assets/disinfection-tanks-3-1.png';
+import disinfectionNozzles31 from '@/assets/disinfection-nozzles-3-1.png';
 
 export interface DisinfectionProduct {
   id: string;
@@ -86,6 +87,7 @@ export const disinfectionEquipmentData: DisinfectionEquipmentCategory = {
       id: 'disinfection-nozzles',
       title: 'Дезинфекционные насадки',
       description: 'Насадки и аксессуары для дезинфекционного оборудования',
+      image: disinfectionNozzles31,
       products: [
         {
           id: 'disinfection-nozzle',

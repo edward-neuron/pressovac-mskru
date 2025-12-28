@@ -149,6 +149,7 @@ export const vacuumEquipmentData: VacuumEquipmentCategory = {
       id: 'sfu-vacuum',
       title: 'Фильтро-вакуумные установки SFU',
       description: 'Компактные установки со встроенным фильтром для очистки воздуховодов',
+      image: vacuumSu31,
       products: [
         {
           id: 'sfu-10',

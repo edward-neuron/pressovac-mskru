@@ -21,6 +21,8 @@ import disinfectionSquareV2 from '@/assets/disinfection-square-v2.png';
 import disinfectionBannerV2 from '@/assets/disinfection-banner-v2.png';
 import videoInspectionSquareV2 from '@/assets/video-inspection-square-v2.png';
 import videoInspectionBannerV2 from '@/assets/video-inspection-banner-v2.png';
+import videoCameras31 from '@/assets/video-cameras-3-1.png';
+import scannerLocators31 from '@/assets/scanner-locators-3-1.png';
 import compressorSquareV2 from '@/assets/compressor-square-v2.png';
 
 const brushEquipmentImages: Record<string, string> = {
@@ -45,8 +47,11 @@ const disinfectionEquipmentImages: Record<string, string> = {
 };
 
 const videoInspectionImages: Record<string, string> = {
-  'default': videoInspectionSquareV2,
-  'inside': videoInspectionBannerV2,
+  default: videoInspectionSquareV2,
+  'inspection-cameras': videoCameras31,
+  locators: scannerLocators31,
+  // fallback для подкатегорий без отдельного изображения 3:1
+  inside: videoInspectionBannerV2,
 };
 
 const compressorEquipmentImages: Record<string, string> = {
@@ -149,7 +154,7 @@ const Catalog = () => {
   };
 
   const handleVideoSubcategoryChange = (subcategoryId: string | null) => {
-    setVideoImage(subcategoryId ? 'inside' : 'default');
+    setVideoImage(subcategoryId || 'default');
   };
 
   return (
@@ -199,7 +204,7 @@ const Catalog = () => {
                       (category.id === 'brush-machines' && brushEquipmentImage !== 'default') ||
                       (category.id === 'vacuum' && vacuumImage === 'inside') ||
                       (category.id === 'disinfection' && disinfectionImage === 'inside') ||
-                      (category.id === 'video' && videoImage === 'inside')
+                      (category.id === 'video' && videoImage !== 'default')
                         ? 'bg-muted min-h-[320px] md:min-h-0'
                         : (category.id === 'brush-machines' || category.id === 'vacuum' || category.id === 'filters' || category.id === 'disinfection' || category.id === 'video' || category.id === 'compressor')
                           ? 'bg-muted aspect-square self-start md:self-start'
@@ -248,7 +253,7 @@ const Catalog = () => {
                     ) : category.id === 'video' ? (
                       <motion.img
                         key={videoImage}
-                        src={videoInspectionImages[videoImage]} 
+                        src={videoInspectionImages[videoImage] || videoInspectionImages.inside}
                         alt={category.title}
                         className={`w-full h-full ${videoImage === 'default' ? 'object-cover' : 'object-contain'} object-center`}
                         initial={{ opacity: 0, scale: 0.95 }}

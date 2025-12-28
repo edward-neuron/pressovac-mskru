@@ -9,6 +9,7 @@ import fsMiniImage from '@/assets/products/fs-mini.png';
 import fsStandartImage from '@/assets/products/fs-standart.png';
 import fsSteelImage from '@/assets/products/fs-steel.png';
 import scCombi8Image from '@/assets/products/sc-combi-8.png';
+import edw15Image from '@/assets/products/edw-15.png';
 
 // Импорт изображений подкатегорий (3:1)
 import flexibleShafts31 from '@/assets/flexible-shafts-3-1.png';
@@ -255,7 +256,8 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Макс. диаметр': 'Ø350 мм',
             'Тип привода': 'Электрический',
             'Страна': 'Финляндия'
-          }
+          },
+          image: edw15Image
         },
         {
           id: 'grease-pneumatic-pdw25',

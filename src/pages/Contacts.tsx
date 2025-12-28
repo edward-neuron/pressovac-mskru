@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
-import { Phone, Mail, MapPin, Clock, Send, FileText, MessageSquare, CheckCircle, ArrowRight, User, PhoneCall, Building } from 'lucide-react';
+import { Phone, Mail, MapPin, Clock, Send, FileText, MessageSquare, CheckCircle, ArrowRight, User, PhoneCall, Building, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import CallbackFormModal from '@/components/CallbackFormModal';
 const contactInfo = [
@@ -439,6 +439,60 @@ const Contacts = () => {
                     Обратный звонок
                   </Button>
                 </CallbackFormModal>
+              </div>
+            </motion.div>
+
+            {/* Messengers */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="p-8 rounded-2xl bg-gradient-to-br from-green-500/10 to-blue-500/10 border border-green-500/20"
+            >
+              <div className="w-14 h-14 rounded-2xl bg-green-500/10 flex items-center justify-center mb-6">
+                <MessageCircle className="w-7 h-7 text-green-500" />
+              </div>
+              <h3 className="font-display font-bold text-xl mb-6">Мессенджеры</h3>
+              <div className="flex flex-col gap-3">
+                <a 
+                  href="https://t.me/pressovac_chat" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                >
+                  <Button size="lg" className="w-full bg-[#0088cc] hover:bg-[#0077b5]">
+                    <Send className="w-5 h-5" />
+                    Telegram Chat
+                  </Button>
+                </a>
+                <a 
+                  href="https://api.whatsapp.com/send?phone=79258534974" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                >
+                  <Button size="lg" className="w-full bg-[#25D366] hover:bg-[#1da851]">
+                    <MessageCircle className="w-5 h-5" />
+                    WhatsApp
+                  </Button>
+                </a>
+                <a 
+                  href="https://api.whatsapp.com/send?phone=79258534974" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                >
+                  <Button size="lg" variant="outline" className="w-full border-green-500/50 text-green-600 hover:bg-green-500/10">
+                    Chatti
+                  </Button>
+                </a>
+                <a 
+                  href="https://api.whatsapp.com/send?phone=79258534974" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                >
+                  <Button size="lg" variant="outline" className="w-full border-blue-500/50 text-blue-600 hover:bg-blue-500/10">
+                    MAX
+                  </Button>
+                </a>
               </div>
             </motion.div>
           </div>

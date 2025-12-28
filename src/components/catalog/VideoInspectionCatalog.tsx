@@ -55,18 +55,9 @@ export function VideoInspectionCatalog({ onSubcategoryChange }: VideoInspectionC
               <button
                 key={subcategory.id}
                 onClick={() => setSelectedSubcategory(subcategory)}
-                className="group bg-muted/50 hover:bg-primary/10 rounded-xl border border-border hover:border-primary/30 transition-all text-left overflow-hidden"
+                className="group p-4 bg-muted/50 hover:bg-primary/10 rounded-xl border border-border hover:border-primary/30 transition-all text-left"
               >
-                {subcategory.image && (
-                  <div className="aspect-[3/1] overflow-hidden">
-                    <img 
-                      src={subcategory.image} 
-                      alt={subcategory.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                  </div>
-                )}
-                <div className="p-4 flex items-center justify-between">
+                <div className="flex items-center justify-between">
                   <div>
                     <h4 className="font-semibold group-hover:text-primary transition-colors">
                       {subcategory.title}

@@ -1,5 +1,8 @@
 // Данные для раздела "Вакуумные установки Pressovac"
 
+// Импорт изображений подкатегорий (3:1)
+import vacuumSu31 from '@/assets/vacuum-su-3-1.png';
+
 export interface VacuumProduct {
   id: string;
   name: string;
@@ -30,6 +33,7 @@ export const vacuumEquipmentData: VacuumEquipmentCategory = {
       id: 'su-vacuum',
       title: 'Всасывающие вакуумные установки SU',
       description: 'Мощные вакуумные установки для создания разрежения в системах очистки воздуховодов',
+      image: vacuumSu31,
       products: [
         {
           id: 'su-15',

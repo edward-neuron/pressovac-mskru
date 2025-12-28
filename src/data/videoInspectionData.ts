@@ -1,5 +1,8 @@
 // Данные для раздела "Видеоинспекция и диагностика"
 
+// Импорт изображений подкатегорий (3:1)
+import videoCameras31 from '@/assets/video-cameras-3-1.png';
+
 export interface VideoInspectionProduct {
   id: string;
   name: string;
@@ -16,6 +19,7 @@ export interface VideoInspectionSubcategory {
   id: string;
   title: string;
   description: string;
+  image?: string;
   products: VideoInspectionProduct[];
 }
 
@@ -29,6 +33,7 @@ export const videoInspectionData: VideoInspectionCategory = {
       id: 'inspection-cameras',
       title: 'Инспекционные камеры',
       description: 'Профессиональные камеры для видеоинспекции воздуховодов',
+      image: videoCameras31,
       products: [
         {
           id: 'vs200',

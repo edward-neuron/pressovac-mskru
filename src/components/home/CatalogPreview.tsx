@@ -50,7 +50,7 @@ const itemVariants = {
 
 export const CatalogPreview = () => {
   return (
-    <section className="section-padding bg-card">
+    <section className="section-padding bg-card" aria-labelledby="catalog-heading">
       <div className="container-custom">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -61,7 +61,7 @@ export const CatalogPreview = () => {
           <span className="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
             Каталог оборудования
           </span>
-          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+          <h2 id="catalog-heading" className="font-display text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
             Линейки оборудования <span className="text-gradient">Pressovac</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">

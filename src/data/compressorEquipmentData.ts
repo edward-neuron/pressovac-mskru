@@ -14,11 +14,7 @@ export const compressorEquipmentData: CompressorEquipmentCategory = {
       description:
         'Профессиональный компрессор Pressovac для питания пневмоинструмента и оборудования очистки вентиляции.',
       image: k370Square,
-      features: [
-        'Надёжная работа на объекте',
-        'Удобная транспортировка',
-        'Подходит для пневматического оборудования Pressovac'
-      ],
+      features: [],
       specifications: {
         'Код товара': '210.001.001',
         'Производитель': 'Kaiser',

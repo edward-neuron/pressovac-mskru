@@ -1,14 +1,34 @@
+# Pressovac Moscow - robots.txt
+# https://pressovac-msk.ru
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://pressovac-msk.ru/sitemap.xml
+
+# Crawl-delay for polite crawling
+Crawl-delay: 1
+
+# Block admin/API paths (if any)
+Disallow: /api/
+Disallow: /_/
+
+# Allow all major search engines
 User-agent: Googlebot
 Allow: /
 
 User-agent: Bingbot
 Allow: /
 
+User-agent: Yandex
+Allow: /
+
+User-agent: Mail.RU
+Allow: /
+
 User-agent: Twitterbot
 Allow: /
 
 User-agent: facebookexternalhit
-Allow: /
-
-User-agent: *
 Allow: /

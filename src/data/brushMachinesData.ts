@@ -7,6 +7,7 @@ import e25lImage from '@/assets/products/e-25l.png';
 import p25p40Image from '@/assets/products/p25-p40.png';
 import fsMiniImage from '@/assets/products/fs-mini.png';
 import fsStandartImage from '@/assets/products/fs-standart.png';
+import fsSteelImage from '@/assets/products/fs-steel.png';
 
 // Импорт изображений подкатегорий (3:1)
 import flexibleShafts31 from '@/assets/flexible-shafts-3-1.png';
@@ -105,7 +106,8 @@ export const brushMachinesData: BrushMachinesCategory = {
           availableLengths: ['3 м', '5 м', '8 м', '12 м', '15 м', '20 м'],
           shopUrl: 'https://shop-pressovac.ru/products/gibkie-vrashchayushchiesya-valy-pressovac-f88504918/',
           pricePrefix: 'от',
-          vendorCodePattern: '205.002'
+          vendorCodePattern: '205.002',
+          image: fsSteelImage
         }
       ]
     },

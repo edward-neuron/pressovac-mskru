@@ -24,6 +24,7 @@ import videoInspectionBannerV2 from '@/assets/video-inspection-banner-v2.png';
 import videoCameras31 from '@/assets/video-cameras-3-1.png';
 import scannerLocators31 from '@/assets/scanner-locators-3-1.png';
 import compressorSquareV2 from '@/assets/compressor-square-v2.png';
+import accessories31 from '@/assets/accessories-3-1.png';
 
 const brushEquipmentImages: Record<string, string> = {
   'default': brushMachinesMain,
@@ -56,6 +57,10 @@ const videoInspectionImages: Record<string, string> = {
 
 const compressorEquipmentImages: Record<string, string> = {
   'default': compressorSquareV2,
+};
+
+const accessoriesImages: Record<string, string> = {
+  'default': accessories31,
 };
 
 interface Category {
@@ -206,7 +211,7 @@ const Catalog = () => {
                       (category.id === 'disinfection' && disinfectionImage === 'inside') ||
                       (category.id === 'video' && videoImage !== 'default')
                         ? 'bg-muted min-h-[320px] md:min-h-0'
-                        : (category.id === 'brush-machines' || category.id === 'vacuum' || category.id === 'filters' || category.id === 'disinfection' || category.id === 'video' || category.id === 'compressor')
+                        : (category.id === 'brush-machines' || category.id === 'vacuum' || category.id === 'filters' || category.id === 'disinfection' || category.id === 'video' || category.id === 'compressor' || category.id === 'accessories')
                           ? 'bg-muted aspect-square self-start md:self-start'
                           : `bg-gradient-to-br ${category.image} min-h-[280px] md:min-h-0`
                     } flex items-center justify-center relative overflow-hidden`}
@@ -265,6 +270,13 @@ const Catalog = () => {
                       <img 
                         src={compressorEquipmentImages['default']} 
                         alt="Компрессор Pressovac K-370 Premium Car"
+                        className="w-full h-full object-cover object-center"
+                        loading="lazy"
+                      />
+                    ) : category.id === 'accessories' ? (
+                      <img 
+                        src={accessoriesImages['default']} 
+                        alt="Комплектующие и аксессуары Pressovac"
                         className="w-full h-full object-cover object-center"
                         loading="lazy"
                       />

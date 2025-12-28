@@ -4,6 +4,9 @@
 import videoCameras31 from '@/assets/video-cameras-3-1.png';
 import scannerLocators31 from '@/assets/scanner-locators-3-1.png';
 
+// Импорт изображений продуктов (3:1)
+import vs200Image from '@/assets/products/vs-200.png';
+
 export interface VideoInspectionProduct {
   id: string;
   name: string;
@@ -50,7 +53,8 @@ export const videoInspectionData: VideoInspectionCategory = {
             'Диаметр камеры': 'Ø26мм',
             'Длина кабеля': '20м',
             'Страна': 'Финляндия'
-          }
+          },
+          image: vs200Image
         },
         {
           id: 'vs250-20m',

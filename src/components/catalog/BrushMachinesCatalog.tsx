@@ -49,24 +49,40 @@ export const BrushMachinesCatalog = ({ onSubcategoryChange }: BrushMachinesCatal
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
-            className="grid grid-cols-1 sm:grid-cols-3 gap-3"
+            className="grid grid-cols-1 sm:grid-cols-2 gap-3"
           >
             {brushMachinesData.subcategories.map((subcategory) => (
               <button
                 key={subcategory.id}
                 onClick={() => setSelectedSubcategory(subcategory)}
-                className="group p-4 bg-muted/50 hover:bg-primary/10 rounded-xl border border-border hover:border-primary/30 transition-all text-left"
+                className={`group p-4 rounded-xl border transition-all text-left ${
+                  subcategory.isAtex
+                    ? 'bg-red-600 hover:bg-red-700 border-red-700 hover:border-red-800'
+                    : 'bg-muted/50 hover:bg-primary/10 border-border hover:border-primary/30'
+                }`}
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <h4 className="font-semibold group-hover:text-primary transition-colors">
+                    <h4 className={`font-semibold transition-colors ${
+                      subcategory.isAtex
+                        ? 'text-white'
+                        : 'group-hover:text-primary'
+                    }`}>
                       {subcategory.title}
                     </h4>
-                    <p className="text-sm text-muted-foreground mt-1">
+                    <p className={`text-sm mt-1 ${
+                      subcategory.isAtex
+                        ? 'text-white/80'
+                        : 'text-muted-foreground'
+                    }`}>
                       {subcategory.products.length} модел{subcategory.products.length === 1 ? 'ь' : subcategory.products.length < 5 ? 'и' : 'ей'}
                     </p>
                   </div>
-                  <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                  <ChevronRight className={`w-5 h-5 group-hover:translate-x-1 transition-all ${
+                    subcategory.isAtex
+                      ? 'text-white/80'
+                      : 'text-muted-foreground group-hover:text-primary'
+                  }`} />
                 </div>
               </button>
             ))}

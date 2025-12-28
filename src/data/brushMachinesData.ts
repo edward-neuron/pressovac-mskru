@@ -11,6 +11,7 @@ import fsSteelImage from '@/assets/products/fs-steel.png';
 import scCombi8Image from '@/assets/products/sc-combi-8.png';
 import edw15Image from '@/assets/products/edw-15.png';
 import pdwImage from '@/assets/products/pdw.png';
+import p40AtexImage from '@/assets/products/p40-atex.png';
 
 // Импорт изображений подкатегорий (3:1)
 import flexibleShafts31 from '@/assets/flexible-shafts-3-1.png';
@@ -38,6 +39,7 @@ export interface Subcategory {
   description: string;
   image?: string; // Изображение подкатегории (3:1)
   products: Product[];
+  isAtex?: boolean; // Взрывозащищённое оборудование
 }
 
 export interface BrushMachinesCategory {
@@ -316,6 +318,36 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Страна': 'Финляндия'
           },
           image: pdwImage
+        }
+      ]
+    },
+    {
+      id: 'atex-machines',
+      title: 'Машины с маркировкой взрывозащиты',
+      description: 'Щёточные машины во взрывозащищённом исполнении ATEX для работы с взрывоопасными средами',
+      image: greaseRemoval31,
+      isAtex: true,
+      products: [
+        {
+          id: 'atex-p40',
+          name: 'Установка АTEX Air Brushing Reel P40',
+          article: '201.001.201',
+          description: 'Пневматическая щёточная машина во взрывозащищённом исполнении для очистки воздуховодов в зонах с взрывоопасными средами.',
+          features: [
+            'Длина вала: 40 м',
+            'Взрывозащищённое исполнение ATEX',
+            'Пневматический привод',
+            'Искробезопасность',
+            'Сертификат ATEX'
+          ],
+          specifications: {
+            'Длина вала': '40 м',
+            'Макс. диаметр': 'Ø1200 мм',
+            'Тип привода': 'Пневматический',
+            'Защита': 'ATEX',
+            'Страна': 'Финляндия'
+          },
+          image: p40AtexImage
         }
       ]
     }

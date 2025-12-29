@@ -192,39 +192,48 @@ const Technology = () => {
                   exit={{ opacity: 0, y: -20 }}
                   className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
                 >
-                  {category.videos.map((video, index) => (
-                    <motion.div
-                      key={video.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.05 }}
-                      onClick={() => {
-                        setPlatform('rutube');
-                        setSelectedVideo(video);
-                      }}
-                      className="group cursor-pointer"
-                    >
-                      <div className="relative aspect-video rounded-2xl overflow-hidden bg-gradient-to-br from-primary/20 to-accent/20 mb-3">
-                        <img
-                          src={`https://rutube.ru/api/video/${video.id}/thumbnail/?redirect=1`}
-                          alt={video.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                          onError={(e) => {
-                            // Hide broken image, show gradient background instead
-                            e.currentTarget.style.display = 'none';
-                          }}
-                        />
-                        <div className="absolute inset-0 bg-foreground/20 group-hover:bg-foreground/10 transition-colors flex items-center justify-center">
-                          <div className="w-14 h-14 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                            <Play className="w-6 h-6 ml-0.5" />
+                  {category.videos.map((video, index) => {
+                    const youtubeId = YOUTUBE_IDS[video.id];
+                    // Use YouTube thumbnail (more reliable, no CORS issues)
+                    const thumbnailUrl = youtubeId 
+                      ? `https://img.youtube.com/vi/${youtubeId}/mqdefault.jpg`
+                      : null;
+                    
+                    return (
+                      <motion.div
+                        key={video.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.05 }}
+                        onClick={() => {
+                          setPlatform('rutube');
+                          setSelectedVideo(video);
+                        }}
+                        className="group cursor-pointer"
+                      >
+                        <div className="relative aspect-video rounded-2xl overflow-hidden bg-gradient-to-br from-primary/20 to-accent/20 mb-3">
+                          {thumbnailUrl && (
+                            <img
+                              src={thumbnailUrl}
+                              alt={video.title}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                              onError={(e) => {
+                                e.currentTarget.style.display = 'none';
+                              }}
+                            />
+                          )}
+                          <div className="absolute inset-0 bg-foreground/20 group-hover:bg-foreground/10 transition-colors flex items-center justify-center">
+                            <div className="w-14 h-14 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                              <Play className="w-6 h-6 ml-0.5" />
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <h3 className="font-medium text-foreground group-hover:text-primary transition-colors line-clamp-2">
-                        {video.title}
-                      </h3>
-                    </motion.div>
-                  ))}
+                        <h3 className="font-medium text-foreground group-hover:text-primary transition-colors line-clamp-2">
+                          {video.title}
+                        </h3>
+                      </motion.div>
+                    );
+                  })}
                 </motion.div>
               )}
             </AnimatePresence>

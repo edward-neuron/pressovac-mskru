@@ -1,64 +1,8 @@
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
 import { Link } from 'react-router-dom';
-import { ArrowRight, BookOpen, Calendar, User } from 'lucide-react';
-
-const articles = [
-  {
-    id: 1,
-    title: 'Как обезопасить кафе и рестораны от пожара',
-    excerpt: 'Любой ресторан или кафе регулярно встречает пожарных инспекторов с проверкой. Узнайте, какие требования предъявляются к вентиляционным системам и как им соответствовать.',
-    date: '15 декабря 2024',
-    author: 'Веконт-М',
-    category: 'Безопасность',
-    readTime: '5 мин',
-  },
-  {
-    id: 2,
-    title: 'Прибыльный бизнес на все времена',
-    excerpt: 'Хотите открыть интересный бизнес с высокой доходностью и актуальный во все времена? Очистка вентиляции — один из лучших выборов для начинающих предпринимателей.',
-    date: '10 декабря 2024',
-    author: 'Веконт-М',
-    category: 'Бизнес',
-    readTime: '7 мин',
-  },
-  {
-    id: 3,
-    title: 'Открываем компанию по очистке вентиляции',
-    excerpt: 'Пошаговое руководство по открытию бизнеса в сфере очистки вентиляции. От регистрации до первых клиентов — всё, что нужно знать.',
-    date: '5 декабря 2024',
-    author: 'Веконт-М',
-    category: 'Руководство',
-    readTime: '10 мин',
-  },
-  {
-    id: 4,
-    title: 'Очистка вентиляции как доходный бизнес',
-    excerpt: 'Как начать прибыльный бизнес по очистке вентиляции? Знаете ли вы о том, что эта ниша практически не занята в большинстве регионов?',
-    date: '1 декабря 2024',
-    author: 'Веконт-М',
-    category: 'Бизнес',
-    readTime: '6 мин',
-  },
-  {
-    id: 5,
-    title: 'Санитарные нормы для систем вентиляции',
-    excerpt: 'Обзор актуальных санитарных норм и требований к чистоте вентиляционных систем в различных типах помещений.',
-    date: '25 ноября 2024',
-    author: 'Веконт-М',
-    category: 'Законодательство',
-    readTime: '8 мин',
-  },
-  {
-    id: 6,
-    title: 'Выбор оборудования для очистки вентиляции',
-    excerpt: 'Подробный гид по выбору профессионального оборудования для очистки вентиляционных систем. Сравнение моделей и рекомендации.',
-    date: '20 ноября 2024',
-    author: 'Веконт-М',
-    category: 'Оборудование',
-    readTime: '9 мин',
-  },
-];
+import { ArrowRight, BookOpen, Calendar } from 'lucide-react';
+import { articlesData } from '@/data/articlesData';
 
 const Articles = () => {
   return (
@@ -88,7 +32,7 @@ const Articles = () => {
       <section className="section-padding">
         <div className="container-custom">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {articles.map((article, index) => (
+            {articlesData.map((article, index) => (
               <motion.article
                 key={article.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -97,9 +41,11 @@ const Articles = () => {
                 transition={{ delay: index * 0.1 }}
                 className="group bg-card rounded-2xl overflow-hidden border border-border card-hover flex flex-col"
               >
-                <div className="h-48 bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
-                  <BookOpen className="w-16 h-16 text-primary/30" />
-                </div>
+                <Link to={`/articles/${article.slug}`} className="block">
+                  <div className="h-48 bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
+                    <BookOpen className="w-16 h-16 text-primary/30" />
+                  </div>
+                </Link>
                 <div className="p-6 space-y-4 flex-1 flex flex-col">
                   <div className="flex items-center gap-3 text-sm text-muted-foreground">
                     <span className="px-2 py-1 rounded bg-primary/10 text-primary text-xs font-medium">
@@ -107,9 +53,11 @@ const Articles = () => {
                     </span>
                     <span>{article.readTime}</span>
                   </div>
-                  <h3 className="font-display font-semibold text-lg group-hover:text-primary transition-colors line-clamp-2">
-                    {article.title}
-                  </h3>
+                  <Link to={`/articles/${article.slug}`}>
+                    <h3 className="font-display font-semibold text-lg group-hover:text-primary transition-colors line-clamp-2">
+                      {article.title}
+                    </h3>
+                  </Link>
                   <p className="text-muted-foreground text-sm line-clamp-3 flex-1">
                     {article.excerpt}
                   </p>
@@ -118,10 +66,13 @@ const Articles = () => {
                       <Calendar className="w-4 h-4" />
                       {article.date}
                     </div>
-                    <span className="inline-flex items-center gap-1 text-sm font-medium text-primary">
+                    <Link 
+                      to={`/articles/${article.slug}`}
+                      className="inline-flex items-center gap-1 text-sm font-medium text-primary"
+                    >
                       Читать
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </span>
+                    </Link>
                   </div>
                 </div>
               </motion.article>

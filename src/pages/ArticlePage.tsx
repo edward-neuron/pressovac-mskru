@@ -9,7 +9,7 @@ import { SEOHead } from '@/components/seo/SEOHead';
 
 type Platform = 'rutube' | 'youtube';
 
-const ArticleVideoPlayer = ({ video }: { video: ArticleVideo }) => {
+const ArticleVideoPlayer = ({ video, compact = false }: { video: ArticleVideo; compact?: boolean }) => {
   const [platform, setPlatform] = useState<Platform>('rutube');
   
   const videoSrc = platform === 'youtube' && video.youtubeId
@@ -19,10 +19,10 @@ const ArticleVideoPlayer = ({ video }: { video: ArticleVideo }) => {
   return (
     <div className="rounded-xl overflow-hidden bg-card border border-border">
       {/* Platform Switcher */}
-      <div className="flex justify-center gap-3 p-3 border-b border-border bg-muted/30">
+      <div className={`flex justify-center gap-2 ${compact ? 'p-2' : 'p-3'} border-b border-border bg-muted/30`}>
         <button
           onClick={() => setPlatform('rutube')}
-          className={`px-5 py-1.5 rounded-full text-sm font-medium transition-all bg-blue-600 text-white ${
+          className={`${compact ? 'px-3 py-1 text-xs' : 'px-5 py-1.5 text-sm'} rounded-full font-medium transition-all bg-blue-600 text-white ${
             platform === 'rutube'
               ? 'shadow-lg ring-2 ring-blue-400 ring-offset-2 ring-offset-background'
               : 'opacity-70 hover:opacity-100'
@@ -33,7 +33,7 @@ const ArticleVideoPlayer = ({ video }: { video: ArticleVideo }) => {
         <button
           onClick={() => setPlatform('youtube')}
           disabled={!video.youtubeId}
-          className={`px-5 py-1.5 rounded-full text-sm font-medium transition-all bg-red-600 text-white ${
+          className={`${compact ? 'px-3 py-1 text-xs' : 'px-5 py-1.5 text-sm'} rounded-full font-medium transition-all bg-red-600 text-white ${
             platform === 'youtube'
               ? 'shadow-lg ring-2 ring-red-400 ring-offset-2 ring-offset-background'
               : 'opacity-70 hover:opacity-100'
@@ -282,10 +282,10 @@ const ArticlePage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="mb-8 grid gap-4"
+                className="mb-8 grid grid-cols-2 gap-3"
               >
                 {article.videos.map((video, index) => (
-                  <ArticleVideoPlayer key={index} video={video} />
+                  <ArticleVideoPlayer key={index} video={video} compact />
                 ))}
               </motion.div>
             )}

@@ -226,8 +226,25 @@ const ArticlePage = () => {
       <section className="section-padding">
         <div className="container-custom">
           <div className="max-w-4xl mx-auto">
-            {/* Main Image */}
-            {article.image && (
+            {/* Image Gallery */}
+            {article.images && article.images.length > 0 ? (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.15 }}
+                className="mb-8 grid grid-cols-2 gap-3"
+              >
+                {article.images.map((img, index) => (
+                  <div key={index} className="rounded-xl overflow-hidden aspect-[4/3]">
+                    <img 
+                      src={img} 
+                      alt={`${article.title} - изображение ${index + 1}`}
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                ))}
+              </motion.div>
+            ) : article.image && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}

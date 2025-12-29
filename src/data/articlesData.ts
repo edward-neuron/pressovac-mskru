@@ -14,6 +14,7 @@ export interface Article {
   readTime: string;
   content: string;
   image?: string;
+  images?: string[];
 }
 
 export const articlesData: Article[] = [
@@ -27,6 +28,7 @@ export const articlesData: Article[] = [
     category: 'Безопасность',
     readTime: '5 мин',
     image: fireSafety1,
+    images: [fireSafety1, fireSafety2, fireSafety3, fireSafety4],
     content: `
 ## Почему рестораны горят?
 

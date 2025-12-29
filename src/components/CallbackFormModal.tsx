@@ -57,6 +57,68 @@ const CallbackFormModal = ({ children }: CallbackFormModalProps) => {
     privacyAccepted: false,
   });
 
+  // Lazy message patterns to block
+  const LAZY_MESSAGE_PATTERNS = [
+    /^перезвони(те)?(\s+мне)?\.?$/i,
+    /^позвони(те)?(\s+мне)?\.?$/i,
+    /^свяжи(те)?сь(\s+со\s+мной)?\.?$/i,
+    /^нужна\s+консультация\.?$/i,
+    /^хочу\s+узнать\.?$/i,
+    /^интересует\.?$/i,
+    /^вопрос\.?$/i,
+    /^заявка\.?$/i,
+  ];
+
+  const MIN_MESSAGE_LENGTH = 80;
+
+  const validateMessage = (message: string): { valid: boolean; error?: string } => {
+    const trimmed = message.trim();
+    
+    // Check for lazy messages
+    for (const pattern of LAZY_MESSAGE_PATTERNS) {
+      if (pattern.test(trimmed)) {
+        return { 
+          valid: false, 
+          error: 'Пожалуйста, опишите вашу задачу и конкретный вопрос по существу. "Перезвоните мне" — недостаточно информации для качественной консультации.' 
+        };
+      }
+    }
+    
+    // Check minimum length
+    if (trimmed.length < MIN_MESSAGE_LENGTH) {
+      return { 
+        valid: false, 
+        error: `Введите реальное описание задачи не менее ${MIN_MESSAGE_LENGTH} символов (сейчас: ${trimmed.length})` 
+      };
+    }
+    
+    return { valid: true };
+  };
+
+  // Allowed file extensions (safe files only)
+  const ALLOWED_EXTENSIONS = ['pdf', 'doc', 'docx', 'png', 'jpg', 'jpeg'];
+  const BLOCKED_EXTENSIONS = ['exe', 'bat', 'cmd', 'com', 'msi', 'scr', 'pif', 'js', 'vbs', 'wsf', 'hta', 'jar', 'ps1', 'sh', 'php', 'py', 'pl', 'rb'];
+
+  const validateFileExtension = (file: File): boolean => {
+    const ext = file.name.split('.').pop()?.toLowerCase() || '';
+    if (BLOCKED_EXTENSIONS.includes(ext)) {
+      toast({
+        title: `Файлы .${ext} запрещены по соображениям безопасности`,
+        variant: 'destructive',
+      });
+      return false;
+    }
+    if (!ALLOWED_EXTENSIONS.includes(ext)) {
+      toast({
+        title: `Файлы .${ext} не поддерживаются`,
+        description: 'Допустимые форматы: PDF, DOC, DOCX, PNG, JPG, JPEG',
+        variant: 'destructive',
+      });
+      return false;
+    }
+    return true;
+  };
+
   const handleChange = (field: string, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
@@ -66,6 +128,15 @@ const CallbackFormModal = ({ children }: CallbackFormModalProps) => {
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && validateFileExtension(file)) {
+      setAttachment(file);
+    } else {
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -73,6 +144,16 @@ const CallbackFormModal = ({ children }: CallbackFormModalProps) => {
     if (!formData.name || !formData.city || !formData.company || !formData.phone || !formData.email) {
       toast({
         title: 'Заполните все обязательные поля',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    // Validate message
+    const messageValidation = validateMessage(formData.message);
+    if (!messageValidation.valid) {
+      toast({
+        title: messageValidation.error,
         variant: 'destructive',
       });
       return;
@@ -256,14 +337,23 @@ const CallbackFormModal = ({ children }: CallbackFormModalProps) => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="message">Краткое описание запроса</Label>
+            <Label htmlFor="message">Краткое описание запроса *</Label>
             <Textarea
               id="message"
-              placeholder="Опишите вашу задачу или вопрос..."
+              placeholder="Опишите вашу задачу: форма и характер отложений, диаметр воздуховодов, особенности объекта, конкретный вопрос..."
               value={formData.message}
               onChange={(e) => handleChange('message', e.target.value)}
               rows={3}
+              required
             />
+            <div className="flex justify-between items-center">
+              <p className="text-xs text-muted-foreground">
+                Минимум {MIN_MESSAGE_LENGTH} символов
+              </p>
+              <p className={`text-xs ${formData.message.trim().length >= MIN_MESSAGE_LENGTH ? 'text-green-600' : 'text-muted-foreground'}`}>
+                {formData.message.trim().length} / {MIN_MESSAGE_LENGTH}
+              </p>
+            </div>
           </div>
 
           {/* File attachment */}
@@ -272,9 +362,9 @@ const CallbackFormModal = ({ children }: CallbackFormModalProps) => {
             <input
               ref={fileInputRef}
               type="file"
-              onChange={(e) => setAttachment(e.target.files?.[0] ?? null)}
+              onChange={handleFileChange}
               className="hidden"
-              accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
+              accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
             />
 
             {attachment ? (

@@ -953,7 +953,7 @@ const Contacts = () => {
                   target="_blank" 
                   rel="noopener noreferrer"
                 >
-                  <Button size="lg" className="w-full bg-[#7C3AED] text-white hover:bg-[#6D28D9]">
+                  <Button size="lg" className="w-full bg-gradient-to-r from-[#2D3A8C] to-[#5B4DC7] text-white hover:from-[#3D4A9C] hover:to-[#6B5DD7] rounded-xl">
                     <Download className="w-4 h-4" />
                     MAX (Google Play)
                   </Button>
@@ -963,7 +963,7 @@ const Contacts = () => {
                   target="_blank" 
                   rel="noopener noreferrer"
                 >
-                  <Button size="lg" className="w-full bg-[#7C3AED] text-white hover:bg-[#6D28D9]">
+                  <Button size="lg" className="w-full bg-gradient-to-r from-[#2D3A8C] to-[#5B4DC7] text-white hover:from-[#3D4A9C] hover:to-[#6B5DD7] rounded-xl">
                     <Download className="w-4 h-4" />
                     MAX (App Store)
                   </Button>
@@ -973,7 +973,7 @@ const Contacts = () => {
                   target="_blank" 
                   rel="noopener noreferrer"
                 >
-                  <Button size="lg" className="w-full bg-[#7C3AED] text-white hover:bg-[#6D28D9]">
+                  <Button size="lg" className="w-full bg-gradient-to-r from-[#2D3A8C] to-[#5B4DC7] text-white hover:from-[#3D4A9C] hover:to-[#6B5DD7] rounded-xl">
                     <Download className="w-4 h-4" />
                     MAX (RuStore)
                   </Button>

@@ -1,7 +1,13 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "https://esm.sh/resend@2.0.0";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.89.0";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+
+const supabaseAdmin = createClient(
+  Deno.env.get("SUPABASE_URL") ?? "",
+  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+);
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -30,7 +36,8 @@ interface InquiryRequest {
   comments?: string;
   message?: string; // Alternative to comments (from callback form)
   needsTraining?: boolean;
-  attachmentUrl?: string;
+  attachmentUrl?: string; // Legacy (public URL)
+  attachmentPath?: string; // Preferred (storage object path)
   subject?: string; // Custom subject from callback form
 }
 
@@ -89,10 +96,24 @@ const handler = async (req: Request): Promise<Response> => {
       ? data.equipmentTypes.join(", ") 
       : "Не указано";
 
-    const attachmentUrl = (data.attachmentUrl || "").trim();
-    const attachmentUrlSafe = escapeHtml(attachmentUrl);
+    const attachmentPath = (data.attachmentPath || "").trim();
+    let attachmentUrlResolved = (data.attachmentUrl || "").trim();
 
-    const attachmentSection = attachmentUrl
+    if (!attachmentUrlResolved && attachmentPath) {
+      const { data: signed, error: signedError } = await supabaseAdmin.storage
+        .from("inquiry-attachments")
+        .createSignedUrl(attachmentPath, 60 * 60 * 24 * 7); // 7 days
+
+      if (signedError) {
+        console.error("Signed URL error:", signedError);
+      } else {
+        attachmentUrlResolved = signed?.signedUrl ?? "";
+      }
+    }
+
+    const attachmentUrlSafe = escapeHtml(attachmentUrlResolved);
+
+    const attachmentSection = attachmentUrlResolved
       ? `<p><strong>Прикреплённый файл:</strong> <a href="${attachmentUrlSafe}">${attachmentUrlSafe}</a></p>`
       : "";
 

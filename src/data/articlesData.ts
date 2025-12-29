@@ -1,7 +1,7 @@
-import fireSafety1 from '@/assets/articles/fire-safety-1.jpg';
-import fireSafety2 from '@/assets/articles/fire-safety-2.jpg';
-import fireSafety3 from '@/assets/articles/fire-safety-3.jpg';
-import fireSafety4 from '@/assets/articles/fire-safety-4.jpg';
+import fireSafety1 from '@/assets/articles/fire-safety-3.jpg';
+import fireSafety2 from '@/assets/articles/fire-safety-4.jpg';
+import sanitary1 from '@/assets/articles/sanitary-1.jpg';
+import sanitary2 from '@/assets/articles/sanitary-2.jpg';
 import profitable1 from '@/assets/articles/profitable-1.jpg';
 import profitable2 from '@/assets/articles/profitable-2.jpg';
 import profitable3 from '@/assets/articles/profitable-3.jpg';
@@ -38,7 +38,7 @@ export const articlesData: Article[] = [
     category: 'Безопасность',
     readTime: '5 мин',
     image: fireSafety1,
-    images: [fireSafety1, fireSafety2, fireSafety3, fireSafety4],
+    images: [fireSafety1, fireSafety2],
     content: `
 ## Почему рестораны горят?
 
@@ -342,6 +342,8 @@ export const articlesData: Article[] = [
     author: 'Веконт-М',
     category: 'Законодательство',
     readTime: '8 мин',
+    image: sanitary1,
+    images: [sanitary1, sanitary2],
     content: `
 ## Нормативная база
 

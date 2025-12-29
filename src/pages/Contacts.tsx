@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
-import { Phone, Mail, MapPin, Clock, Send, FileText, MessageSquare, CheckCircle, ArrowRight, User, PhoneCall, Building, MessageCircle, Loader2, Paperclip, X } from 'lucide-react';
+import { Phone, Mail, MapPin, Clock, Send, FileText, MessageSquare, CheckCircle, ArrowRight, User, PhoneCall, Building, MessageCircle, Loader2, Paperclip, X, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { supabase } from '@/integrations/supabase/client';
@@ -949,12 +949,23 @@ const Contacts = () => {
                   </Tooltip>
                 </TooltipProvider>
                 <a 
-                  href="https://wa.me/79258534974" 
+                  href="https://play.google.com/store/apps/details?id=ru.oneme.app" 
                   target="_blank" 
                   rel="noopener noreferrer"
                 >
                   <Button size="lg" variant="outline" className="w-full border-blue-500/50 text-blue-600 hover:bg-blue-500/10">
-                    MAX
+                    <Download className="w-4 h-4" />
+                    Скачать MAX (Android)
+                  </Button>
+                </a>
+                <a 
+                  href="https://apps.apple.com/ru/app/max-%D0%BE%D0%B1%D1%89%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B7%D0%B2%D0%BE%D0%BD%D0%BA%D0%B8-%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D1%8B/id6737561550" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                >
+                  <Button size="lg" variant="outline" className="w-full border-blue-500/50 text-blue-600 hover:bg-blue-500/10">
+                    <Download className="w-4 h-4" />
+                    Скачать MAX (iPhone)
                   </Button>
                 </a>
               </div>

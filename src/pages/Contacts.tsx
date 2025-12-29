@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/tooltip';
 const contactInfo = [
   { icon: Phone, label: 'Телефон', value: '(499) 677-2010', href: 'tel:+74996772010' },
+  { icon: Phone, label: 'Консультант', value: '+7 925 85-349-74', href: 'tel:+79258534974' },
   { icon: Mail, label: 'Email', value: 'sales@pressovac-moscow.ru', href: 'mailto:sales@pressovac-moscow.ru' },
   { icon: MapPin, label: 'Адрес', value: '123308, г. Москва, 3-й Силикатный проезд, д. 4, кор. 1', href: '#' },
   { icon: Clock, label: 'Время работы', value: 'Пн-Пт: 09:00-21:00', href: '#' },
@@ -978,23 +979,6 @@ const Contacts = () => {
                     MAX (RuStore)
                   </Button>
                 </a>
-                {/* Консультант */}
-                <div className="mt-6 pt-6 border-t border-green-500/20">
-                  <div className="flex items-center gap-4 p-4 rounded-xl bg-white/5 border border-border/20">
-                    <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center flex-shrink-0">
-                      <Phone className="w-6 h-6 text-blue-500" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Консультант</p>
-                      <a 
-                        href="tel:+79258534974" 
-                        className="text-lg font-semibold text-foreground hover:text-primary transition-colors"
-                      >
-                        +7 925 85-349-74
-                      </a>
-                    </div>
-                  </div>
-                </div>
               </div>
             </motion.div>
           </div>

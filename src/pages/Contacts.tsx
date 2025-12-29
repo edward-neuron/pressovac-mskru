@@ -924,7 +924,7 @@ const Contacts = () => {
                   </Button>
                 </a>
                 <a 
-                  href="https://api.whatsapp.com/send?phone=79258534974" 
+                  href="https://wa.me/79258534974" 
                   target="_blank" 
                   rel="noopener noreferrer"
                 >
@@ -934,7 +934,7 @@ const Contacts = () => {
                   </Button>
                 </a>
                 <a 
-                  href="https://api.whatsapp.com/send?phone=79258534974" 
+                  href="https://wa.me/79258534974" 
                   target="_blank" 
                   rel="noopener noreferrer"
                 >
@@ -943,7 +943,7 @@ const Contacts = () => {
                   </Button>
                 </a>
                 <a 
-                  href="https://api.whatsapp.com/send?phone=79258534974" 
+                  href="https://wa.me/79258534974" 
                   target="_blank" 
                   rel="noopener noreferrer"
                 >

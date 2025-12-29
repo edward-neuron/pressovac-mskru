@@ -206,7 +206,8 @@ const Technology = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.05 }}
                         onClick={() => {
-                          setPlatform('rutube');
+                          const ytId = YOUTUBE_IDS[video.id];
+                          setPlatform(ytId ? 'youtube' : 'rutube');
                           setSelectedVideo(video);
                         }}
                         className="group cursor-pointer"

@@ -953,7 +953,7 @@ const Contacts = () => {
                   target="_blank" 
                   rel="noopener noreferrer"
                 >
-                  <Button size="lg" className="w-full bg-[#1a1a2e] border border-violet-500/30 text-white hover:bg-[#252542] hover:border-violet-400/50">
+                  <Button size="lg" className="w-full bg-[#7C3AED] text-white hover:bg-[#6D28D9]">
                     <Download className="w-4 h-4" />
                     MAX (Google Play)
                   </Button>
@@ -963,7 +963,7 @@ const Contacts = () => {
                   target="_blank" 
                   rel="noopener noreferrer"
                 >
-                  <Button size="lg" className="w-full bg-[#1a1a2e] border border-violet-500/30 text-white hover:bg-[#252542] hover:border-violet-400/50">
+                  <Button size="lg" className="w-full bg-[#7C3AED] text-white hover:bg-[#6D28D9]">
                     <Download className="w-4 h-4" />
                     MAX (App Store)
                   </Button>
@@ -973,7 +973,7 @@ const Contacts = () => {
                   target="_blank" 
                   rel="noopener noreferrer"
                 >
-                  <Button size="lg" className="w-full bg-[#1a1a2e] border border-violet-500/30 text-white hover:bg-[#252542] hover:border-violet-400/50">
+                  <Button size="lg" className="w-full bg-[#7C3AED] text-white hover:bg-[#6D28D9]">
                     <Download className="w-4 h-4" />
                     MAX (RuStore)
                   </Button>

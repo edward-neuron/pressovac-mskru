@@ -391,10 +391,10 @@ const Contacts = () => {
                     {item.label === 'Телефон' ? (
                       <div className="mt-0.5 space-y-1">
                         <p className="font-semibold">{item.value}</p>
-                        <p className="text-sm text-muted-foreground leading-tight">
-                          Консультант:{' '}
-                          <span className="font-semibold text-foreground">+7 925 85-349-74</span>
-                        </p>
+                        <div className="text-sm text-muted-foreground leading-tight">
+                          <div>Консультант:</div>
+                          <div className="font-semibold text-foreground">(925) 85-349-74</div>
+                        </div>
                       </div>
                     ) : (
                       <p className="font-semibold">{item.value}</p>

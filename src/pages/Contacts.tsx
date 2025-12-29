@@ -15,10 +15,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-const contactInfo = [
+const contactInfo: Array<{ icon: typeof Phone; label: string; value: string; href: string; target?: string }> = [
   { icon: Phone, label: 'Телефон', value: '(499) 677-2010', href: 'tel:+74996772010' },
   { icon: Mail, label: 'Email', value: 'sales@pressovac-moscow.ru', href: 'mailto:sales@pressovac-moscow.ru' },
-  { icon: MapPin, label: 'Адрес склада', value: '123007, Москва, 2-й Хорошёвский проезд, 7с1, склад №4', href: '#' },
+  { icon: MapPin, label: 'Адрес склада', value: '123007, Москва, 2-й Хорошёвский проезд, 7с1, склад №4', href: 'https://yandex.ru/maps/?text=Москва%2C%202-й%20Хорошёвский%20проезд%2C%207с1', target: '_blank' },
   { icon: Clock, label: 'Время работы', value: 'Пн-Пт: 09:00-21:00', href: '#' },
 ];
 
@@ -420,6 +420,8 @@ const Contacts = () => {
                 <motion.a
                   key={item.label}
                   href={item.href}
+                  target={item.target}
+                  rel={item.target === '_blank' ? 'noopener noreferrer' : undefined}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 + index * 0.1 }}

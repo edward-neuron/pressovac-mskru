@@ -66,11 +66,55 @@ const Contacts = () => {
     return true;
   };
 
+  // Lazy message patterns to block
+  const LAZY_MESSAGE_PATTERNS = [
+    /^перезвони(те)?(\s+мне)?\.?$/i,
+    /^позвони(те)?(\s+мне)?\.?$/i,
+    /^свяжи(те)?сь(\s+со\s+мной)?\.?$/i,
+    /^нужна\s+консультация\.?$/i,
+    /^хочу\s+узнать\.?$/i,
+    /^интересует\.?$/i,
+    /^вопрос\.?$/i,
+    /^заявка\.?$/i,
+  ];
+
+  const MIN_SIMPLE_MESSAGE_LENGTH = 80;
+
+  const validateSimpleMessage = (message: string): { valid: boolean; error?: string } => {
+    const trimmed = message.trim();
+    
+    // Check for lazy messages
+    for (const pattern of LAZY_MESSAGE_PATTERNS) {
+      if (pattern.test(trimmed)) {
+        return { 
+          valid: false, 
+          error: 'Пожалуйста, опишите вашу задачу и конкретный вопрос по существу. "Перезвоните мне" — недостаточно информации для качественной консультации.' 
+        };
+      }
+    }
+    
+    // Check minimum length
+    if (trimmed.length < MIN_SIMPLE_MESSAGE_LENGTH) {
+      return { 
+        valid: false, 
+        error: `Введите реальное описание задачи не менее ${MIN_SIMPLE_MESSAGE_LENGTH} символов (сейчас: ${trimmed.length})` 
+      };
+    }
+    
+    return { valid: true };
+  };
+
   const handleSimpleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!simpleForm.name || !simpleForm.phone || !simpleForm.email || !simpleForm.message) {
       toast.error('Заполните обязательные поля');
+      return;
+    }
+
+    const messageValidation = validateSimpleMessage(simpleForm.message);
+    if (!messageValidation.valid) {
+      toast.error(messageValidation.error);
       return;
     }
 
@@ -419,8 +463,16 @@ const Contacts = () => {
                       value={simpleForm.message}
                       onChange={(e) => setSimpleForm(prev => ({ ...prev, message: e.target.value }))}
                       className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:border-primary transition-colors resize-none"
-                      placeholder="Опишите ваш вопрос или задачу..."
+                      placeholder="Опишите вашу задачу: форма и характер отложений, диаметр воздуховодов, особенности объекта, конкретный вопрос..."
                     />
+                    <div className="flex justify-between items-center mt-1">
+                      <p className="text-xs text-muted-foreground">
+                        Минимум {MIN_SIMPLE_MESSAGE_LENGTH} символов
+                      </p>
+                      <p className={`text-xs ${simpleForm.message.trim().length >= MIN_SIMPLE_MESSAGE_LENGTH ? 'text-green-600' : 'text-muted-foreground'}`}>
+                        {simpleForm.message.trim().length} / {MIN_SIMPLE_MESSAGE_LENGTH}
+                      </p>
+                    </div>
                   </div>
 
                   {/* File attachment */}

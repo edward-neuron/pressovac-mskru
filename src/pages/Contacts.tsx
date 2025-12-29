@@ -8,6 +8,12 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import CallbackFormModal from '@/components/CallbackFormModal';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 const contactInfo = [
   { icon: Phone, label: 'Телефон', value: '(499) 677-2010', href: 'tel:+74996772010' },
   { icon: Mail, label: 'Email', value: 'sales@pressovac-moscow.ru', href: 'mailto:sales@pressovac-moscow.ru' },
@@ -923,34 +929,61 @@ const Contacts = () => {
                     Telegram Chat
                   </Button>
                 </a>
-                <a 
-                  href="https://wa.me/79258534974" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                >
-                  <Button size="lg" className="w-full bg-[#25D366] hover:bg-[#1da851]">
-                    <MessageCircle className="w-5 h-5" />
-                    WhatsApp
-                  </Button>
-                </a>
-                <a 
-                  href="https://wa.me/79258534974" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                >
-                  <Button size="lg" variant="outline" className="w-full border-green-500/50 text-green-600 hover:bg-green-500/10">
-                    Chatti
-                  </Button>
-                </a>
-                <a 
-                  href="https://wa.me/79258534974" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                >
-                  <Button size="lg" variant="outline" className="w-full border-blue-500/50 text-blue-600 hover:bg-blue-500/10">
-                    MAX
-                  </Button>
-                </a>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <a 
+                        href="https://wa.me/79258534974" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                      >
+                        <Button size="lg" className="w-full bg-[#25D366] hover:bg-[#1da851]">
+                          <MessageCircle className="w-5 h-5" />
+                          WhatsApp
+                        </Button>
+                      </a>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="bg-amber-500 text-white border-amber-600">
+                      <p>Не забудьте включить Proxy или VPN</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <a 
+                        href="https://wa.me/79258534974" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                      >
+                        <Button size="lg" variant="outline" className="w-full border-green-500/50 text-green-600 hover:bg-green-500/10">
+                          Chatti
+                        </Button>
+                      </a>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="bg-amber-500 text-white border-amber-600">
+                      <p>Не забудьте включить Proxy или VPN</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <a 
+                        href="https://wa.me/79258534974" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                      >
+                        <Button size="lg" variant="outline" className="w-full border-blue-500/50 text-blue-600 hover:bg-blue-500/10">
+                          MAX
+                        </Button>
+                      </a>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="bg-amber-500 text-white border-amber-600">
+                      <p>Не забудьте включить Proxy или VPN</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
             </motion.div>
           </div>

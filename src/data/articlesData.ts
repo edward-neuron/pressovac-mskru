@@ -8,6 +8,10 @@ import profitable3 from '@/assets/articles/profitable-3.jpg';
 import profitable4 from '@/assets/articles/profitable-4.jpg';
 import starting1 from '@/assets/articles/starting-1.jpg';
 import starting2 from '@/assets/articles/starting-2.jpg';
+import income1 from '@/assets/articles/income-1.jpg';
+import income2 from '@/assets/articles/income-2.jpg';
+import income3 from '@/assets/articles/income-3.jpg';
+import income4 from '@/assets/articles/income-4.jpg';
 
 export interface Article {
   id: number;
@@ -253,6 +257,8 @@ export const articlesData: Article[] = [
     author: 'Веконт-М',
     category: 'Бизнес',
     readTime: '6 мин',
+    image: income1,
+    images: [income1, income2, income3, income4],
     content: `
 ## Незанятая ниша с огромным потенциалом
 

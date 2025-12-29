@@ -92,7 +92,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send email to sales team
     const salesEmailResponse = await resend.emails.send({
-      from: "Pressovac Moscow <info@pressovac-msk.ru>",
+      from: "Pressovac Moscow <info@pressovac-moscow.ru>",
       to: ["sales@pressovac-moscow.ru"],
       subject: `Заявка на подбор оборудования от ${data.contactPerson}`,
       html: emailHtml,
@@ -130,7 +130,7 @@ const handler = async (req: Request): Promise<Response> => {
     `;
 
     const clientEmailResponse = await resend.emails.send({
-      from: "Pressovac Moscow <info@pressovac-msk.ru>",
+      from: "Pressovac Moscow <info@pressovac-moscow.ru>",
       to: [data.email],
       subject: "Ваша заявка получена — Pressovac Moscow",
       html: clientEmailHtml,

@@ -2,6 +2,10 @@ import fireSafety1 from '@/assets/articles/fire-safety-1.jpg';
 import fireSafety2 from '@/assets/articles/fire-safety-2.jpg';
 import fireSafety3 from '@/assets/articles/fire-safety-3.jpg';
 import fireSafety4 from '@/assets/articles/fire-safety-4.jpg';
+import profitable1 from '@/assets/articles/profitable-1.jpg';
+import profitable2 from '@/assets/articles/profitable-2.jpg';
+import profitable3 from '@/assets/articles/profitable-3.jpg';
+import profitable4 from '@/assets/articles/profitable-4.jpg';
 
 export interface Article {
   id: number;
@@ -85,6 +89,8 @@ export const articlesData: Article[] = [
     author: 'Веконт-М',
     category: 'Бизнес',
     readTime: '7 мин',
+    image: profitable1,
+    images: [profitable1, profitable2, profitable3, profitable4],
     content: `
 ## Почему очистка вентиляции — это бизнес будущего?
 

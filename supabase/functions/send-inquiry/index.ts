@@ -3,6 +3,7 @@ import { Resend } from "https://esm.sh/resend@2.0.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.89.0";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+const TURNSTILE_SECRET_KEY = Deno.env.get("TURNSTILE_SECRET_KEY");
 
 const supabaseAdmin = createClient(
   Deno.env.get("SUPABASE_URL") ?? "",
@@ -25,7 +26,7 @@ const escapeHtml = (input: string) =>
 interface InquiryRequest {
   company?: string;
   contactPerson?: string;
-  name?: string; // Alternative to contactPerson (from callback form)
+  name?: string;
   phone: string;
   email: string;
   businessType?: string;
@@ -34,12 +35,42 @@ interface InquiryRequest {
   equipmentTypes?: string[];
   budget?: string;
   comments?: string;
-  message?: string; // Alternative to comments (from callback form)
+  message?: string;
   needsTraining?: boolean;
-  attachmentUrl?: string; // Legacy (public URL)
-  attachmentPath?: string; // Preferred (storage object path)
-  attachmentFileName?: string; // Original file name for display
-  subject?: string; // Custom subject from callback form
+  attachmentUrl?: string;
+  attachmentPath?: string;
+  attachmentFileName?: string;
+  subject?: string;
+  turnstileToken?: string; // Cloudflare Turnstile token
+}
+
+// Verify Turnstile token with Cloudflare
+async function verifyTurnstileToken(token: string): Promise<boolean> {
+  if (!TURNSTILE_SECRET_KEY) {
+    console.warn("TURNSTILE_SECRET_KEY not configured, skipping verification");
+    return true; // Allow if not configured (for development)
+  }
+
+  try {
+    const response = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({
+        secret: TURNSTILE_SECRET_KEY,
+        response: token,
+      }),
+    });
+
+    const result = await response.json();
+    console.log("Turnstile verification result:", { success: result.success, errorCodes: result["error-codes"] });
+    
+    return result.success === true;
+  } catch (error) {
+    console.error("Turnstile verification error:", error);
+    return false;
+  }
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -50,6 +81,27 @@ const handler = async (req: Request): Promise<Response> => {
 
   try {
     const data: InquiryRequest = await req.json();
+
+    // Verify Turnstile token first
+    const turnstileToken = (data.turnstileToken || "").trim();
+    if (!turnstileToken) {
+      console.error("Turnstile token missing");
+      return new Response(
+        JSON.stringify({ error: "Пожалуйста, подтвердите, что вы не робот" }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    const isValidToken = await verifyTurnstileToken(turnstileToken);
+    if (!isValidToken) {
+      console.error("Turnstile verification failed");
+      return new Response(
+        JSON.stringify({ error: "Проверка безопасности не пройдена. Попробуйте обновить страницу." }),
+        { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    console.log("Turnstile verification passed");
 
     // Support both contactPerson and name fields
     const contactNameRaw = (data.contactPerson || data.name || "").trim();
@@ -170,7 +222,7 @@ const handler = async (req: Request): Promise<Response> => {
       
       <hr>
       <p style="color: #666; font-size: 12px;">
-        Заявка отправлена с сайта pressovac-moscow.ru
+        Заявка отправлена с сайта pressovac-moscow.ru (проверка Turnstile пройдена ✓)
       </p>
     `;
 

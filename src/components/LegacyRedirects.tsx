@@ -10,6 +10,7 @@ const redirectMap: Record<string, string> = {
   '/politika-konfidentsialnosti': '/privacy',
   '/demand-registration': '/inquiry',
   '/educational-materials': '/training',
+  '/training-materials-index': '/training',
   '/basic-cleaning-concept': '/technology',
   '/technical-information-v-2': '/technology',
   '/catalogue-pressovac': '/catalog',
@@ -36,6 +37,7 @@ const redirectMap: Record<string, string> = {
   '/pdf-brochures': '/catalog',
   '/pdf-brochures-link': '/catalog',
   '/loan-programs': '/catalog',
+  '/shop-online-topmenu': '/catalog',
   
   // Статьи и новости
   '/articles': '/articles',
@@ -45,6 +47,9 @@ const redirectMap: Record<string, string> = {
 
 // Паттерны для частичного совпадения (начало пути)
 const redirectPatterns: Array<{ pattern: string; target: string }> = [
+  // Интернет-магазин -> Каталог
+  { pattern: '/shop-online-topmenu/', target: '/catalog' },
+  
   // Оборудование
   { pattern: '/ductcleaning-equipment-v2/', target: '/catalog' },
   { pattern: '/suction-unit/', target: '/catalog' },
@@ -62,6 +67,7 @@ const redirectPatterns: Array<{ pattern: string; target: string }> = [
   { pattern: '/urrent-promotions/', target: '/catalog' },
   { pattern: '/price-list/', target: '/catalog' },
   { pattern: '/loan-programs/', target: '/catalog' },
+  { pattern: '/9-catalog/', target: '/catalog' },
   
   // Статьи и новости
   { pattern: '/articles/', target: '/articles' },
@@ -74,6 +80,7 @@ const redirectPatterns: Array<{ pattern: string; target: string }> = [
   
   // Обучение
   { pattern: '/educational-materials/', target: '/training' },
+  { pattern: '/training-materials-index/', target: '/training' },
   
   // О компании
   { pattern: '/company/', target: '/about' },

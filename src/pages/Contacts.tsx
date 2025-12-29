@@ -50,7 +50,7 @@ const Contacts = () => {
   });
 
   // Allowed file extensions (safe files only)
-  const ALLOWED_EXTENSIONS = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'txt', 'rtf', 'odt', 'jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'tiff', 'zip', 'rar', '7z'];
+  const ALLOWED_EXTENSIONS = ['pdf', 'doc', 'docx', 'png', 'jpg', 'jpeg'];
   const BLOCKED_EXTENSIONS = ['exe', 'bat', 'cmd', 'com', 'msi', 'scr', 'pif', 'js', 'vbs', 'wsf', 'hta', 'jar', 'ps1', 'sh', 'php', 'py', 'pl', 'rb'];
 
   const validateFileExtension = (file: File): boolean => {
@@ -60,7 +60,7 @@ const Contacts = () => {
       return false;
     }
     if (!ALLOWED_EXTENSIONS.includes(ext)) {
-      toast.error(`Файлы .${ext} не поддерживаются. Допустимые форматы: PDF, DOC, XLS, изображения, архивы`);
+      toast.error(`Файлы .${ext} не поддерживаются. Допустимые форматы: PDF, DOC, DOCX, PNG, JPG, JPEG`);
       return false;
     }
     return true;

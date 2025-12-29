@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
 import { FileText, Send, CheckCircle, Loader2, Paperclip, X } from 'lucide-react';
@@ -7,6 +7,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
+import TurnstileWidget from '@/components/TurnstileWidget';
 
 interface FormData {
   company: string;
@@ -27,6 +28,7 @@ const Inquiry = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [attachment, setAttachment] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [formData, setFormData] = useState<FormData>({
     company: '',
     contactPerson: '',
@@ -41,6 +43,19 @@ const Inquiry = () => {
     needsTraining: false,
     privacyAccepted: false,
   });
+
+  const handleTurnstileVerify = useCallback((token: string) => {
+    setTurnstileToken(token);
+  }, []);
+
+  const handleTurnstileError = useCallback(() => {
+    setTurnstileToken(null);
+    toast.error('Ошибка проверки безопасности. Обновите страницу.');
+  }, []);
+
+  const handleTurnstileExpire = useCallback(() => {
+    setTurnstileToken(null);
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -109,6 +124,11 @@ const Inquiry = () => {
       return;
     }
 
+    if (!turnstileToken) {
+      toast.error('Пожалуйста, подтвердите, что вы не робот');
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -136,7 +156,7 @@ const Inquiry = () => {
       }
 
       const { error } = await supabase.functions.invoke('send-inquiry', {
-        body: { ...formData, attachmentPath, attachmentFileName },
+        body: { ...formData, attachmentPath, attachmentFileName, turnstileToken },
       });
 
       if (error) throw error;
@@ -159,6 +179,7 @@ const Inquiry = () => {
         privacyAccepted: false,
       });
       setAttachment(null);
+      setTurnstileToken(null);
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
@@ -450,7 +471,14 @@ const Inquiry = () => {
                   </label>
                 </div>
 
-                <Button type="submit" size="lg" className="w-full" disabled={isSubmitting || !formData.privacyAccepted}>
+                {/* Turnstile Widget */}
+                <TurnstileWidget
+                  onVerify={handleTurnstileVerify}
+                  onError={handleTurnstileError}
+                  onExpire={handleTurnstileExpire}
+                />
+
+                <Button type="submit" size="lg" className="w-full" disabled={isSubmitting || !formData.privacyAccepted || !turnstileToken}>
                   {isSubmitting ? (
                     <>
                       <Loader2 className="w-5 h-5 animate-spin" />

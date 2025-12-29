@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useCallback } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -22,6 +22,7 @@ import { Paperclip, PhoneCall, Send, Loader2, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Link } from 'react-router-dom';
+import TurnstileWidget from '@/components/TurnstileWidget';
 
 interface CallbackFormModalProps {
   children: React.ReactNode;
@@ -45,6 +46,7 @@ const CallbackFormModal = ({ children }: CallbackFormModalProps) => {
 
   const [attachment, setAttachment] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -56,6 +58,23 @@ const CallbackFormModal = ({ children }: CallbackFormModalProps) => {
     message: '',
     privacyAccepted: false,
   });
+
+  const handleTurnstileVerify = useCallback((token: string) => {
+    setTurnstileToken(token);
+  }, []);
+
+  const handleTurnstileError = useCallback(() => {
+    setTurnstileToken(null);
+    toast({
+      title: 'Ошибка проверки безопасности',
+      description: 'Обновите страницу и попробуйте снова.',
+      variant: 'destructive',
+    });
+  }, [toast]);
+
+  const handleTurnstileExpire = useCallback(() => {
+    setTurnstileToken(null);
+  }, []);
 
   // Lazy message patterns to block
   const LAZY_MESSAGE_PATTERNS = [
@@ -167,6 +186,14 @@ const CallbackFormModal = ({ children }: CallbackFormModalProps) => {
       return;
     }
 
+    if (!turnstileToken) {
+      toast({
+        title: 'Пожалуйста, подтвердите, что вы не робот',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -210,6 +237,7 @@ const CallbackFormModal = ({ children }: CallbackFormModalProps) => {
           message: `Заказ обратного звонка\n\nГород: ${formData.city}\nУдобное время: ${formData.preferredTime || 'Не указано'}\n\nСообщение:\n${formData.message || 'Не указано'}`,
           subject: 'Заказ обратного звонка',
           attachmentPath,
+          turnstileToken,
         },
       });
 
@@ -231,6 +259,7 @@ const CallbackFormModal = ({ children }: CallbackFormModalProps) => {
         privacyAccepted: false,
       });
       removeAttachment();
+      setTurnstileToken(null);
       setOpen(false);
     } catch (error) {
       console.error('Error sending callback request:', error);
@@ -409,11 +438,18 @@ const CallbackFormModal = ({ children }: CallbackFormModalProps) => {
             </label>
           </div>
 
+          {/* Turnstile Widget */}
+          <TurnstileWidget
+            onVerify={handleTurnstileVerify}
+            onError={handleTurnstileError}
+            onExpire={handleTurnstileExpire}
+          />
+
           <Button
             type="submit"
             size="lg"
             className="w-full"
-            disabled={isSubmitting || !formData.privacyAccepted}
+            disabled={isSubmitting || !formData.privacyAccepted || !turnstileToken}
           >
             {isSubmitting ? (
               <>

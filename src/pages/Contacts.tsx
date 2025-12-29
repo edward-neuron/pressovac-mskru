@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
 import { Phone, Mail, MapPin, Clock, Send, FileText, MessageSquare, CheckCircle, ArrowRight, User, PhoneCall, Building, MessageCircle, Loader2, Paperclip, X, Download } from 'lucide-react';
@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import CallbackFormModal from '@/components/CallbackFormModal';
+import TurnstileWidget from '@/components/TurnstileWidget';
 import {
   Tooltip,
   TooltipContent,
@@ -29,6 +30,7 @@ const Contacts = () => {
   const [simpleSubmitting, setSimpleSubmitting] = useState(false);
   const [simpleAttachment, setSimpleAttachment] = useState<File | null>(null);
   const simpleFileInputRef = useRef<HTMLInputElement>(null);
+  const [simpleTurnstileToken, setSimpleTurnstileToken] = useState<string | null>(null);
   const [simpleForm, setSimpleForm] = useState({
     name: '',
     phone: '',
@@ -37,9 +39,23 @@ const Contacts = () => {
     privacyAccepted: false,
   });
 
+  const handleSimpleTurnstileVerify = useCallback((token: string) => {
+    setSimpleTurnstileToken(token);
+  }, []);
+
+  const handleSimpleTurnstileError = useCallback(() => {
+    setSimpleTurnstileToken(null);
+    toast.error('Ошибка проверки безопасности. Обновите страницу.');
+  }, []);
+
+  const handleSimpleTurnstileExpire = useCallback(() => {
+    setSimpleTurnstileToken(null);
+  }, []);
+
   const [extendedSubmitting, setExtendedSubmitting] = useState(false);
   const [extendedAttachment, setExtendedAttachment] = useState<File | null>(null);
   const extendedFileInputRef = useRef<HTMLInputElement>(null);
+  const [extendedTurnstileToken, setExtendedTurnstileToken] = useState<string | null>(null);
   const [extendedForm, setExtendedForm] = useState({
     company: '',
     contactPerson: '',
@@ -54,6 +70,19 @@ const Contacts = () => {
     needsTraining: false,
     privacyAccepted: false,
   });
+
+  const handleExtendedTurnstileVerify = useCallback((token: string) => {
+    setExtendedTurnstileToken(token);
+  }, []);
+
+  const handleExtendedTurnstileError = useCallback(() => {
+    setExtendedTurnstileToken(null);
+    toast.error('Ошибка проверки безопасности. Обновите страницу.');
+  }, []);
+
+  const handleExtendedTurnstileExpire = useCallback(() => {
+    setExtendedTurnstileToken(null);
+  }, []);
 
   // Allowed file extensions (safe files only)
   const ALLOWED_EXTENSIONS = ['pdf', 'doc', 'docx', 'png', 'jpg', 'jpeg'];
@@ -129,6 +158,11 @@ const Contacts = () => {
       return;
     }
 
+    if (!simpleTurnstileToken) {
+      toast.error('Пожалуйста, подтвердите, что вы не робот');
+      return;
+    }
+
     setSimpleSubmitting(true);
 
     try {
@@ -174,6 +208,7 @@ const Contacts = () => {
           subject: 'Быстрая заявка с страницы Контакты',
           attachmentPath,
           attachmentFileName,
+          turnstileToken: simpleTurnstileToken,
         },
       });
 
@@ -182,6 +217,7 @@ const Contacts = () => {
       toast.success('Сообщение отправлено!');
       setSimpleForm({ name: '', phone: '', email: '', message: '', privacyAccepted: false });
       setSimpleAttachment(null);
+      setSimpleTurnstileToken(null);
       if (simpleFileInputRef.current) simpleFileInputRef.current.value = '';
       setFormType(null);
     } catch (err: any) {
@@ -237,6 +273,11 @@ const Contacts = () => {
       return;
     }
 
+    if (!extendedTurnstileToken) {
+      toast.error('Пожалуйста, подтвердите, что вы не робот');
+      return;
+    }
+
     setExtendedSubmitting(true);
 
     try {
@@ -274,7 +315,7 @@ const Contacts = () => {
       }
 
       const { error } = await supabase.functions.invoke('send-inquiry', {
-        body: { ...extendedForm, attachmentPath, attachmentFileName },
+        body: { ...extendedForm, attachmentPath, attachmentFileName, turnstileToken: extendedTurnstileToken },
       });
 
       if (error) throw error;
@@ -295,6 +336,7 @@ const Contacts = () => {
         privacyAccepted: false,
       });
       setExtendedAttachment(null);
+      setExtendedTurnstileToken(null);
       if (extendedFileInputRef.current) extendedFileInputRef.current.value = '';
       setFormType(null);
     } catch (err: any) {
@@ -546,7 +588,14 @@ const Contacts = () => {
                     </label>
                   </div>
 
-                  <Button type="submit" size="lg" className="w-full" disabled={simpleSubmitting || !simpleForm.privacyAccepted}>
+                  {/* Turnstile Widget */}
+                  <TurnstileWidget
+                    onVerify={handleSimpleTurnstileVerify}
+                    onError={handleSimpleTurnstileError}
+                    onExpire={handleSimpleTurnstileExpire}
+                  />
+
+                  <Button type="submit" size="lg" className="w-full" disabled={simpleSubmitting || !simpleForm.privacyAccepted || !simpleTurnstileToken}>
                     {simpleSubmitting ? (
                       <>
                         <Loader2 className="w-5 h-5 animate-spin" />
@@ -829,7 +878,14 @@ const Contacts = () => {
                      </label>
                    </div>
 
-                   <Button type="submit" size="lg" className="w-full" disabled={extendedSubmitting || !extendedForm.privacyAccepted}>
+                   {/* Turnstile Widget */}
+                   <TurnstileWidget
+                     onVerify={handleExtendedTurnstileVerify}
+                     onError={handleExtendedTurnstileError}
+                     onExpire={handleExtendedTurnstileExpire}
+                   />
+
+                   <Button type="submit" size="lg" className="w-full" disabled={extendedSubmitting || !extendedForm.privacyAccepted || !extendedTurnstileToken}>
                      {extendedSubmitting ? (
                        <>
                          <Loader2 className="w-5 h-5 animate-spin" />

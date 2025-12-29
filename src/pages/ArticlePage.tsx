@@ -1,10 +1,60 @@
+import { useState } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
-import { getArticleBySlug, articlesData } from '@/data/articlesData';
+import { getArticleBySlug, articlesData, ArticleVideo } from '@/data/articlesData';
 import { ArrowLeft, Calendar, User, Clock, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { SEOHead } from '@/components/seo/SEOHead';
+
+type Platform = 'rutube' | 'youtube';
+
+const ArticleVideoPlayer = ({ video }: { video: ArticleVideo }) => {
+  const [platform, setPlatform] = useState<Platform>('rutube');
+  
+  const videoSrc = platform === 'youtube' && video.youtubeId
+    ? `https://www.youtube.com/embed/${video.youtubeId}`
+    : `https://rutube.ru/play/embed/${video.rutubeId}`;
+
+  return (
+    <div className="rounded-xl overflow-hidden bg-card border border-border">
+      {/* Platform Switcher */}
+      <div className="flex justify-center gap-3 p-3 border-b border-border bg-muted/30">
+        <button
+          onClick={() => setPlatform('rutube')}
+          className={`px-5 py-1.5 rounded-full text-sm font-medium transition-all bg-blue-600 text-white ${
+            platform === 'rutube'
+              ? 'shadow-lg ring-2 ring-blue-400 ring-offset-2 ring-offset-background'
+              : 'opacity-70 hover:opacity-100'
+          }`}
+        >
+          RuTube
+        </button>
+        <button
+          onClick={() => setPlatform('youtube')}
+          disabled={!video.youtubeId}
+          className={`px-5 py-1.5 rounded-full text-sm font-medium transition-all bg-red-600 text-white ${
+            platform === 'youtube'
+              ? 'shadow-lg ring-2 ring-red-400 ring-offset-2 ring-offset-background'
+              : 'opacity-70 hover:opacity-100'
+          } ${!video.youtubeId ? 'opacity-40 cursor-not-allowed hover:opacity-40' : ''}`}
+        >
+          YouTube
+        </button>
+      </div>
+      
+      <div className="aspect-video">
+        <iframe
+          key={`${video.rutubeId}-${platform}`}
+          src={videoSrc}
+          className="w-full h-full"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        />
+      </div>
+    </div>
+  );
+};
 
 const ArticlePage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -226,6 +276,20 @@ const ArticlePage = () => {
       <section className="section-padding">
         <div className="container-custom">
           <div className="max-w-4xl mx-auto">
+            {/* Video Gallery */}
+            {article.videos && article.videos.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="mb-8 grid gap-4"
+              >
+                {article.videos.map((video, index) => (
+                  <ArticleVideoPlayer key={index} video={video} />
+                ))}
+              </motion.div>
+            )}
+
             {/* Image Gallery */}
             {article.images && article.images.length > 0 ? (
               <motion.div
@@ -244,7 +308,7 @@ const ArticlePage = () => {
                   </div>
                 ))}
               </motion.div>
-            ) : article.image && (
+            ) : article.image && !article.videos?.length && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}

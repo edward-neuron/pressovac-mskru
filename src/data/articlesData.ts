@@ -14,6 +14,11 @@ import income2 from '@/assets/articles/income-2.jpg';
 import income3 from '@/assets/articles/income-3.jpg';
 import income4 from '@/assets/articles/income-4.jpg';
 
+export interface ArticleVideo {
+  rutubeId: string;
+  youtubeId?: string;
+}
+
 export interface Article {
   id: number;
   slug: string;
@@ -26,6 +31,7 @@ export interface Article {
   content: string;
   image?: string;
   images?: string[];
+  videos?: ArticleVideo[];
 }
 
 export const articlesData: Article[] = [
@@ -434,6 +440,10 @@ export const articlesData: Article[] = [
     author: 'Веконт-М',
     category: 'Оборудование',
     readTime: '9 мин',
+    videos: [
+      { rutubeId: '9927894db7f21eb0aad294b3d45a9bf7', youtubeId: 'IURiZ30KPsA' },
+      { rutubeId: 'd35efc5eac366396053d3f97f96fc1bc', youtubeId: 'dVYHXnAIwTs' },
+    ],
     content: `
 ## Как выбрать правильное оборудование?
 

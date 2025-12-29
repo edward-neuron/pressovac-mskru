@@ -6,6 +6,7 @@ import profitable1 from '@/assets/articles/profitable-1.jpg';
 import profitable2 from '@/assets/articles/profitable-2.jpg';
 import profitable3 from '@/assets/articles/profitable-3.jpg';
 import profitable4 from '@/assets/articles/profitable-4.jpg';
+import startingMain from '@/assets/articles/starting-main.jpg';
 import starting1 from '@/assets/articles/starting-1.jpg';
 import starting2 from '@/assets/articles/starting-2.jpg';
 import income1 from '@/assets/articles/income-1.jpg';
@@ -164,8 +165,8 @@ export const articlesData: Article[] = [
     author: 'Веконт-М',
     category: 'Руководство',
     readTime: '10 мин',
-    image: starting1,
-    images: [starting1, starting2],
+    image: startingMain,
+    images: [startingMain, starting1, starting2],
     content: `
 ## Пошаговое руководство по открытию бизнеса
 

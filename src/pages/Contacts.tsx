@@ -11,7 +11,7 @@ import CallbackFormModal from '@/components/CallbackFormModal';
 const contactInfo = [
   { icon: Phone, label: 'Телефон', value: '(499) 677-2010', href: 'tel:+74996772010' },
   { icon: Mail, label: 'Email', value: 'sales@pressovac-moscow.ru', href: 'mailto:sales@pressovac-moscow.ru' },
-  { icon: MapPin, label: 'Адрес', value: 'Москва, Россия', href: '#' },
+  { icon: MapPin, label: 'Адрес', value: '123308, г. Москва, 3-й Силикатный проезд, д. 4, кор. 1', href: '#' },
   { icon: Clock, label: 'Время работы', value: 'Пн-Пт: 09:00-21:00', href: '#' },
 ];
 
@@ -739,26 +739,6 @@ const Contacts = () => {
       <section className="section-padding">
         <div className="container-custom">
           <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            {/* Legal Address */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="p-8 rounded-2xl bg-card border border-border"
-            >
-              <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-6">
-                <Building className="w-7 h-7 text-primary" />
-              </div>
-              <h3 className="font-display font-bold text-xl mb-3">Юридический адрес</h3>
-              <p className="text-muted-foreground leading-relaxed">
-                123308, Россия, г. Москва,<br />
-                3-й Силикатный проезд, д. 4, кор. 1
-              </p>
-              <p className="text-sm text-muted-foreground mt-4">
-                ООО «Веконт-М»
-              </p>
-            </motion.div>
-
             {/* Expert Consultant */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}

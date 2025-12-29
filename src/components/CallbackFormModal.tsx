@@ -1,13 +1,27 @@
-import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { useRef, useState } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { PhoneCall, Send, Loader2 } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Paperclip, PhoneCall, Send, Loader2, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { Link } from 'react-router-dom';
 
 interface CallbackFormModalProps {
   children: React.ReactNode;
@@ -28,7 +42,10 @@ const CallbackFormModal = ({ children }: CallbackFormModalProps) => {
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
-  
+
+  const [attachment, setAttachment] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const [formData, setFormData] = useState({
     name: '',
     city: '',
@@ -37,15 +54,21 @@ const CallbackFormModal = ({ children }: CallbackFormModalProps) => {
     email: '',
     preferredTime: '',
     message: '',
+    privacyAccepted: false,
   });
 
-  const handleChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+  const handleChange = (field: string, value: string | boolean) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const removeAttachment = () => {
+    setAttachment(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validate required fields
     if (!formData.name || !formData.city || !formData.company || !formData.phone || !formData.email) {
       toast({
@@ -55,9 +78,48 @@ const CallbackFormModal = ({ children }: CallbackFormModalProps) => {
       return;
     }
 
+    if (!formData.privacyAccepted) {
+      toast({
+        title: 'Необходимо согласие с политикой обработки персональных данных',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
+      let attachmentPath: string | undefined;
+
+      if (attachment) {
+        if (attachment.size > 10 * 1024 * 1024) {
+          toast({
+            title: 'Файл слишком большой',
+            description: 'Максимальный размер: 10 МБ',
+            variant: 'destructive',
+          });
+          return;
+        }
+
+        const fileExt = attachment.name.split('.').pop();
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('inquiry-attachments')
+          .upload(fileName, attachment);
+
+        if (uploadError) {
+          console.error('Callback attachment upload error:', uploadError);
+          toast({
+            title: 'Ошибка загрузки файла',
+            variant: 'destructive',
+          });
+          return;
+        }
+
+        attachmentPath = fileName;
+      }
+
       const { error } = await supabase.functions.invoke('send-inquiry', {
         body: {
           name: formData.name,
@@ -66,6 +128,7 @@ const CallbackFormModal = ({ children }: CallbackFormModalProps) => {
           company: formData.company,
           message: `Заказ обратного звонка\n\nГород: ${formData.city}\nУдобное время: ${formData.preferredTime || 'Не указано'}\n\nСообщение:\n${formData.message || 'Не указано'}`,
           subject: 'Заказ обратного звонка',
+          attachmentPath,
         },
       });
 
@@ -84,7 +147,9 @@ const CallbackFormModal = ({ children }: CallbackFormModalProps) => {
         email: '',
         preferredTime: '',
         message: '',
+        privacyAccepted: false,
       });
+      removeAttachment();
       setOpen(false);
     } catch (error) {
       console.error('Error sending callback request:', error);
@@ -100,9 +165,7 @@ const CallbackFormModal = ({ children }: CallbackFormModalProps) => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {children}
-      </DialogTrigger>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
@@ -110,7 +173,7 @@ const CallbackFormModal = ({ children }: CallbackFormModalProps) => {
             Заказать обратный звонок
           </DialogTitle>
         </DialogHeader>
-        
+
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -123,7 +186,7 @@ const CallbackFormModal = ({ children }: CallbackFormModalProps) => {
                 required
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="city">Город *</Label>
               <Input
@@ -159,7 +222,7 @@ const CallbackFormModal = ({ children }: CallbackFormModalProps) => {
                 required
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="email">Email *</Label>
               <Input
@@ -175,7 +238,10 @@ const CallbackFormModal = ({ children }: CallbackFormModalProps) => {
 
           <div className="space-y-2">
             <Label htmlFor="preferredTime">Удобное время для звонка</Label>
-            <Select value={formData.preferredTime} onValueChange={(value) => handleChange('preferredTime', value)}>
+            <Select
+              value={formData.preferredTime}
+              onValueChange={(value) => handleChange('preferredTime', value)}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Выберите время" />
               </SelectTrigger>
@@ -200,7 +266,65 @@ const CallbackFormModal = ({ children }: CallbackFormModalProps) => {
             />
           </div>
 
-          <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
+          {/* File attachment */}
+          <div className="space-y-2">
+            <Label>Прикрепить файл (ТЗ, реквизиты и т.д.)</Label>
+            <input
+              ref={fileInputRef}
+              type="file"
+              onChange={(e) => setAttachment(e.target.files?.[0] ?? null)}
+              className="hidden"
+              accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
+            />
+
+            {attachment ? (
+              <div className="flex items-center gap-3 p-3 rounded-lg bg-background border border-border">
+                <Paperclip className="w-4 h-4 text-muted-foreground" />
+                <span className="text-sm flex-1 truncate">{attachment.name}</span>
+                <button
+                  type="button"
+                  onClick={removeAttachment}
+                  className="text-muted-foreground hover:text-destructive transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => fileInputRef.current?.click()}
+                className="w-full"
+              >
+                <Paperclip className="w-4 h-4 mr-2" />
+                Выбрать файл
+              </Button>
+            )}
+            <p className="text-xs text-muted-foreground">Максимум 10 МБ</p>
+          </div>
+
+          {/* Privacy consent */}
+          <div className="flex items-start gap-3 p-4 rounded-lg bg-muted/50 border border-border">
+            <Checkbox
+              id="callback-privacy"
+              checked={formData.privacyAccepted}
+              onCheckedChange={(checked) => handleChange('privacyAccepted', checked === true)}
+              className="mt-0.5"
+            />
+            <label htmlFor="callback-privacy" className="text-sm cursor-pointer">
+              Я согласен с{' '}
+              <Link to="/privacy" className="text-primary hover:underline">
+                Политикой обработки персональных данных
+              </Link>
+            </label>
+          </div>
+
+          <Button
+            type="submit"
+            size="lg"
+            className="w-full"
+            disabled={isSubmitting || !formData.privacyAccepted}
+          >
             {isSubmitting ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin" />

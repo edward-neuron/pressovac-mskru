@@ -1,8 +1,12 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
-import { Phone, Mail, MapPin, Clock, Send, FileText, MessageSquare, CheckCircle, ArrowRight, User, PhoneCall, Building, MessageCircle } from 'lucide-react';
+import { Phone, Mail, MapPin, Clock, Send, FileText, MessageSquare, CheckCircle, ArrowRight, User, PhoneCall, Building, MessageCircle, Loader2, Paperclip, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
+import { Link } from 'react-router-dom';
 import CallbackFormModal from '@/components/CallbackFormModal';
 const contactInfo = [
   { icon: Phone, label: 'Телефон', value: '(499) 677-2010', href: 'tel:+74996772010' },
@@ -15,6 +19,188 @@ type FormType = 'simple' | 'extended';
 
 const Contacts = () => {
   const [formType, setFormType] = useState<FormType | null>(null);
+
+  const [simpleSubmitting, setSimpleSubmitting] = useState(false);
+  const [simpleAttachment, setSimpleAttachment] = useState<File | null>(null);
+  const simpleFileInputRef = useRef<HTMLInputElement>(null);
+  const [simpleForm, setSimpleForm] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    message: '',
+    privacyAccepted: false,
+  });
+
+  const [extendedSubmitting, setExtendedSubmitting] = useState(false);
+  const [extendedAttachment, setExtendedAttachment] = useState<File | null>(null);
+  const extendedFileInputRef = useRef<HTMLInputElement>(null);
+  const [extendedForm, setExtendedForm] = useState({
+    company: '',
+    contactPerson: '',
+    phone: '',
+    email: '',
+    businessType: '',
+    experience: '',
+    ventilationTypes: [] as string[],
+    equipmentTypes: [] as string[],
+    budget: '',
+    comments: '',
+    needsTraining: false,
+    privacyAccepted: false,
+  });
+
+  const handleSimpleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!simpleForm.name || !simpleForm.phone || !simpleForm.email || !simpleForm.message) {
+      toast.error('Заполните обязательные поля');
+      return;
+    }
+
+    if (!simpleForm.privacyAccepted) {
+      toast.error('Необходимо согласие с политикой обработки персональных данных');
+      return;
+    }
+
+    setSimpleSubmitting(true);
+
+    try {
+      let attachmentPath: string | undefined;
+
+      if (simpleAttachment) {
+        if (simpleAttachment.size > 10 * 1024 * 1024) {
+          toast.error('Файл слишком большой. Максимальный размер: 10 МБ');
+          return;
+        }
+
+        const fileExt = simpleAttachment.name.split('.').pop();
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('inquiry-attachments')
+          .upload(fileName, simpleAttachment);
+
+        if (uploadError) {
+          console.error('Simple form upload error:', uploadError);
+          toast.error('Ошибка загрузки файла');
+          return;
+        }
+
+        attachmentPath = fileName;
+      }
+
+      const { error } = await supabase.functions.invoke('send-inquiry', {
+        body: {
+          name: simpleForm.name,
+          phone: simpleForm.phone,
+          email: simpleForm.email,
+          message: simpleForm.message,
+          subject: 'Быстрая заявка с страницы Контакты',
+          attachmentPath,
+        },
+      });
+
+      if (error) throw error;
+
+      toast.success('Сообщение отправлено!');
+      setSimpleForm({ name: '', phone: '', email: '', message: '', privacyAccepted: false });
+      setSimpleAttachment(null);
+      if (simpleFileInputRef.current) simpleFileInputRef.current.value = '';
+      setFormType(null);
+    } catch (err: any) {
+      console.error('Simple inquiry submit error:', err);
+      toast.error('Ошибка при отправке. Попробуйте позже.');
+    } finally {
+      setSimpleSubmitting(false);
+    }
+  };
+
+  const handleExtendedInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setExtendedForm(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleExtendedCheckboxChange = (type: 'ventilationTypes' | 'equipmentTypes', value: string) => {
+    setExtendedForm(prev => {
+      const current = prev[type];
+      const updated = current.includes(value) ? current.filter(i => i !== value) : [...current, value];
+      return { ...prev, [type]: updated };
+    });
+  };
+
+  const handleExtendedSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!extendedForm.contactPerson || !extendedForm.phone || !extendedForm.email) {
+      toast.error('Заполните обязательные поля');
+      return;
+    }
+
+    if (!extendedForm.privacyAccepted) {
+      toast.error('Необходимо согласие с политикой обработки персональных данных');
+      return;
+    }
+
+    setExtendedSubmitting(true);
+
+    try {
+      let attachmentPath: string | undefined;
+
+      if (extendedAttachment) {
+        if (extendedAttachment.size > 10 * 1024 * 1024) {
+          toast.error('Файл слишком большой. Максимальный размер: 10 МБ');
+          return;
+        }
+
+        const fileExt = extendedAttachment.name.split('.').pop();
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('inquiry-attachments')
+          .upload(fileName, extendedAttachment);
+
+        if (uploadError) {
+          console.error('Extended form upload error:', uploadError);
+          toast.error('Ошибка загрузки файла');
+          return;
+        }
+
+        attachmentPath = fileName;
+      }
+
+      const { error } = await supabase.functions.invoke('send-inquiry', {
+        body: { ...extendedForm, attachmentPath },
+      });
+
+      if (error) throw error;
+
+      toast.success('Заявка успешно отправлена!');
+      setExtendedForm({
+        company: '',
+        contactPerson: '',
+        phone: '',
+        email: '',
+        businessType: '',
+        experience: '',
+        ventilationTypes: [],
+        equipmentTypes: [],
+        budget: '',
+        comments: '',
+        needsTraining: false,
+        privacyAccepted: false,
+      });
+      setExtendedAttachment(null);
+      if (extendedFileInputRef.current) extendedFileInputRef.current.value = '';
+      setFormType(null);
+    } catch (err: any) {
+      console.error('Extended inquiry submit error:', err);
+      toast.error('Ошибка при отправке. Попробуйте позже.');
+    } finally {
+      setExtendedSubmitting(false);
+    }
+  };
 
   return (
     <Layout>
@@ -134,13 +320,15 @@ const Contacts = () => {
                   </Button>
                 </div>
 
-                <form className="space-y-4">
+                <form onSubmit={handleSimpleSubmit} className="space-y-4">
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium mb-2">Имя *</label>
                       <input
                         type="text"
                         required
+                        value={simpleForm.name}
+                        onChange={(e) => setSimpleForm(prev => ({ ...prev, name: e.target.value }))}
                         className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:border-primary transition-colors"
                         placeholder="Ваше имя"
                       />
@@ -150,31 +338,105 @@ const Contacts = () => {
                       <input
                         type="tel"
                         required
+                        value={simpleForm.phone}
+                        onChange={(e) => setSimpleForm(prev => ({ ...prev, phone: e.target.value }))}
                         className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:border-primary transition-colors"
                         placeholder="+7 (___) ___-____"
                       />
                     </div>
                   </div>
+
                   <div>
-                    <label className="block text-sm font-medium mb-2">Email</label>
+                    <label className="block text-sm font-medium mb-2">Email *</label>
                     <input
                       type="email"
+                      required
+                      value={simpleForm.email}
+                      onChange={(e) => setSimpleForm(prev => ({ ...prev, email: e.target.value }))}
                       className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:border-primary transition-colors"
                       placeholder="your@email.com"
                     />
                   </div>
+
                   <div>
                     <label className="block text-sm font-medium mb-2">Сообщение *</label>
                     <textarea
                       rows={5}
                       required
+                      value={simpleForm.message}
+                      onChange={(e) => setSimpleForm(prev => ({ ...prev, message: e.target.value }))}
                       className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:border-primary transition-colors resize-none"
                       placeholder="Опишите ваш вопрос или задачу..."
                     />
                   </div>
-                  <Button type="submit" size="lg" className="w-full">
-                    <Send className="w-5 h-5" />
-                    Отправить сообщение
+
+                  {/* File attachment */}
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Прикрепить файл (ТЗ, реквизиты и т.д.)</label>
+                    <input
+                      ref={simpleFileInputRef}
+                      type="file"
+                      onChange={(e) => setSimpleAttachment(e.target.files?.[0] ?? null)}
+                      className="hidden"
+                      accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
+                    />
+                    {simpleAttachment ? (
+                      <div className="flex items-center gap-3 p-3 rounded-lg bg-background border border-border">
+                        <Paperclip className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-sm flex-1 truncate">{simpleAttachment.name}</span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSimpleAttachment(null);
+                            if (simpleFileInputRef.current) simpleFileInputRef.current.value = '';
+                          }}
+                          className="text-muted-foreground hover:text-destructive transition-colors"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ) : (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => simpleFileInputRef.current?.click()}
+                        className="w-full"
+                      >
+                        <Paperclip className="w-4 h-4 mr-2" />
+                        Выбрать файл
+                      </Button>
+                    )}
+                    <p className="text-xs text-muted-foreground mt-1">Максимум 10 МБ</p>
+                  </div>
+
+                  {/* Privacy consent */}
+                  <div className="flex items-start gap-3 p-4 rounded-lg bg-muted/50 border border-border">
+                    <Checkbox
+                      id="contacts-simple-privacy"
+                      checked={simpleForm.privacyAccepted}
+                      onCheckedChange={(checked) => setSimpleForm(prev => ({ ...prev, privacyAccepted: checked === true }))}
+                      className="mt-0.5"
+                    />
+                    <label htmlFor="contacts-simple-privacy" className="text-sm cursor-pointer">
+                      Я согласен с{' '}
+                      <Link to="/privacy" className="text-primary hover:underline">
+                        Политикой обработки персональных данных
+                      </Link>
+                    </label>
+                  </div>
+
+                  <Button type="submit" size="lg" className="w-full" disabled={simpleSubmitting || !simpleForm.privacyAccepted}>
+                    {simpleSubmitting ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        Отправка...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-5 h-5" />
+                        Отправить сообщение
+                      </>
+                    )}
                   </Button>
                 </form>
               </motion.div>
@@ -208,147 +470,251 @@ const Contacts = () => {
                   </Button>
                 </div>
 
-                <form className="space-y-6">
-                  {/* Contact Info */}
-                  <div>
-                    <h3 className="font-semibold mb-4 pb-2 border-b border-border">Контактная информация</h3>
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Компания</label>
-                        <input
-                          type="text"
-                          className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:border-primary transition-colors"
-                          placeholder="Название компании"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Контактное лицо *</label>
-                        <input
-                          type="text"
-                          required
-                          className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:border-primary transition-colors"
-                          placeholder="ФИО"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Телефон *</label>
-                        <input
-                          type="tel"
-                          required
-                          className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:border-primary transition-colors"
-                          placeholder="+7 (___) ___-____"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Email *</label>
-                        <input
-                          type="email"
-                          required
-                          className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:border-primary transition-colors"
-                          placeholder="email@company.com"
-                        />
-                      </div>
-                    </div>
-                  </div>
+                 <form onSubmit={handleExtendedSubmit} className="space-y-6">
+                   {/* Contact Info */}
+                   <div>
+                     <h3 className="font-semibold mb-4 pb-2 border-b border-border">Контактная информация</h3>
+                     <div className="grid sm:grid-cols-2 gap-4">
+                       <div>
+                         <label className="block text-sm font-medium mb-2">Компания</label>
+                         <input
+                           type="text"
+                           name="company"
+                           value={extendedForm.company}
+                           onChange={handleExtendedInputChange}
+                           className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:border-primary transition-colors"
+                           placeholder="Название компании"
+                         />
+                       </div>
+                       <div>
+                         <label className="block text-sm font-medium mb-2">Контактное лицо *</label>
+                         <input
+                           type="text"
+                           name="contactPerson"
+                           value={extendedForm.contactPerson}
+                           onChange={handleExtendedInputChange}
+                           required
+                           className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:border-primary transition-colors"
+                           placeholder="ФИО"
+                         />
+                       </div>
+                       <div>
+                         <label className="block text-sm font-medium mb-2">Телефон *</label>
+                         <input
+                           type="tel"
+                           name="phone"
+                           value={extendedForm.phone}
+                           onChange={handleExtendedInputChange}
+                           required
+                           className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:border-primary transition-colors"
+                           placeholder="+7 (___) ___-____"
+                         />
+                       </div>
+                       <div>
+                         <label className="block text-sm font-medium mb-2">Email *</label>
+                         <input
+                           type="email"
+                           name="email"
+                           value={extendedForm.email}
+                           onChange={handleExtendedInputChange}
+                           required
+                           className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:border-primary transition-colors"
+                           placeholder="email@company.com"
+                         />
+                       </div>
+                     </div>
+                   </div>
 
-                  {/* Business Info */}
-                  <div>
-                    <h3 className="font-semibold mb-4 pb-2 border-b border-border">Информация о деятельности</h3>
-                    <div className="space-y-4">
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Сфера деятельности</label>
-                        <select className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:border-primary transition-colors">
-                          <option>Выберите сферу</option>
-                          <option>Клининговая компания</option>
-                          <option>Обслуживание зданий</option>
-                          <option>Ресторанный бизнес</option>
-                          <option>Промышленное производство</option>
-                          <option>Другое</option>
-                        </select>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Опыт работы в сфере очистки вентиляции</label>
-                        <select className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:border-primary transition-colors">
-                          <option>Выберите опыт</option>
-                          <option>Нет опыта, начинаю с нуля</option>
-                          <option>Менее 1 года</option>
-                          <option>1-3 года</option>
-                          <option>Более 3 лет</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
+                   {/* Business Info */}
+                   <div>
+                     <h3 className="font-semibold mb-4 pb-2 border-b border-border">Информация о деятельности</h3>
+                     <div className="space-y-4">
+                       <div>
+                         <label className="block text-sm font-medium mb-2">Сфера деятельности</label>
+                         <select
+                           name="businessType"
+                           value={extendedForm.businessType}
+                           onChange={handleExtendedInputChange}
+                           className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:border-primary transition-colors"
+                         >
+                           <option value="">Выберите сферу</option>
+                           <option value="Клининговая компания">Клининговая компания</option>
+                           <option value="Обслуживание зданий">Обслуживание зданий</option>
+                           <option value="Ресторанный бизнес">Ресторанный бизнес</option>
+                           <option value="Промышленное производство">Промышленное производство</option>
+                           <option value="Другое">Другое</option>
+                         </select>
+                       </div>
+                       <div>
+                         <label className="block text-sm font-medium mb-2">Опыт работы в сфере очистки вентиляции</label>
+                         <select
+                           name="experience"
+                           value={extendedForm.experience}
+                           onChange={handleExtendedInputChange}
+                           className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:border-primary transition-colors"
+                         >
+                           <option value="">Выберите опыт</option>
+                           <option value="Нет опыта, начинаю с нуля">Нет опыта, начинаю с нуля</option>
+                           <option value="Менее 1 года">Менее 1 года</option>
+                           <option value="1-3 года">1-3 года</option>
+                           <option value="Более 3 лет">Более 3 лет</option>
+                         </select>
+                       </div>
+                     </div>
+                   </div>
 
-                  {/* Equipment Needs */}
-                  <div>
-                    <h3 className="font-semibold mb-4 pb-2 border-b border-border">Потребности в оборудовании</h3>
-                    <div className="space-y-4">
-                      <div>
-                        <label className="block text-sm font-medium mb-3">Типы вентиляционных систем для работы</label>
-                        <div className="grid sm:grid-cols-2 gap-3">
-                          {['Приточная вентиляция', 'Вытяжная вентиляция', 'Жировые вытяжки', 'Кондиционирование', 'Промышленная вентиляция', 'Другое'].map((item) => (
-                            <label key={item} className="flex items-center gap-3 p-3 rounded-lg bg-background border border-border cursor-pointer hover:border-primary transition-colors">
-                              <input type="checkbox" className="w-4 h-4 text-primary rounded" />
-                              <span className="text-sm">{item}</span>
-                            </label>
-                          ))}
-                        </div>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-3">Интересующее оборудование</label>
-                        <div className="grid sm:grid-cols-2 gap-3">
-                          {['Щёточные машины', 'Вакуумные установки', 'Фильтрующие установки', 'Дезинфекция', 'Видеоинспекция', 'Полный комплект'].map((item) => (
-                            <label key={item} className="flex items-center gap-3 p-3 rounded-lg bg-background border border-border cursor-pointer hover:border-primary transition-colors">
-                              <input type="checkbox" className="w-4 h-4 text-primary rounded" />
-                              <span className="text-sm">{item}</span>
-                            </label>
-                          ))}
-                        </div>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Планируемый бюджет</label>
-                        <select className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:border-primary transition-colors">
-                          <option>Выберите бюджет</option>
-                          <option>До 500 000 ₽</option>
-                          <option>500 000 - 1 000 000 ₽</option>
-                          <option>1 000 000 - 2 000 000 ₽</option>
-                          <option>Более 2 000 000 ₽</option>
-                          <option>Требуется консультация</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
+                   {/* Equipment Needs */}
+                   <div>
+                     <h3 className="font-semibold mb-4 pb-2 border-b border-border">Потребности в оборудовании</h3>
+                     <div className="space-y-4">
+                       <div>
+                         <label className="block text-sm font-medium mb-3">Типы вентиляционных систем для работы</label>
+                         <div className="grid sm:grid-cols-2 gap-3">
+                           {['Приточная вентиляция', 'Вытяжная вентиляция', 'Жировые вытяжки', 'Кондиционирование', 'Промышленная вентиляция', 'Другое'].map((item) => (
+                             <label key={item} className="flex items-center gap-3 p-3 rounded-lg bg-background border border-border cursor-pointer hover:border-primary transition-colors">
+                               <input
+                                 type="checkbox"
+                                 checked={extendedForm.ventilationTypes.includes(item)}
+                                 onChange={() => handleExtendedCheckboxChange('ventilationTypes', item)}
+                                 className="w-4 h-4 text-primary rounded"
+                               />
+                               <span className="text-sm">{item}</span>
+                             </label>
+                           ))}
+                         </div>
+                       </div>
+                       <div>
+                         <label className="block text-sm font-medium mb-3">Интересующее оборудование</label>
+                         <div className="grid sm:grid-cols-2 gap-3">
+                           {['Щёточные машины', 'Вакуумные установки', 'Фильтрующие установки', 'Дезинфекция', 'Видеоинспекция', 'Полный комплект'].map((item) => (
+                             <label key={item} className="flex items-center gap-3 p-3 rounded-lg bg-background border border-border cursor-pointer hover:border-primary transition-colors">
+                               <input
+                                 type="checkbox"
+                                 checked={extendedForm.equipmentTypes.includes(item)}
+                                 onChange={() => handleExtendedCheckboxChange('equipmentTypes', item)}
+                                 className="w-4 h-4 text-primary rounded"
+                               />
+                               <span className="text-sm">{item}</span>
+                             </label>
+                           ))}
+                         </div>
+                       </div>
+                       <div>
+                         <label className="block text-sm font-medium mb-2">Планируемый бюджет</label>
+                         <select
+                           name="budget"
+                           value={extendedForm.budget}
+                           onChange={handleExtendedInputChange}
+                           className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:border-primary transition-colors"
+                         >
+                           <option value="">Выберите бюджет</option>
+                           <option value="До 500 000 ₽">До 500 000 ₽</option>
+                           <option value="500 000 - 1 000 000 ₽">500 000 - 1 000 000 ₽</option>
+                           <option value="1 000 000 - 2 000 000 ₽">1 000 000 - 2 000 000 ₽</option>
+                           <option value="Более 2 000 000 ₽">Более 2 000 000 ₽</option>
+                           <option value="Требуется консультация">Требуется консультация</option>
+                         </select>
+                       </div>
+                     </div>
+                   </div>
 
-                  {/* Additional Info */}
-                  <div>
-                    <h3 className="font-semibold mb-4 pb-2 border-b border-border">Дополнительная информация</h3>
-                    <div className="space-y-4">
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Комментарии и пожелания</label>
-                        <textarea
-                          rows={4}
-                          className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:border-primary transition-colors resize-none"
-                          placeholder="Опишите ваши задачи, особенности объектов, любые дополнительные пожелания..."
-                        />
-                      </div>
-                      <label className="flex items-start gap-3 p-4 rounded-lg bg-primary/5 border border-primary/20 cursor-pointer">
-                        <input type="checkbox" className="w-4 h-4 text-primary rounded mt-0.5" />
-                        <span className="text-sm">
-                          Интересует обучение работе с оборудованием
-                        </span>
-                      </label>
-                    </div>
-                  </div>
+                   {/* Additional Info */}
+                   <div>
+                     <h3 className="font-semibold mb-4 pb-2 border-b border-border">Дополнительная информация</h3>
+                     <div className="space-y-4">
+                       <div>
+                         <label className="block text-sm font-medium mb-2">Комментарии и пожелания</label>
+                         <textarea
+                           name="comments"
+                           value={extendedForm.comments}
+                           onChange={handleExtendedInputChange}
+                           rows={4}
+                           className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:border-primary transition-colors resize-none"
+                           placeholder="Опишите ваши задачи, особенности объектов, любые дополнительные пожелания..."
+                         />
+                       </div>
 
-                  <Button type="submit" size="lg" className="w-full">
-                    <Send className="w-5 h-5" />
-                    Отправить заявку
-                  </Button>
+                       <label className="flex items-start gap-3 p-4 rounded-lg bg-primary/5 border border-primary/20 cursor-pointer">
+                         <input
+                           type="checkbox"
+                           checked={extendedForm.needsTraining}
+                           onChange={(e) => setExtendedForm(prev => ({ ...prev, needsTraining: e.target.checked }))}
+                           className="w-4 h-4 text-primary rounded mt-0.5"
+                         />
+                         <span className="text-sm">Интересует обучение работе с оборудованием</span>
+                       </label>
 
-                  <p className="text-sm text-muted-foreground text-center">
-                    Нажимая кнопку, вы соглашаетесь с обработкой персональных данных
-                  </p>
-                </form>
+                       {/* File attachment */}
+                       <div>
+                         <label className="block text-sm font-medium mb-2">Прикрепить файл (реквизиты, ТЗ и др.)</label>
+                         <input
+                           ref={extendedFileInputRef}
+                           type="file"
+                           onChange={(e) => setExtendedAttachment(e.target.files?.[0] ?? null)}
+                           className="hidden"
+                           accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
+                         />
+                         {extendedAttachment ? (
+                           <div className="flex items-center gap-3 p-3 rounded-lg bg-background border border-border">
+                             <Paperclip className="w-4 h-4 text-muted-foreground" />
+                             <span className="text-sm flex-1 truncate">{extendedAttachment.name}</span>
+                             <button
+                               type="button"
+                               onClick={() => {
+                                 setExtendedAttachment(null);
+                                 if (extendedFileInputRef.current) extendedFileInputRef.current.value = '';
+                               }}
+                               className="text-muted-foreground hover:text-destructive transition-colors"
+                             >
+                               <X className="w-4 h-4" />
+                             </button>
+                           </div>
+                         ) : (
+                           <Button
+                             type="button"
+                             variant="outline"
+                             onClick={() => extendedFileInputRef.current?.click()}
+                             className="w-full"
+                           >
+                             <Paperclip className="w-4 h-4 mr-2" />
+                             Выбрать файл
+                           </Button>
+                         )}
+                         <p className="text-xs text-muted-foreground mt-1">Максимум 10 МБ</p>
+                       </div>
+                     </div>
+                   </div>
+
+                   {/* Privacy consent */}
+                   <div className="flex items-start gap-3 p-4 rounded-lg bg-muted/50 border border-border">
+                     <Checkbox
+                       id="contacts-extended-privacy"
+                       checked={extendedForm.privacyAccepted}
+                       onCheckedChange={(checked) => setExtendedForm(prev => ({ ...prev, privacyAccepted: checked === true }))}
+                       className="mt-0.5"
+                     />
+                     <label htmlFor="contacts-extended-privacy" className="text-sm cursor-pointer">
+                       Я согласен с{' '}
+                       <Link to="/privacy" className="text-primary hover:underline">
+                         Политикой обработки персональных данных
+                       </Link>
+                     </label>
+                   </div>
+
+                   <Button type="submit" size="lg" className="w-full" disabled={extendedSubmitting || !extendedForm.privacyAccepted}>
+                     {extendedSubmitting ? (
+                       <>
+                         <Loader2 className="w-5 h-5 animate-spin" />
+                         Отправка...
+                       </>
+                     ) : (
+                       <>
+                         <Send className="w-5 h-5" />
+                         Отправить заявку
+                       </>
+                     )}
+                   </Button>
+                 </form>
               </motion.div>
 
               {/* Benefits */}

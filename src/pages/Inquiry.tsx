@@ -91,30 +91,28 @@ const Inquiry = () => {
     setIsSubmitting(true);
 
     try {
-      let attachmentUrl: string | undefined;
+      let attachmentPath: string | undefined;
 
       // Upload file if present
       if (attachment) {
         const fileExt = attachment.name.split('.').pop();
         const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-        
-        const { data: uploadData, error: uploadError } = await supabase.storage
+
+        const { error: uploadError } = await supabase.storage
           .from('inquiry-attachments')
           .upload(fileName, attachment);
 
         if (uploadError) {
           console.error('File upload error:', uploadError);
           toast.error('Ошибка загрузки файла');
-        } else {
-          const { data: urlData } = supabase.storage
-            .from('inquiry-attachments')
-            .getPublicUrl(fileName);
-          attachmentUrl = urlData.publicUrl;
+          return;
         }
+
+        attachmentPath = fileName;
       }
 
-      const { data, error } = await supabase.functions.invoke('send-inquiry', {
-        body: { ...formData, attachmentUrl },
+      const { error } = await supabase.functions.invoke('send-inquiry', {
+        body: { ...formData, attachmentPath },
       });
 
       if (error) throw error;

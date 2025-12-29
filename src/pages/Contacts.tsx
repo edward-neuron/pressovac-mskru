@@ -130,11 +130,28 @@ const Contacts = () => {
     });
   };
 
+  const MIN_COMMENTS_LENGTH = 80;
+
   const handleExtendedSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!extendedForm.contactPerson || !extendedForm.phone || !extendedForm.email) {
+    if (!extendedForm.company || !extendedForm.contactPerson || !extendedForm.phone || !extendedForm.email) {
       toast.error('Заполните обязательные поля');
+      return;
+    }
+
+    if (!extendedForm.businessType) {
+      toast.error('Выберите сферу деятельности');
+      return;
+    }
+
+    if (extendedForm.ventilationTypes.length === 0) {
+      toast.error('Выберите хотя бы один тип вентиляционных систем');
+      return;
+    }
+
+    if (!extendedForm.comments || extendedForm.comments.trim().length < MIN_COMMENTS_LENGTH) {
+      toast.error(`Введите реальное описание задачи не менее ${MIN_COMMENTS_LENGTH} символов`);
       return;
     }
 
@@ -476,12 +493,13 @@ const Contacts = () => {
                      <h3 className="font-semibold mb-4 pb-2 border-b border-border">Контактная информация</h3>
                      <div className="grid sm:grid-cols-2 gap-4">
                        <div>
-                         <label className="block text-sm font-medium mb-2">Компания</label>
+                         <label className="block text-sm font-medium mb-2">Компания *</label>
                          <input
                            type="text"
                            name="company"
                            value={extendedForm.company}
                            onChange={handleExtendedInputChange}
+                           required
                            className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:border-primary transition-colors"
                            placeholder="Название компании"
                          />
@@ -530,11 +548,12 @@ const Contacts = () => {
                      <h3 className="font-semibold mb-4 pb-2 border-b border-border">Информация о деятельности</h3>
                      <div className="space-y-4">
                        <div>
-                         <label className="block text-sm font-medium mb-2">Сфера деятельности</label>
+                         <label className="block text-sm font-medium mb-2">Сфера деятельности *</label>
                          <select
                            name="businessType"
                            value={extendedForm.businessType}
                            onChange={handleExtendedInputChange}
+                           required
                            className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:border-primary transition-colors"
                          >
                            <option value="">Выберите сферу</option>
@@ -568,7 +587,7 @@ const Contacts = () => {
                      <h3 className="font-semibold mb-4 pb-2 border-b border-border">Потребности в оборудовании</h3>
                      <div className="space-y-4">
                        <div>
-                         <label className="block text-sm font-medium mb-3">Типы вентиляционных систем для работы</label>
+                         <label className="block text-sm font-medium mb-3">Типы вентиляционных систем для работы *</label>
                          <div className="grid sm:grid-cols-2 gap-3">
                            {['Приточная вентиляция', 'Вытяжная вентиляция', 'Жировые вытяжки', 'Кондиционирование', 'Промышленная вентиляция', 'Другое'].map((item) => (
                              <label key={item} className="flex items-center gap-3 p-3 rounded-lg bg-background border border-border cursor-pointer hover:border-primary transition-colors">
@@ -623,15 +642,20 @@ const Contacts = () => {
                      <h3 className="font-semibold mb-4 pb-2 border-b border-border">Дополнительная информация</h3>
                      <div className="space-y-4">
                        <div>
-                         <label className="block text-sm font-medium mb-2">Комментарии и пожелания</label>
+                         <label className="block text-sm font-medium mb-2">Комментарии и пожелания *</label>
                          <textarea
                            name="comments"
                            value={extendedForm.comments}
                            onChange={handleExtendedInputChange}
-                           rows={4}
+                           rows={5}
+                           required
+                           minLength={MIN_COMMENTS_LENGTH}
                            className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:border-primary transition-colors resize-none"
-                           placeholder="Опишите ваши задачи, особенности объектов, любые дополнительные пожелания..."
+                           placeholder="Опишите вашу задачу, форму и характер отложений внутри каналов, ~ диаметр / сечение воздуховодов (мин/макс), особенности объекта, ~ высота расположения вентиляции, любая полезная информация..."
                          />
+                         <p className="text-xs text-muted-foreground mt-1">
+                           Минимум {MIN_COMMENTS_LENGTH} символов ({extendedForm.comments.length}/{MIN_COMMENTS_LENGTH})
+                         </p>
                        </div>
 
                        <label className="flex items-start gap-3 p-4 rounded-lg bg-primary/5 border border-primary/20 cursor-pointer">

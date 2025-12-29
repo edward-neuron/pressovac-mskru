@@ -959,7 +959,7 @@ const Contacts = () => {
                   </Button>
                 </a>
                 <a 
-                  href="https://apps.apple.com/ru/app/max-%D0%BE%D0%B1%D1%89%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B7%D0%B2%D0%BE%D0%BD%D0%BA%D0%B8-%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D1%8B/id6737561550" 
+                  href="https://apps.apple.com/ru/app/max-%D0%BE%D0%B1%D1%89%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B7%D0%B2%D0%BE%D0%BD%D0%BA%D0%B8-%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D1%8B/id6739530834" 
                   target="_blank" 
                   rel="noopener noreferrer"
                 >

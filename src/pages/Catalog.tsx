@@ -2,7 +2,14 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Zap, Wind, Wrench, Sparkles, Camera, Settings, Package } from 'lucide-react';
+import { ArrowRight, Zap, Wind, Wrench, Sparkles, Camera, Settings, Package, FileText } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { BrushMachinesCatalog } from '@/components/catalog/BrushMachinesCatalog';
 import { VacuumEquipmentCatalog } from '@/components/catalog/VacuumEquipmentCatalog';
 import { FilterEquipmentCatalog } from '@/components/catalog/FilterEquipmentCatalog';
@@ -182,6 +189,77 @@ const Catalog = () => {
               Полный ассортимент профессионального финского оборудования для очистки 
               и дезинфекции систем вентиляции
             </p>
+            
+            {/* Плашка Публичная оферта */}
+            <Dialog>
+              <DialogTrigger asChild>
+                <button className="inline-flex items-center gap-2 mt-6 px-4 py-2 rounded-full border border-border bg-background/50 hover:bg-background/80 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  <FileText className="w-4 h-4" />
+                  Публичная оферта
+                </button>
+              </DialogTrigger>
+              <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle className="text-xl font-bold">Публичная Оферта</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4 text-muted-foreground text-sm leading-relaxed">
+                  <p className="font-semibold text-foreground">
+                    Информация, размещенная на сайте, не является публичной офертой
+                  </p>
+                  
+                  <p>
+                    1. Вся представленная на сайте информация, касающаяся технических характеристик, 
+                    наличия на складе, стоимости товаров, носит информационный характер и ни при каких 
+                    условиях не является публичной офертой, определяемой положениями Статьи 437(2) 
+                    Гражданского кодекса РФ.
+                  </p>
+                  
+                  <p>
+                    2. Нажатие на кнопки «Купить», «Разместить заказ», «Оформить заказ», а также 
+                    последующее заполнение тех или иных форм, не накладывает на владельцев сайта 
+                    никаких обязательств.
+                  </p>
+                  
+                  <p>
+                    3. Присланное по e-mail сообщение, содержащее копию заполненной формы заявки 
+                    на сайте, не является ответом на сообщение потребителя или подтверждением заказа 
+                    со стороны владельцев сайта.
+                  </p>
+                  
+                  <p>
+                    4. Все материалы, размещенные на сайте являются собственностью владельцев сайта, 
+                    либо собственностью организаций, с которыми у владельцев сайта есть соглашение 
+                    о размещении материалов. Копирование любой информации может повлечь за собой 
+                    уголовное преследование.
+                  </p>
+                  
+                  <p>
+                    5. Регистрируясь на сайте или оставляя тем или иным способом свою персональную 
+                    информацию, Вы делегируете право сотрудникам компании обрабатывать вашу 
+                    персональную информацию.
+                  </p>
+                  
+                  <p>
+                    6. Для аналитических целей на сайте работает система статистики, которая 
+                    собирает информацию о посещенных страницах сайта, заполненных формах и т.д. 
+                    Сотрудники компании имеют доступ к этой информации.
+                  </p>
+                  
+                  <p>
+                    7. Покупатель соглашается с тем, что Интернет-магазин вправе передавать информацию 
+                    о размещенных Покупателем заказах третьим лицам. Переданная Интернет-магазином 
+                    информация, включающая данные о номере и содержании заказа, электронного адреса 
+                    и номера телефона Покупателя, может быть использована исключительно в целях 
+                    оценки деятельности Интернет-магазина и улучшения качества обслуживания Покупателей.
+                  </p>
+                  
+                  <p>
+                    8. Оформляя заказ на сайте или иным способом становясь клиентом нашей компании, 
+                    вы принимаете условия оферты.
+                  </p>
+                </div>
+              </DialogContent>
+            </Dialog>
           </motion.div>
 
         </div>

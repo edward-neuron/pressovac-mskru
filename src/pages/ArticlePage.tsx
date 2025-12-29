@@ -226,6 +226,22 @@ const ArticlePage = () => {
       <section className="section-padding">
         <div className="container-custom">
           <div className="max-w-4xl mx-auto">
+            {/* Main Image */}
+            {article.image && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.15 }}
+                className="mb-8 rounded-2xl overflow-hidden"
+              >
+                <img 
+                  src={article.image} 
+                  alt={article.title}
+                  className="w-full h-auto object-cover"
+                />
+              </motion.div>
+            )}
+
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

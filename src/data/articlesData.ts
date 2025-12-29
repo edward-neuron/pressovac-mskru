@@ -13,6 +13,7 @@ import income1 from '@/assets/articles/income-1.jpg';
 import income2 from '@/assets/articles/income-2.jpg';
 import income3 from '@/assets/articles/income-3.jpg';
 import income4 from '@/assets/articles/income-4.jpg';
+import equipmentSelection from '@/assets/articles/equipment-selection.jpg';
 
 export interface ArticleVideo {
   rutubeId: string;
@@ -440,6 +441,7 @@ export const articlesData: Article[] = [
     author: 'Веконт-М',
     category: 'Оборудование',
     readTime: '9 мин',
+    image: equipmentSelection,
     videos: [
       { rutubeId: '9927894db7f21eb0aad294b3d45a9bf7', youtubeId: 'IURiZ30KPsA' },
       { rutubeId: 'd35efc5eac366396053d3f97f96fc1bc', youtubeId: 'dVYHXnAIwTs' },

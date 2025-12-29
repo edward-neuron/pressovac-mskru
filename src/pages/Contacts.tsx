@@ -948,42 +948,24 @@ const Contacts = () => {
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <a 
-                        href="https://wa.me/79258534974" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                      >
-                        <Button size="lg" variant="outline" className="w-full border-green-500/50 text-green-600 hover:bg-green-500/10">
-                          Chatti
-                        </Button>
-                      </a>
-                    </TooltipTrigger>
-                    <TooltipContent side="top" className="bg-amber-500 text-white border-amber-600">
-                      <p>Не забудьте включить Proxy или VPN</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <a 
-                        href="https://wa.me/79258534974" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                      >
-                        <Button size="lg" variant="outline" className="w-full border-blue-500/50 text-blue-600 hover:bg-blue-500/10">
-                          MAX
-                        </Button>
-                      </a>
-                    </TooltipTrigger>
-                    <TooltipContent side="top" className="bg-amber-500 text-white border-amber-600">
-                      <p>Не забудьте включить Proxy или VPN</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+                <a 
+                  href="https://wa.me/79258534974" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                >
+                  <Button size="lg" variant="outline" className="w-full border-green-500/50 text-green-600 hover:bg-green-500/10">
+                    Chatti
+                  </Button>
+                </a>
+                <a 
+                  href="https://wa.me/79258534974" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                >
+                  <Button size="lg" variant="outline" className="w-full border-blue-500/50 text-blue-600 hover:bg-blue-500/10">
+                    MAX
+                  </Button>
+                </a>
               </div>
             </motion.div>
           </div>

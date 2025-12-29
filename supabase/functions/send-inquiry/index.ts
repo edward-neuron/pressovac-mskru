@@ -8,6 +8,14 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+const escapeHtml = (input: string) =>
+  input
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+
 interface InquiryRequest {
   company?: string;
   contactPerson?: string;
@@ -34,21 +42,44 @@ const handler = async (req: Request): Promise<Response> => {
 
   try {
     const data: InquiryRequest = await req.json();
-    console.log("Received inquiry:", JSON.stringify(data));
 
     // Support both contactPerson and name fields
-    const contactName = data.contactPerson || data.name || "Не указано";
-    const messageContent = data.comments || data.message || "";
-    const emailSubject = data.subject || `Заявка на подбор оборудования от ${contactName}`;
+    const contactNameRaw = (data.contactPerson || data.name || "").trim();
+    const messageContentRaw = (data.comments || data.message || "").trim();
+    const emailRaw = (data.email || "").trim();
+    const phoneRaw = (data.phone || "").trim();
+
+    const emailSubjectRaw = (data.subject || `Заявка на подбор оборудования от ${contactNameRaw || "клиента"}`)
+      .replace(/[\r\n]+/g, " ")
+      .trim()
+      .slice(0, 200);
 
     // Validate required fields
-    if (!contactName || contactName === "Не указано" || !data.phone || !data.email) {
+    if (!contactNameRaw || !phoneRaw || !emailRaw) {
       console.error("Validation failed: missing required fields");
       return new Response(
         JSON.stringify({ error: "Заполните обязательные поля" }),
         { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
+
+    // Sanitize user-provided fields (for safe HTML email rendering)
+    const contactName = escapeHtml(contactNameRaw.slice(0, 120));
+    const company = escapeHtml((data.company || "").trim().slice(0, 160)) || "Не указано";
+    const phone = escapeHtml(phoneRaw.slice(0, 60));
+    const email = escapeHtml(emailRaw.slice(0, 255));
+    const messageContent = escapeHtml(messageContentRaw.slice(0, 5000));
+    const businessType = escapeHtml((data.businessType || "").trim().slice(0, 120));
+    const experience = escapeHtml((data.experience || "").trim().slice(0, 120));
+    const budget = escapeHtml((data.budget || "").trim().slice(0, 120));
+    const emailSubject = escapeHtml(emailSubjectRaw.slice(0, 200));
+
+    console.log("Received inquiry:", {
+      hasAttachment: Boolean(data.attachmentUrl),
+      hasVentilation: Boolean(data.ventilationTypes?.length),
+      hasEquipment: Boolean(data.equipmentTypes?.length),
+      needsTraining: data.needsTraining,
+    });
 
     const ventilationList = data.ventilationTypes?.length 
       ? data.ventilationTypes.join(", ") 
@@ -58,8 +89,11 @@ const handler = async (req: Request): Promise<Response> => {
       ? data.equipmentTypes.join(", ") 
       : "Не указано";
 
-    const attachmentSection = data.attachmentUrl 
-      ? `<p><strong>Прикреплённый файл:</strong> <a href="${data.attachmentUrl}">${data.attachmentUrl}</a></p>`
+    const attachmentUrl = (data.attachmentUrl || "").trim();
+    const attachmentUrlSafe = escapeHtml(attachmentUrl);
+
+    const attachmentSection = attachmentUrl
+      ? `<p><strong>Прикреплённый файл:</strong> <a href="${attachmentUrlSafe}">${attachmentUrlSafe}</a></p>`
       : "";
 
     const emailHtml = `
@@ -67,26 +101,26 @@ const handler = async (req: Request): Promise<Response> => {
       
       <h2>Контактная информация</h2>
       <ul>
-        <li><strong>Компания:</strong> ${data.company || "Не указано"}</li>
+        <li><strong>Компания:</strong> ${company}</li>
         <li><strong>Контактное лицо:</strong> ${contactName}</li>
-        <li><strong>Телефон:</strong> ${data.phone}</li>
-        <li><strong>Email:</strong> ${data.email}</li>
+        <li><strong>Телефон:</strong> ${phone}</li>
+        <li><strong>Email:</strong> ${email}</li>
       </ul>
       
-      ${data.businessType || data.experience ? `
+      ${businessType || experience ? `
       <h2>Информация о деятельности</h2>
       <ul>
-        <li><strong>Сфера деятельности:</strong> ${data.businessType || "Не указано"}</li>
-        <li><strong>Опыт работы:</strong> ${data.experience || "Не указано"}</li>
+        <li><strong>Сфера деятельности:</strong> ${businessType || "Не указано"}</li>
+        <li><strong>Опыт работы:</strong> ${experience || "Не указано"}</li>
       </ul>
       ` : ""}
       
-      ${data.ventilationTypes?.length || data.equipmentTypes?.length || data.budget ? `
+      ${(data.ventilationTypes?.length || data.equipmentTypes?.length || budget) ? `
       <h2>Потребности в оборудовании</h2>
       <ul>
         <li><strong>Типы вентиляционных систем:</strong> ${ventilationList}</li>
         <li><strong>Интересующее оборудование:</strong> ${equipmentList}</li>
-        <li><strong>Планируемый бюджет:</strong> ${data.budget || "Не указано"}</li>
+        <li><strong>Планируемый бюджет:</strong> ${budget || "Не указано"}</li>
       </ul>
       ` : ""}
       
@@ -104,14 +138,19 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Sending email to sales@pressovac-moscow.ru");
 
     // Send email to sales team
-    const salesEmailResponse = await resend.emails.send({
+    const { data: salesData, error: salesError } = await resend.emails.send({
       from: "Pressovac Moscow <info@pressovac-moscow.ru>",
       to: ["sales@pressovac-moscow.ru"],
-      subject: emailSubject,
+      subject: emailSubjectRaw, // use raw subject for email headers
       html: emailHtml,
     });
 
-    console.log("Sales email sent successfully:", salesEmailResponse);
+    if (salesError) {
+      console.error("Resend sales email error:", salesError);
+      throw salesError;
+    }
+
+    console.log("Sales email sent successfully:", salesData);
 
     // Send confirmation email to client
     const clientEmailHtml = `
@@ -142,16 +181,21 @@ const handler = async (req: Request): Promise<Response> => {
       </div>
     `;
 
-    const clientEmailResponse = await resend.emails.send({
+    const { data: clientData, error: clientError } = await resend.emails.send({
       from: "Pressovac Moscow <info@pressovac-moscow.ru>",
-      to: [data.email],
+      to: [emailRaw],
       subject: "Ваша заявка получена — Pressovac Moscow",
       html: clientEmailHtml,
     });
 
-    console.log("Client confirmation email sent successfully:", clientEmailResponse);
+    if (clientError) {
+      console.error("Resend client email error:", clientError);
+      throw clientError;
+    }
 
-    return new Response(JSON.stringify({ success: true }), {
+    console.log("Client confirmation email sent successfully:", clientData);
+
+    return new Response(JSON.stringify({ success: true, salesId: salesData?.id, clientId: clientData?.id }), {
       status: 200,
       headers: { "Content-Type": "application/json", ...corsHeaders },
     });

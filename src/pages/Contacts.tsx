@@ -953,15 +953,6 @@ const Contacts = () => {
                   target="_blank" 
                   rel="noopener noreferrer"
                 >
-                  <Button size="lg" variant="outline" className="w-full border-green-500/50 text-green-600 hover:bg-green-500/10">
-                    Chatti
-                  </Button>
-                </a>
-                <a 
-                  href="https://wa.me/79258534974" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                >
                   <Button size="lg" variant="outline" className="w-full border-blue-500/50 text-blue-600 hover:bg-blue-500/10">
                     MAX
                   </Button>

@@ -49,6 +49,23 @@ const Contacts = () => {
     privacyAccepted: false,
   });
 
+  // Allowed file extensions (safe files only)
+  const ALLOWED_EXTENSIONS = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'txt', 'rtf', 'odt', 'jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'tiff', 'zip', 'rar', '7z'];
+  const BLOCKED_EXTENSIONS = ['exe', 'bat', 'cmd', 'com', 'msi', 'scr', 'pif', 'js', 'vbs', 'wsf', 'hta', 'jar', 'ps1', 'sh', 'php', 'py', 'pl', 'rb'];
+
+  const validateFileExtension = (file: File): boolean => {
+    const ext = file.name.split('.').pop()?.toLowerCase() || '';
+    if (BLOCKED_EXTENSIONS.includes(ext)) {
+      toast.error(`Файлы .${ext} запрещены по соображениям безопасности`);
+      return false;
+    }
+    if (!ALLOWED_EXTENSIONS.includes(ext)) {
+      toast.error(`Файлы .${ext} не поддерживаются. Допустимые форматы: PDF, DOC, XLS, изображения, архивы`);
+      return false;
+    }
+    return true;
+  };
+
   const handleSimpleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -66,10 +83,17 @@ const Contacts = () => {
 
     try {
       let attachmentPath: string | undefined;
+      let attachmentFileName: string | undefined;
 
       if (simpleAttachment) {
         if (simpleAttachment.size > 10 * 1024 * 1024) {
           toast.error('Файл слишком большой. Максимальный размер: 10 МБ');
+          setSimpleSubmitting(false);
+          return;
+        }
+
+        if (!validateFileExtension(simpleAttachment)) {
+          setSimpleSubmitting(false);
           return;
         }
 
@@ -83,10 +107,12 @@ const Contacts = () => {
         if (uploadError) {
           console.error('Simple form upload error:', uploadError);
           toast.error('Ошибка загрузки файла');
+          setSimpleSubmitting(false);
           return;
         }
 
         attachmentPath = fileName;
+        attachmentFileName = simpleAttachment.name;
       }
 
       const { error } = await supabase.functions.invoke('send-inquiry', {
@@ -97,6 +123,7 @@ const Contacts = () => {
           message: simpleForm.message,
           subject: 'Быстрая заявка с страницы Контакты',
           attachmentPath,
+          attachmentFileName,
         },
       });
 
@@ -164,10 +191,17 @@ const Contacts = () => {
 
     try {
       let attachmentPath: string | undefined;
+      let attachmentFileName: string | undefined;
 
       if (extendedAttachment) {
         if (extendedAttachment.size > 10 * 1024 * 1024) {
           toast.error('Файл слишком большой. Максимальный размер: 10 МБ');
+          setExtendedSubmitting(false);
+          return;
+        }
+
+        if (!validateFileExtension(extendedAttachment)) {
+          setExtendedSubmitting(false);
           return;
         }
 
@@ -181,14 +215,16 @@ const Contacts = () => {
         if (uploadError) {
           console.error('Extended form upload error:', uploadError);
           toast.error('Ошибка загрузки файла');
+          setExtendedSubmitting(false);
           return;
         }
 
         attachmentPath = fileName;
+        attachmentFileName = extendedAttachment.name;
       }
 
       const { error } = await supabase.functions.invoke('send-inquiry', {
-        body: { ...extendedForm, attachmentPath },
+        body: { ...extendedForm, attachmentPath, attachmentFileName },
       });
 
       if (error) throw error;

@@ -57,11 +57,32 @@ const Inquiry = () => {
     });
   };
 
+  // Allowed file extensions (safe files only)
+  const ALLOWED_EXTENSIONS = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'txt', 'rtf', 'odt', 'jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'tiff', 'zip', 'rar', '7z'];
+  const BLOCKED_EXTENSIONS = ['exe', 'bat', 'cmd', 'com', 'msi', 'scr', 'pif', 'js', 'vbs', 'wsf', 'hta', 'jar', 'ps1', 'sh', 'php', 'py', 'pl', 'rb'];
+
+  const validateFileExtension = (file: File): boolean => {
+    const ext = file.name.split('.').pop()?.toLowerCase() || '';
+    if (BLOCKED_EXTENSIONS.includes(ext)) {
+      toast.error(`Файлы .${ext} запрещены по соображениям безопасности`);
+      return false;
+    }
+    if (!ALLOWED_EXTENSIONS.includes(ext)) {
+      toast.error(`Файлы .${ext} не поддерживаются. Допустимые форматы: PDF, DOC, XLS, изображения, архивы`);
+      return false;
+    }
+    return true;
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 10 * 1024 * 1024) {
         toast.error('Файл слишком большой. Максимальный размер: 10 МБ');
+        return;
+      }
+      if (!validateFileExtension(file)) {
+        if (fileInputRef.current) fileInputRef.current.value = '';
         return;
       }
       setAttachment(file);
@@ -92,6 +113,7 @@ const Inquiry = () => {
 
     try {
       let attachmentPath: string | undefined;
+      let attachmentFileName: string | undefined;
 
       // Upload file if present
       if (attachment) {
@@ -105,14 +127,16 @@ const Inquiry = () => {
         if (uploadError) {
           console.error('File upload error:', uploadError);
           toast.error('Ошибка загрузки файла');
+          setIsSubmitting(false);
           return;
         }
 
         attachmentPath = fileName;
+        attachmentFileName = attachment.name;
       }
 
       const { error } = await supabase.functions.invoke('send-inquiry', {
-        body: { ...formData, attachmentPath },
+        body: { ...formData, attachmentPath, attachmentFileName },
       });
 
       if (error) throw error;

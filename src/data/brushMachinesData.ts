@@ -68,7 +68,7 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Диаметр': '8 мм',
             'Материал': 'Сталь с покрытием'
           },
-          availableLengths: ['3 м', '6 м'],
+          availableLengths: ['3 м', '6 м', '9 м'],
           shopUrl: 'https://shop-pressovac.ru/products/gibkie-vrashchayushchiesya-valy-pressovac-f88504918/',
           pricePrefix: 'от',
           vendorCodePattern: '205.004',

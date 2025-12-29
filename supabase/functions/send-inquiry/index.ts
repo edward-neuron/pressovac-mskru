@@ -9,18 +9,21 @@ const corsHeaders = {
 };
 
 interface InquiryRequest {
-  company: string;
-  contactPerson: string;
+  company?: string;
+  contactPerson?: string;
+  name?: string; // Alternative to contactPerson (from callback form)
   phone: string;
   email: string;
-  businessType: string;
-  experience: string;
-  ventilationTypes: string[];
-  equipmentTypes: string[];
-  budget: string;
-  comments: string;
-  needsTraining: boolean;
+  businessType?: string;
+  experience?: string;
+  ventilationTypes?: string[];
+  equipmentTypes?: string[];
+  budget?: string;
+  comments?: string;
+  message?: string; // Alternative to comments (from callback form)
+  needsTraining?: boolean;
   attachmentUrl?: string;
+  subject?: string; // Custom subject from callback form
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -31,10 +34,16 @@ const handler = async (req: Request): Promise<Response> => {
 
   try {
     const data: InquiryRequest = await req.json();
-    console.log("Received inquiry:", data);
+    console.log("Received inquiry:", JSON.stringify(data));
+
+    // Support both contactPerson and name fields
+    const contactName = data.contactPerson || data.name || "Не указано";
+    const messageContent = data.comments || data.message || "";
+    const emailSubject = data.subject || `Заявка на подбор оборудования от ${contactName}`;
 
     // Validate required fields
-    if (!data.contactPerson || !data.phone || !data.email) {
+    if (!contactName || contactName === "Не указано" || !data.phone || !data.email) {
+      console.error("Validation failed: missing required fields");
       return new Response(
         JSON.stringify({ error: "Заполните обязательные поля" }),
         { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
@@ -54,32 +63,36 @@ const handler = async (req: Request): Promise<Response> => {
       : "";
 
     const emailHtml = `
-      <h1>Новая заявка на подбор оборудования</h1>
+      <h1>${emailSubject}</h1>
       
       <h2>Контактная информация</h2>
       <ul>
         <li><strong>Компания:</strong> ${data.company || "Не указано"}</li>
-        <li><strong>Контактное лицо:</strong> ${data.contactPerson}</li>
+        <li><strong>Контактное лицо:</strong> ${contactName}</li>
         <li><strong>Телефон:</strong> ${data.phone}</li>
         <li><strong>Email:</strong> ${data.email}</li>
       </ul>
       
+      ${data.businessType || data.experience ? `
       <h2>Информация о деятельности</h2>
       <ul>
         <li><strong>Сфера деятельности:</strong> ${data.businessType || "Не указано"}</li>
         <li><strong>Опыт работы:</strong> ${data.experience || "Не указано"}</li>
       </ul>
+      ` : ""}
       
+      ${data.ventilationTypes?.length || data.equipmentTypes?.length || data.budget ? `
       <h2>Потребности в оборудовании</h2>
       <ul>
         <li><strong>Типы вентиляционных систем:</strong> ${ventilationList}</li>
         <li><strong>Интересующее оборудование:</strong> ${equipmentList}</li>
         <li><strong>Планируемый бюджет:</strong> ${data.budget || "Не указано"}</li>
       </ul>
+      ` : ""}
       
       <h2>Дополнительная информация</h2>
-      <p><strong>Комментарии:</strong> ${data.comments || "Нет комментариев"}</p>
-      <p><strong>Интересует обучение:</strong> ${data.needsTraining ? "Да" : "Нет"}</p>
+      <p><strong>Сообщение:</strong> ${messageContent || "Нет комментариев"}</p>
+      ${data.needsTraining !== undefined ? `<p><strong>Интересует обучение:</strong> ${data.needsTraining ? "Да" : "Нет"}</p>` : ""}
       ${attachmentSection}
       
       <hr>
@@ -94,7 +107,7 @@ const handler = async (req: Request): Promise<Response> => {
     const salesEmailResponse = await resend.emails.send({
       from: "Pressovac Moscow <info@pressovac-moscow.ru>",
       to: ["sales@pressovac-moscow.ru"],
-      subject: `Заявка на подбор оборудования от ${data.contactPerson}`,
+      subject: emailSubject,
       html: emailHtml,
     });
 

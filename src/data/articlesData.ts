@@ -6,6 +6,8 @@ import profitable1 from '@/assets/articles/profitable-1.jpg';
 import profitable2 from '@/assets/articles/profitable-2.jpg';
 import profitable3 from '@/assets/articles/profitable-3.jpg';
 import profitable4 from '@/assets/articles/profitable-4.jpg';
+import starting1 from '@/assets/articles/starting-1.jpg';
+import starting2 from '@/assets/articles/starting-2.jpg';
 
 export interface Article {
   id: number;
@@ -158,6 +160,8 @@ export const articlesData: Article[] = [
     author: 'Веконт-М',
     category: 'Руководство',
     readTime: '10 мин',
+    image: starting1,
+    images: [starting1, starting2],
     content: `
 ## Пошаговое руководство по открытию бизнеса
 

@@ -38,6 +38,7 @@ interface InquiryRequest {
   needsTraining?: boolean;
   attachmentUrl?: string; // Legacy (public URL)
   attachmentPath?: string; // Preferred (storage object path)
+  attachmentFileName?: string; // Original file name for display
   subject?: string; // Custom subject from callback form
 }
 
@@ -97,6 +98,7 @@ const handler = async (req: Request): Promise<Response> => {
       : "Не указано";
 
     const attachmentPath = (data.attachmentPath || "").trim();
+    const attachmentFileName = escapeHtml((data.attachmentFileName || "").trim().slice(0, 255));
     let attachmentUrlResolved = (data.attachmentUrl || "").trim();
 
     if (!attachmentUrlResolved && attachmentPath) {
@@ -112,9 +114,25 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const attachmentUrlSafe = escapeHtml(attachmentUrlResolved);
-
+    
+    // Show friendly file name with a download button instead of raw URL
+    const displayFileName = attachmentFileName || attachmentPath.split('/').pop() || "Файл";
+    const fileExtension = displayFileName.split('.').pop()?.toLowerCase() || "";
+    
     const attachmentSection = attachmentUrlResolved
-      ? `<p><strong>Прикреплённый файл:</strong> <a href="${attachmentUrlSafe}">${attachmentUrlSafe}</a></p>`
+      ? `<p><strong>Прикреплённый файл:</strong></p>
+         <table cellpadding="0" cellspacing="0" border="0" style="margin: 10px 0;">
+           <tr>
+             <td style="background-color: #0066cc; border-radius: 6px;">
+               <a href="${attachmentUrlSafe}" 
+                  style="display: inline-block; padding: 12px 24px; color: #ffffff; text-decoration: none; font-weight: bold; font-size: 14px;"
+                  target="_blank">
+                 📎 Скачать: ${displayFileName}
+               </a>
+             </td>
+           </tr>
+         </table>
+         <p style="color: #666; font-size: 12px; margin-top: 4px;">Тип файла: .${fileExtension} | Ссылка действительна 7 дней</p>`
       : "";
 
     const emailHtml = `

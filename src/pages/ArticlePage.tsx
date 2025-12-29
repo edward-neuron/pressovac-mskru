@@ -250,7 +250,7 @@ const ArticlePage = () => {
               </p>
               <div className="flex flex-wrap gap-3">
                 <Button asChild>
-                  <Link to="/inquiry">Отправить заявку</Link>
+                  <Link to="/contacts">Связаться с нами</Link>
                 </Button>
                 <Button variant="outline" asChild>
                   <Link to="/catalog">Смотреть каталог</Link>

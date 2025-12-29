@@ -1,3 +1,8 @@
+import fireSafety1 from '@/assets/articles/fire-safety-1.jpg';
+import fireSafety2 from '@/assets/articles/fire-safety-2.jpg';
+import fireSafety3 from '@/assets/articles/fire-safety-3.jpg';
+import fireSafety4 from '@/assets/articles/fire-safety-4.jpg';
+
 export interface Article {
   id: number;
   slug: string;
@@ -8,6 +13,7 @@ export interface Article {
   category: string;
   readTime: string;
   content: string;
+  image?: string;
 }
 
 export const articlesData: Article[] = [
@@ -20,6 +26,7 @@ export const articlesData: Article[] = [
     author: 'Веконт-М',
     category: 'Безопасность',
     readTime: '5 мин',
+    image: fireSafety1,
     content: `
 ## Почему рестораны горят?
 

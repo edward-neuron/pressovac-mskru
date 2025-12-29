@@ -42,8 +42,16 @@ const Articles = () => {
                 className="group bg-card rounded-2xl overflow-hidden border border-border card-hover flex flex-col"
               >
                 <Link to={`/articles/${article.slug}`} className="block">
-                  <div className="h-48 bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
-                    <BookOpen className="w-16 h-16 text-primary/30" />
+                  <div className="h-48 bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center overflow-hidden">
+                    {article.image ? (
+                      <img 
+                        src={article.image} 
+                        alt={article.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    ) : (
+                      <BookOpen className="w-16 h-16 text-primary/30" />
+                    )}
                   </div>
                 </Link>
                 <div className="p-6 space-y-4 flex-1 flex flex-col">

@@ -69,8 +69,8 @@ const redirectPatterns: Array<{ pattern: string; target: string }> = [
   { pattern: '/loan-programs/', target: '/catalog' },
   { pattern: '/9-catalog/', target: '/catalog' },
   
-  // Статьи и новости
-  { pattern: '/articles/', target: '/articles' },
+  // Статьи и новости - только старые числовые URL (например /articles/204-starting-a-duct-cleaning-company)
+  // НЕ перехватываем новые slug-и (fire-safety-restaurants, profitable-business и т.д.)
   { pattern: '/news/', target: '/articles' },
   { pattern: '/arcticles/', target: '/articles' },
   
@@ -106,6 +106,27 @@ export function LegacyRedirects() {
 
   useEffect(() => {
     const path = location.pathname;
+    
+    // Не перехватываем новые slug-и статей
+    const newArticleSlugs = [
+      'fire-safety-restaurants',
+      'profitable-business', 
+      'starting-cleaning-company',
+      'cleaning-as-profitable-business',
+      'sanitary-norms',
+      'equipment-selection-guide'
+    ];
+    
+    // Проверяем, является ли это новой статьёй
+    if (path.startsWith('/articles/')) {
+      const slug = path.replace('/articles/', '');
+      if (newArticleSlugs.includes(slug)) {
+        return; // Не редиректим новые статьи
+      }
+      // Старые статьи (с числами) редиректим на /articles
+      navigate('/articles', { replace: true });
+      return;
+    }
     
     // Проверяем точное совпадение
     if (redirectMap[path]) {

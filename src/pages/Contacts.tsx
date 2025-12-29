@@ -373,7 +373,7 @@ const Contacts = () => {
             </div>
 
             {/* Contact Info Cards */}
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 items-stretch">
               {contactInfo.map((item, index) => (
                 <motion.a
                   key={item.label}
@@ -381,7 +381,7 @@ const Contacts = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 + index * 0.1 }}
-                  className="flex items-start gap-4 p-5 rounded-2xl bg-card border border-border card-hover"
+                  className="flex items-start gap-4 p-5 rounded-2xl bg-card border border-border card-hover h-full"
                 >
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
                     <item.icon className="w-6 h-6 text-primary" />
@@ -389,11 +389,11 @@ const Contacts = () => {
                   <div>
                     <p className="text-sm text-muted-foreground">{item.label}</p>
                     {item.label === 'Телефон' ? (
-                      <div className="mt-0.5 space-y-1">
+                      <div className="mt-0.5 space-y-2">
                         <p className="font-semibold">{item.value}</p>
-                        <div className="text-sm text-muted-foreground leading-tight">
-                          <div>Консультант:</div>
-                          <div className="font-semibold text-foreground">(925) 85-349-74</div>
+                        <div>
+                          <p className="text-sm text-muted-foreground">Консультант:</p>
+                          <p className="font-semibold">(925) 85-349-74</p>
                         </div>
                       </div>
                     ) : (

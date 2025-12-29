@@ -16,7 +16,6 @@ import {
 } from '@/components/ui/tooltip';
 const contactInfo = [
   { icon: Phone, label: 'Телефон', value: '(499) 677-2010', href: 'tel:+74996772010' },
-  { icon: Phone, label: 'Консультант', value: '+7 925 85-349-74', href: 'tel:+79258534974' },
   { icon: Mail, label: 'Email', value: 'sales@pressovac-moscow.ru', href: 'mailto:sales@pressovac-moscow.ru' },
   { icon: MapPin, label: 'Адрес', value: '123308, г. Москва, 3-й Силикатный проезд, д. 4, кор. 1', href: '#' },
   { icon: Clock, label: 'Время работы', value: 'Пн-Пт: 09:00-21:00', href: '#' },
@@ -389,7 +388,17 @@ const Contacts = () => {
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">{item.label}</p>
-                    <p className="font-semibold">{item.value}</p>
+                    {item.label === 'Телефон' ? (
+                      <div className="mt-0.5 space-y-1">
+                        <p className="font-semibold">{item.value}</p>
+                        <p className="text-sm text-muted-foreground leading-tight">
+                          Консультант:{' '}
+                          <span className="font-semibold text-foreground">+7 925 85-349-74</span>
+                        </p>
+                      </div>
+                    ) : (
+                      <p className="font-semibold">{item.value}</p>
+                    )}
                   </div>
                 </motion.a>
               ))}

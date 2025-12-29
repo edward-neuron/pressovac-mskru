@@ -955,7 +955,7 @@ const Contacts = () => {
                 >
                   <Button size="lg" variant="outline" className="w-full border-blue-500/50 text-blue-600 hover:bg-blue-500/10">
                     <Download className="w-4 h-4" />
-                    Скачать MAX (Android)
+                    MAX (Google Play)
                   </Button>
                 </a>
                 <a 
@@ -965,7 +965,17 @@ const Contacts = () => {
                 >
                   <Button size="lg" variant="outline" className="w-full border-blue-500/50 text-blue-600 hover:bg-blue-500/10">
                     <Download className="w-4 h-4" />
-                    Скачать MAX (iPhone)
+                    MAX (App Store)
+                  </Button>
+                </a>
+                <a 
+                  href="https://www.rustore.ru/catalog/app/ru.oneme.app" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                >
+                  <Button size="lg" variant="outline" className="w-full border-blue-500/50 text-blue-600 hover:bg-blue-500/10">
+                    <Download className="w-4 h-4" />
+                    MAX (RuStore)
                   </Button>
                 </a>
               </div>

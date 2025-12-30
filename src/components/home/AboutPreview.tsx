@@ -24,8 +24,8 @@ export const AboutPreview = () => {
             <span className="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium">
               О компании
             </span>
-            <h2 id="about-heading" className="font-display text-3xl md:text-4xl lg:text-5xl font-bold">
-              Компания <span className="text-gradient">«Веконт-М»</span>
+            <h2 id="about-heading" className="font-display text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
+              Компания <span className="text-gradient tracking-tight">«Веконт‑М»</span>
             </h2>
             <p className="text-muted-foreground text-lg leading-relaxed">
               Мы являемся официальным дистрибьютором финской фирмы PRESSOVAC Oy 

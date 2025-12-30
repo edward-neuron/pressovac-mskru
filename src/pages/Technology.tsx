@@ -4,6 +4,7 @@ import { Layout } from '@/components/layout/Layout';
 import { Play, CheckCircle, ArrowRight, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
+import { Button } from '@/components/ui/button';
 
 const videoCategories = [
   {
@@ -321,7 +322,7 @@ const Technology = () => {
                       }
                       className="w-full h-full"
                       loading="lazy"
-                      referrerPolicy="no-referrer"
+                      referrerPolicy={effectivePlatform === 'rutube' ? 'no-referrer' : 'strict-origin-when-cross-origin'}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
                       title={selectedVideo.title}
@@ -330,7 +331,18 @@ const Technology = () => {
                 })()}
               </div>
               <div className="p-4">
-                <h3 className="font-display font-semibold text-lg">{selectedVideo.title}</h3>
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <h3 className="font-display font-semibold text-lg">{selectedVideo.title}</h3>
+                  <Button asChild variant="outline" size="sm">
+                    <a
+                      href={`https://rutube.ru/video/${selectedVideo.id}/`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Открыть на RuTube
+                    </a>
+                  </Button>
+                </div>
               </div>
             </motion.div>
           </motion.div>

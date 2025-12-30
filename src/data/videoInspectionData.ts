@@ -57,7 +57,7 @@ export const videoInspectionData: VideoInspectionCategory = {
           specifications: {
             'Диаметр камеры': 'Ø26мм',
             'Длина кабеля': '20м',
-            'Страна': 'Финляндия'
+            'Страна': 'Германия'
           },
           image: vs200Image
         },
@@ -77,7 +77,7 @@ export const videoInspectionData: VideoInspectionCategory = {
             'Длина кабеля': '20м',
             'Видео': 'Да',
             'Батареи': '1',
-            'Страна': 'Финляндия'
+            'Страна': 'Германия'
           },
           image: vs250Image
         },
@@ -97,7 +97,7 @@ export const videoInspectionData: VideoInspectionCategory = {
             'Длина кабеля': '30м',
             'Видео': 'Да',
             'Батареи': '1',
-            'Страна': 'Финляндия'
+            'Страна': 'Германия'
           },
           image: vs25030mImage
         },
@@ -117,7 +117,7 @@ export const videoInspectionData: VideoInspectionCategory = {
             'Длина кабеля': '30м',
             'Видео': 'Да',
             'Батареи': '2',
-            'Страна': 'Финляндия'
+            'Страна': 'Германия'
           },
           image: vs350Image
         },
@@ -137,7 +137,7 @@ export const videoInspectionData: VideoInspectionCategory = {
             'Длина кабеля': '30м',
             'Качество': 'HD',
             'Батареи': '2',
-            'Страна': 'Финляндия'
+            'Страна': 'Германия'
           },
           image: vs700Image
         }
@@ -161,7 +161,7 @@ export const videoInspectionData: VideoInspectionCategory = {
           ],
           specifications: {
             'Совместимость': 'Все модели VS',
-            'Страна': 'Финляндия'
+            'Страна': 'Германия'
           },
           image: l200Image
         }
@@ -186,7 +186,7 @@ export const videoInspectionData: VideoInspectionCategory = {
           specifications: {
             'Диаметр': 'Ø20мм',
             'Совместимость': 'VS350',
-            'Страна': 'Финляндия'
+            'Страна': 'Германия'
           }
         },
         {
@@ -202,7 +202,7 @@ export const videoInspectionData: VideoInspectionCategory = {
           specifications: {
             'Диаметр': 'Ø40мм',
             'Количество': '10 шт.',
-            'Страна': 'Финляндия'
+            'Страна': 'Германия'
           }
         },
         {
@@ -217,7 +217,7 @@ export const videoInspectionData: VideoInspectionCategory = {
           ],
           specifications: {
             'Диаметр': 'Ø40мм',
-            'Страна': 'Финляндия'
+            'Страна': 'Германия'
           }
         },
         {
@@ -234,7 +234,7 @@ export const videoInspectionData: VideoInspectionCategory = {
           specifications: {
             'Совместимость': 'Все модели VS',
             'Для каналов': '> 150мм',
-            'Страна': 'Финляндия'
+            'Страна': 'Германия'
           }
         }
       ]

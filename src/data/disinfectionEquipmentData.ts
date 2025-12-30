@@ -5,7 +5,7 @@ import disinfectionTanks31 from '@/assets/disinfection-tanks-3-1.png';
 import disinfectionNozzles31 from '@/assets/disinfection-nozzles-3-1.png';
 
 // Импорт изображений продуктов (3:1)
-import dTanksImage from '@/assets/products/d-tanks.png';
+import dTanksImage from '@/assets/products/disinfection-tanks-all.jpg';
 import dNozzleImage from '@/assets/products/d-nozzle.png';
 
 export interface DisinfectionProduct {

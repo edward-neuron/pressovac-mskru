@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
-import { Play, CheckCircle, ArrowRight, X } from 'lucide-react';
+import { Play, CheckCircle, ArrowRight, X, Camera, Wind, Flame, Shield, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
@@ -93,6 +93,60 @@ const steps = [
     title: 'Контроль качества', 
     description: 'Повторная видеоинспекция для подтверждения качества выполненных работ' 
   },
+];
+
+// Данные для раздела "Технология проведения работ"
+const technologySections = [
+  {
+    id: 'inspection',
+    title: 'Инспекционный осмотр',
+    icon: 'Camera',
+    description: 'Визуальная диагностика с помощью миникамеры 360° или дистанционно-управляемого робота Pressovac.',
+    details: [
+      'Оценка степени загрязнённости канала',
+      'Запись видео с комментариями на DVR',
+      'Формирование отчёта для определения характера очистки',
+    ],
+  },
+  {
+    id: 'dust-cleaning',
+    title: 'Очистка от пылевых отложений',
+    icon: 'Wind',
+    description: 'Воздуховоды разбиваются на участки с помощью заградительных баллонов. С одной стороны подключается вакуумная установка, с другой — щёточная машина.',
+    details: [
+      'Щётки диаметром 100-1200 мм различной жёсткости',
+      'Фильтры G3, F7 и HEPA (очистка 99,95%)',
+      'Т-адаптер для обработки прямоугольных каналов',
+    ],
+  },
+  {
+    id: 'grease-cleaning',
+    title: 'Удаление жировых отложений',
+    icon: 'Flame',
+    description: 'Жир пожароопасен при температуре от 310°C. Для удаления используется комплекс: моющая машина, генератор активной пены и мойка высокого давления.',
+    details: [
+      'Активная пена (pH14) — экспозиция 10-20 минут',
+      'Абразивные щётки с покрытием карборундом',
+      'Дренажный клапан для слива щелочной химии',
+    ],
+  },
+  {
+    id: 'disinfection',
+    title: 'Дезинфекция',
+    icon: 'Shield',
+    description: 'Предотвращение загрязнения воздуха закрытых помещений методом мелкодисперсного орошения или ручной протирки.',
+    details: [
+      'Специальные дезраспылители Pressovac',
+      'Уничтожение бактерий, грибков, возбудителей инфекций',
+      'Соблюдение санитарных норм и требований',
+    ],
+  },
+];
+
+const technologyStats = [
+  { value: '150-300', label: 'погонных метров в смену' },
+  { value: '100%', label: 'без демонтажа воздуховодов' },
+  { value: '99,95%', label: 'степень очистки HEPA-фильтров' },
 ];
 
 const advantages = [
@@ -348,6 +402,113 @@ const Technology = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Технология проведения работ - NEW SECTION */}
+      <section className="section-padding bg-gradient-to-b from-background to-card">
+        <div className="container-custom">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <span className="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
+              Методология
+            </span>
+            <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">
+              Технология проведения работ
+            </h2>
+            <p className="text-muted-foreground text-lg max-w-3xl mx-auto">
+              Комплексный подход к очистке и дезинфекции систем вентиляции с использованием 
+              специализированного оборудования Pressovac
+            </p>
+          </motion.div>
+
+          {/* Stats */}
+          <div className="grid grid-cols-3 gap-4 md:gap-8 max-w-3xl mx-auto mb-16">
+            {technologyStats.map((stat, index) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="text-center"
+              >
+                <div className="font-display text-2xl md:text-4xl font-bold text-primary mb-1">
+                  {stat.value}
+                </div>
+                <div className="text-xs md:text-sm text-muted-foreground">{stat.label}</div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Technology Sections Grid */}
+          <div className="grid md:grid-cols-2 gap-6">
+            {technologySections.map((section, index) => {
+              const IconComponent = section.icon === 'Camera' ? Camera 
+                : section.icon === 'Wind' ? Wind 
+                : section.icon === 'Flame' ? Flame 
+                : Shield;
+              
+              return (
+                <motion.div
+                  key={section.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  className="group relative bg-card border border-border rounded-2xl p-6 hover:border-primary/50 transition-all duration-300"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center flex-shrink-0 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300">
+                      <IconComponent className="w-6 h-6" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-display font-semibold text-xl mb-2 group-hover:text-primary transition-colors">
+                        {section.title}
+                      </h3>
+                      <p className="text-muted-foreground text-sm mb-4 leading-relaxed">
+                        {section.description}
+                      </p>
+                      <ul className="space-y-2">
+                        {section.details.map((detail, i) => (
+                          <li key={i} className="flex items-start gap-2 text-sm">
+                            <Zap className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                            <span>{detail}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          {/* Important Note */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-12 p-6 rounded-2xl bg-primary/5 border border-primary/20"
+          >
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
+                <Shield className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="font-semibold mb-1">Важно</h4>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Регулярная очистка систем вентиляции обеспечивает соблюдение санитарных норм 
+                  и противопожарных требований, создаёт комфортные условия на рабочих местах 
+                  и продлевает срок службы оборудования.
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
 
       {/* Steps */}
       <section className="section-padding bg-card">

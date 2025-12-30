@@ -9,6 +9,9 @@ import s300Image from '@/assets/products/s-300.png';
 import su50Image from '@/assets/products/su-50.png';
 import su100Image from '@/assets/products/su-100.png';
 import suAtexImage from '@/assets/products/su-atex.png';
+import sfu10Image from '@/assets/products/sfu-10.png';
+import sfu25Image from '@/assets/products/sfu-25.png';
+import sfu50Image from '@/assets/products/sfu-50.png';
 
 export interface VacuumProduct {
   id: string;
@@ -213,7 +216,8 @@ export const vacuumEquipmentData: VacuumEquipmentCategory = {
             'Тип фильтра': 'G3 + F7',
             'Мощность': '0,75 кВт',
             'Страна': 'Финляндия'
-          }
+          },
+          image: sfu10Image
         },
         {
           id: 'sfu-25',
@@ -231,7 +235,8 @@ export const vacuumEquipmentData: VacuumEquipmentCategory = {
             'Тип фильтра': 'G3 + F7',
             'Мощность': '1,5 кВт',
             'Страна': 'Финляндия'
-          }
+          },
+          image: sfu25Image
         },
         {
           id: 'sfu-50',
@@ -249,7 +254,8 @@ export const vacuumEquipmentData: VacuumEquipmentCategory = {
             'Тип фильтра': 'G3 + F7',
             'Мощность': '2,2 кВт',
             'Страна': 'Финляндия'
-          }
+          },
+          image: sfu50Image
         }
       ]
     }

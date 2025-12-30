@@ -48,8 +48,11 @@ const ArticleVideoPlayer = ({ video, compact = false }: { video: ArticleVideo; c
           key={`${video.rutubeId}-${platform}`}
           src={videoSrc}
           className="w-full h-full"
+          loading="lazy"
+          referrerPolicy="no-referrer"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
+          title="Видео (RuTube / YouTube)"
         />
       </div>
     </div>

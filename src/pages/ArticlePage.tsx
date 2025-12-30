@@ -49,7 +49,7 @@ const ArticleVideoPlayer = ({ video, compact = false }: { video: ArticleVideo; c
           src={videoSrc}
           className="w-full h-full"
           loading="lazy"
-          referrerPolicy="no-referrer"
+          referrerPolicy={platform === 'rutube' ? 'no-referrer' : 'strict-origin-when-cross-origin'}
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
           title="Видео (RuTube / YouTube)"

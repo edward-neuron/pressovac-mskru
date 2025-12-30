@@ -1,25 +1,34 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowRight, BookOpen, Calendar } from 'lucide-react';
+import { ArrowRight, Calendar } from 'lucide-react';
+import fireSafety1 from '@/assets/articles/fire-safety-3.jpg';
+import profitable1 from '@/assets/articles/profitable-1.jpg';
+import startingMain from '@/assets/articles/starting-main.jpg';
 
 const articles = [
   {
+    slug: 'fire-safety-restaurants',
     title: 'Как обезопасить кафе и рестораны от пожара',
     excerpt: 'Любой ресторан или кафе регулярно встречает пожарных инспекторов с проверкой. Узнайте, как соответствовать всем требованиям.',
     date: '15 декабря 2024',
     category: 'Безопасность',
+    image: fireSafety1,
   },
   {
+    slug: 'profitable-business',
     title: 'Прибыльный бизнес на все времена',
     excerpt: 'Хотите открыть интересный бизнес с высокой доходностью и актуальный во все времена? Очистка вентиляции — ваш выбор.',
     date: '10 декабря 2024',
     category: 'Бизнес',
+    image: profitable1,
   },
   {
+    slug: 'starting-cleaning-company',
     title: 'Открываем компанию по очистке вентиляции',
     excerpt: 'Вы горите желанием открыть свое дело? У вас есть необходимый капитал? Мы поможем вам начать.',
     date: '5 декабря 2024',
     category: 'Руководство',
+    image: startingMain,
   },
 ];
 
@@ -53,15 +62,20 @@ export const ArticlesPreview = () => {
         <div className="grid md:grid-cols-3 gap-6">
           {articles.map((article, index) => (
             <motion.article
-              key={article.title}
+              key={article.slug}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
               className="group bg-background rounded-2xl overflow-hidden border border-border card-hover"
             >
-              <div className="h-48 bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
-                <BookOpen className="w-16 h-16 text-primary/30" />
+              <div className="h-48 overflow-hidden">
+                <img
+                  src={article.image}
+                  alt={article.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  loading="lazy"
+                />
               </div>
               <div className="p-6 space-y-4">
                 <div className="flex items-center gap-3 text-sm text-muted-foreground">
@@ -80,7 +94,7 @@ export const ArticlesPreview = () => {
                   {article.excerpt}
                 </p>
                 <Link
-                  to="/articles"
+                  to={`/articles/${article.slug}`}
                   className="inline-flex items-center gap-1 text-sm font-medium text-primary"
                 >
                   Читать далее

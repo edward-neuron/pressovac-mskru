@@ -1,9 +1,102 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowRight, FileText, Phone, Send } from 'lucide-react';
+import { ArrowRight, FileText, Phone, Send, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { toast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import TurnstileWidget from '@/components/TurnstileWidget';
 
 export const CTASection = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    message: '',
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Validation
+    if (!formData.name.trim()) {
+      toast({
+        title: 'Ошибка',
+        description: 'Пожалуйста, укажите ваше имя',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (!formData.phone.trim()) {
+      toast({
+        title: 'Ошибка',
+        description: 'Пожалуйста, укажите телефон',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (formData.message.trim().length < 80) {
+      toast({
+        title: 'Ошибка',
+        description: `Сообщение должно содержать минимум 80 символов (сейчас: ${formData.message.trim().length})`,
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (!turnstileToken) {
+      toast({
+        title: 'Ошибка',
+        description: 'Пожалуйста, подтвердите, что вы не робот',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const { error } = await supabase.functions.invoke('send-inquiry', {
+        body: {
+          type: 'quick-contact',
+          name: formData.name.trim(),
+          phone: formData.phone.trim(),
+          message: formData.message.trim(),
+          turnstileToken,
+        },
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      toast({
+        title: 'Заявка отправлена',
+        description: 'Мы свяжемся с вами в ближайшее время',
+      });
+
+      setFormData({ name: '', phone: '', message: '' });
+      setTurnstileToken(null);
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось отправить заявку. Попробуйте позже.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <section className="section-padding relative overflow-hidden">
       {/* Background */}
@@ -54,32 +147,72 @@ export const CTASection = () => {
             viewport={{ once: true }}
             className="bg-primary-foreground/10 backdrop-blur-sm rounded-2xl p-8 border border-primary-foreground/20"
           >
-            <h3 className="font-display font-semibold text-xl text-primary-foreground mb-6">
+            <h3 className="font-display font-semibold text-xl text-primary-foreground mb-2">
               Быстрая связь
             </h3>
-            <form className="space-y-4">
-              <input
-                type="text"
-                placeholder="Ваше имя"
-                className="w-full px-4 py-3 rounded-lg bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 focus:outline-none focus:border-primary-foreground/50"
-              />
-              <input
-                type="tel"
-                placeholder="Телефон"
-                className="w-full px-4 py-3 rounded-lg bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 focus:outline-none focus:border-primary-foreground/50"
-              />
-              <textarea
-                placeholder="Сообщение"
-                rows={3}
-                className="w-full px-4 py-3 rounded-lg bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 focus:outline-none focus:border-primary-foreground/50 resize-none"
-              />
+            <p className="text-primary-foreground/60 text-sm mb-6">
+              * Все поля обязательны для заполнения
+            </p>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  placeholder="Ваше имя *"
+                  className="w-full px-4 py-3 rounded-lg bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 focus:outline-none focus:border-primary-foreground/50"
+                  required
+                />
+              </div>
+              <div>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  placeholder="+7 (999) 123-45-67 *"
+                  className="w-full px-4 py-3 rounded-lg bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 focus:outline-none focus:border-primary-foreground/50"
+                  required
+                />
+              </div>
+              <div>
+                <textarea
+                  name="message"
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  placeholder="Сообщение (минимум 80 символов) *"
+                  rows={3}
+                  className="w-full px-4 py-3 rounded-lg bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 focus:outline-none focus:border-primary-foreground/50 resize-none"
+                  required
+                  minLength={80}
+                />
+                <p className="text-primary-foreground/50 text-xs mt-1">
+                  {formData.message.length}/80 символов
+                </p>
+              </div>
+              
+              <div className="flex justify-center">
+                <TurnstileWidget onVerify={setTurnstileToken} />
+              </div>
+
               <Button 
                 type="submit" 
                 size="lg" 
+                disabled={isSubmitting}
                 className="w-full bg-primary-foreground text-primary hover:bg-primary-foreground/90"
               >
-                <Send className="w-5 h-5" />
-                Отправить
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Отправка...
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-5 h-5" />
+                    Отправить
+                  </>
+                )}
               </Button>
             </form>
           </motion.div>

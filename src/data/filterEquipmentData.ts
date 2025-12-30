@@ -4,6 +4,9 @@
 import f50Image from '@/assets/products/f-50.png';
 import f100Image from '@/assets/products/f-100.png';
 import hepa10Image from '@/assets/products/hepa-10.png';
+import sfu10Image from '@/assets/products/sfu-10.png';
+import sfu25Image from '@/assets/products/sfu-25.png';
+import sfu50Image from '@/assets/products/sfu-50.png';
 export interface FilterProduct {
   id: string;
   name: string;
@@ -29,6 +32,67 @@ export interface FilterEquipmentCategory {
 
 export const filterEquipmentData: FilterEquipmentCategory = {
   subcategories: [
+    {
+      id: 'sfu-units',
+      title: 'Фильтро-вакуумные установки SFU',
+      description: 'Компактные фильтро-вакуумные установки для эффективной очистки вентиляции',
+      products: [
+        {
+          id: 'sfu-10',
+          name: 'Фильтро-вакуумная установка SFU-10',
+          article: '207.003.001',
+          description: 'Компактная фильтро-вакуумная установка производительностью 1000 м³/час для небольших вентиляционных систем.',
+          features: [
+            'Производительность: 1000 м³/час',
+            'Компактные размеры',
+            'Лёгкий вес',
+            'Простота транспортировки'
+          ],
+          specifications: {
+            'Производительность': '1 000 м³/час',
+            'Класс фильтра': 'G3 + F7',
+            'Страна': 'Финляндия'
+          },
+          image: sfu10Image
+        },
+        {
+          id: 'sfu-25',
+          name: 'Фильтро-вакуумная установка SFU-25',
+          article: '207.003.002',
+          description: 'Фильтро-вакуумная установка производительностью 2500 м³/час для средних вентиляционных систем.',
+          features: [
+            'Производительность: 2500 м³/час',
+            'Двухступенчатая фильтрация',
+            'Оптимальное соотношение мощности и размера',
+            'Удобная транспортировка'
+          ],
+          specifications: {
+            'Производительность': '2 500 м³/час',
+            'Класс фильтра': 'G3 + F7',
+            'Страна': 'Финляндия'
+          },
+          image: sfu25Image
+        },
+        {
+          id: 'sfu-50',
+          name: 'Фильтро-вакуумная установка SFU-50',
+          article: '207.003.003',
+          description: 'Мощная фильтро-вакуумная установка производительностью 5000 м³/час для крупных объектов.',
+          features: [
+            'Производительность: 5000 м³/час',
+            'Двухступенчатая фильтрация',
+            'Высокая производительность',
+            'Для интенсивной эксплуатации'
+          ],
+          specifications: {
+            'Производительность': '5 000 м³/час',
+            'Класс фильтра': 'G3 + F7',
+            'Страна': 'Финляндия'
+          },
+          image: sfu50Image
+        }
+      ]
+    },
     {
       id: 'filter-units',
       title: 'Фильтрующие установки',

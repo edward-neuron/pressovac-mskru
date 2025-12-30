@@ -12,6 +12,12 @@ import vs350Image from '@/assets/products/vs-350.png';
 import vs700Image from '@/assets/products/vs-700.png';
 import l200Image from '@/assets/products/l-200.png';
 
+// Импорт изображений аксессуаров
+import centeringBrushImage from '@/assets/products/centering-brush.png';
+import cameradomesImage from '@/assets/products/camera-domes.png';
+import protectiveSleeveImage from '@/assets/products/protective-sleeve.png';
+import mobileTrolleyImage from '@/assets/products/mobile-trolley.png';
+
 export interface VideoInspectionProduct {
   id: string;
   name: string;
@@ -187,7 +193,8 @@ export const videoInspectionData: VideoInspectionCategory = {
             'Диаметр': 'Ø20мм',
             'Совместимость': 'VS350',
             'Страна': 'Германия'
-          }
+          },
+          image: centeringBrushImage
         },
         {
           id: 'dome-caps-40',
@@ -203,7 +210,8 @@ export const videoInspectionData: VideoInspectionCategory = {
             'Диаметр': 'Ø40мм',
             'Количество': '10 шт.',
             'Страна': 'Германия'
-          }
+          },
+          image: cameradomesImage
         },
         {
           id: 'protective-sleeve-40',
@@ -218,7 +226,8 @@ export const videoInspectionData: VideoInspectionCategory = {
           specifications: {
             'Диаметр': 'Ø40мм',
             'Страна': 'Германия'
-          }
+          },
+          image: protectiveSleeveImage
         },
         {
           id: 'mobile-cart-vs',
@@ -235,7 +244,8 @@ export const videoInspectionData: VideoInspectionCategory = {
             'Совместимость': 'Все модели VS',
             'Для каналов': '> 150мм',
             'Страна': 'Германия'
-          }
+          },
+          image: mobileTrolleyImage
         }
       ]
     }

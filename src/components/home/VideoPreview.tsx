@@ -69,6 +69,8 @@ export const VideoPreview = () => {
               key={platform}
               src={VIDEO_URLS[platform]}
               className="w-full h-full"
+              loading="lazy"
+              referrerPolicy="no-referrer"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
               title="Видео о компании Веконт-М"

@@ -320,6 +320,8 @@ const Technology = () => {
                         : `https://www.youtube.com/embed/${ytId}`
                       }
                       className="w-full h-full"
+                      loading="lazy"
+                      referrerPolicy="no-referrer"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
                       title={selectedVideo.title}

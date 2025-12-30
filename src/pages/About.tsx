@@ -213,6 +213,8 @@ const About = () => {
                     : `https://www.youtube.com/embed/${ownerVideo.youtubeId}`
                   }
                   className="w-full h-full"
+                  loading="lazy"
+                  referrerPolicy="no-referrer"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                   title={ownerVideo.title}

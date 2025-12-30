@@ -13,6 +13,7 @@ export const CTASection = () => {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
+    email: '',
     message: '',
   });
 
@@ -38,6 +39,15 @@ export const CTASection = () => {
       toast({
         title: 'Ошибка',
         description: 'Пожалуйста, укажите телефон',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (!formData.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
+      toast({
+        title: 'Ошибка',
+        description: 'Пожалуйста, укажите корректный email',
         variant: 'destructive',
       });
       return;
@@ -69,6 +79,7 @@ export const CTASection = () => {
           type: 'quick-contact',
           name: formData.name.trim(),
           phone: formData.phone.trim(),
+          email: formData.email.trim(),
           message: formData.message.trim(),
           turnstileToken,
         },
@@ -88,7 +99,7 @@ export const CTASection = () => {
         description: 'Мы свяжемся с вами в ближайшее время',
       });
 
-      setFormData({ name: '', phone: '', message: '' });
+      setFormData({ name: '', phone: '', email: '', message: '' });
       setTurnstileToken(null);
     } catch (error) {
       console.error('Error submitting form:', error);
@@ -177,6 +188,17 @@ export const CTASection = () => {
                   value={formData.phone}
                   onChange={handleInputChange}
                   placeholder="+7 (999) 123-45-67 *"
+                  className="w-full px-4 py-3 rounded-lg bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 focus:outline-none focus:border-primary-foreground/50"
+                  required
+                />
+              </div>
+              <div>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  placeholder="Email *"
                   className="w-full px-4 py-3 rounded-lg bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 focus:outline-none focus:border-primary-foreground/50"
                   required
                 />

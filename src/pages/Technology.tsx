@@ -525,12 +525,14 @@ const Technology = () => {
             viewport={{ once: true }}
             className="text-center mb-12"
           >
-            <span className="inline-block px-4 py-2 rounded-full bg-destructive/10 text-destructive text-sm font-medium mb-4">
-              Потому что грязно!!!
-            </span>
-            <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">
+            <h2 className="font-display text-3xl md:text-4xl font-bold mb-6">
               Почему надо чистить воздуховоды?
             </h2>
+            <div className="inline-block px-8 py-4 rounded-2xl bg-destructive/10 border border-destructive/20 mb-6">
+              <span className="text-destructive text-xl md:text-2xl font-bold">
+                Потому что грязно!!!
+              </span>
+            </div>
             <p className="text-muted-foreground text-lg max-w-3xl mx-auto">
               Если бы воздуховоды были бы прозрачными, то не возникало бы вопроса: «Пора их чистить или нет!»
             </p>

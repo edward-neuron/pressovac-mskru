@@ -64,7 +64,7 @@ export const CTASection = () => {
     setIsSubmitting(true);
 
     try {
-      const { error } = await supabase.functions.invoke('send-inquiry', {
+      const { data, error } = await supabase.functions.invoke('send-inquiry', {
         body: {
           type: 'quick-contact',
           name: formData.name.trim(),
@@ -75,7 +75,12 @@ export const CTASection = () => {
       });
 
       if (error) {
-        throw error;
+        const serverMessage = (error as any)?.context?.body?.error;
+        throw new Error(serverMessage || error.message || 'Не удалось отправить заявку');
+      }
+
+      if (data && (data as any).error) {
+        throw new Error((data as any).error);
       }
 
       toast({
@@ -89,7 +94,7 @@ export const CTASection = () => {
       console.error('Error submitting form:', error);
       toast({
         title: 'Ошибка',
-        description: 'Не удалось отправить заявку. Попробуйте позже.',
+        description: (error as any)?.message || 'Не удалось отправить заявку. Попробуйте позже.',
         variant: 'destructive',
       });
     } finally {

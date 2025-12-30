@@ -24,11 +24,12 @@ const escapeHtml = (input: string) =>
     .replaceAll("'", "&#39;");
 
 interface InquiryRequest {
+  type?: string; // e.g. quick-contact, inquiry, callback
   company?: string;
   contactPerson?: string;
   name?: string;
   phone: string;
-  email: string;
+  email?: string;
   businessType?: string;
   experience?: string;
   ventilationTypes?: string[];
@@ -103,19 +104,21 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Turnstile verification passed");
 
+    const typeRaw = (data.type || "").trim();
+
     // Support both contactPerson and name fields
     const contactNameRaw = (data.contactPerson || data.name || "").trim();
     const messageContentRaw = (data.comments || data.message || "").trim();
     const emailRaw = (data.email || "").trim();
     const phoneRaw = (data.phone || "").trim();
-
     const emailSubjectRaw = (data.subject || `Заявка на подбор оборудования от ${contactNameRaw || "клиента"}`)
       .replace(/[\r\n]+/g, " ")
       .trim()
       .slice(0, 200);
 
     // Validate required fields
-    if (!contactNameRaw || !phoneRaw || !emailRaw) {
+    const requiresEmail = typeRaw !== "quick-contact";
+    if (!contactNameRaw || !phoneRaw || (requiresEmail && !emailRaw)) {
       console.error("Validation failed: missing required fields");
       return new Response(
         JSON.stringify({ error: "Заполните обязательные поля" }),
@@ -243,50 +246,57 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Sales email sent successfully:", salesData);
 
-    // Send confirmation email to client
-    const clientEmailHtml = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <h1 style="color: #333; font-size: 24px; margin-bottom: 20px;">
-          Ваше сообщение отправлено компании ООО "ВЕКОНТ-М"
-        </h1>
-        
-        <p style="color: #555; font-size: 16px; line-height: 1.6;">
-          Представитель компании свяжется с вами в ближайшее время.
-        </p>
-        
-        <p style="color: #555; font-size: 16px; line-height: 1.6;">
-          Спасибо за ваш интерес к продукции Pressovac!
-        </p>
-        
-        <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;" />
-        
-        <p style="color: #999; font-size: 12px;">
-          Это автоматическое сообщение. Пожалуйста, не отвечайте на него.
-        </p>
-        
-        <p style="color: #999; font-size: 12px;">
-          С уважением,<br>
-          Команда Pressovac Moscow<br>
-          <a href="https://pressovac-moscow.ru" style="color: #0066cc;">pressovac-moscow.ru</a>
-        </p>
-      </div>
-    `;
+    // Send confirmation email to client (optional: only when email is provided)
+    let clientId: string | undefined;
 
-    const { data: clientData, error: clientError } = await resend.emails.send({
-      from: "Pressovac Moscow <info@pressovac-moscow.ru>",
-      to: [emailRaw],
-      subject: "Ваша заявка получена — Pressovac Moscow",
-      html: clientEmailHtml,
-    });
+    if (emailRaw) {
+      const clientEmailHtml = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h1 style="color: #333; font-size: 24px; margin-bottom: 20px;">
+            Ваше сообщение отправлено компании ООО "ВЕКОНТ-М"
+          </h1>
+          
+          <p style="color: #555; font-size: 16px; line-height: 1.6;">
+            Представитель компании свяжется с вами в ближайшее время.
+          </p>
+          
+          <p style="color: #555; font-size: 16px; line-height: 1.6;">
+            Спасибо за ваш интерес к продукции Pressovac!
+          </p>
+          
+          <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;" />
+          
+          <p style="color: #999; font-size: 12px;">
+            Это автоматическое сообщение. Пожалуйста, не отвечайте на него.
+          </p>
+          
+          <p style="color: #999; font-size: 12px;">
+            С уважением,<br>
+            Команда Pressovac Moscow<br>
+            <a href="https://pressovac-moscow.ru" style="color: #0066cc;">pressovac-moscow.ru</a>
+          </p>
+        </div>
+      `;
 
-    if (clientError) {
-      console.error("Resend client email error:", clientError);
-      throw clientError;
+      const { data: clientData, error: clientError } = await resend.emails.send({
+        from: "Pressovac Moscow <info@pressovac-moscow.ru>",
+        to: [emailRaw],
+        subject: "Ваша заявка получена — Pressovac Moscow",
+        html: clientEmailHtml,
+      });
+
+      if (clientError) {
+        console.error("Resend client email error:", clientError);
+        throw clientError;
+      }
+
+      console.log("Client confirmation email sent successfully:", clientData);
+      clientId = clientData?.id;
+    } else {
+      console.log("Client confirmation email skipped (no email provided)");
     }
 
-    console.log("Client confirmation email sent successfully:", clientData);
-
-    return new Response(JSON.stringify({ success: true, salesId: salesData?.id, clientId: clientData?.id }), {
+    return new Response(JSON.stringify({ success: true, salesId: salesData?.id, clientId }), {
       status: 200,
       headers: { "Content-Type": "application/json", ...corsHeaders },
     });

@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
-import { Play, CheckCircle, ArrowRight, X, Camera, Wind, Flame, Shield, Zap } from 'lucide-react';
+import { Play, CheckCircle, ArrowRight, X, Camera, Wind, Flame, Shield, Zap, AlertTriangle, TrendingDown, Bug, Thermometer, Filter } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
@@ -67,31 +67,37 @@ const YOUTUBE_IDS: Record<string, string> = {
   '35f7188393338728e5c53bb799ba7d2e': 'DaWXXOdHW6o', // VS700 (Автофокус)
 };
 
-const steps = [
-  { 
-    number: '01', 
-    title: 'Диагностика', 
-    description: 'Видеоинспекция воздуховодов для оценки степени загрязнения и определения объёма работ' 
+// Данные для раздела "Почему надо чистить воздуховоды?"
+const whyCleanReasons = [
+  {
+    icon: 'AlertTriangle',
+    title: 'Грязная система не даёт чистый воздух',
+    description: 'Пыль как «овечья шерсть» накапливается внутри каналов. Происходит поглощение летучих органических соединений и вторичный захват обменной пыли.',
   },
-  { 
-    number: '02', 
-    title: 'Подготовка', 
-    description: 'Герметизация системы и установка вакуумного оборудования для сбора загрязнений' 
+  {
+    icon: 'TrendingDown',
+    title: 'Потеря эффективности',
+    description: 'Извлечение воздуха снижается на 5,4% в год, подача — на 1,2%. Потребление энергии растёт на 5% ежегодно.',
   },
-  { 
-    number: '03', 
-    title: 'Механическая очистка', 
-    description: 'Щёточные машины Pressovac удаляют отложения пыли и жира со стенок воздуховодов' 
+  {
+    icon: 'Bug',
+    title: 'Питательная среда для микробов',
+    description: 'Накапливающаяся грязь — идеальные условия для размножения бактерий и грибков. Влажность усугубляет проблему.',
   },
-  { 
-    number: '04', 
-    title: 'Дезинфекция', 
-    description: 'Антибактериальная обработка поверхностей для уничтожения микроорганизмов' 
+  {
+    icon: 'Thermometer',
+    title: 'Затруднённая регулировка',
+    description: 'Система перестаёт отвечать назначению. Если она выполняет функции подогрева или охлаждения — регулировка становится невозможной.',
   },
-  { 
-    number: '05', 
-    title: 'Контроль качества', 
-    description: 'Повторная видеоинспекция для подтверждения качества выполненных работ' 
+  {
+    icon: 'Filter',
+    title: 'Фильтры не спасают',
+    description: 'Даже наличие фильтров не гарантирует защиту от проникновения пыли внутрь системы. Она накапливается годами.',
+  },
+  {
+    icon: 'Wind',
+    title: 'Распространение загрязнений',
+    description: 'Бактерии и грибки из пыли перемещаются в вентилируемые помещения, вызывая широкий спектр негативных последствий для здоровья.',
   },
 ];
 
@@ -510,43 +516,86 @@ const Technology = () => {
         </div>
       </section>
 
-      {/* Steps */}
+      {/* Почему надо чистить воздуховоды? */}
       <section className="section-padding bg-card">
         <div className="container-custom">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="text-center mb-12"
           >
+            <span className="inline-block px-4 py-2 rounded-full bg-destructive/10 text-destructive text-sm font-medium mb-4">
+              Потому что грязно!!!
+            </span>
             <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">
-              Этапы очистки
+              Почему надо чистить воздуховоды?
             </h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Пошаговый процесс профессиональной очистки вентиляционных систем
+            <p className="text-muted-foreground text-lg max-w-3xl mx-auto">
+              Если бы воздуховоды были бы прозрачными, то не возникало бы вопроса: «Пора их чистить или нет!»
             </p>
           </motion.div>
 
-          <div className="space-y-6">
-            {steps.map((step, index) => (
-              <motion.div
-                key={step.number}
-                initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="flex gap-6 items-start"
-              >
-                <div className="w-16 h-16 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center flex-shrink-0">
-                  <span className="font-display font-bold text-xl">{step.number}</span>
-                </div>
-                <div className="bg-background rounded-2xl p-6 border border-border flex-1">
-                  <h3 className="font-display font-semibold text-xl mb-2">{step.title}</h3>
-                  <p className="text-muted-foreground">{step.description}</p>
-                </div>
-              </motion.div>
-            ))}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {whyCleanReasons.map((reason, index) => {
+              const IconComponent = reason.icon === 'AlertTriangle' ? AlertTriangle 
+                : reason.icon === 'TrendingDown' ? TrendingDown 
+                : reason.icon === 'Bug' ? Bug 
+                : reason.icon === 'Thermometer' ? Thermometer 
+                : reason.icon === 'Filter' ? Filter 
+                : Wind;
+              
+              return (
+                <motion.div
+                  key={reason.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  className="group relative bg-background border border-border rounded-2xl p-6 hover:border-destructive/50 hover:shadow-lg transition-all duration-300"
+                >
+                  <div className="w-12 h-12 rounded-xl bg-destructive/10 text-destructive flex items-center justify-center mb-4 group-hover:bg-destructive group-hover:text-destructive-foreground transition-all duration-300">
+                    <IconComponent className="w-6 h-6" />
+                  </div>
+                  <h3 className="font-display font-semibold text-lg mb-2 group-hover:text-destructive transition-colors">
+                    {reason.title}
+                  </h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed">
+                    {reason.description}
+                  </p>
+                </motion.div>
+              );
+            })}
           </div>
+
+          {/* Impact Statistics */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-12 p-8 rounded-2xl bg-destructive/5 border border-destructive/20"
+          >
+            <h3 className="font-display font-semibold text-xl text-center mb-6">
+              Последствия загрязнения каналов
+            </h3>
+            <div className="grid grid-cols-3 gap-4 md:gap-8 max-w-2xl mx-auto text-center">
+              <div>
+                <div className="font-display text-2xl md:text-3xl font-bold text-destructive mb-1">–5,4%</div>
+                <div className="text-xs md:text-sm text-muted-foreground">извлечение воздуха в год</div>
+              </div>
+              <div>
+                <div className="font-display text-2xl md:text-3xl font-bold text-destructive mb-1">+5%</div>
+                <div className="text-xs md:text-sm text-muted-foreground">потребление энергии в год</div>
+              </div>
+              <div>
+                <div className="font-display text-2xl md:text-3xl font-bold text-destructive mb-1">–⅓</div>
+                <div className="text-xs md:text-sm text-muted-foreground">сокращение потока воздуха</div>
+              </div>
+            </div>
+            <p className="text-center text-xs text-muted-foreground mt-4">
+              По данным исследований BSRIA (Великобритания) и Научно-исследовательского института зданий (Дания)
+            </p>
+          </motion.div>
         </div>
       </section>
 

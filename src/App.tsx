@@ -5,9 +5,12 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { LegacyRedirects } from "@/components/LegacyRedirects";
+import { CartProvider } from "@/contexts/CartContext";
 import Index from "./pages/Index";
 import About from "./pages/About";
 import Catalog from "./pages/Catalog";
+import Store from "./pages/Store";
+import Checkout from "./pages/Checkout";
 import Technology from "./pages/Technology";
 import Training from "./pages/Training";
 import Articles from "./pages/Articles";
@@ -23,26 +26,30 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <ScrollToTop />
-        <LegacyRedirects />
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/catalog" element={<Catalog />} />
-          <Route path="/technology" element={<Technology />} />
-          <Route path="/training" element={<Training />} />
-          <Route path="/articles" element={<Articles />} />
-          <Route path="/articles/:slug" element={<ArticlePage />} />
-          <Route path="/contacts" element={<Contacts />} />
-          <Route path="/inquiry" element={<Inquiry />} />
-          <Route path="/delivery" element={<Delivery />} />
-          <Route path="/privacy" element={<Privacy />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <CartProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <ScrollToTop />
+          <LegacyRedirects />
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/catalog" element={<Catalog />} />
+            <Route path="/store" element={<Store />} />
+            <Route path="/store/checkout" element={<Checkout />} />
+            <Route path="/technology" element={<Technology />} />
+            <Route path="/training" element={<Training />} />
+            <Route path="/articles" element={<Articles />} />
+            <Route path="/articles/:slug" element={<ArticlePage />} />
+            <Route path="/contacts" element={<Contacts />} />
+            <Route path="/inquiry" element={<Inquiry />} />
+            <Route path="/delivery" element={<Delivery />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </CartProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );

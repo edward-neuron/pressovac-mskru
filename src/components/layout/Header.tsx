@@ -1,14 +1,16 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Phone, ExternalLink } from 'lucide-react';
+import { Menu, X, Phone, ShoppingCart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useCart } from '@/contexts/CartContext';
 import pressovacLogo from '@/assets/pressovac-logo.png';
 
 const navigation = [
   { name: 'Главная', href: '/' },
   { name: 'О нас', href: '/about' },
   { name: 'Каталог', href: '/catalog' },
+  { name: 'Магазин', href: '/store' },
   { name: 'Технология', href: '/technology' },
   { name: 'Обучение', href: '/training' },
   { name: 'Статьи', href: '/articles' },
@@ -18,6 +20,7 @@ const navigation = [
 export const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const { totalItems } = useCart();
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border">
@@ -62,11 +65,16 @@ export const Header = () => {
               <Phone className="w-4 h-4" />
               <span>(499) 677-2010</span>
             </a>
-            <Button size="sm" asChild>
-              <a href="https://shop-pressovac.ru" target="_blank" rel="noopener noreferrer">
-                <ExternalLink className="w-4 h-4" />
+            <Button size="sm" asChild className="relative">
+              <Link to="/store">
+                <ShoppingCart className="w-4 h-4" />
                 Магазин
-              </a>
+                {totalItems > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-accent text-accent-foreground text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
+                    {totalItems}
+                  </span>
+                )}
+              </Link>
             </Button>
           </div>
 
@@ -112,11 +120,16 @@ export const Header = () => {
                     <span>(499) 677-2010</span>
                   </a>
                   <div className="px-4">
-                    <Button className="w-full" asChild>
-                      <a href="https://shop-pressovac.ru" target="_blank" rel="noopener noreferrer">
-                        <ExternalLink className="w-4 h-4" />
-                        Интернет-магазин
-                      </a>
+                    <Button className="w-full relative" asChild>
+                      <Link to="/store" onClick={() => setIsOpen(false)}>
+                        <ShoppingCart className="w-4 h-4" />
+                        Магазин
+                        {totalItems > 0 && (
+                          <span className="ml-2 bg-accent text-accent-foreground text-xs px-2 py-0.5 rounded-full font-bold">
+                            {totalItems}
+                          </span>
+                        )}
+                      </Link>
                     </Button>
                   </div>
                 </div>

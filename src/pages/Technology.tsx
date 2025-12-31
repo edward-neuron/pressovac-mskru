@@ -255,10 +255,11 @@ const Technology = () => {
                 >
                   {category.videos.map((video, index) => {
                     const youtubeId = YOUTUBE_IDS[video.id];
-                    // Use YouTube thumbnail (more reliable, no CORS issues)
-                    const thumbnailUrl = youtubeId 
+                    // Try YouTube thumbnail first, fallback to RuTube
+                    const youtubeThumbnail = youtubeId 
                       ? `https://img.youtube.com/vi/${youtubeId}/mqdefault.jpg`
                       : null;
+                    const rutubeThumbnail = `https://rutube.ru/api/video/${video.id}/thumbnail/?redirect=1`;
                     
                     return (
                       <motion.div
@@ -274,16 +275,19 @@ const Technology = () => {
                         className="group cursor-pointer"
                       >
                         <div className="relative aspect-video rounded-2xl overflow-hidden bg-gradient-to-br from-primary/20 to-accent/20 mb-3">
-                          {thumbnailUrl && (
-                            <img
-                              src={thumbnailUrl}
-                              alt={video.title}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                              onError={(e) => {
+                          <img
+                            src={youtubeThumbnail || rutubeThumbnail}
+                            alt={video.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            onError={(e) => {
+                              // If YouTube fails, try RuTube
+                              if (youtubeThumbnail && e.currentTarget.src === youtubeThumbnail) {
+                                e.currentTarget.src = rutubeThumbnail;
+                              } else {
                                 e.currentTarget.style.display = 'none';
-                              }}
-                            />
-                          )}
+                              }
+                            }}
+                          />
                           <div className="absolute inset-0 bg-foreground/20 group-hover:bg-foreground/10 transition-colors flex items-center justify-center">
                             <div className="w-14 h-14 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
                               <Play className="w-6 h-6 ml-0.5" />

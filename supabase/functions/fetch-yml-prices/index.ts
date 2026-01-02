@@ -37,18 +37,22 @@ function parseYmlCategories(xmlText: string): YmlCategory[] {
   const categories: YmlCategory[] = [];
   
   // Parse categories section
-  const categoriesMatch = xmlText.match(/<categories>([\s\S]*?)<\/categories>/);
+  const categoriesMatch = xmlText.match(/<categories>([\s\S]*?)<\/categories>/i);
   if (!categoriesMatch) return categories;
   
   const categoriesContent = categoriesMatch[1];
-  const categoryRegex = /<category\s+id="(\d+)"(?:\s+parentId="(\d+)")?[^>]*>(.*?)<\/category>/gi;
-  let match;
-  let sortOrder = 0;
   
-  while ((match = categoryRegex.exec(categoriesContent)) !== null) {
+  // Use a simpler approach - find all category tags sequentially
+  const allCategoryMatches = categoriesContent.matchAll(/<category\s+id="(\d+)"(?:\s+parentid="(\d+)")?[^>]*>([^<]*)<\/category>/gi);
+  
+  let sortOrder = 0;
+  for (const match of allCategoryMatches) {
     const id = match[1];
     const parentId = match[2] || undefined;
     const name = match[3].trim();
+    
+    // Skip root category (id="0")
+    if (id === "0") continue;
     
     categories.push({
       id,
@@ -65,42 +69,43 @@ function parseYmlProducts(xmlText: string): YmlProduct[] {
   const products: YmlProduct[] = [];
   
   // Parse offers section
-  const offersMatch = xmlText.match(/<offers>([\s\S]*?)<\/offers>/);
+  const offersMatch = xmlText.match(/<offers>([\s\S]*?)<\/offers>/i);
   if (!offersMatch) return products;
   
   const offersContent = offersMatch[1];
-  const offerRegex = /<offer\s+id="(\d+)"[^>]*available="true"[^>]*>([\s\S]*?)<\/offer>/gi;
-  let match;
-  let sortOrder = 0;
   
-  while ((match = offerRegex.exec(offersContent)) !== null) {
+  // Match offers sequentially to preserve order
+  const allOfferMatches = offersContent.matchAll(/<offer\s+id="(\d+)"[^>]*available="true"[^>]*>([\s\S]*?)<\/offer>/gi);
+  
+  let sortOrder = 0;
+  for (const match of allOfferMatches) {
     const offerId = match[1];
     const offerContent = match[2];
     
     // Extract price
-    const priceMatch = offerContent.match(/<price>(\d+(?:\.\d+)?)<\/price>/);
+    const priceMatch = offerContent.match(/<price>(\d+(?:\.\d+)?)<\/price>/i);
     const priceNum = priceMatch ? parseFloat(priceMatch[1]) : 0;
     
     // Extract name
-    const nameMatch = offerContent.match(/<name><!\[CDATA\[(.*?)\]\]><\/name>/) || 
-                      offerContent.match(/<name>(.*?)<\/name>/);
+    const nameMatch = offerContent.match(/<name><!\[CDATA\[(.*?)\]\]><\/name>/i) || 
+                      offerContent.match(/<name>([^<]*)<\/name>/i);
     const name = nameMatch ? nameMatch[1] : null;
     
     // Extract URL
-    const urlMatch = offerContent.match(/<url>(.*?)<\/url>/);
+    const urlMatch = offerContent.match(/<url>([^<]*)<\/url>/i);
     const url = urlMatch ? urlMatch[1] : null;
     
     // Extract vendorCode
-    const vendorCodeMatch = offerContent.match(/<vendorCode><!\[CDATA\[(.*?)\]\]><\/vendorCode>/) ||
-                            offerContent.match(/<vendorCode>(.*?)<\/vendorCode>/);
+    const vendorCodeMatch = offerContent.match(/<vendorCode><!\[CDATA\[(.*?)\]\]><\/vendorCode>/i) ||
+                            offerContent.match(/<vendorCode>([^<]*)<\/vendorCode>/i);
     const vendorCode = vendorCodeMatch ? vendorCodeMatch[1].trim() : undefined;
     
-    // Extract picture
-    const pictureMatch = offerContent.match(/<picture>(.*?)<\/picture>/);
+    // Extract first picture only
+    const pictureMatch = offerContent.match(/<picture>([^<]*)<\/picture>/i);
     const picture = pictureMatch ? pictureMatch[1] : undefined;
     
     // Extract categoryId
-    const categoryIdMatch = offerContent.match(/<categoryId>(\d+)<\/categoryId>/);
+    const categoryIdMatch = offerContent.match(/<categoryid>(\d+)<\/categoryid>/i);
     const categoryId = categoryIdMatch ? categoryIdMatch[1] : undefined;
     
     if (priceNum > 0 && name && url) {

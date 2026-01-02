@@ -19,7 +19,7 @@ const formatPrice = (price: number): string => {
 };
 
 const Store = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [categoryHistory, setCategoryHistory] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const { totalItems, totalPrice, addItem, items } = useCart();
   const { 
@@ -34,10 +34,22 @@ const Store = () => {
     categories 
   } = useYmlStore();
 
+  const selectedCategory = categoryHistory.length > 0 ? categoryHistory[categoryHistory.length - 1] : null;
   const rootCategories = getRootCategories();
   const currentCategory = categories.find(c => c.id === selectedCategory);
   const subcategories = selectedCategory ? getSubcategories(selectedCategory) : [];
   
+  const navigateToCategory = (categoryId: string) => {
+    setCategoryHistory(prev => [...prev, categoryId]);
+  };
+
+  const navigateBack = () => {
+    setCategoryHistory(prev => prev.slice(0, -1));
+  };
+
+  const navigateToRoot = () => {
+    setCategoryHistory([]);
+  };
   const filteredProducts = searchQuery 
     ? searchProducts(searchQuery)
     : selectedCategory 
@@ -140,8 +152,8 @@ const Store = () => {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                 >
-                  <h2 className="text-2xl font-bold mb-6">Категории</h2>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                  <h2 className="text-2xl font-bold mb-6">Оборудование и аксессуары</h2>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
                     {rootCategories.map((category, index) => {
                       const productCount = getProductsCount(category.id);
                       const categoryImage = getCategoryImage(category.id);
@@ -152,29 +164,25 @@ const Store = () => {
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: index * 0.03 }}
-                          onClick={() => setSelectedCategory(category.id)}
-                          className="group relative bg-card rounded-xl border border-border/50 overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300 text-left"
+                          onClick={() => navigateToCategory(category.id)}
+                          className="group relative bg-card rounded-lg border border-border/50 overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300 text-left"
                         >
-                          <div className="aspect-square bg-gradient-to-br from-primary/10 to-accent/10 relative overflow-hidden">
+                          <div className="aspect-square bg-white relative overflow-hidden p-2">
                             {categoryImage && (
                               <img 
                                 src={categoryImage} 
                                 alt={category.name}
-                                className="absolute inset-0 w-full h-full object-cover"
+                                className="w-full h-full object-contain"
                               />
                             )}
-                            <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/50 to-transparent" />
-                            <div className="absolute bottom-2 left-2 right-2">
-                              <h3 className="text-sm font-semibold text-foreground leading-tight line-clamp-2">
-                                {category.name}
-                              </h3>
-                            </div>
                           </div>
-                          <div className="px-2 py-2 flex items-center justify-between">
-                            <span className="text-xs text-primary font-medium">
-                              {productCount} {productCount === 1 ? 'товар' : productCount < 5 ? 'товара' : 'товаров'}
+                          <div className="px-2 py-2 border-t border-border/30">
+                            <h3 className="text-xs font-medium text-primary leading-tight line-clamp-2 min-h-[2rem] hover:underline">
+                              {category.name}
+                            </h3>
+                            <span className="text-xs text-muted-foreground">
+                              {productCount}
                             </span>
-                            <ChevronRight className="w-4 h-4 text-primary group-hover:translate-x-0.5 transition-transform" />
                           </div>
                         </motion.button>
                       );
@@ -192,14 +200,24 @@ const Store = () => {
                   {/* Back button & Category title */}
                   {selectedCategory && !searchQuery && (
                     <>
-                      <div className="flex items-center gap-4 mb-6">
+                      <div className="flex items-center gap-2 mb-6">
+                        {categoryHistory.length > 1 && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={navigateBack}
+                            className="text-foreground"
+                          >
+                            <ArrowLeft className="w-4 h-4 mr-2" />
+                            Назад
+                          </Button>
+                        )}
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => setSelectedCategory(null)}
+                          onClick={navigateToRoot}
                           className="text-muted-foreground hover:text-foreground"
                         >
-                          <ArrowLeft className="w-4 h-4 mr-2" />
                           Все категории
                         </Button>
                       </div>
@@ -221,7 +239,7 @@ const Store = () => {
                               key={sub.id}
                               variant="outline"
                               size="sm"
-                              onClick={() => setSelectedCategory(sub.id)}
+                              onClick={() => navigateToCategory(sub.id)}
                               className="text-sm"
                             >
                               {sub.name}
@@ -241,7 +259,7 @@ const Store = () => {
                         <Button
                           variant="link"
                           size="sm"
-                          onClick={() => setSelectedCategory(null)}
+                          onClick={navigateToRoot}
                           className="text-primary p-0 h-auto mt-2"
                         >
                           <ArrowLeft className="w-4 h-4 mr-1" />

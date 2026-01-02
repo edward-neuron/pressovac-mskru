@@ -26,6 +26,43 @@ import { useSortOrder } from '@/hooks/useSortOrder';
 import { ShoppingCart, ArrowLeft, Search, Loader2, Settings, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 
+// Import category images
+import category1 from '@/assets/store/category-1.webp';
+import category2 from '@/assets/store/category-2.webp';
+import category3 from '@/assets/store/category-3.webp';
+import category4 from '@/assets/store/category-4.webp';
+import category5 from '@/assets/store/category-5.webp';
+import category6 from '@/assets/store/category-6.webp';
+import category7 from '@/assets/store/category-7.webp';
+import category8 from '@/assets/store/category-8.webp';
+import category9 from '@/assets/store/category-9.webp';
+import category10 from '@/assets/store/category-10.webp';
+import category11 from '@/assets/store/category-11.webp';
+import category12 from '@/assets/store/category-12.webp';
+import category13 from '@/assets/store/category-13.webp';
+
+// Mapping of category names to custom images
+const categoryImageMap: Record<string, string> = {
+  'Готовые комплекты оборудования': category1,
+  'Машины для сухой очистки и дезинфекции': category2,
+  'Машины с маркировкой взрывозащиты ATEX': category3,
+  'Машины для мойки и удаления жира': category4,
+  'Оборудование для дезинфекции': category5,
+  'Вакуумные Всасывающие установки': category6,
+  'Фильтро-Вакуумные Установки SFU': category7,
+  'Фильтрующие установки FU': category8,
+  'Гибкие вращающиеся валы Pressovac': category9,
+  'Чистящие щётки Pressovac': category10,
+  'Аксессуары к воздуховодам': category11,
+  'Видео-инспекционное оборудование': category12,
+  'Компрессоры': category13,
+};
+
+// Helper function to get custom category image
+const getCustomCategoryImage = (categoryName: string): string | undefined => {
+  return categoryImageMap[categoryName];
+};
+
 const formatPrice = (price: number): string => {
   return new Intl.NumberFormat('ru-RU', {
     style: 'currency',
@@ -402,7 +439,7 @@ const Store = () => {
                           <SortableItem key={category.id} id={category.id} isEditMode={isEditMode}>
                             <CategoryCard
                               category={category}
-                              image={getCategoryImage(category.id)}
+                              image={getCustomCategoryImage(category.name) || getCategoryImage(category.id)}
                               productCount={getProductsCount(category.id)}
                               onClick={() => !isEditMode && navigateToCategory(category.id)}
                               index={index}

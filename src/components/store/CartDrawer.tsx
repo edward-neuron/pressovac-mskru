@@ -129,8 +129,8 @@ export const CartDrawer = ({ children }: CartDrawerProps) => {
               <span className="text-muted-foreground">Итого:</span>
               <span className="text-2xl font-bold">{formatPrice(totalPrice)}</span>
             </div>
-            <p className="text-xs text-muted-foreground">
-              * Цены ориентировочные. Точную стоимость уточняйте у менеджера.
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Цены условно актуальные, включают НДС 22%. После оформления заказа, вы получите точный расчет. Детали уточняйте у консультанта.
             </p>
             <Link to="/store/checkout" className="block">
               <Button className="w-full" size="lg">

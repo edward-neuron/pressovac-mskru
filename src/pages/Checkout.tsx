@@ -293,8 +293,8 @@ const Checkout = () => {
                       {formatPrice(totalPrice)}
                     </span>
                   </div>
-                  <p className="text-xs text-muted-foreground mt-2">
-                    * Цены ориентировочные. Точную стоимость и условия доставки уточняйте у менеджера.
+                  <p className="text-xs text-muted-foreground mt-3 leading-relaxed">
+                    Цены условно актуальные, включают НДС 22%. После оформления заказа, вы получите точный расчет. Детали уточняйте у консультанта.
                   </p>
                 </div>
               </motion.div>

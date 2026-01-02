@@ -1,12 +1,29 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  DndContext, 
+  closestCenter, 
+  KeyboardSensor, 
+  PointerSensor, 
+  useSensor, 
+  useSensors,
+  DragEndEvent 
+} from '@dnd-kit/core';
+import { 
+  arrayMove, 
+  SortableContext, 
+  sortableKeyboardCoordinates,
+  rectSortingStrategy 
+} from '@dnd-kit/sortable';
 import { Layout } from '@/components/layout/Layout';
 import { SEOHead } from '@/components/seo/SEOHead';
 import { Button } from '@/components/ui/button';
 import { CartDrawer } from '@/components/store/CartDrawer';
+import { SortableItem } from '@/components/store/SortableItem';
 import { useCart } from '@/contexts/CartContext';
 import { useYmlStore, YmlProduct, YmlCategory } from '@/hooks/useYmlStore';
-import { ShoppingCart, ArrowLeft, Search, Loader2 } from 'lucide-react';
+import { useSortOrder } from '@/hooks/useSortOrder';
+import { ShoppingCart, ArrowLeft, Search, Loader2, Settings, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 
 const formatPrice = (price: number): string => {
@@ -32,7 +49,7 @@ const CategoryCard = ({ category, image, productCount, onClick, index }: Categor
     animate={{ opacity: 1, y: 0 }}
     transition={{ delay: index * 0.03 }}
     onClick={onClick}
-    className="group relative bg-card rounded-lg border border-border/50 overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300 text-left"
+    className="group relative bg-card rounded-lg border border-border/50 overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300 text-left w-full"
   >
     <div className="aspect-square bg-white relative overflow-hidden p-2">
       {image ? (
@@ -73,21 +90,62 @@ const Store = () => {
     searchProducts,
     categories 
   } = useYmlStore();
+  
+  const {
+    isEditMode,
+    toggleEditMode,
+    getCategorySortOrder,
+    getProductSortOrder,
+    reorderCategories,
+    reorderProducts,
+    resetOrder
+  } = useSortOrder();
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   const selectedCategory = categoryHistory.length > 0 ? categoryHistory[categoryHistory.length - 1] : null;
-  const rootCategories = getRootCategories();
   const currentCategory = categories.find(c => c.id === selectedCategory);
-  const subcategories = selectedCategory ? getSubcategories(selectedCategory) : [];
   
-  // Determine what to show: subcategories as cards OR products
+  // Get and sort root categories
+  const rootCategories = useMemo(() => {
+    return getRootCategories()
+      .map(cat => ({ ...cat, customOrder: getCategorySortOrder(cat.id, cat.sortOrder) }))
+      .sort((a, b) => a.customOrder - b.customOrder);
+  }, [getRootCategories, getCategorySortOrder]);
+
+  // Get and sort subcategories
+  const subcategories = useMemo(() => {
+    if (!selectedCategory) return [];
+    return getSubcategories(selectedCategory)
+      .map(cat => ({ ...cat, customOrder: getCategorySortOrder(cat.id, cat.sortOrder) }))
+      .sort((a, b) => a.customOrder - b.customOrder);
+  }, [selectedCategory, getSubcategories, getCategorySortOrder]);
+  
   const hasSubcategories = subcategories.length > 0;
   
-  // Only get products if we're at a leaf category (no subcategories)
-  const productsToShow = searchQuery 
-    ? searchProducts(searchQuery)
-    : (selectedCategory && !hasSubcategories) 
-      ? getProductsByCategory(selectedCategory)
-      : [];
+  // Get and sort products
+  const productsToShow = useMemo(() => {
+    if (searchQuery) {
+      return searchProducts(searchQuery)
+        .map(prod => ({ ...prod, customOrder: getProductSortOrder(prod.id, prod.sortOrder) }))
+        .sort((a, b) => a.customOrder - b.customOrder);
+    }
+    if (selectedCategory && !hasSubcategories) {
+      return getProductsByCategory(selectedCategory)
+        .map(prod => ({ ...prod, customOrder: getProductSortOrder(prod.id, prod.sortOrder) }))
+        .sort((a, b) => a.customOrder - b.customOrder);
+    }
+    return [];
+  }, [searchQuery, selectedCategory, hasSubcategories, searchProducts, getProductsByCategory, getProductSortOrder]);
 
   const navigateToCategory = (categoryId: string) => {
     setCategoryHistory(prev => [...prev, categoryId]);
@@ -116,6 +174,26 @@ const Store = () => {
     return items.find(item => item.id === productId)?.quantity || 0;
   };
 
+  const handleDragEndCategories = (event: DragEndEvent, categoryList: YmlCategory[]) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const oldIndex = categoryList.findIndex(c => c.id === active.id);
+      const newIndex = categoryList.findIndex(c => c.id === over.id);
+      const newOrder = arrayMove(categoryList, oldIndex, newIndex);
+      reorderCategories(newOrder.map(c => c.id));
+    }
+  };
+
+  const handleDragEndProducts = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const oldIndex = productsToShow.findIndex(p => p.id === active.id);
+      const newIndex = productsToShow.findIndex(p => p.id === over.id);
+      const newOrder = arrayMove(productsToShow, oldIndex, newIndex);
+      reorderProducts(newOrder.map(p => p.id));
+    }
+  };
+
   return (
     <Layout>
       <SEOHead 
@@ -139,40 +217,75 @@ const Store = () => {
               </p>
             </div>
 
-            {/* Cart Button */}
-            <CartDrawer>
-              <Button 
-                variant="outline" 
-                size="lg"
-                className="relative border-primary/30 hover:bg-primary/5"
+            <div className="flex items-center gap-3">
+              {/* Edit Mode Toggle */}
+              <Button
+                variant={isEditMode ? "default" : "outline"}
+                size="sm"
+                onClick={toggleEditMode}
+                className={isEditMode ? "bg-orange-500 hover:bg-orange-600" : ""}
               >
-                <ShoppingCart className="w-5 h-5 mr-2" />
-                {totalItems > 0 ? (
-                  <>
-                    <span className="font-semibold">{formatPrice(totalPrice)}</span>
-                    <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs w-6 h-6 rounded-full flex items-center justify-center font-bold">
-                      {totalItems}
-                    </span>
-                  </>
-                ) : (
-                  <span>Корзина пуста</span>
-                )}
+                {isEditMode ? <X className="w-4 h-4 mr-2" /> : <Settings className="w-4 h-4 mr-2" />}
+                {isEditMode ? "Завершить" : "Сортировка"}
               </Button>
-            </CartDrawer>
-          </div>
+              
+              {isEditMode && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={resetOrder}
+                  className="text-muted-foreground"
+                >
+                  Сбросить
+                </Button>
+              )}
 
-          {/* Search */}
-          <div className="mt-8 max-w-md">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-              <Input
-                placeholder="Поиск по названию или артикулу..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 bg-background"
-              />
+              {/* Cart Button */}
+              <CartDrawer>
+                <Button 
+                  variant="outline" 
+                  size="lg"
+                  className="relative border-primary/30 hover:bg-primary/5"
+                >
+                  <ShoppingCart className="w-5 h-5 mr-2" />
+                  {totalItems > 0 ? (
+                    <>
+                      <span className="font-semibold">{formatPrice(totalPrice)}</span>
+                      <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs w-6 h-6 rounded-full flex items-center justify-center font-bold">
+                        {totalItems}
+                      </span>
+                    </>
+                  ) : (
+                    <span>Корзина пуста</span>
+                  )}
+                </Button>
+              </CartDrawer>
             </div>
           </div>
+
+          {/* Edit Mode Hint */}
+          {isEditMode && (
+            <div className="mt-4 p-3 bg-orange-500/10 border border-orange-500/30 rounded-lg">
+              <p className="text-sm text-orange-700 dark:text-orange-300">
+                Режим сортировки: перетаскивайте карточки за иконку ⋮⋮ для изменения порядка. Изменения сохраняются автоматически.
+              </p>
+            </div>
+          )}
+
+          {/* Search */}
+          {!isEditMode && (
+            <div className="mt-8 max-w-md">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <Input
+                  placeholder="Поиск по названию или артикулу..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 bg-background"
+                />
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
@@ -273,28 +386,36 @@ const Store = () => {
                   exit={{ opacity: 0 }}
                 >
                   <h2 className="text-2xl font-bold mb-6">Оборудование и аксессуары</h2>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
-                    {rootCategories.map((category, index) => (
-                      <CategoryCard
-                        key={category.id}
-                        category={category}
-                        image={getCategoryImage(category.id)}
-                        productCount={getProductsCount(category.id)}
-                        onClick={() => navigateToCategory(category.id)}
-                        index={index}
-                      />
-                    ))}
-                  </div>
+                  <DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
+                    onDragEnd={(e) => handleDragEndCategories(e, rootCategories)}
+                  >
+                    <SortableContext items={rootCategories.map(c => c.id)} strategy={rectSortingStrategy}>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+                        {rootCategories.map((category, index) => (
+                          <SortableItem key={category.id} id={category.id} isEditMode={isEditMode}>
+                            <CategoryCard
+                              category={category}
+                              image={getCategoryImage(category.id)}
+                              productCount={getProductsCount(category.id)}
+                              onClick={() => !isEditMode && navigateToCategory(category.id)}
+                              index={index}
+                            />
+                          </SortableItem>
+                        ))}
+                      </div>
+                    </SortableContext>
+                  </DndContext>
                 </motion.div>
               ) : hasSubcategories ? (
-                /* Subcategories Grid - show subcategories as cards, NOT products */
+                /* Subcategories Grid */
                 <motion.div
                   key={`subcats-${selectedCategory}`}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                 >
-                  {/* Navigation */}
                   <div className="flex items-center gap-2 mb-6">
                     <Button
                       variant="outline"
@@ -317,28 +438,36 @@ const Store = () => {
 
                   <h2 className="text-2xl font-bold mb-6">{currentCategory?.name}</h2>
                   
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
-                    {subcategories.map((subcategory, index) => (
-                      <CategoryCard
-                        key={subcategory.id}
-                        category={subcategory}
-                        image={getCategoryImage(subcategory.id)}
-                        productCount={getProductsCount(subcategory.id)}
-                        onClick={() => navigateToCategory(subcategory.id)}
-                        index={index}
-                      />
-                    ))}
-                  </div>
+                  <DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
+                    onDragEnd={(e) => handleDragEndCategories(e, subcategories)}
+                  >
+                    <SortableContext items={subcategories.map(c => c.id)} strategy={rectSortingStrategy}>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+                        {subcategories.map((subcategory, index) => (
+                          <SortableItem key={subcategory.id} id={subcategory.id} isEditMode={isEditMode}>
+                            <CategoryCard
+                              category={subcategory}
+                              image={getCategoryImage(subcategory.id)}
+                              productCount={getProductsCount(subcategory.id)}
+                              onClick={() => !isEditMode && navigateToCategory(subcategory.id)}
+                              index={index}
+                            />
+                          </SortableItem>
+                        ))}
+                      </div>
+                    </SortableContext>
+                  </DndContext>
                 </motion.div>
               ) : (
-                /* Products Grid - only when NO subcategories */
+                /* Products Grid */
                 <motion.div
                   key={`products-${selectedCategory}`}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                 >
-                  {/* Navigation */}
                   <div className="flex items-center gap-2 mb-6">
                     <Button
                       variant="outline"
@@ -367,48 +496,58 @@ const Store = () => {
                   </div>
 
                   {productsToShow.length > 0 ? (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                      {productsToShow.map((product, index) => {
-                        const cartQty = getCartQuantity(product.id);
-                        return (
-                          <motion.div
-                            key={product.id}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.02 }}
-                            className="group bg-card rounded-xl border border-border/50 overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300"
-                          >
-                            <div className="aspect-square bg-white relative overflow-hidden">
-                              {product.picture ? (
-                                <img 
-                                  src={product.picture} 
-                                  alt={product.name}
-                                  className="w-full h-full object-contain p-2"
-                                  loading="lazy"
-                                />
-                              ) : (
-                                <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                                  <ShoppingCart className="w-12 h-12 opacity-20" />
-                                </div>
-                              )}
-                            </div>
-                            <div className="p-3 space-y-2">
-                              <div className="text-lg font-bold text-primary">{product.price}</div>
-                              <h3 className="text-sm font-medium text-foreground line-clamp-2 leading-tight min-h-[2.5rem]">
-                                {product.name}
-                              </h3>
-                              <Button
-                                onClick={() => handleAddToCart(product)}
-                                size="sm"
-                                className={`w-full transition-all duration-300 ${cartQty > 0 ? 'bg-green-600 hover:bg-green-700' : ''}`}
-                              >
-                                {cartQty > 0 ? `В корзине (${cartQty})` : 'Купить'}
-                              </Button>
-                            </div>
-                          </motion.div>
-                        );
-                      })}
-                    </div>
+                    <DndContext
+                      sensors={sensors}
+                      collisionDetection={closestCenter}
+                      onDragEnd={handleDragEndProducts}
+                    >
+                      <SortableContext items={productsToShow.map(p => p.id)} strategy={rectSortingStrategy}>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                          {productsToShow.map((product, index) => {
+                            const cartQty = getCartQuantity(product.id);
+                            return (
+                              <SortableItem key={product.id} id={product.id} isEditMode={isEditMode}>
+                                <motion.div
+                                  initial={{ opacity: 0, y: 20 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{ delay: index * 0.02 }}
+                                  className="group bg-card rounded-xl border border-border/50 overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300"
+                                >
+                                  <div className="aspect-square bg-white relative overflow-hidden">
+                                    {product.picture ? (
+                                      <img 
+                                        src={product.picture} 
+                                        alt={product.name}
+                                        className="w-full h-full object-contain p-2"
+                                        loading="lazy"
+                                      />
+                                    ) : (
+                                      <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                                        <ShoppingCart className="w-12 h-12 opacity-20" />
+                                      </div>
+                                    )}
+                                  </div>
+                                  <div className="p-3 space-y-2">
+                                    <div className="text-lg font-bold text-primary">{product.price}</div>
+                                    <h3 className="text-sm font-medium text-foreground line-clamp-2 leading-tight min-h-[2.5rem]">
+                                      {product.name}
+                                    </h3>
+                                    <Button
+                                      onClick={() => !isEditMode && handleAddToCart(product)}
+                                      size="sm"
+                                      className={`w-full transition-all duration-300 ${cartQty > 0 ? 'bg-green-600 hover:bg-green-700' : ''}`}
+                                      disabled={isEditMode}
+                                    >
+                                      {cartQty > 0 ? `В корзине (${cartQty})` : 'Купить'}
+                                    </Button>
+                                  </div>
+                                </motion.div>
+                              </SortableItem>
+                            );
+                          })}
+                        </div>
+                      </SortableContext>
+                    </DndContext>
                   ) : (
                     <div className="text-center py-12">
                       <p className="text-muted-foreground">Товары не найдены</p>
@@ -422,7 +561,7 @@ const Store = () => {
       </section>
 
       {/* Floating Cart Button (Mobile) */}
-      {totalItems > 0 && (
+      {totalItems > 0 && !isEditMode && (
         <CartDrawer>
           <motion.div
             initial={{ y: 100, opacity: 0 }}

@@ -100,27 +100,40 @@ export function useYmlStore() {
       .sort((a, b) => a.sortOrder - b.sortOrder);
   };
 
-  // Get products for a category (including subcategories)
-  const getProductsByCategory = (categoryId: string) => {
-    const subcategoryIds = state.categories
-      .filter(c => c.parentId === categoryId)
-      .map(c => c.id);
+  // Get products directly in a category (not subcategories)
+  const getProductsByCategory = (categoryId: string): YmlProduct[] => {
+    return state.products
+      .filter(p => p.categoryId === categoryId)
+      .sort((a, b) => a.sortOrder - b.sortOrder);
+  };
+
+  // Get all products for a category including all nested subcategories (for counting)
+  const getAllProductsByCategory = (categoryId: string): YmlProduct[] => {
+    const getAllChildCategoryIds = (parentId: string): string[] => {
+      const children = state.categories.filter(c => c.parentId === parentId);
+      const ids: string[] = [];
+      for (const child of children) {
+        ids.push(child.id);
+        ids.push(...getAllChildCategoryIds(child.id));
+      }
+      return ids;
+    };
     
-    const allCategoryIds = [categoryId, ...subcategoryIds];
+    const allCategoryIds = [categoryId, ...getAllChildCategoryIds(categoryId)];
     
     return state.products
       .filter(p => p.categoryId && allCategoryIds.includes(p.categoryId))
       .sort((a, b) => a.sortOrder - b.sortOrder);
   };
 
-  // Get products count for a category (including subcategories)
+  // Get products count for a category (including all nested subcategories)
   const getProductsCount = (categoryId: string): number => {
-    return getProductsByCategory(categoryId).length;
+    return getAllProductsByCategory(categoryId).length;
   };
 
-  // Get category image (first product's image)
+  // Get category image (first product's image from all nested products)
   const getCategoryImage = (categoryId: string): string | undefined => {
-    const products = getProductsByCategory(categoryId);
+    const products = getAllProductsByCategory(categoryId);
     return products[0]?.picture;
   };
 
@@ -140,6 +153,7 @@ export function useYmlStore() {
     getRootCategories,
     getSubcategories,
     getProductsByCategory,
+    getAllProductsByCategory,
     getProductsCount,
     getCategoryImage,
     searchProducts

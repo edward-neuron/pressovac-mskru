@@ -67,6 +67,7 @@ function parseYmlCategories(xmlText: string): YmlCategory[] {
 
 function parseYmlProducts(xmlText: string): YmlProduct[] {
   const products: YmlProduct[] = [];
+  const seenVendorCodes = new Set<string>();
   
   // Parse offers section
   const offersMatch = xmlText.match(/<offers>([\s\S]*?)<\/offers>/i);
@@ -107,6 +108,14 @@ function parseYmlProducts(xmlText: string): YmlProduct[] {
     // Extract categoryId
     const categoryIdMatch = offerContent.match(/<categoryid>(\d+)<\/categoryid>/i);
     const categoryId = categoryIdMatch ? categoryIdMatch[1] : undefined;
+    
+    // Skip duplicates by vendorCode
+    if (vendorCode && seenVendorCodes.has(vendorCode)) {
+      continue;
+    }
+    if (vendorCode) {
+      seenVendorCodes.add(vendorCode);
+    }
     
     if (priceNum > 0 && name && url) {
       products.push({

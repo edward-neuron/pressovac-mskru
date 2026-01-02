@@ -32,6 +32,7 @@ export const storeCategories: StoreCategory[] = [
       { id: 'portable', name: 'Переносные' },
       { id: 'mobile', name: 'Мобильные' },
       { id: 'filter', name: 'С фильтрацией' },
+      { id: 'vacuum-accessories', name: 'Аксессуары для вакуумных установок' },
     ]
   },
   {
@@ -42,6 +43,7 @@ export const storeCategories: StoreCategory[] = [
     subcategories: [
       { id: 'electric', name: 'Электрические' },
       { id: 'pneumatic', name: 'Пневматические' },
+      { id: 'brush-accessories', name: 'Аксессуары для щёточных машин' },
     ]
   },
   {
@@ -49,18 +51,45 @@ export const storeCategories: StoreCategory[] = [
     name: 'Видеоинспекция',
     description: 'Камеры и оборудование для диагностики',
     image: '/placeholder.svg',
+    subcategories: [
+      { id: 'video-systems', name: 'Видеосистемы' },
+      { id: 'video-accessories', name: 'Аксессуары для видеоинспекции' },
+    ]
   },
   {
     id: 'disinfection',
     name: 'Дезинфекция',
     description: 'Баки, насадки и оборудование для обработки',
     image: '/placeholder.svg',
+    subcategories: [
+      { id: 'tanks', name: 'Баки' },
+      { id: 'nozzles', name: 'Насадки' },
+      { id: 'disinfection-accessories', name: 'Аксессуары для дезинфекции' },
+    ]
+  },
+  {
+    id: 'kits',
+    name: 'Готовые комплекты оборудования',
+    description: 'Полные комплекты для различных типов очистки',
+    image: '/placeholder.svg',
+    subcategories: [
+      { id: 'dry-cleaning-kits', name: 'Комплекты для сухой очистки' },
+      { id: 'grease-removal-kits', name: 'Комплекты для удаления жира' },
+      { id: 'universal-kits', name: 'Универсальные комплекты' },
+      { id: 'atex-kits', name: 'Комплекты с взрывозащитой' },
+    ]
   },
   {
     id: 'accessories',
     name: 'Аксессуары',
     description: 'Шланги, насадки, адаптеры и расходники',
     image: '/placeholder.svg',
+    subcategories: [
+      { id: 'hoses', name: 'Шланги и рукава' },
+      { id: 'brushes', name: 'Щётки' },
+      { id: 'adapters', name: 'Адаптеры и переходники' },
+      { id: 'consumables', name: 'Расходные материалы' },
+    ]
   },
 ];
 

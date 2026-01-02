@@ -65,12 +65,12 @@ export const Header = () => {
             </a>
             <Link 
               to="/store" 
-              className="relative p-2 rounded-lg hover:bg-muted transition-colors"
-              aria-label="Корзина"
+              className="relative flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium"
             >
-              <ShoppingCart className="w-6 h-6 text-foreground" />
+              <ShoppingCart className="w-5 h-5" />
+              <span>Магазин</span>
               {totalItems > 0 && (
-                <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
+                <span className="bg-primary-foreground text-primary text-xs px-2 py-0.5 rounded-full font-bold ml-1">
                   {totalItems}
                 </span>
               )}
@@ -125,9 +125,9 @@ export const Header = () => {
                       className="flex items-center justify-center gap-2 w-full py-3 rounded-lg bg-primary text-primary-foreground font-medium"
                     >
                       <ShoppingCart className="w-5 h-5" />
-                      <span>Корзина</span>
+                      <span>Магазин</span>
                       {totalItems > 0 && (
-                        <span className="bg-background text-foreground text-xs px-2 py-0.5 rounded-full font-bold">
+                        <span className="bg-primary-foreground text-primary text-xs px-2 py-0.5 rounded-full font-bold">
                           {totalItems}
                         </span>
                       )}

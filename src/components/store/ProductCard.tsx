@@ -56,80 +56,43 @@ export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
       </div>
 
       {/* Content */}
-      <div className="p-4 space-y-3">
-        {/* Article */}
-        {product.article && (
-          <span className="text-xs text-muted-foreground font-mono">
-            Арт. {product.article}
-          </span>
-        )}
+      <div className="p-4 space-y-2">
+        {/* Price */}
+        <div className="text-xl font-bold text-primary">
+          {formatPrice(product.price)}
+        </div>
 
         {/* Name */}
-        <h3 className="font-semibold text-foreground line-clamp-2 group-hover:text-primary transition-colors">
+        <h3 className="text-sm font-medium text-foreground line-clamp-2 leading-tight">
           {product.name}
         </h3>
 
-        {/* Description */}
-        <p className="text-sm text-muted-foreground line-clamp-2">
-          {product.description}
-        </p>
-
-        {/* Features */}
-        {product.features && product.features.length > 0 && (
-          <div className="flex flex-wrap gap-1">
-            {product.features.slice(0, 2).map((feature, i) => (
-              <span
-                key={i}
-                className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full"
-              >
-                {feature}
-              </span>
-            ))}
-          </div>
-        )}
-
-        {/* Price & Button */}
-        <div className="flex items-end justify-between pt-2 border-t border-border/50">
-          <div>
-            <div className="text-xl font-bold text-foreground">
-              {formatPrice(product.price)}
-            </div>
-            {product.oldPrice && (
-              <div className="text-sm text-muted-foreground line-through">
-                {formatPrice(product.oldPrice)}
-              </div>
-            )}
-          </div>
-
-          <Button
-            onClick={handleAddToCart}
-            size="sm"
-            className={`transition-all duration-300 ${
-              justAdded 
-                ? 'bg-green-600 hover:bg-green-600' 
-                : isInCart 
-                  ? 'bg-primary/80' 
-                  : ''
-            }`}
-          >
-            {justAdded ? (
-              <>
-                <Check className="w-4 h-4 mr-1" />
-                Добавлено
-              </>
-            ) : isInCart ? (
-              <>
-                <ShoppingCart className="w-4 h-4 mr-1" />
-                Ещё ({cartItem?.quantity})
-              </>
-            ) : (
-              <>
-                <ShoppingCart className="w-4 h-4 mr-1" />
-                В корзину
-              </>
-            )}
-          </Button>
-        </div>
+        {/* Button */}
+        <Button
+          onClick={handleAddToCart}
+          size="sm"
+          className={`w-full mt-2 transition-all duration-300 ${
+            justAdded 
+              ? 'bg-green-600 hover:bg-green-600' 
+              : isInCart 
+                ? 'bg-primary/80' 
+                : ''
+          }`}
+        >
+          {justAdded ? (
+            <>
+              <Check className="w-4 h-4 mr-1" />
+              Добавлено
+            </>
+          ) : isInCart ? (
+            <>
+              <ShoppingCart className="w-4 h-4 mr-1" />
+              Ещё ({cartItem?.quantity})
+            </>
+          ) : (
+            'Купить'
+          )}
+        </Button>
       </div>
     </motion.div>
   );

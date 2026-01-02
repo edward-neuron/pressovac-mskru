@@ -5,8 +5,8 @@ import { SEOHead } from '@/components/seo/SEOHead';
 import { Button } from '@/components/ui/button';
 import { CartDrawer } from '@/components/store/CartDrawer';
 import { useCart } from '@/contexts/CartContext';
-import { useYmlStore, YmlProduct } from '@/hooks/useYmlStore';
-import { ShoppingCart, ChevronRight, ArrowLeft, Search, Loader2 } from 'lucide-react';
+import { useYmlStore, YmlProduct, YmlCategory } from '@/hooks/useYmlStore';
+import { ShoppingCart, ArrowLeft, Search, Loader2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 
 const formatPrice = (price: number): string => {
@@ -17,6 +17,46 @@ const formatPrice = (price: number): string => {
     maximumFractionDigits: 0,
   }).format(price);
 };
+
+interface CategoryCardProps {
+  category: YmlCategory;
+  image?: string;
+  productCount: number;
+  onClick: () => void;
+  index: number;
+}
+
+const CategoryCard = ({ category, image, productCount, onClick, index }: CategoryCardProps) => (
+  <motion.button
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ delay: index * 0.03 }}
+    onClick={onClick}
+    className="group relative bg-card rounded-lg border border-border/50 overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300 text-left"
+  >
+    <div className="aspect-square bg-white relative overflow-hidden p-2">
+      {image ? (
+        <img 
+          src={image} 
+          alt={category.name}
+          className="w-full h-full object-contain"
+        />
+      ) : (
+        <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+          <ShoppingCart className="w-12 h-12 opacity-20" />
+        </div>
+      )}
+    </div>
+    <div className="px-2 py-2 border-t border-border/30">
+      <h3 className="text-xs font-medium text-primary leading-tight line-clamp-2 min-h-[2rem] hover:underline">
+        {category.name}
+      </h3>
+      <span className="text-xs text-muted-foreground">
+        {productCount}
+      </span>
+    </div>
+  </motion.button>
+);
 
 const Store = () => {
   const [categoryHistory, setCategoryHistory] = useState<string[]>([]);
@@ -39,6 +79,16 @@ const Store = () => {
   const currentCategory = categories.find(c => c.id === selectedCategory);
   const subcategories = selectedCategory ? getSubcategories(selectedCategory) : [];
   
+  // Determine what to show: subcategories as cards OR products
+  const hasSubcategories = subcategories.length > 0;
+  
+  // Only get products if we're at a leaf category (no subcategories)
+  const productsToShow = searchQuery 
+    ? searchProducts(searchQuery)
+    : (selectedCategory && !hasSubcategories) 
+      ? getProductsByCategory(selectedCategory)
+      : [];
+
   const navigateToCategory = (categoryId: string) => {
     setCategoryHistory(prev => [...prev, categoryId]);
   };
@@ -49,12 +99,8 @@ const Store = () => {
 
   const navigateToRoot = () => {
     setCategoryHistory([]);
+    setSearchQuery('');
   };
-  const filteredProducts = searchQuery 
-    ? searchProducts(searchQuery)
-    : selectedCategory 
-      ? getProductsByCategory(selectedCategory)
-      : [];
 
   const handleAddToCart = (product: YmlProduct) => {
     addItem({
@@ -144,136 +190,33 @@ const Store = () => {
             </div>
           ) : (
             <AnimatePresence mode="wait">
-              {!selectedCategory && !searchQuery ? (
-                /* Categories Grid */
+              {/* Search Results */}
+              {searchQuery ? (
                 <motion.div
-                  key="categories"
+                  key="search"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                 >
-                  <h2 className="text-2xl font-bold mb-6">Оборудование и аксессуары</h2>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
-                    {rootCategories.map((category, index) => {
-                      const productCount = getProductsCount(category.id);
-                      const categoryImage = getCategoryImage(category.id);
-                      
-                      return (
-                        <motion.button
-                          key={category.id}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: index * 0.03 }}
-                          onClick={() => navigateToCategory(category.id)}
-                          className="group relative bg-card rounded-lg border border-border/50 overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300 text-left"
-                        >
-                          <div className="aspect-square bg-white relative overflow-hidden p-2">
-                            {categoryImage && (
-                              <img 
-                                src={categoryImage} 
-                                alt={category.name}
-                                className="w-full h-full object-contain"
-                              />
-                            )}
-                          </div>
-                          <div className="px-2 py-2 border-t border-border/30">
-                            <h3 className="text-xs font-medium text-primary leading-tight line-clamp-2 min-h-[2rem] hover:underline">
-                              {category.name}
-                            </h3>
-                            <span className="text-xs text-muted-foreground">
-                              {productCount}
-                            </span>
-                          </div>
-                        </motion.button>
-                      );
-                    })}
+                  <div className="mb-6">
+                    <h2 className="text-2xl font-bold">
+                      Результаты поиска ({productsToShow.length})
+                    </h2>
+                    <Button
+                      variant="link"
+                      size="sm"
+                      onClick={navigateToRoot}
+                      className="text-primary p-0 h-auto mt-2"
+                    >
+                      <ArrowLeft className="w-4 h-4 mr-1" />
+                      Все категории
+                    </Button>
                   </div>
-                </motion.div>
-              ) : (
-                /* Products Grid */
-                <motion.div
-                  key="products"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                >
-                  {/* Back button & Category title */}
-                  {selectedCategory && !searchQuery && (
-                    <>
-                      <div className="flex items-center gap-2 mb-6">
-                        {categoryHistory.length > 1 && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={navigateBack}
-                            className="text-foreground"
-                          >
-                            <ArrowLeft className="w-4 h-4 mr-2" />
-                            Назад
-                          </Button>
-                        )}
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={navigateToRoot}
-                          className="text-muted-foreground hover:text-foreground"
-                        >
-                          Все категории
-                        </Button>
-                      </div>
 
-                      <div className="flex items-center justify-between mb-6">
-                        <div>
-                          <h2 className="text-2xl font-bold">{currentCategory?.name}</h2>
-                        </div>
-                        <span className="text-sm text-muted-foreground">
-                          {filteredProducts.length} {filteredProducts.length === 1 ? 'товар' : filteredProducts.length < 5 ? 'товара' : 'товаров'}
-                        </span>
-                      </div>
-
-                      {/* Subcategories */}
-                      {subcategories.length > 0 && (
-                        <div className="flex flex-wrap gap-2 mb-6">
-                          {subcategories.map(sub => (
-                            <Button
-                              key={sub.id}
-                              variant="outline"
-                              size="sm"
-                              onClick={() => navigateToCategory(sub.id)}
-                              className="text-sm"
-                            >
-                              {sub.name}
-                            </Button>
-                          ))}
-                        </div>
-                      )}
-                    </>
-                  )}
-
-                  {searchQuery && (
-                    <div className="mb-6">
-                      <h2 className="text-2xl font-bold">
-                        Результаты поиска ({filteredProducts.length})
-                      </h2>
-                      {selectedCategory && (
-                        <Button
-                          variant="link"
-                          size="sm"
-                          onClick={navigateToRoot}
-                          className="text-primary p-0 h-auto mt-2"
-                        >
-                          <ArrowLeft className="w-4 h-4 mr-1" />
-                          Все категории
-                        </Button>
-                      )}
-                    </div>
-                  )}
-
-                  {filteredProducts.length > 0 ? (
+                  {productsToShow.length > 0 ? (
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                      {filteredProducts.map((product, index) => {
+                      {productsToShow.map((product, index) => {
                         const cartQty = getCartQuantity(product.id);
-                        
                         return (
                           <motion.div
                             key={product.id}
@@ -282,13 +225,12 @@ const Store = () => {
                             transition={{ delay: index * 0.02 }}
                             className="group bg-card rounded-xl border border-border/50 overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300"
                           >
-                            {/* Image */}
-                            <div className="aspect-square bg-gradient-to-br from-muted/50 to-muted relative overflow-hidden">
+                            <div className="aspect-square bg-white relative overflow-hidden">
                               {product.picture ? (
                                 <img 
                                   src={product.picture} 
                                   alt={product.name}
-                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                  className="w-full h-full object-contain p-2"
                                   loading="lazy"
                                 />
                               ) : (
@@ -297,26 +239,15 @@ const Store = () => {
                                 </div>
                               )}
                             </div>
-
-                            {/* Content */}
                             <div className="p-3 space-y-2">
-                              {/* Price */}
-                              <div className="text-lg font-bold text-primary">
-                                {product.price}
-                              </div>
-
-                              {/* Name */}
+                              <div className="text-lg font-bold text-primary">{product.price}</div>
                               <h3 className="text-sm font-medium text-foreground line-clamp-2 leading-tight min-h-[2.5rem]">
                                 {product.name}
                               </h3>
-
-                              {/* Button */}
                               <Button
                                 onClick={() => handleAddToCart(product)}
                                 size="sm"
-                                className={`w-full transition-all duration-300 ${
-                                  cartQty > 0 ? 'bg-green-600 hover:bg-green-700' : ''
-                                }`}
+                                className={`w-full transition-all duration-300 ${cartQty > 0 ? 'bg-green-600 hover:bg-green-700' : ''}`}
                               >
                                 {cartQty > 0 ? `В корзине (${cartQty})` : 'Купить'}
                               </Button>
@@ -328,8 +259,159 @@ const Store = () => {
                   ) : (
                     <div className="text-center py-12">
                       <p className="text-muted-foreground">
-                        {searchQuery ? `По запросу "${searchQuery}" ничего не найдено` : 'Товары не найдены'}
+                        По запросу "{searchQuery}" ничего не найдено
                       </p>
+                    </div>
+                  )}
+                </motion.div>
+              ) : !selectedCategory ? (
+                /* Root Categories Grid */
+                <motion.div
+                  key="categories"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                >
+                  <h2 className="text-2xl font-bold mb-6">Оборудование и аксессуары</h2>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+                    {rootCategories.map((category, index) => (
+                      <CategoryCard
+                        key={category.id}
+                        category={category}
+                        image={getCategoryImage(category.id)}
+                        productCount={getProductsCount(category.id)}
+                        onClick={() => navigateToCategory(category.id)}
+                        index={index}
+                      />
+                    ))}
+                  </div>
+                </motion.div>
+              ) : hasSubcategories ? (
+                /* Subcategories Grid - show subcategories as cards, NOT products */
+                <motion.div
+                  key={`subcats-${selectedCategory}`}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                >
+                  {/* Navigation */}
+                  <div className="flex items-center gap-2 mb-6">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={navigateBack}
+                      className="text-foreground"
+                    >
+                      <ArrowLeft className="w-4 h-4 mr-2" />
+                      Назад
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={navigateToRoot}
+                      className="text-muted-foreground hover:text-foreground"
+                    >
+                      Все категории
+                    </Button>
+                  </div>
+
+                  <h2 className="text-2xl font-bold mb-6">{currentCategory?.name}</h2>
+                  
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+                    {subcategories.map((subcategory, index) => (
+                      <CategoryCard
+                        key={subcategory.id}
+                        category={subcategory}
+                        image={getCategoryImage(subcategory.id)}
+                        productCount={getProductsCount(subcategory.id)}
+                        onClick={() => navigateToCategory(subcategory.id)}
+                        index={index}
+                      />
+                    ))}
+                  </div>
+                </motion.div>
+              ) : (
+                /* Products Grid - only when NO subcategories */
+                <motion.div
+                  key={`products-${selectedCategory}`}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                >
+                  {/* Navigation */}
+                  <div className="flex items-center gap-2 mb-6">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={navigateBack}
+                      className="text-foreground"
+                    >
+                      <ArrowLeft className="w-4 h-4 mr-2" />
+                      Назад
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={navigateToRoot}
+                      className="text-muted-foreground hover:text-foreground"
+                    >
+                      Все категории
+                    </Button>
+                  </div>
+
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-2xl font-bold">{currentCategory?.name}</h2>
+                    <span className="text-sm text-muted-foreground">
+                      {productsToShow.length} {productsToShow.length === 1 ? 'товар' : productsToShow.length < 5 ? 'товара' : 'товаров'}
+                    </span>
+                  </div>
+
+                  {productsToShow.length > 0 ? (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                      {productsToShow.map((product, index) => {
+                        const cartQty = getCartQuantity(product.id);
+                        return (
+                          <motion.div
+                            key={product.id}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: index * 0.02 }}
+                            className="group bg-card rounded-xl border border-border/50 overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300"
+                          >
+                            <div className="aspect-square bg-white relative overflow-hidden">
+                              {product.picture ? (
+                                <img 
+                                  src={product.picture} 
+                                  alt={product.name}
+                                  className="w-full h-full object-contain p-2"
+                                  loading="lazy"
+                                />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                                  <ShoppingCart className="w-12 h-12 opacity-20" />
+                                </div>
+                              )}
+                            </div>
+                            <div className="p-3 space-y-2">
+                              <div className="text-lg font-bold text-primary">{product.price}</div>
+                              <h3 className="text-sm font-medium text-foreground line-clamp-2 leading-tight min-h-[2.5rem]">
+                                {product.name}
+                              </h3>
+                              <Button
+                                onClick={() => handleAddToCart(product)}
+                                size="sm"
+                                className={`w-full transition-all duration-300 ${cartQty > 0 ? 'bg-green-600 hover:bg-green-700' : ''}`}
+                              >
+                                {cartQty > 0 ? `В корзине (${cartQty})` : 'Купить'}
+                              </Button>
+                            </div>
+                          </motion.div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="text-center py-12">
+                      <p className="text-muted-foreground">Товары не найдены</p>
                     </div>
                   )}
                 </motion.div>

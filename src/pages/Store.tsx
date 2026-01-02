@@ -99,35 +99,32 @@ const Store = () => {
                 exit={{ opacity: 0 }}
               >
                 <h2 className="text-2xl font-bold mb-6">Категории</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                   {storeCategories.map((category, index) => {
-                    const productCount = storeProducts.filter(p => p.category === category.id).length;
+                    const productCount = category.productCount || storeProducts.filter(p => p.category === category.id).length;
                     
                     return (
                       <motion.button
                         key={category.id}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 }}
+                        transition={{ delay: index * 0.05 }}
                         onClick={() => setSelectedCategory(category.id)}
-                        className="group relative bg-card rounded-2xl border border-border/50 overflow-hidden hover:shadow-xl hover:border-primary/30 transition-all duration-300 text-left"
+                        className="group relative bg-card rounded-xl border border-border/50 overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300 text-left"
                       >
-                        <div className="aspect-[4/3] bg-gradient-to-br from-primary/20 to-accent/20 relative overflow-hidden">
-                          <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent" />
-                          <div className="absolute bottom-4 left-4 right-4">
-                            <h3 className="text-xl font-bold text-foreground mb-1">
+                        <div className="aspect-square bg-gradient-to-br from-primary/10 to-accent/10 relative overflow-hidden">
+                          <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/50 to-transparent" />
+                          <div className="absolute bottom-2 left-2 right-2">
+                            <h3 className="text-sm font-semibold text-foreground leading-tight line-clamp-2">
                               {category.name}
                             </h3>
-                            <p className="text-sm text-muted-foreground line-clamp-2">
-                              {category.description}
-                            </p>
                           </div>
                         </div>
-                        <div className="p-4 flex items-center justify-between">
-                          <span className="text-sm text-muted-foreground">
-                            {productCount} {productCount === 1 ? 'товар' : productCount < 5 ? 'товара' : 'товаров'}
+                        <div className="px-2 py-2 flex items-center justify-between">
+                          <span className="text-xs text-primary font-medium">
+                            {productCount}
                           </span>
-                          <ChevronRight className="w-5 h-5 text-primary group-hover:translate-x-1 transition-transform" />
+                          <ChevronRight className="w-4 h-4 text-primary group-hover:translate-x-0.5 transition-transform" />
                         </div>
                       </motion.button>
                     );

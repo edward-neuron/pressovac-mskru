@@ -23,7 +23,7 @@ import { SortableItem } from '@/components/store/SortableItem';
 import { useCart } from '@/contexts/CartContext';
 import { useYmlStore, YmlProduct, YmlCategory } from '@/hooks/useYmlStore';
 import { useSortOrder } from '@/hooks/useSortOrder';
-import { ShoppingCart, ArrowLeft, Search, Loader2, Settings, X } from 'lucide-react';
+import { ShoppingCart, ArrowLeft, Search, Loader2, Settings, X, Home, ChevronRight } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 
 // Import category images
@@ -112,6 +112,48 @@ const CategoryCard = ({ category, image, productCount, onClick, index }: Categor
   </motion.button>
 );
 
+// Breadcrumbs component
+interface BreadcrumbsProps {
+  categoryHistory: string[];
+  categories: YmlCategory[];
+  onNavigateToRoot: () => void;
+  onNavigateToLevel: (index: number) => void;
+}
+
+const Breadcrumbs = ({ categoryHistory, categories, onNavigateToRoot, onNavigateToLevel }: BreadcrumbsProps) => {
+  const getCategoryName = (id: string) => categories.find(c => c.id === id)?.name || '';
+
+  return (
+    <nav className="flex items-center flex-wrap gap-1 text-sm mb-6 bg-muted/30 rounded-lg px-4 py-3">
+      <button
+        onClick={onNavigateToRoot}
+        className="flex items-center gap-1 text-primary hover:text-primary/80 transition-colors font-medium"
+      >
+        <Home className="w-4 h-4" />
+        <span className="hidden sm:inline">Магазин</span>
+      </button>
+      
+      {categoryHistory.map((catId, index) => (
+        <div key={catId} className="flex items-center gap-1">
+          <ChevronRight className="w-4 h-4 text-muted-foreground" />
+          {index === categoryHistory.length - 1 ? (
+            <span className="text-foreground font-medium truncate max-w-[200px]">
+              {getCategoryName(catId)}
+            </span>
+          ) : (
+            <button
+              onClick={() => onNavigateToLevel(index)}
+              className="text-primary hover:text-primary/80 transition-colors truncate max-w-[150px]"
+            >
+              {getCategoryName(catId)}
+            </button>
+          )}
+        </div>
+      ))}
+    </nav>
+  );
+};
+
 const Store = () => {
   const [categoryHistory, setCategoryHistory] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -197,6 +239,10 @@ const Store = () => {
   const navigateToRoot = () => {
     setCategoryHistory([]);
     setSearchQuery('');
+  };
+
+  const navigateToLevel = (index: number) => {
+    setCategoryHistory(prev => prev.slice(0, index + 1));
   };
 
   const handleAddToCart = (product: YmlProduct) => {
@@ -458,25 +504,13 @@ const Store = () => {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                 >
-                  <div className="flex items-center gap-2 mb-6">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={navigateBack}
-                      className="text-foreground"
-                    >
-                      <ArrowLeft className="w-4 h-4 mr-2" />
-                      Назад
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={navigateToRoot}
-                      className="text-muted-foreground hover:text-foreground"
-                    >
-                      Все категории
-                    </Button>
-                  </div>
+                  {/* Breadcrumbs navigation */}
+                  <Breadcrumbs
+                    categoryHistory={categoryHistory}
+                    categories={categories}
+                    onNavigateToRoot={navigateToRoot}
+                    onNavigateToLevel={navigateToLevel}
+                  />
 
                   <h2 className="text-2xl font-bold mb-6">{currentCategory?.name}</h2>
                   

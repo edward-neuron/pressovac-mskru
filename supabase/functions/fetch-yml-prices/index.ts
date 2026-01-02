@@ -8,8 +8,6 @@ const corsHeaders = {
 const YML_BASE_URL = "https://shop-pressovac.ru/yml-export/02513391f110e59858a2403c4b3bed42/";
 
 function buildYmlUrl(): string {
-  // Некоторые серверы/прокси могут кешировать YML.
-  // Добавляем cache-buster, чтобы всегда получать самые свежие цены.
   const url = new URL(YML_BASE_URL);
   url.searchParams.set("full", "1");
   url.searchParams.set("_", Date.now().toString());
@@ -20,29 +18,68 @@ interface YmlProduct {
   id: string;
   name: string;
   price: string;
+  priceNum: number;
   url: string;
-  vendorCode?: string; // Заводской артикул (Код: 201.002.003)
+  vendorCode?: string;
   picture?: string;
+  categoryId?: string;
+  sortOrder: number;
 }
 
-// В YML выгружается базовая цена без торговой наценки магазина.
-// Магазин shop-pressovac.ru добавляет наценку 20% к базовой цене.
-// Поэтому умножаем цены из YML на 1.2 для получения итоговой стоимости.
+interface YmlCategory {
+  id: string;
+  name: string;
+  parentId?: string;
+  sortOrder: number;
+}
+
+function parseYmlCategories(xmlText: string): YmlCategory[] {
+  const categories: YmlCategory[] = [];
+  
+  // Parse categories section
+  const categoriesMatch = xmlText.match(/<categories>([\s\S]*?)<\/categories>/);
+  if (!categoriesMatch) return categories;
+  
+  const categoriesContent = categoriesMatch[1];
+  const categoryRegex = /<category\s+id="(\d+)"(?:\s+parentId="(\d+)")?[^>]*>(.*?)<\/category>/gi;
+  let match;
+  let sortOrder = 0;
+  
+  while ((match = categoryRegex.exec(categoriesContent)) !== null) {
+    const id = match[1];
+    const parentId = match[2] || undefined;
+    const name = match[3].trim();
+    
+    categories.push({
+      id,
+      name,
+      parentId,
+      sortOrder: sortOrder++
+    });
+  }
+  
+  return categories;
+}
 
 function parseYmlProducts(xmlText: string): YmlProduct[] {
   const products: YmlProduct[] = [];
   
-  // Simple regex-based parsing for YML offers
+  // Parse offers section
+  const offersMatch = xmlText.match(/<offers>([\s\S]*?)<\/offers>/);
+  if (!offersMatch) return products;
+  
+  const offersContent = offersMatch[1];
   const offerRegex = /<offer\s+id="(\d+)"[^>]*available="true"[^>]*>([\s\S]*?)<\/offer>/gi;
   let match;
+  let sortOrder = 0;
   
-  while ((match = offerRegex.exec(xmlText)) !== null) {
+  while ((match = offerRegex.exec(offersContent)) !== null) {
     const offerId = match[1];
     const offerContent = match[2];
     
     // Extract price
     const priceMatch = offerContent.match(/<price>(\d+(?:\.\d+)?)<\/price>/);
-    const price = priceMatch ? priceMatch[1] : null;
+    const priceNum = priceMatch ? parseFloat(priceMatch[1]) : 0;
     
     // Extract name
     const nameMatch = offerContent.match(/<name><!\[CDATA\[(.*?)\]\]><\/name>/) || 
@@ -53,7 +90,7 @@ function parseYmlProducts(xmlText: string): YmlProduct[] {
     const urlMatch = offerContent.match(/<url>(.*?)<\/url>/);
     const url = urlMatch ? urlMatch[1] : null;
     
-    // Extract vendorCode (заводской артикул)
+    // Extract vendorCode
     const vendorCodeMatch = offerContent.match(/<vendorCode><!\[CDATA\[(.*?)\]\]><\/vendorCode>/) ||
                             offerContent.match(/<vendorCode>(.*?)<\/vendorCode>/);
     const vendorCode = vendorCodeMatch ? vendorCodeMatch[1].trim() : undefined;
@@ -62,15 +99,21 @@ function parseYmlProducts(xmlText: string): YmlProduct[] {
     const pictureMatch = offerContent.match(/<picture>(.*?)<\/picture>/);
     const picture = pictureMatch ? pictureMatch[1] : undefined;
     
-    if (price && name && url) {
-      const productName = name.trim();
+    // Extract categoryId
+    const categoryIdMatch = offerContent.match(/<categoryId>(\d+)<\/categoryId>/);
+    const categoryId = categoryIdMatch ? categoryIdMatch[1] : undefined;
+    
+    if (priceNum > 0 && name && url) {
       products.push({
         id: offerId,
-        name: productName,
-        price: formatPrice(parseFloat(price)),
+        name: name.trim(),
+        price: formatPrice(priceNum),
+        priceNum,
         url,
         vendorCode,
-        picture
+        picture,
+        categoryId,
+        sortOrder: sortOrder++
       });
     }
   }
@@ -79,7 +122,6 @@ function parseYmlProducts(xmlText: string): YmlProduct[] {
 }
 
 function formatPrice(priceFromYml: number): string {
-  // В YML используем цену как итоговую (с НДС), без дополнительной наценки.
   const finalPrice = Math.round(priceFromYml);
   return (
     new Intl.NumberFormat('ru-RU', {
@@ -91,7 +133,6 @@ function formatPrice(priceFromYml: number): string {
 }
 
 serve(async (req) => {
-  // Handle CORS preflight
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -115,18 +156,16 @@ serve(async (req) => {
     const xmlText = await response.text();
     console.log("YML fetched, length:", xmlText.length);
     
+    const categories = parseYmlCategories(xmlText);
     const products = parseYmlProducts(xmlText);
-    console.log("Parsed products:", products.length);
     
-    // Log vendorCodes for debugging
-    const vendorCodes = products
-      .filter(p => p.vendorCode)
-      .map(p => ({ name: p.name, vendorCode: p.vendorCode, price: p.price }));
-    console.log("Products with vendorCodes:", JSON.stringify(vendorCodes, null, 2));
+    console.log("Parsed categories:", categories.length);
+    console.log("Parsed products:", products.length);
     
     return new Response(
       JSON.stringify({ 
         success: true, 
+        categories,
         products,
         fetchedAt: new Date().toISOString()
       }),

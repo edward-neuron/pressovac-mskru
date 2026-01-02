@@ -48,7 +48,7 @@ const categoryImageMap: Record<string, string> = {
   'Машины с маркировкой взрывозащиты ATEX': category3,
   'Машины для мойки и удаления жира': category4,
   'Оборудование для дезинфекции': category5,
-  'Вакуумные Всасывающие установки': category6,
+  'Вакуумные Всасывающие установки SU': category6,
   'Фильтро-Вакуумные Установки SFU': category7,
   'Фильтрующие установки FU': category8,
   'Гибкие вращающиеся валы Pressovac': category9,

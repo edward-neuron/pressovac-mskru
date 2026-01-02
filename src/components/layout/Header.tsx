@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Phone, ShoppingCart } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { useCart } from '@/contexts/CartContext';
 import pressovacLogo from '@/assets/pressovac-logo.png';
 
@@ -10,7 +9,6 @@ const navigation = [
   { name: 'Главная', href: '/' },
   { name: 'О нас', href: '/about' },
   { name: 'Каталог', href: '/catalog' },
-  { name: 'Магазин', href: '/store' },
   { name: 'Технология', href: '/technology' },
   { name: 'Обучение', href: '/training' },
   { name: 'Статьи', href: '/articles' },
@@ -65,17 +63,18 @@ export const Header = () => {
               <Phone className="w-4 h-4" />
               <span>(499) 677-2010</span>
             </a>
-            <Button size="sm" asChild className="relative">
-              <Link to="/store">
-                <ShoppingCart className="w-4 h-4" />
-                Магазин
-                {totalItems > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-accent text-accent-foreground text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
-                    {totalItems}
-                  </span>
-                )}
-              </Link>
-            </Button>
+            <Link 
+              to="/store" 
+              className="relative p-2 rounded-lg hover:bg-muted transition-colors"
+              aria-label="Корзина"
+            >
+              <ShoppingCart className="w-6 h-6 text-foreground" />
+              {totalItems > 0 && (
+                <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
+                  {totalItems}
+                </span>
+              )}
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -120,17 +119,19 @@ export const Header = () => {
                     <span>(499) 677-2010</span>
                   </a>
                   <div className="px-4">
-                    <Button className="w-full relative" asChild>
-                      <Link to="/store" onClick={() => setIsOpen(false)}>
-                        <ShoppingCart className="w-4 h-4" />
-                        Магазин
-                        {totalItems > 0 && (
-                          <span className="ml-2 bg-accent text-accent-foreground text-xs px-2 py-0.5 rounded-full font-bold">
-                            {totalItems}
-                          </span>
-                        )}
-                      </Link>
-                    </Button>
+                    <Link 
+                      to="/store" 
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center justify-center gap-2 w-full py-3 rounded-lg bg-primary text-primary-foreground font-medium"
+                    >
+                      <ShoppingCart className="w-5 h-5" />
+                      <span>Корзина</span>
+                      {totalItems > 0 && (
+                        <span className="bg-background text-foreground text-xs px-2 py-0.5 rounded-full font-bold">
+                          {totalItems}
+                        </span>
+                      )}
+                    </Link>
                   </div>
                 </div>
               </div>

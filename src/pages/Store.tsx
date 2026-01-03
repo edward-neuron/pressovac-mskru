@@ -20,6 +20,7 @@ import { SEOHead } from '@/components/seo/SEOHead';
 import { Button } from '@/components/ui/button';
 import { CartDrawer } from '@/components/store/CartDrawer';
 import { SortableItem } from '@/components/store/SortableItem';
+import { ProductDetailDrawer } from '@/components/store/ProductDetailDrawer';
 import { useCart } from '@/contexts/CartContext';
 import { useYmlStore, YmlProduct, YmlCategory } from '@/hooks/useYmlStore';
 import { useSortOrder } from '@/hooks/useSortOrder';
@@ -157,6 +158,8 @@ const Breadcrumbs = ({ categoryHistory, categories, onNavigateToRoot, onNavigate
 const Store = () => {
   const [categoryHistory, setCategoryHistory] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedProduct, setSelectedProduct] = useState<YmlProduct | null>(null);
+  const [productDrawerOpen, setProductDrawerOpen] = useState(false);
   const { totalItems, totalPrice, addItem, items } = useCart();
   const { 
     isLoading, 
@@ -257,6 +260,12 @@ const Store = () => {
 
   const getCartQuantity = (productId: string) => {
     return items.find(item => item.id === productId)?.quantity || 0;
+  };
+
+  const handleProductClick = (product: YmlProduct) => {
+    if (isEditMode) return;
+    setSelectedProduct(product);
+    setProductDrawerOpen(true);
   };
 
   const handleDragEndCategories = (event: DragEndEvent, categoryList: YmlCategory[]) => {
@@ -427,7 +436,10 @@ const Store = () => {
                             transition={{ delay: index * 0.02 }}
                             className="group bg-card rounded-xl border border-border/50 overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300"
                           >
-                            <div className="aspect-square bg-white relative overflow-hidden">
+                            <button 
+                              onClick={() => handleProductClick(product)}
+                              className="aspect-square bg-white relative overflow-hidden cursor-pointer"
+                            >
                               {product.picture ? (
                                 <img 
                                   src={product.picture} 
@@ -440,7 +452,7 @@ const Store = () => {
                                   <ShoppingCart className="w-12 h-12 opacity-20" />
                                 </div>
                               )}
-                            </div>
+                            </button>
                             <div className="p-3 space-y-2">
                               <div className="text-lg font-bold text-primary">{product.price}</div>
                               <h3 className="text-sm font-medium text-foreground line-clamp-2 leading-tight min-h-[2.5rem]">
@@ -573,7 +585,11 @@ const Store = () => {
                                     transition={{ delay: index * 0.02 }}
                                     className="group bg-card rounded-xl border border-border/50 overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300"
                                   >
-                                    <div className="aspect-square bg-white relative overflow-hidden">
+                                    <button 
+                                      onClick={() => handleProductClick(product)}
+                                      className="aspect-square bg-white relative overflow-hidden cursor-pointer"
+                                      disabled={isEditMode}
+                                    >
                                       {product.picture ? (
                                         <img 
                                           src={product.picture} 
@@ -586,7 +602,7 @@ const Store = () => {
                                           <ShoppingCart className="w-12 h-12 opacity-20" />
                                         </div>
                                       )}
-                                    </div>
+                                    </button>
                                     <div className="p-3 space-y-2">
                                       <div className="text-lg font-bold text-primary">{product.price}</div>
                                       <h3 className="text-sm font-medium text-foreground line-clamp-2 leading-tight min-h-[2.5rem]">
@@ -645,6 +661,13 @@ const Store = () => {
           </motion.div>
         </CartDrawer>
       )}
+
+      {/* Product Detail Drawer */}
+      <ProductDetailDrawer
+        product={selectedProduct}
+        open={productDrawerOpen}
+        onOpenChange={setProductDrawerOpen}
+      />
     </Layout>
   );
 };

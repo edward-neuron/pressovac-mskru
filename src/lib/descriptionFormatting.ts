@@ -43,12 +43,19 @@ export const stripHtmlToText = (html: string): string => {
   // 5) Decode any entities left inside plain text.
   text = decodeHtmlEntities(text);
 
+  // 5b) Remove escaped asterisks (\*) -> just asterisks (*)
+  text = text.replace(/\\\*/g, "*");
+
   // 6) Supplier sometimes uses bullet symbols inline: "• Item1 • Item2" => "- Item1\n- Item2".
   text = text.replace(/\s*[•●]\s*/g, "\n- ");
 
   // 7) Normalize dash-bullets variants at line start.
   text = text.replace(/(^|\n)\s*[–—−]\s+/g, "$1- ");
   text = text.replace(/(^|\n)\s*-\s+/g, "$1- ");
+
+  // 7b) Normalize asterisk-bullets at line start (with optional leading whitespace).
+  // Convert "   * Item" to "* Item" on its own line
+  text = text.replace(/(^|\n)\s*\*\s+/g, "$1* ");
 
   // 8) If list items were in one sentence after punctuation, force a newline before the dash or asterisk.
   // Example: "...: - Item1; - Item2" => each on its own line.
@@ -80,6 +87,14 @@ export const stripHtmlToText = (html: string): string => {
   return text.trim();
 };
 
+// Helper to check if a line is a sub-item (e.g., "* Item - 1 шт.")
+// vs a footnote (e.g., "* Комплект поставки..." without quantity at end)
+const isSubItem = (line: string): boolean => {
+  // Sub-items typically end with quantity like "- 1 шт." or "- 1 комп."
+  // Pattern: ends with "- NUMBER UNIT" or just has quantity patterns
+  return /[-–—]\s*\d+\s*(шт|комп|ед|упак|комплект)/i.test(line);
+};
+
 export const parseDescriptionBlocks = (text: string): DescriptionBlocks => {
   const lines = text
     .split("\n")
@@ -93,13 +108,27 @@ export const parseDescriptionBlocks = (text: string): DescriptionBlocks => {
   let inFootnote = false;
 
   for (const line of lines) {
+    // Check if line starts with asterisk
     if (/^\*/.test(line)) {
+      // If it's a sub-item (ends with quantity), treat as list item, not footnote
+      if (isSubItem(line)) {
+        // Convert * to - for consistency in list display
+        listItems.push(line.replace(/^\*\s*/, "- "));
+        continue;
+      }
+      // Otherwise it's a real footnote
       inFootnote = true;
       footnotes.push(line);
       continue;
     }
 
     if (inFootnote) {
+      // Check if this line could be a sub-item that follows a footnote start
+      // but is actually a continuation of list
+      if (/^[-–—−]/.test(line) || isSubItem(line)) {
+        listItems.push(line);
+        continue;
+      }
       // Everything after the first "*" is treated as part of footnote block.
       footnotes.push(line);
       continue;
@@ -119,4 +148,3 @@ export const parseDescriptionBlocks = (text: string): DescriptionBlocks => {
     footnotes,
   };
 };
-

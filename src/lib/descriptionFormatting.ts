@@ -129,11 +129,17 @@ const isTableRow = (line: string): boolean => {
   return parts.length >= 2 && parts[0].length > 0 && /^\d+$/.test(parts[1]);
 };
 
-// Check if line is an empty table row (just pipes or whitespace)
+// Check if line is an empty or invalid table row that should be skipped
 const isEmptyTableRow = (line: string): boolean => {
   // Empty rows are just "|" or " | " or multiple pipes with only whitespace
   const cleaned = line.replace(/\|/g, "").trim();
-  return cleaned.length === 0 || line.trim() === "|";
+  if (cleaned.length === 0 || line.trim() === "|") return true;
+  
+  // Also skip lines that end with "|" but don't have a valid quantity after it
+  // These are table rows with empty second cell (e.g., "сухая очистка... |")
+  if (/\|\s*$/.test(line.trim())) return true;
+  
+  return false;
 };
 
 // Convert table row "Item Name | Qty" to list item "- Item Name - Qty"

@@ -50,11 +50,19 @@ export const stripHtmlToText = (html: string): string => {
   text = text.replace(/(^|\n)\s*[–—−]\s+/g, "$1- ");
   text = text.replace(/(^|\n)\s*-\s+/g, "$1- ");
 
-  // 8) If list items were in one sentence after punctuation, force a newline before the dash.
+  // 8) If list items were in one sentence after punctuation, force a newline before the dash or asterisk.
   // Example: "...: - Item1; - Item2" => each on its own line.
+  // Example: "...: * Item1 * Item2" => each on its own line.
   // BUT: Do NOT break when the dash is followed only by a quantity like "- 1 шт." or "- 2 комп."
   // Those should stay on the same line as the preceding item.
   text = text.replace(/([:;.!?])\s*[–—−-]\s+(?!\d+\s*(шт|комп|ед|упак))/gi, "$1\n- ");
+  
+  // 8b) Handle asterisk (*) as a list marker within text (not at line start - those are footnotes)
+  // Pattern: after punctuation or space, if we see "* Text" - break before it
+  text = text.replace(/([:;.!?])\s*\*\s+(?!\d+\s*(шт|комп|ед|упак))/gi, "$1\n* ");
+  
+  // 8c) Handle asterisk after a list item ending (e.g., "1 комп. * Шланг" => newline before *)
+  text = text.replace(/(\d+\s*(шт|комп|ед|упак)\.?)\s+\*\s+/gi, "$1\n* ");
 
   // 9) Clean up whitespace.
   text = text.replace(/\u00A0/g, " ");

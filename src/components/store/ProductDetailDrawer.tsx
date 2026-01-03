@@ -34,24 +34,41 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
 
   // Strip HTML tags and convert to clean text
   const stripHtml = (html: string): string => {
-    // Replace <br>, <br/>, <br /> with newlines
-    let text = html.replace(/<br\s*\/?>/gi, '\n');
-    // Replace </p>, <hr>, </div> with newlines
-    text = text.replace(/<\/p>|<hr[^>]*>|<\/div>/gi, '\n');
-    // Remove all remaining HTML tags
+    const decodeEntities = (input: string) => {
+      // Most robust way in the browser (works for &lt;...&gt; case)
+      if (typeof document !== 'undefined') {
+        const textarea = document.createElement('textarea');
+        textarea.innerHTML = input;
+        return textarea.value;
+      }
+
+      // Fallback (shouldn’t happen in this app, but keeps it safe)
+      return input
+        .replace(/&nbsp;/g, ' ')
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/&#(\d+);/g, (_, code) => String.fromCharCode(parseInt(code)));
+    };
+
+    // 1) First decode entities so tags become real (<p>, <br>, ...)
+    let text = decodeEntities(html);
+
+    // 2) Normalize HTML structure into newlines
+    text = text.replace(/<br\s*\/?>/gi, '\n');
+    text = text.replace(/<\/(p|div)\s*>|<hr[^>]*>/gi, '\n');
+
+    // 3) Remove remaining tags
     text = text.replace(/<[^>]+>/g, '');
-    // Decode HTML entities
-    text = text.replace(/&nbsp;/g, ' ');
-    text = text.replace(/&amp;/g, '&');
-    text = text.replace(/&lt;/g, '<');
-    text = text.replace(/&gt;/g, '>');
-    text = text.replace(/&quot;/g, '"');
-    text = text.replace(/&#(\d+);/g, (_, code) => String.fromCharCode(parseInt(code)));
-    // Clean up whitespace
+
+    // 4) Decode any entities left inside plain text
+    text = decodeEntities(text);
+
+    // 5) Clean up whitespace
     text = text.replace(/[ \t]+/g, ' ');
     text = text.replace(/\n\s*\n/g, '\n\n');
-    text = text.trim();
-    return text;
+    return text.trim();
   };
 
   // Parse description to show as list if it contains multiple lines

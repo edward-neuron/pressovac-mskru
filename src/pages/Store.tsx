@@ -303,26 +303,30 @@ const Store = () => {
             </div>
 
             <div className="flex items-center gap-3">
-              {/* Edit Mode Toggle */}
-              <Button
-                variant={isEditMode ? "default" : "outline"}
-                size="sm"
-                onClick={toggleEditMode}
-                className={isEditMode ? "bg-orange-500 hover:bg-orange-600" : ""}
-              >
-                {isEditMode ? <X className="w-4 h-4 mr-2" /> : <Settings className="w-4 h-4 mr-2" />}
-                {isEditMode ? "Завершить" : "Сортировка"}
-              </Button>
-              
-              {isEditMode && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={resetOrder}
-                  className="text-muted-foreground"
-                >
-                  Сбросить
-                </Button>
+              {/* Edit Mode Toggle - only visible in development */}
+              {import.meta.env.DEV && (
+                <>
+                  <Button
+                    variant={isEditMode ? "default" : "outline"}
+                    size="sm"
+                    onClick={toggleEditMode}
+                    className={isEditMode ? "bg-orange-500 hover:bg-orange-600" : ""}
+                  >
+                    {isEditMode ? <X className="w-4 h-4 mr-2" /> : <Settings className="w-4 h-4 mr-2" />}
+                    {isEditMode ? "Завершить" : "Сортировка"}
+                  </Button>
+                  
+                  {isEditMode && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={resetOrder}
+                      className="text-muted-foreground"
+                    >
+                      Сбросить
+                    </Button>
+                  )}
+                </>
               )}
 
               {/* Cart Button */}

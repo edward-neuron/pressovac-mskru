@@ -123,7 +123,17 @@ const isWarningStart = (line: string): boolean => {
 // Check if line is a table row (contains " | " separator with quantity)
 const isTableRow = (line: string): boolean => {
   // Table rows typically have format "Item Name | Quantity"
-  return /\|\s*\d+\s*$/.test(line.trim());
+  // Must have actual content on the left side, not just whitespace or pipe
+  const parts = line.split("|").map(p => p.trim());
+  // Valid table row has non-empty first part and a number in second part
+  return parts.length >= 2 && parts[0].length > 0 && /^\d+$/.test(parts[1]);
+};
+
+// Check if line is an empty table row (just pipes or whitespace)
+const isEmptyTableRow = (line: string): boolean => {
+  // Empty rows are just "|" or " | " or multiple pipes with only whitespace
+  const cleaned = line.replace(/\|/g, "").trim();
+  return cleaned.length === 0 || line.trim() === "|";
 };
 
 // Convert table row "Item Name | Qty" to list item "- Item Name - Qty"
@@ -169,13 +179,17 @@ export const parseDescriptionBlocks = (text: string): DescriptionBlocks => {
       }
     }
 
+    // Skip empty table rows (just "|" or whitespace)
+    if (isEmptyTableRow(line)) {
+      continue;
+    }
+
     // CRITICAL: Check if line is a table row (from HTML table parsing)
     // Format: "Item Name | Quantity"
     if (isTableRow(line)) {
       listItems.push(tableRowToListItem(line));
       continue;
     }
-
     // Check if line starts with asterisk
     if (/^\*/.test(line)) {
       // If it's a sub-item (ends with quantity), treat as list item, not footnote

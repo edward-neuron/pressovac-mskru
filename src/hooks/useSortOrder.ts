@@ -1,59 +1,117 @@
 import { useState, useEffect, useCallback } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 
-const STORAGE_KEY = 'yml-store-sort-order';
+const LOCAL_STORAGE_KEY = 'yml-store-sort-order';
+const DB_SCOPE = 'default';
 
 interface SortOrderData {
   categories: Record<string, number>;
   products: Record<string, number>;
 }
 
+// Load from localStorage as fallback/initial data
 const getStoredOrder = (): SortOrderData => {
   try {
-    const stored = localStorage.getItem(STORAGE_KEY);
+    const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (stored) {
       return JSON.parse(stored);
     }
   } catch (e) {
-    console.error('Error loading sort order:', e);
+    console.error('Error loading sort order from localStorage:', e);
   }
   return { categories: {}, products: {} };
 };
 
-const saveOrder = (data: SortOrderData) => {
+// Save to localStorage (for offline/backup)
+const saveToLocalStorage = (data: SortOrderData) => {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
   } catch (e) {
-    console.error('Error saving sort order:', e);
+    console.error('Error saving sort order to localStorage:', e);
   }
 };
 
 export function useSortOrder() {
   const [sortOrder, setSortOrder] = useState<SortOrderData>(getStoredOrder);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
 
+  // Load from database on mount
   useEffect(() => {
-    saveOrder(sortOrder);
-  }, [sortOrder]);
+    const loadFromDatabase = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('store_sort_order')
+          .select('categories, products')
+          .eq('scope', DB_SCOPE)
+          .maybeSingle();
 
-  const updateCategoryOrder = useCallback((categoryId: string, newOrder: number) => {
-    setSortOrder(prev => ({
-      ...prev,
-      categories: {
-        ...prev.categories,
-        [categoryId]: newOrder
+        if (error) {
+          console.error('Error loading sort order from database:', error);
+          return;
+        }
+
+        if (data) {
+          const dbData: SortOrderData = {
+            categories: (data.categories as Record<string, number>) || {},
+            products: (data.products as Record<string, number>) || {}
+          };
+          setSortOrder(dbData);
+          saveToLocalStorage(dbData); // Sync to localStorage
+          console.log('Sort order loaded from database');
+        } else {
+          // No data in DB, use localStorage and save to DB
+          const localData = getStoredOrder();
+          if (Object.keys(localData.categories).length > 0 || Object.keys(localData.products).length > 0) {
+            console.log('Migrating localStorage sort order to database...');
+            await saveToDatabase(localData);
+          }
+        }
+      } catch (e) {
+        console.error('Error loading sort order:', e);
+      } finally {
+        setIsLoading(false);
       }
-    }));
+    };
+
+    loadFromDatabase();
   }, []);
 
-  const updateProductOrder = useCallback((productId: string, newOrder: number) => {
-    setSortOrder(prev => ({
-      ...prev,
-      products: {
-        ...prev.products,
-        [productId]: newOrder
+  // Save to database
+  const saveToDatabase = async (data: SortOrderData) => {
+    setIsSaving(true);
+    try {
+      const { error } = await supabase
+        .from('store_sort_order')
+        .upsert({
+          scope: DB_SCOPE,
+          categories: data.categories,
+          products: data.products
+        }, {
+          onConflict: 'scope'
+        });
+
+      if (error) {
+        console.error('Error saving sort order to database:', error);
+        // Fall back to localStorage only
+      } else {
+        console.log('Sort order saved to database');
       }
-    }));
-  }, []);
+    } catch (e) {
+      console.error('Error saving sort order:', e);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Persist changes to both localStorage and database
+  useEffect(() => {
+    if (!isLoading) {
+      saveToLocalStorage(sortOrder);
+      saveToDatabase(sortOrder);
+    }
+  }, [sortOrder, isLoading]);
 
   const reorderCategories = useCallback((categoryIds: string[]) => {
     setSortOrder(prev => {
@@ -91,13 +149,28 @@ export function useSortOrder() {
     setSortOrder({ categories: {}, products: {} });
   }, []);
 
+  // Export current order to console for backup
+  const exportOrder = useCallback(() => {
+    console.log('Current sort order:', JSON.stringify(sortOrder, null, 2));
+    return sortOrder;
+  }, [sortOrder]);
+
+  // Import order from object
+  const importOrder = useCallback((data: SortOrderData) => {
+    setSortOrder(data);
+  }, []);
+
   return {
     isEditMode,
+    isLoading,
+    isSaving,
     toggleEditMode,
     getCategorySortOrder,
     getProductSortOrder,
     reorderCategories,
     reorderProducts,
-    resetOrder
+    resetOrder,
+    exportOrder,
+    importOrder
   };
 }

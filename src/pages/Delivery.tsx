@@ -1,6 +1,27 @@
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
+import { SEOHead } from '@/components/seo/SEOHead';
 import { Truck, Shield, CreditCard, Clock, CheckCircle, Package, Globe, FileText } from 'lucide-react';
+
+const deliveryBreadcrumbs = [
+  { name: 'Главная', url: '/' },
+  { name: 'Доставка', url: '/delivery' }
+];
+
+const deliveryFAQ = [
+  {
+    question: "Как осуществляется доставка оборудования Pressovac?",
+    answer: "Доставка осуществляется транспортными компаниями (СДЭК, Деловые линии, ПЭК) по всей России и в страны СНГ. Срок доставки в Москву — 1-2 дня, в регионы — 3-10 дней."
+  },
+  {
+    question: "Есть ли бесплатная доставка?",
+    answer: "Да, бесплатная доставка до терминала транспортной компании в Москве при заказе от 500 000 рублей. Страховка груза включена в стоимость."
+  },
+  {
+    question: "Какие способы оплаты доступны?",
+    answer: "Для юридических лиц и ИП доступен безналичный расчёт. Выставляем счёт в течение 1 рабочего дня. Для новых клиентов — предоплата 100%, для постоянных — отсрочка до 30 дней."
+  }
+];
 
 const deliveryFeatures = [
   { icon: Truck, title: 'Доставка по России', description: 'Отправляем оборудование в любой регион РФ транспортными компаниями' },
@@ -27,6 +48,14 @@ const conditions = [
 const Delivery = () => {
   return (
     <Layout>
+      <SEOHead 
+        title="Доставка и оплата оборудования Pressovac | Веконт-М"
+        description="Условия доставки оборудования Pressovac по России и СНГ. Бесплатная доставка от 500 000 ₽. Безналичный расчёт для юрлиц. Гарантия на всё оборудование."
+        keywords="доставка Pressovac, доставка оборудования для очистки вентиляции, купить вакуумную установку Москва, оплата оборудования"
+        canonical="/delivery"
+        breadcrumbs={deliveryBreadcrumbs}
+        faq={deliveryFAQ}
+      />
       {/* Hero */}
       <section className="section-padding hero-gradient">
         <div className="container-custom">

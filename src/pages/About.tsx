@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
+import { SEOHead } from '@/components/seo/SEOHead';
 import { Award, Users, Target, Heart, CheckCircle, Play, X } from 'lucide-react';
 
 const values = [
@@ -29,12 +30,40 @@ const benefits = [
   'Бизнес-план для старта',
 ];
 
+const aboutFAQ = [
+  {
+    question: "Кто такая компания Веконт-М?",
+    answer: "Веконт-М — официальный дистрибьютор финской компании PRESSOVAC Oy в России и странах СНГ с 2008 года. Мы поставляем профессиональное оборудование для очистки вентиляции и обучаем специалистов."
+  },
+  {
+    question: "Какие услуги предоставляет Веконт-М?",
+    answer: "Мы предоставляем: продажу оборудования Pressovac, техническую поддержку, обучение персонала, помощь в запуске бизнеса по очистке вентиляции, программу расчёта работ и бизнес-план для старта."
+  },
+  {
+    question: "Где находится офис компании?",
+    answer: "Наш офис находится в Москве. Мы осуществляем доставку оборудования по всей России и в страны СНГ."
+  }
+];
+
+const breadcrumbs = [
+  { name: 'Главная', url: '/' },
+  { name: 'О компании', url: '/about' }
+];
+
 const About = () => {
   const [showVideo, setShowVideo] = useState(false);
   const [platform, setPlatform] = useState<Platform>('rutube');
 
   return (
     <Layout>
+      <SEOHead 
+        title="О компании Веконт-М | Официальный дистрибьютор Pressovac в России"
+        description="Компания Веконт-М — официальный дистрибьютор финского оборудования Pressovac для очистки вентиляции с 2008 года. Поставки по России и СНГ. Обучение. Гарантия."
+        keywords="Веконт-М, Pressovac дистрибьютор, оборудование для очистки вентиляции Москва, обучение очистке вентиляции"
+        canonical="/about"
+        breadcrumbs={breadcrumbs}
+        faq={aboutFAQ}
+      />
       {/* Hero */}
       <section className="section-padding hero-gradient">
         <div className="container-custom">

@@ -1,12 +1,41 @@
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
+import { SEOHead } from '@/components/seo/SEOHead';
 import { Link } from 'react-router-dom';
 import { ArrowRight, BookOpen, Calendar } from 'lucide-react';
 import { articlesData } from '@/data/articlesData';
 
+const articlesBreadcrumbs = [
+  { name: 'Главная', url: '/' },
+  { name: 'Статьи', url: '/articles' }
+];
+
+const articlesFAQ = [
+  {
+    question: "Как начать бизнес по очистке вентиляции?",
+    answer: "Для старта бизнеса по очистке вентиляции необходимо: зарегистрировать ИП/ООО, приобрести минимальный комплект оборудования (вакуумная установка, щёточная машина, видеокамера), пройти обучение и получить необходимые сертификаты."
+  },
+  {
+    question: "Какие требования к очистке вентиляции по СанПиН?",
+    answer: "Согласно СанПиН, очистка вентиляции должна проводиться регулярно с документальным подтверждением. Для предприятий общепита — каждые 3-6 месяцев, для офисов — не реже 1 раза в год."
+  },
+  {
+    question: "Какое оборудование нужно для профессиональной очистки вентиляции?",
+    answer: "Минимальный профессиональный набор включает: вакуумную установку с HEPA-фильтром, щёточную машину с гибким валом, набор щёток разных диаметров, видеокамеру для инспекции и средства дезинфекции."
+  }
+];
+
 const Articles = () => {
   return (
     <Layout>
+      <SEOHead 
+        title="Статьи о бизнесе по очистке вентиляции | Pressovac"
+        description="Экспертные статьи о бизнесе по очистке вентиляции: как начать, выбор оборудования, санитарные требования, технологии очистки. Полезные материалы от Веконт-М."
+        keywords="статьи очистка вентиляции, бизнес очистка воздуховодов, как начать бизнес по очистке вентиляции, СанПиН вентиляция"
+        canonical="/articles"
+        breadcrumbs={articlesBreadcrumbs}
+        faq={articlesFAQ}
+      />
       {/* Hero */}
       <section className="section-padding hero-gradient">
         <div className="container-custom">

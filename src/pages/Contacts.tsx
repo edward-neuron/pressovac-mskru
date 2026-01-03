@@ -1,6 +1,7 @@
 import { useRef, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
+import { SEOHead } from '@/components/seo/SEOHead';
 import { Phone, Mail, MapPin, Clock, Send, FileText, MessageSquare, CheckCircle, ArrowRight, User, PhoneCall, Building, MessageCircle, Loader2, Paperclip, X, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -15,6 +16,27 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+
+const contactsBreadcrumbs = [
+  { name: 'Главная', url: '/' },
+  { name: 'Контакты', url: '/contacts' }
+];
+
+const contactsFAQ = [
+  {
+    question: "Как связаться с компанией Веконт-М?",
+    answer: "Вы можете связаться с нами по телефону (499) 677-2010, по email sales@pressovac-moscow.ru или заполнить форму на сайте. Мы работаем с понедельника по пятницу с 09:00 до 21:00."
+  },
+  {
+    question: "Где находится склад Pressovac в Москве?",
+    answer: "Наш склад находится по адресу: 123007, Москва, 2-й Хорошёвский проезд, 7с1, склад №4. Самовывоз возможен после согласования с менеджером."
+  },
+  {
+    question: "Как заказать оборудование Pressovac?",
+    answer: "Заполните форму заявки на сайте или свяжитесь с нами по телефону. Мы подготовим коммерческое предложение и счёт на оплату в течение 1 рабочего дня."
+  }
+];
+
 const contactInfo: Array<{ icon: typeof Phone; label: string; value: string; href: string; target?: string }> = [
   { icon: Phone, label: 'Телефон', value: '(499) 677-2010', href: 'tel:+74996772010' },
   { icon: Mail, label: 'Email', value: 'sales@pressovac-moscow.ru', href: 'mailto:sales@pressovac-moscow.ru' },
@@ -349,6 +371,14 @@ const Contacts = () => {
 
   return (
     <Layout>
+      <SEOHead 
+        title="Контакты Веконт-М | Заказать оборудование Pressovac"
+        description="Связаться с компанией Веконт-М: телефон (499) 677-2010, email sales@pressovac-moscow.ru. Адрес склада в Москве. Заказать оборудование Pressovac."
+        keywords="контакты Веконт-М, Pressovac Москва, заказать оборудование для очистки вентиляции, телефон Pressovac"
+        canonical="/contacts"
+        breadcrumbs={contactsBreadcrumbs}
+        faq={contactsFAQ}
+      />
       {/* Form Type Selection - Right at the top */}
       {!formType && (
         <section className="section-padding">

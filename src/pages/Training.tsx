@@ -1,10 +1,31 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
+import { SEOHead } from '@/components/seo/SEOHead';
 import { GraduationCap, Users, Clock, Award, CheckCircle, ArrowRight, Gift, FileText, Video, Calculator, Briefcase, BookOpen, Headphones, X, ZoomIn } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import calculationSoftwareImg from '@/assets/calculation-software.png';
+
+const trainingBreadcrumbs = [
+  { name: 'Главная', url: '/' },
+  { name: 'Обучение', url: '/training' }
+];
+
+const trainingFAQ = [
+  {
+    question: "Включено ли обучение в стоимость оборудования?",
+    answer: "Да, полная программа обучения предоставляется бесплатно при покупке оборудования Pressovac. Это включает видео-курсы, техническую документацию, программу расчёта работ и бизнес-план."
+  },
+  {
+    question: "Что входит в программу обучения?",
+    answer: "Программа включает: технологическую карту, вводный видео-курс, ПО для расчёта стоимости работ, бизнес-план, техническую документацию, шаблоны коммерческих предложений и готовые бизнес-документы."
+  },
+  {
+    question: "Есть ли поддержка после покупки оборудования?",
+    answer: "Да, мы предоставляем ежедневную техническую поддержку и консультации. Вы получаете доступ к сообществу профессионалов и можете задавать любые вопросы по работе с оборудованием."
+  }
+];
 
 const benefits = [
   { icon: Gift, title: 'Бесплатно', description: 'Предоставляется бесплатно при покупке оборудования' },
@@ -50,6 +71,14 @@ const Training = () => {
 
   return (
     <Layout>
+      <SEOHead 
+        title="Обучение очистке вентиляции | Бесплатное обучение Pressovac"
+        description="Бесплатное обучение при покупке оборудования Pressovac: видео-курсы, бизнес-план, программа расчёта работ, техническая документация. Ежедневная поддержка."
+        keywords="обучение очистке вентиляции, курсы по очистке воздуховодов, бизнес очистка вентиляции, Pressovac обучение"
+        canonical="/training"
+        breadcrumbs={trainingBreadcrumbs}
+        faq={trainingFAQ}
+      />
       {/* Software Popup */}
       <AnimatePresence>
         {showSoftwarePopup && (

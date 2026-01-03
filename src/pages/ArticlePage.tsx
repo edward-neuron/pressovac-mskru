@@ -226,11 +226,26 @@ const ArticlePage = () => {
     return elements;
   };
 
+  // Breadcrumbs for article
+  const articleBreadcrumbs = [
+    { name: 'Главная', url: '/' },
+    { name: 'Статьи', url: '/articles' },
+    { name: article.title, url: `/articles/${article.slug}` }
+  ];
+
   return (
     <Layout>
       <SEOHead 
         title={`${article.title} | Pressovac`}
         description={article.excerpt}
+        keywords={`${article.category}, очистка вентиляции, Pressovac, ${article.title.toLowerCase()}`}
+        canonical={`/articles/${article.slug}`}
+        ogType="article"
+        breadcrumbs={articleBreadcrumbs}
+        article={{
+          author: article.author,
+          section: article.category
+        }}
       />
 
       {/* Hero */}

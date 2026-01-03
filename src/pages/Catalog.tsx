@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
+import { SEOHead } from '@/components/seo/SEOHead';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Zap, Wind, Wrench, Sparkles, Camera, Settings, Package, FileText } from 'lucide-react';
 import {
@@ -32,6 +33,31 @@ import videoCameras31 from '@/assets/video-cameras-3-1.png';
 import scannerLocators31 from '@/assets/scanner-locators-3-1.png';
 import compressorSquareV2 from '@/assets/compressor-square-v2.png';
 import accessories31 from '@/assets/accessories-3-1.png';
+
+// SEO data
+const catalogBreadcrumbs = [
+  { name: 'Главная', url: '/' },
+  { name: 'Каталог', url: '/catalog' }
+];
+
+const catalogFAQ = [
+  {
+    question: "Какое оборудование Pressovac подходит для очистки вентиляции?",
+    answer: "Для полноценной очистки вентиляции необходим комплект из вакуумной установки, щёточной машины с гибким валом и набора щёток. Для контроля качества рекомендуется видеокамера для инспекции воздуховодов."
+  },
+  {
+    question: "Чем отличаются вакуумные установки Pressovac?",
+    answer: "Вакуумные установки Pressovac различаются по мощности и производительности: от компактных моделей для небольших объектов до мощных промышленных систем. Все модели имеют HEPA-фильтрацию."
+  },
+  {
+    question: "Для чего нужна видеоинспекция вентиляции?",
+    answer: "Видеоинспекция позволяет оценить степень загрязнения воздуховодов до начала работ и подтвердить качество очистки после. Это важный аргумент для клиентов и обязательное требование многих стандартов."
+  },
+  {
+    question: "Как выбрать щётки для очистки воздуховодов?",
+    answer: "Выбор щёток зависит от типа воздуховодов (круглые или прямоугольные), их диаметра и степени загрязнения. Для жировых отложений используются специальные абразивные щётки."
+  }
+];
 
 const brushEquipmentImages: Record<string, string> = {
   'default': brushMachinesMain,
@@ -171,6 +197,14 @@ const Catalog = () => {
 
   return (
     <Layout>
+      <SEOHead 
+        title="Каталог оборудования Pressovac для очистки вентиляции | Веконт-М"
+        description="Полный каталог профессионального оборудования Pressovac: вакуумные установки, щёточные машины, видеоинспекция, дезинфекция вентиляции. Официальный дистрибьютор в России."
+        keywords="каталог Pressovac, оборудование для очистки вентиляции, вакуумные установки, щёточные машины, видеоинспекция воздуховодов, дезинфекция вентиляции"
+        canonical="/catalog"
+        breadcrumbs={catalogBreadcrumbs}
+        faq={catalogFAQ}
+      />
       {/* Hero */}
       <section className="section-padding hero-gradient">
         <div className="container-custom">

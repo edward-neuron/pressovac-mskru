@@ -32,6 +32,22 @@ export const stripHtmlToText = (html: string): string => {
   // 2) Normalize newlines.
   text = text.replace(/\r\n?/g, "\n");
 
+  // 2b) CRITICAL: Convert HTML table rows to list items BEFORE stripping tags
+  // Pattern: <tr>...<td>Item Name</td><td>Quantity</td>...</tr> => "- Item Name - Quantity"
+  // First, normalize table cells to be separated by " | "
+  text = text.replace(/<\/td>\s*<td[^>]*>/gi, " | ");
+  // Add newline before each table row
+  text = text.replace(/<tr[^>]*>/gi, "\n");
+  // Remove closing row tags
+  text = text.replace(/<\/tr>/gi, "");
+  // Remove table, tbody, thead tags
+  text = text.replace(/<\/?table[^>]*>/gi, "\n");
+  text = text.replace(/<\/?tbody[^>]*>/gi, "");
+  text = text.replace(/<\/?thead[^>]*>/gi, "");
+  // Remove td tags (opening and closing)
+  text = text.replace(/<td[^>]*>/gi, "");
+  text = text.replace(/<\/td>/gi, "");
+
   // 3) Convert common structural tags to newlines / list markers.
   text = text.replace(/<br\s*\/?>/gi, "\n");
   text = text.replace(/<li[^>]*>/gi, "\n- ");
@@ -104,6 +120,21 @@ const isWarningStart = (line: string): boolean => {
   return /^Обращаем ваше внимание/i.test(line);
 };
 
+// Check if line is a table row (contains " | " separator with quantity)
+const isTableRow = (line: string): boolean => {
+  // Table rows typically have format "Item Name | Quantity"
+  return /\|\s*\d+\s*$/.test(line.trim());
+};
+
+// Convert table row "Item Name | Qty" to list item "- Item Name - Qty"
+const tableRowToListItem = (line: string): string => {
+  const parts = line.split("|").map(p => p.trim());
+  if (parts.length >= 2 && parts[0] && parts[1]) {
+    return `- ${parts[0]} - ${parts[1]}`;
+  }
+  return line;
+};
+
 export const parseDescriptionBlocks = (text: string): DescriptionBlocks => {
   const lines = text
     .split("\n")
@@ -136,6 +167,13 @@ export const parseDescriptionBlocks = (text: string): DescriptionBlocks => {
         warnings.push(line);
         continue;
       }
+    }
+
+    // CRITICAL: Check if line is a table row (from HTML table parsing)
+    // Format: "Item Name | Quantity"
+    if (isTableRow(line)) {
+      listItems.push(tableRowToListItem(line));
+      continue;
     }
 
     // Check if line starts with asterisk

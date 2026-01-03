@@ -4,6 +4,7 @@ export type DescriptionBlocks = {
   introLines: string[];
   listItems: string[];
   footnotes: string[];
+  warnings: string[]; // For "Обращаем ваше внимание!" blocks
 };
 
 const decodeHtmlEntities = (input: string): string => {
@@ -78,6 +79,9 @@ export const stripHtmlToText = (html: string): string => {
   // 8e) Handle cases like "мм - 1 комплект- L" where dash is between quantity and new item
   text = text.replace(/(мм|см)\s*[–—−-]\s*(\d+\s*(шт|комп|комплект|ед|упак)[а-яё]*\.?)\s*[–—−-]\s*/gi, "$1 - $2\n- ");
 
+  // 8f) IMPORTANT: Force newline before "Обращаем ваше внимание" text
+  text = text.replace(/([.!?:;])\s*(Обращаем ваше внимание)/gi, "$1\n\n$2");
+
   // 9) Clean up whitespace.
   text = text.replace(/\u00A0/g, " ");
   text = text.replace(/[ \t]+/g, " ");
@@ -95,6 +99,11 @@ const isSubItem = (line: string): boolean => {
   return /[-–—]\s*\d+\s*(шт|комп|ед|упак|комплект)/i.test(line);
 };
 
+// Check if line starts a warning/notice block
+const isWarningStart = (line: string): boolean => {
+  return /^Обращаем ваше внимание/i.test(line);
+};
+
 export const parseDescriptionBlocks = (text: string): DescriptionBlocks => {
   const lines = text
     .split("\n")
@@ -104,10 +113,31 @@ export const parseDescriptionBlocks = (text: string): DescriptionBlocks => {
   const introLines: string[] = [];
   const listItems: string[] = [];
   const footnotes: string[] = [];
+  const warnings: string[] = [];
 
   let inFootnote = false;
+  let inWarning = false;
 
   for (const line of lines) {
+    // Check for warning block start
+    if (isWarningStart(line)) {
+      inWarning = true;
+      warnings.push(line);
+      continue;
+    }
+
+    // If we're in a warning block, continue collecting warning lines
+    if (inWarning) {
+      // Warning block ends when we hit a new list item or asterisk line
+      if (/^[-–—−*]/.test(line)) {
+        inWarning = false;
+        // Process this line normally below
+      } else {
+        warnings.push(line);
+        continue;
+      }
+    }
+
     // Check if line starts with asterisk
     if (/^\*/.test(line)) {
       // If it's a sub-item (ends with quantity), treat as list item, not footnote
@@ -146,5 +176,6 @@ export const parseDescriptionBlocks = (text: string): DescriptionBlocks => {
     introLines,
     listItems,
     footnotes,
+    warnings,
   };
 };

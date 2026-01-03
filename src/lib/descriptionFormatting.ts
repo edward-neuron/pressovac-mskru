@@ -52,7 +52,9 @@ export const stripHtmlToText = (html: string): string => {
 
   // 8) If list items were in one sentence after punctuation, force a newline before the dash.
   // Example: "...: - Item1; - Item2" => each on its own line.
-  text = text.replace(/([:;.!?])\s*[–—−-]\s+/g, "$1\n- ");
+  // BUT: Do NOT break when the dash is followed only by a quantity like "- 1 шт." or "- 2 комп."
+  // Those should stay on the same line as the preceding item.
+  text = text.replace(/([:;.!?])\s*[–—−-]\s+(?!\d+\s*(шт|комп|ед|упак))/gi, "$1\n- ");
 
   // 9) Clean up whitespace.
   text = text.replace(/\u00A0/g, " ");

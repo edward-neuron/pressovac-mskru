@@ -142,11 +142,12 @@ const isEmptyTableRow = (line: string): boolean => {
   return false;
 };
 
-// Convert table row "Item Name | Qty" to list item "- Item Name - Qty"
+// Convert table row "Item Name | Qty" to list item "- Item Name - Qty шт"
 const tableRowToListItem = (line: string): string => {
   const parts = line.split("|").map(p => p.trim());
   if (parts.length >= 2 && parts[0] && parts[1]) {
-    return `- ${parts[0]} - ${parts[1]}`;
+    // Add "шт" after the quantity number
+    return `- ${parts[0]} - ${parts[1]} шт`;
   }
   return line;
 };

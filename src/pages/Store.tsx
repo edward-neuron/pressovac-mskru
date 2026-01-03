@@ -81,37 +81,65 @@ interface CategoryCardProps {
   index: number;
 }
 
-const CategoryCard = ({ category, image, productCount, onClick, index }: CategoryCardProps) => (
-  <motion.button
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay: index * 0.03 }}
-    onClick={onClick}
-    className="group relative bg-card rounded-lg border border-border/50 overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300 text-left w-full"
-  >
-    <div className="aspect-square bg-white relative overflow-hidden p-2">
-      {image ? (
-        <img 
-          src={image} 
-          alt={category.name}
-          className="w-full h-full object-contain"
-        />
-      ) : (
-        <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-          <ShoppingCart className="w-12 h-12 opacity-20" />
-        </div>
-      )}
-    </div>
-    <div className="px-2 py-2 border-t border-border/30">
-      <h3 className="text-xs font-medium text-primary leading-tight line-clamp-2 min-h-[2rem] hover:underline">
-        {category.name}
-      </h3>
-      <span className="text-xs text-muted-foreground">
-        {productCount}
-      </span>
-    </div>
-  </motion.button>
-);
+// Check if category is an accessory subcategory (should show blue placeholder)
+// Exception: "Аксессуары для гибких валов Стандарт и Сталь" is in a general group
+const isAccessorySubcategory = (name: string): boolean => {
+  const lowerName = name.toLowerCase();
+  return lowerName.startsWith('аксессуары для') && 
+         !lowerName.includes('гибких валов стандарт и сталь');
+};
+
+// Extract short accessory name for display on placeholder
+const getAccessoryShortName = (name: string): string => {
+  // "Аксессуары для P25 и P40" -> "Аксессуары для P25 и P40"
+  // Keep the full name but format it nicely for the placeholder
+  return name;
+};
+
+const CategoryCard = ({ category, image, productCount, onClick, index }: CategoryCardProps) => {
+  const isAccessory = isAccessorySubcategory(category.name);
+  
+  return (
+    <motion.button
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.03 }}
+      onClick={onClick}
+      className="group relative bg-card rounded-lg border border-border/50 overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300 text-left w-full"
+    >
+      <div className="aspect-square relative overflow-hidden">
+        {isAccessory ? (
+          // Blue placeholder for accessory subcategories
+          <div className="w-full h-full bg-primary flex items-center justify-center p-4">
+            <span className="text-primary-foreground text-center font-semibold text-sm leading-tight">
+              {getAccessoryShortName(category.name)}
+            </span>
+          </div>
+        ) : image ? (
+          <div className="w-full h-full bg-white p-2">
+            <img 
+              src={image} 
+              alt={category.name}
+              className="w-full h-full object-contain"
+            />
+          </div>
+        ) : (
+          <div className="w-full h-full bg-white flex items-center justify-center text-muted-foreground">
+            <ShoppingCart className="w-12 h-12 opacity-20" />
+          </div>
+        )}
+      </div>
+      <div className="px-2 py-2 border-t border-border/30">
+        <h3 className="text-xs font-medium text-primary leading-tight line-clamp-2 min-h-[2rem] hover:underline">
+          {category.name}
+        </h3>
+        <span className="text-xs text-muted-foreground">
+          {productCount}
+        </span>
+      </div>
+    </motion.button>
+  );
+};
 
 // Breadcrumbs component
 interface BreadcrumbsProps {

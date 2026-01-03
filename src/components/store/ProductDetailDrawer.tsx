@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { ShoppingCart, Check, ExternalLink } from 'lucide-react';
 import { YmlProduct } from '@/hooks/useYmlStore';
 import { useCart } from '@/contexts/CartContext';
+import { parseDescriptionBlocks, stripHtmlToText } from '@/lib/descriptionFormatting';
 
 interface ProductDetailDrawerProps {
   product: YmlProduct | null;
@@ -32,44 +33,6 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
     setTimeout(() => setJustAdded(false), 1500);
   };
 
-  // Strip HTML tags and convert to clean text
-  const stripHtml = (html: string): string => {
-    const decodeEntities = (input: string) => {
-      // Most robust way in the browser (works for &lt;...&gt; case)
-      if (typeof document !== 'undefined') {
-        const textarea = document.createElement('textarea');
-        textarea.innerHTML = input;
-        return textarea.value;
-      }
-
-      // Fallback (shouldn’t happen in this app, but keeps it safe)
-      return input
-        .replace(/&nbsp;/g, ' ')
-        .replace(/&amp;/g, '&')
-        .replace(/&lt;/g, '<')
-        .replace(/&gt;/g, '>')
-        .replace(/&quot;/g, '"')
-        .replace(/&#(\d+);/g, (_, code) => String.fromCharCode(parseInt(code)));
-    };
-
-    // 1) First decode entities so tags become real (<p>, <br>, ...)
-    let text = decodeEntities(html);
-
-    // 2) Normalize HTML structure into newlines
-    text = text.replace(/<br\s*\/?>/gi, '\n');
-    text = text.replace(/<\/(p|div)\s*>|<hr[^>]*>/gi, '\n');
-
-    // 3) Remove remaining tags
-    text = text.replace(/<[^>]+>/g, '');
-
-    // 4) Decode any entities left inside plain text
-    text = decodeEntities(text);
-
-    // 5) Clean up whitespace
-    text = text.replace(/[ \t]+/g, ' ');
-    text = text.replace(/\n\s*\n/g, '\n\n');
-    return text.trim();
-  };
 
   // Parse description to show as list if it contains multiple lines
   const renderDescription = () => {
@@ -77,27 +40,16 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
       return <p className="text-muted-foreground">Описание недоступно</p>;
     }
 
-    // Clean HTML from description
-    const cleanText = stripHtml(product.description);
-    
-    // Split into lines and filter empty ones
-    const lines = cleanText.split('\n').map(line => line.trim()).filter(line => line);
-    
-    // Categorize lines
-    const introLines: string[] = [];      // Regular text (intro paragraphs)
-    const listItems: string[] = [];        // Lines starting with -
-    const footnotes: string[] = [];        // Lines starting with * (footnotes go at bottom)
-    
-    lines.forEach(line => {
-      if (line.startsWith('*')) {
-        footnotes.push(line);
-      } else if (line.startsWith('-')) {
-        listItems.push(line);
-      } else {
-        introLines.push(line);
-      }
-    });
-    
+    // Clean + normalize supplier HTML into readable text
+    const cleanText = stripHtmlToText(product.description);
+
+    if (!cleanText) {
+      return <p className="text-muted-foreground">Описание недоступно</p>;
+    }
+
+    // Split into blocks (intro, list, footnotes)
+    const { introLines, listItems, footnotes } = parseDescriptionBlocks(cleanText);
+
     return (
       <div className="space-y-4">
         {/* Intro paragraphs */}
@@ -108,12 +60,12 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
             ))}
           </div>
         )}
-        
+
         {/* List items */}
         {listItems.length > 0 && (
           <ul className="space-y-1.5">
             {listItems.map((line, index) => {
-              const cleanLine = line.replace(/^-\s*/, '').trim();
+              const cleanLine = line.replace(/^[-–—]\s*/, '').trim();
               return (
                 <li key={index} className="flex items-start gap-2 text-sm text-foreground">
                   <span className="text-primary mt-0.5 flex-shrink-0">•</span>
@@ -123,8 +75,8 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
             })}
           </ul>
         )}
-        
-        {/* Footnotes at the bottom */}
+
+        {/* Footnotes at the bottom (including lines after '*') */}
         {footnotes.length > 0 && (
           <div className="pt-2 border-t border-border/50 space-y-1">
             {footnotes.map((line, index) => (

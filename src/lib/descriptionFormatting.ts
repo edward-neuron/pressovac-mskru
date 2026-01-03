@@ -63,6 +63,13 @@ export const stripHtmlToText = (html: string): string => {
   
   // 8c) Handle asterisk after a list item ending (e.g., "1 комп. * Шланг" => newline before *)
   text = text.replace(/(\d+\s*(шт|комп|ед|упак)\.?)\s+\*\s+/gi, "$1\n* ");
+  
+  // 8d) CRITICAL: Handle dash after a list item ending (e.g., "1 комп.- S-Набор" or "1 комп. - S-Набор")
+  // This catches cases where a new list item starts right after a quantity ending
+  text = text.replace(/(\d+\s*(шт|комп|ед|упак)\.?)\s*[–—−-]\s*(?=[A-ZА-ЯЁa-zа-яё])/gi, "$1\n- ");
+  
+  // 8e) Handle cases like "мм - 1 комплект- L" where dash is between quantity and new item
+  text = text.replace(/(мм|см)\s*[–—−-]\s*(\d+\s*(шт|комп|комплект|ед|упак)[а-яё]*\.?)\s*[–—−-]\s*/gi, "$1 - $2\n- ");
 
   // 9) Clean up whitespace.
   text = text.replace(/\u00A0/g, " ");

@@ -63,7 +63,7 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
           {introLines.length > 0 && (
             <div className="space-y-2">
               {introLines.map((line, index) => (
-                <p key={index} className="text-sm text-foreground">{line}</p>
+                <p key={index} className="text-sm text-foreground font-semibold">{line}</p>
               ))}
             </div>
           )}

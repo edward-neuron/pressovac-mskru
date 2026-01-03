@@ -62,7 +62,7 @@ export const CatalogPreview = () => {
             Каталог оборудования
           </span>
           <h2 id="catalog-heading" className="font-display text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-            Линейки оборудования <span className="text-gradient">Pressovac</span>
+            Вся линейка <span className="text-gradient">Pressovac</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Полный комплекс решений для профессиональной очистки и обслуживания 

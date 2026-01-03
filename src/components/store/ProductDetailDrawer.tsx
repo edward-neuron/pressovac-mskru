@@ -83,16 +83,27 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
     // Split into lines and filter empty ones
     const lines = cleanText.split('\n').map(line => line.trim()).filter(line => line);
     
-    // Check if there are list items (lines starting with -)
-    const listItems = lines.filter(line => line.startsWith('-'));
-    const nonListItems = lines.filter(line => !line.startsWith('-'));
+    // Categorize lines
+    const introLines: string[] = [];      // Regular text (intro paragraphs)
+    const listItems: string[] = [];        // Lines starting with -
+    const footnotes: string[] = [];        // Lines starting with * (footnotes go at bottom)
+    
+    lines.forEach(line => {
+      if (line.startsWith('*')) {
+        footnotes.push(line);
+      } else if (line.startsWith('-')) {
+        listItems.push(line);
+      } else {
+        introLines.push(line);
+      }
+    });
     
     return (
       <div className="space-y-4">
-        {/* Non-list text (intro paragraph) */}
-        {nonListItems.length > 0 && (
+        {/* Intro paragraphs */}
+        {introLines.length > 0 && (
           <div className="space-y-2">
-            {nonListItems.map((line, index) => (
+            {introLines.map((line, index) => (
               <p key={index} className="text-sm text-foreground">{line}</p>
             ))}
           </div>
@@ -111,6 +122,15 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
               );
             })}
           </ul>
+        )}
+        
+        {/* Footnotes at the bottom */}
+        {footnotes.length > 0 && (
+          <div className="pt-2 border-t border-border/50 space-y-1">
+            {footnotes.map((line, index) => (
+              <p key={index} className="text-xs text-muted-foreground italic">{line}</p>
+            ))}
+          </div>
         )}
       </div>
     );

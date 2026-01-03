@@ -129,6 +129,12 @@ function parseYmlProducts(xmlText: string): YmlProduct[] {
     }
     
     if (priceNum > 0 && name && url) {
+      // Log EDW/PDW products for debugging description formatting
+      if (name.includes('EDW') || name.includes('PDW')) {
+        console.log(`[DEBUG] Product: ${name}`);
+        console.log(`[DEBUG] Description (first 500 chars): ${description?.substring(0, 500)}`);
+      }
+      
       products.push({
         id: offerId,
         name: name.trim(),

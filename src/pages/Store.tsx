@@ -112,11 +112,11 @@ const CategoryCard = ({ category, image, productCount, onClick, index }: Categor
         <div className="flex items-center gap-3 px-4 py-4">
           <ShoppingCart className="w-5 h-5 text-primary-foreground flex-shrink-0" />
           <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-semibold text-primary-foreground leading-tight truncate">
+            <h3 className="text-sm font-semibold text-primary-foreground leading-tight">
               {category.name}
             </h3>
             <span className="text-xs text-primary-foreground/70">
-              {productCount}
+              {productCount} единиц
             </span>
           </div>
           <ChevronRight className="w-5 h-5 text-primary-foreground/70 flex-shrink-0 group-hover:translate-x-1 transition-transform" />

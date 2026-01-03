@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 export interface YmlProduct {
   id: string;
   name: string;
+  description?: string;
   price: string;
   priceNum: number;
   url: string;

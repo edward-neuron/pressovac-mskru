@@ -17,6 +17,7 @@ function buildYmlUrl(): string {
 interface YmlProduct {
   id: string;
   name: string;
+  description?: string;
   price: string;
   priceNum: number;
   url: string;
@@ -103,6 +104,11 @@ function parseYmlProducts(xmlText: string): YmlProduct[] {
                             offerContent.match(/<vendorCode>([^<]*)<\/vendorCode>/i);
     const vendorCode = vendorCodeMatch ? vendorCodeMatch[1].trim() : undefined;
     
+    // Extract description
+    const descriptionMatch = offerContent.match(/<description><!\[CDATA\[([\s\S]*?)\]\]><\/description>/i) ||
+                             offerContent.match(/<description>([^<]*)<\/description>/i);
+    const description = descriptionMatch ? descriptionMatch[1].trim() : undefined;
+    
     // Extract first picture only
     const pictureMatch = offerContent.match(/<picture>([^<]*)<\/picture>/i);
     const picture = pictureMatch ? pictureMatch[1] : undefined;
@@ -126,6 +132,7 @@ function parseYmlProducts(xmlText: string): YmlProduct[] {
       products.push({
         id: offerId,
         name: name.trim(),
+        description,
         price: formatPrice(priceNum),
         priceNum,
         url,

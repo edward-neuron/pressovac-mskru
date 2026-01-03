@@ -99,6 +99,32 @@ const getAccessoryShortName = (name: string): string => {
 const CategoryCard = ({ category, image, productCount, onClick, index }: CategoryCardProps) => {
   const isAccessory = isAccessorySubcategory(category.name);
   
+  // For accessory subcategories, show a flat banner instead of square card
+  if (isAccessory) {
+    return (
+      <motion.button
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: index * 0.03 }}
+        onClick={onClick}
+        className="group relative bg-primary rounded-xl overflow-hidden hover:shadow-lg hover:bg-primary/90 transition-all duration-300 text-left w-full"
+      >
+        <div className="flex items-center gap-3 px-4 py-4">
+          <ShoppingCart className="w-5 h-5 text-primary-foreground flex-shrink-0" />
+          <div className="flex-1 min-w-0">
+            <h3 className="text-sm font-semibold text-primary-foreground leading-tight truncate">
+              {category.name}
+            </h3>
+            <span className="text-xs text-primary-foreground/70">
+              {productCount}
+            </span>
+          </div>
+          <ChevronRight className="w-5 h-5 text-primary-foreground/70 flex-shrink-0 group-hover:translate-x-1 transition-transform" />
+        </div>
+      </motion.button>
+    );
+  }
+  
   return (
     <motion.button
       initial={{ opacity: 0, y: 20 }}
@@ -108,14 +134,7 @@ const CategoryCard = ({ category, image, productCount, onClick, index }: Categor
       className="group relative bg-card rounded-lg border border-border/50 overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300 text-left w-full"
     >
       <div className="aspect-square relative overflow-hidden">
-        {isAccessory ? (
-          // Blue placeholder for accessory subcategories
-          <div className="w-full h-full bg-primary flex items-center justify-center p-4">
-            <span className="text-primary-foreground text-center font-semibold text-sm leading-tight">
-              {getAccessoryShortName(category.name)}
-            </span>
-          </div>
-        ) : image ? (
+        {image ? (
           <div className="w-full h-full bg-white p-2">
             <img 
               src={image} 

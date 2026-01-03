@@ -62,9 +62,14 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
           {/* Intro paragraphs always visible */}
           {introLines.length > 0 && (
             <div className="space-y-2">
-              {introLines.map((line, index) => (
-                <p key={index} className="text-sm text-foreground font-semibold">{line}</p>
-              ))}
+              {introLines.map((line, index) => {
+                const isTitleLine = line.toLowerCase().includes('в комплект поставки входит');
+                return (
+                  <p key={index} className={`text-sm text-foreground ${isTitleLine ? 'font-semibold' : ''}`}>
+                    {line}
+                  </p>
+                );
+              })}
             </div>
           )}
 

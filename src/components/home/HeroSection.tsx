@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Play, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { AnimatedWaves } from './AnimatedWaves';
 import equipmentHero from '@/assets/equipment-hero.png';
 
 const features = [
@@ -14,6 +15,9 @@ const features = [
 export const HeroSection = () => {
   return (
     <section className="relative hero-gradient overflow-hidden">
+      {/* Animated Waves Background */}
+      <AnimatedWaves />
+      
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-0 left-0 w-full h-full" 

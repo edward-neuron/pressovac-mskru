@@ -32,34 +32,71 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
     setTimeout(() => setJustAdded(false), 1500);
   };
 
+  // Strip HTML tags and convert to clean text
+  const stripHtml = (html: string): string => {
+    // Replace <br>, <br/>, <br /> with newlines
+    let text = html.replace(/<br\s*\/?>/gi, '\n');
+    // Replace </p>, <hr>, </div> with newlines
+    text = text.replace(/<\/p>|<hr[^>]*>|<\/div>/gi, '\n');
+    // Remove all remaining HTML tags
+    text = text.replace(/<[^>]+>/g, '');
+    // Decode HTML entities
+    text = text.replace(/&nbsp;/g, ' ');
+    text = text.replace(/&amp;/g, '&');
+    text = text.replace(/&lt;/g, '<');
+    text = text.replace(/&gt;/g, '>');
+    text = text.replace(/&quot;/g, '"');
+    text = text.replace(/&#(\d+);/g, (_, code) => String.fromCharCode(parseInt(code)));
+    // Clean up whitespace
+    text = text.replace(/[ \t]+/g, ' ');
+    text = text.replace(/\n\s*\n/g, '\n\n');
+    text = text.trim();
+    return text;
+  };
+
   // Parse description to show as list if it contains multiple lines
   const renderDescription = () => {
     if (!product.description) {
       return <p className="text-muted-foreground">Описание недоступно</p>;
     }
 
-    // Check if description contains list items (lines starting with - or •)
-    const lines = product.description.split('\n').filter(line => line.trim());
-    const isList = lines.some(line => line.trim().startsWith('-') || line.trim().startsWith('•'));
-
-    if (isList) {
-      return (
-        <ul className="space-y-1.5">
-          {lines.map((line, index) => {
-            const cleanLine = line.replace(/^[-•]\s*/, '').trim();
-            if (!cleanLine) return null;
-            return (
-              <li key={index} className="flex items-start gap-2 text-sm text-foreground">
-                <span className="text-primary mt-0.5">•</span>
-                <span>{cleanLine}</span>
-              </li>
-            );
-          })}
-        </ul>
-      );
-    }
-
-    return <p className="text-sm text-foreground whitespace-pre-line">{product.description}</p>;
+    // Clean HTML from description
+    const cleanText = stripHtml(product.description);
+    
+    // Split into lines and filter empty ones
+    const lines = cleanText.split('\n').map(line => line.trim()).filter(line => line);
+    
+    // Check if there are list items (lines starting with -)
+    const listItems = lines.filter(line => line.startsWith('-'));
+    const nonListItems = lines.filter(line => !line.startsWith('-'));
+    
+    return (
+      <div className="space-y-4">
+        {/* Non-list text (intro paragraph) */}
+        {nonListItems.length > 0 && (
+          <div className="space-y-2">
+            {nonListItems.map((line, index) => (
+              <p key={index} className="text-sm text-foreground">{line}</p>
+            ))}
+          </div>
+        )}
+        
+        {/* List items */}
+        {listItems.length > 0 && (
+          <ul className="space-y-1.5">
+            {listItems.map((line, index) => {
+              const cleanLine = line.replace(/^-\s*/, '').trim();
+              return (
+                <li key={index} className="flex items-start gap-2 text-sm text-foreground">
+                  <span className="text-primary mt-0.5 flex-shrink-0">•</span>
+                  <span>{cleanLine}</span>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
+    );
   };
 
   return (

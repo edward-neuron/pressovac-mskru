@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, Check, ExternalLink } from 'lucide-react';
+import { ShoppingCart, Check, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
 import { YmlProduct } from '@/hooks/useYmlStore';
 import { useCart } from '@/contexts/CartContext';
 import { parseDescriptionBlocks, stripHtmlToText } from '@/lib/descriptionFormatting';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 interface ProductDetailDrawerProps {
   product: YmlProduct | null;
@@ -15,6 +16,7 @@ interface ProductDetailDrawerProps {
 export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDetailDrawerProps) => {
   const { addItem, items } = useCart();
   const [justAdded, setJustAdded] = useState(false);
+  const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
 
   if (!product) return null;
 
@@ -50,6 +52,76 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
     // Split into blocks (intro, list, footnotes, warnings)
     const { introLines, listItems, footnotes, warnings } = parseDescriptionBlocks(cleanText);
 
+    // Check if this is a kit (has list items)
+    const isKit = listItems.length > 0;
+    const itemCount = listItems.length;
+
+    if (isKit) {
+      return (
+        <div className="space-y-4">
+          {/* Intro paragraphs always visible */}
+          {introLines.length > 0 && (
+            <div className="space-y-2">
+              {introLines.map((line, index) => (
+                <p key={index} className="text-sm text-foreground">{line}</p>
+              ))}
+            </div>
+          )}
+
+          {/* Collapsible list items */}
+          <Collapsible open={isDescriptionOpen} onOpenChange={setIsDescriptionOpen}>
+            <CollapsibleTrigger asChild>
+              <Button 
+                variant="ghost" 
+                className="w-full justify-between p-2 h-auto text-left hover:bg-primary/5"
+              >
+                <span className="text-sm font-medium">
+                  Состав комплекта ({itemCount} поз.)
+                </span>
+                {isDescriptionOpen ? (
+                  <ChevronUp className="w-4 h-4 text-muted-foreground" />
+                ) : (
+                  <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                )}
+              </Button>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="pt-2">
+              <ul className="space-y-1.5">
+                {listItems.map((line, index) => {
+                  const cleanLine = line.replace(/^[-–—]\s*/, '').trim();
+                  return (
+                    <li key={index} className="flex items-start gap-2 text-sm text-foreground">
+                      <span className="text-primary mt-0.5 flex-shrink-0">•</span>
+                      <span>{cleanLine}</span>
+                    </li>
+                  );
+                })}
+              </ul>
+
+              {/* Footnotes */}
+              {footnotes.length > 0 && (
+                <div className="pt-2 mt-2 border-t border-border/50 space-y-1">
+                  {footnotes.map((line, index) => (
+                    <p key={index} className="text-xs text-muted-foreground italic">{line}</p>
+                  ))}
+                </div>
+              )}
+
+              {/* Warnings */}
+              {warnings.length > 0 && (
+                <div className="mt-4 pt-3 border-t border-amber-500/30 bg-amber-500/5 rounded-lg p-3 space-y-1">
+                  {warnings.map((line, index) => (
+                    <p key={index} className="text-xs text-amber-700 dark:text-amber-400">{line}</p>
+                  ))}
+                </div>
+              )}
+            </CollapsibleContent>
+          </Collapsible>
+        </div>
+      );
+    }
+
+    // Non-kit products: show everything as before
     return (
       <div className="space-y-4">
         {/* Intro paragraphs */}
@@ -61,7 +133,7 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
           </div>
         )}
 
-        {/* List items */}
+        {/* List items (if any) */}
         {listItems.length > 0 && (
           <ul className="space-y-1.5">
             {listItems.map((line, index) => {
@@ -76,7 +148,7 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
           </ul>
         )}
 
-        {/* Footnotes at the bottom (including lines after '*') */}
+        {/* Footnotes */}
         {footnotes.length > 0 && (
           <div className="pt-2 border-t border-border/50 space-y-1">
             {footnotes.map((line, index) => (
@@ -85,7 +157,7 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
           </div>
         )}
 
-        {/* Warning/notice block (e.g., "Обращаем ваше внимание!") */}
+        {/* Warnings */}
         {warnings.length > 0 && (
           <div className="mt-4 pt-3 border-t border-amber-500/30 bg-amber-500/5 rounded-lg p-3 space-y-1">
             {warnings.map((line, index) => (

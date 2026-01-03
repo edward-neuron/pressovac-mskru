@@ -47,8 +47,8 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
       return <p className="text-muted-foreground">Описание недоступно</p>;
     }
 
-    // Split into blocks (intro, list, footnotes)
-    const { introLines, listItems, footnotes } = parseDescriptionBlocks(cleanText);
+    // Split into blocks (intro, list, footnotes, warnings)
+    const { introLines, listItems, footnotes, warnings } = parseDescriptionBlocks(cleanText);
 
     return (
       <div className="space-y-4">
@@ -81,6 +81,15 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
           <div className="pt-2 border-t border-border/50 space-y-1">
             {footnotes.map((line, index) => (
               <p key={index} className="text-xs text-muted-foreground italic">{line}</p>
+            ))}
+          </div>
+        )}
+
+        {/* Warning/notice block (e.g., "Обращаем ваше внимание!") */}
+        {warnings.length > 0 && (
+          <div className="mt-4 pt-3 border-t border-amber-500/30 bg-amber-500/5 rounded-lg p-3 space-y-1">
+            {warnings.map((line, index) => (
+              <p key={index} className="text-xs text-amber-700 dark:text-amber-400">{line}</p>
             ))}
           </div>
         )}

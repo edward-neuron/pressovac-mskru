@@ -63,9 +63,9 @@ export const AnimatedWaves = () => {
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {/* Silver/Gray wave group - top flow */}
+      {/* Silver/Gray wave group */}
       <motion.svg
-        className="absolute top-1/4 left-0 w-full h-[300px]"
+        className="absolute top-[55%] left-0 w-full h-[300px]"
         viewBox="0 0 1440 300"
         preserveAspectRatio="none"
         initial={{ x: -50 }}
@@ -75,9 +75,9 @@ export const AnimatedWaves = () => {
         {createWaveGroup(80, 'hsl(220, 10%, 70%)', 8, 6, 40, 2, 0)}
       </motion.svg>
 
-      {/* Blue wave group - middle flow */}
+      {/* Blue wave group */}
       <motion.svg
-        className="absolute top-1/3 left-0 w-full h-[300px]"
+        className="absolute top-[65%] left-0 w-full h-[300px]"
         viewBox="0 0 1440 300"
         preserveAspectRatio="none"
         initial={{ x: 50 }}
@@ -87,9 +87,9 @@ export const AnimatedWaves = () => {
         {createWaveGroup(120, 'hsl(210, 100%, 55%)', 7, 5, 35, 2.5, 0.5)}
       </motion.svg>
 
-      {/* Purple wave group - lower flow */}
+      {/* Purple wave group */}
       <motion.svg
-        className="absolute top-1/2 left-0 w-full h-[300px]"
+        className="absolute top-[75%] left-0 w-full h-[300px]"
         viewBox="0 0 1440 300"
         preserveAspectRatio="none"
         initial={{ x: 0 }}
@@ -101,7 +101,7 @@ export const AnimatedWaves = () => {
 
       {/* Interweaving accent lines */}
       <motion.svg
-        className="absolute top-[40%] left-0 w-full h-[200px] opacity-60"
+        className="absolute top-[70%] left-0 w-full h-[200px] opacity-60"
         viewBox="0 0 1440 200"
         preserveAspectRatio="none"
         animate={{ x: [10, -10, 10] }}

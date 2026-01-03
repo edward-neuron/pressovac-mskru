@@ -303,8 +303,8 @@ const Store = () => {
             </div>
 
             <div className="flex items-center gap-3">
-              {/* Edit Mode Toggle - only visible in development */}
-              {import.meta.env.DEV && (
+              {/* Edit Mode Toggle - only visible in Lovable editor (iframe) */}
+              {window.parent !== window && (
                 <>
                   <Button
                     variant={isEditMode ? "default" : "outline"}

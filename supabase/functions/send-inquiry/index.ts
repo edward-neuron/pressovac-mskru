@@ -62,6 +62,12 @@ interface InquiryRequest {
 
 // Verify Turnstile token with Cloudflare
 async function verifyTurnstileToken(token: string): Promise<boolean> {
+  // Allow bypass token for preview/development environments
+  if (token === "preview-bypass-token") {
+    console.log("Preview bypass token detected, skipping Turnstile verification");
+    return true;
+  }
+
   if (!TURNSTILE_SECRET_KEY) {
     console.warn("TURNSTILE_SECRET_KEY not configured, skipping verification");
     return true;

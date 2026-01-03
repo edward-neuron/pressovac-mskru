@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
 import { SEOHead } from '@/components/seo/SEOHead';
@@ -12,42 +12,49 @@ import { useCart } from '@/contexts/CartContext';
 import { formatPrice } from '@/data/storeData';
 import { ArrowLeft, ShoppingBag, Check, Loader2, Minus, Plus, Trash2, Upload, X, Phone, FileText, CheckCircle2 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
+import TurnstileWidget from '@/components/TurnstileWidget';
 
-const ALLOWED_FILE_TYPES = [
-  'application/pdf',
-  'application/msword',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'image/png',
-  'image/jpeg',
-  'image/jpg',
-];
-
-const ALLOWED_EXTENSIONS = ['.pdf', '.doc', '.docx', '.png', '.jpg', '.jpeg'];
+const ALLOWED_EXTENSIONS = ['pdf', 'doc', 'docx', 'png', 'jpg', 'jpeg'];
+const BLOCKED_EXTENSIONS = ['exe', 'bat', 'cmd', 'com', 'msi', 'scr', 'pif', 'js', 'vbs', 'wsf', 'hta', 'jar', 'ps1', 'sh', 'php', 'py', 'pl', 'rb'];
 
 const Checkout = () => {
   const { items, totalPrice, updateQuantity, removeItem, clearCart } = useCart();
-  const { toast } = useToast();
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
   const [orderNumber, setOrderNumber] = useState('');
-  const [attachments, setAttachments] = useState<File[]>([]);
+  const [attachment, setAttachment] = useState<File | null>(null);
   const [validationErrors, setValidationErrors] = useState<Record<string, boolean>>({});
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   
   const [formData, setFormData] = useState({
     name: '',
     company: '',
     phone: '',
     email: '',
-    city: '',
+    location: '',
     paymentMethod: '',
     deliveryMethod: '',
     comment: '',
     callbackRequested: false,
   });
+
+  const handleTurnstileVerify = useCallback((token: string) => {
+    setTurnstileToken(token);
+  }, []);
+
+  const handleTurnstileError = useCallback(() => {
+    setTurnstileToken(null);
+    toast.error('Ошибка проверки безопасности. Обновите страницу.');
+  }, []);
+
+  const handleTurnstileExpire = useCallback(() => {
+    setTurnstileToken(null);
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -55,7 +62,6 @@ const Checkout = () => {
       ...prev,
       [name]: value
     }));
-    // Clear validation error when user fills the field
     if (value && validationErrors[name]) {
       setValidationErrors(prev => ({ ...prev, [name]: false }));
     }
@@ -78,45 +84,39 @@ const Checkout = () => {
     }));
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files) return;
-
-    const newFiles: File[] = [];
-    const maxSize = 10 * 1024 * 1024; // 10MB
-
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      
-      if (!ALLOWED_FILE_TYPES.includes(file.type)) {
-        toast({
-          title: 'Недопустимый формат',
-          description: `Файл "${file.name}" имеет недопустимый формат. Допустимые форматы: PDF, Word, PNG, JPG`,
-          variant: 'destructive',
-        });
-        continue;
-      }
-
-      if (file.size > maxSize) {
-        toast({
-          title: 'Файл слишком большой',
-          description: `Файл "${file.name}" превышает максимальный размер 10MB`,
-          variant: 'destructive',
-        });
-        continue;
-      }
-
-      newFiles.push(file);
+  const validateFileExtension = (file: File): boolean => {
+    const ext = file.name.split('.').pop()?.toLowerCase() || '';
+    if (BLOCKED_EXTENSIONS.includes(ext)) {
+      toast.error(`Файлы .${ext} запрещены по соображениям безопасности`);
+      return false;
     }
+    if (!ALLOWED_EXTENSIONS.includes(ext)) {
+      toast.error(`Файлы .${ext} не поддерживаются. Допустимые форматы: PDF, DOC, DOCX, PNG, JPG, JPEG`);
+      return false;
+    }
+    return true;
+  };
 
-    setAttachments(prev => [...prev, ...newFiles]);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error('Файл слишком большой. Максимальный размер: 10 МБ');
+        return;
+      }
+      if (!validateFileExtension(file)) {
+        if (fileInputRef.current) fileInputRef.current.value = '';
+        return;
+      }
+      setAttachment(file);
     }
   };
 
-  const removeAttachment = (index: number) => {
-    setAttachments(prev => prev.filter((_, i) => i !== index));
+  const removeAttachment = () => {
+    setAttachment(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
   const validateForm = (): boolean => {
@@ -126,33 +126,43 @@ const Checkout = () => {
     if (!formData.company.trim()) errors.company = true;
     if (!formData.phone.trim()) errors.phone = true;
     if (!formData.email.trim()) errors.email = true;
-    if (!formData.city.trim()) errors.city = true;
+    if (!formData.location.trim()) errors.location = true;
     if (!formData.paymentMethod) errors.paymentMethod = true;
     if (!formData.deliveryMethod) errors.deliveryMethod = true;
+    if (!formData.comment.trim()) errors.comment = true;
 
     setValidationErrors(errors);
 
     if (Object.keys(errors).length > 0) {
-      toast({
-        title: 'Заполните все обязательные поля',
-        description: 'Пожалуйста, заполните все поля, отмеченные звёздочкой',
-        variant: 'destructive',
-      });
+      toast.error('Заполните все обязательные поля');
       return false;
     }
 
     return true;
   };
 
+  const getPaymentMethodLabel = (value: string): string => {
+    switch (value) {
+      case 'invoice': return 'Оплата по счёту';
+      case 'cash': return 'Оплата наличными';
+      default: return value;
+    }
+  };
+
+  const getDeliveryMethodLabel = (value: string): string => {
+    switch (value) {
+      case 'pickup': return 'Самовывоз со склада';
+      case 'delovye-linii': return 'Доставка ТК «Деловые Линии»';
+      case 'jet-logistic': return 'Международная доставка (Jet Logistic)';
+      default: return value;
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (items.length === 0) {
-      toast({
-        title: 'Корзина пуста',
-        description: 'Добавьте товары перед оформлением заказа',
-        variant: 'destructive',
-      });
+      toast.error('Корзина пуста. Добавьте товары перед оформлением заказа');
       return;
     }
 
@@ -160,19 +170,83 @@ const Checkout = () => {
       return;
     }
 
+    if (!turnstileToken) {
+      toast.error('Пожалуйста, подтвердите, что вы не робот');
+      return;
+    }
+
     setIsSubmitting(true);
 
-    // Generate order number
-    const generatedOrderNumber = `PV-${Date.now().toString().slice(-8)}`;
+    try {
+      // Generate order number
+      const generatedOrderNumber = `PV-${Date.now().toString().slice(-8)}`;
 
-    // Simulate order submission
-    await new Promise(resolve => setTimeout(resolve, 1500));
+      let attachmentPath: string | undefined;
+      let attachmentFileName: string | undefined;
 
-    setOrderNumber(generatedOrderNumber);
-    setOrderSuccess(true);
-    clearCart();
-    
-    setIsSubmitting(false);
+      // Upload file if present
+      if (attachment) {
+        const fileExt = attachment.name.split('.').pop();
+        const fileName = `orders/${generatedOrderNumber}-${Date.now()}.${fileExt}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('inquiry-attachments')
+          .upload(fileName, attachment);
+
+        if (uploadError) {
+          console.error('File upload error:', uploadError);
+          toast.error('Ошибка загрузки файла');
+          setIsSubmitting(false);
+          return;
+        }
+
+        attachmentPath = fileName;
+        attachmentFileName = attachment.name;
+      }
+
+      // Build order details for email
+      const orderItems = items.map(item => ({
+        name: item.name,
+        sku: item.article || '',
+        quantity: item.quantity,
+        price: item.price,
+        image: item.image || '',
+      }));
+
+      const { error } = await supabase.functions.invoke('send-inquiry', {
+        body: {
+          type: 'store-order',
+          orderNumber: generatedOrderNumber,
+          name: formData.name,
+          company: formData.company,
+          phone: formData.phone,
+          email: formData.email,
+          location: formData.location,
+          paymentMethod: getPaymentMethodLabel(formData.paymentMethod),
+          deliveryMethod: getDeliveryMethodLabel(formData.deliveryMethod),
+          comments: formData.comment,
+          callbackRequested: formData.callbackRequested,
+          orderItems,
+          totalPrice,
+          attachmentPath,
+          attachmentFileName,
+          turnstileToken,
+          subject: `Заказ №${generatedOrderNumber} из интернет-магазина`,
+        },
+      });
+
+      if (error) throw error;
+
+      setOrderNumber(generatedOrderNumber);
+      setOrderSuccess(true);
+      clearCart();
+      
+    } catch (error: any) {
+      console.error('Error submitting order:', error);
+      toast.error('Ошибка при отправке заказа. Попробуйте позже.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Success screen
@@ -359,17 +433,17 @@ const Checkout = () => {
                   </div>
 
                   <div className="space-y-2 mt-4">
-                    <Label htmlFor="city" className={validationErrors.city ? 'text-destructive' : ''}>
-                      Город доставки *
+                    <Label htmlFor="location" className={validationErrors.location ? 'text-destructive' : ''}>
+                      Страна/Город доставки *
                     </Label>
                     <Input
-                      id="city"
-                      name="city"
+                      id="location"
+                      name="location"
                       required
-                      value={formData.city}
+                      value={formData.location}
                       onChange={handleInputChange}
-                      placeholder="Москва"
-                      className={validationErrors.city ? 'border-destructive ring-destructive' : ''}
+                      placeholder="Россия, Москва"
+                      className={validationErrors.location ? 'border-destructive ring-destructive' : ''}
                     />
                   </div>
                 </div>
@@ -434,52 +508,43 @@ const Checkout = () => {
                 <div className="pt-4 border-t">
                   <h2 className="text-xl font-semibold mb-4">Прикрепить реквизиты</h2>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Допустимые форматы: PDF, Word, PNG, JPG (до 10MB)
+                    Допустимые форматы: PDF, DOC, DOCX, PNG, JPG, JPEG (до 10 МБ)
                   </p>
                   
                   <input
                     ref={fileInputRef}
                     type="file"
-                    accept={ALLOWED_EXTENSIONS.join(',')}
-                    multiple
+                    accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
                     onChange={handleFileChange}
                     className="hidden"
                     id="file-upload"
                   />
                   
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="mb-4"
-                  >
-                    <Upload className="w-4 h-4 mr-2" />
-                    Выбрать файлы
-                  </Button>
-
-                  {attachments.length > 0 && (
-                    <div className="space-y-2">
-                      {attachments.map((file, index) => (
-                        <div 
-                          key={index} 
-                          className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg"
-                        >
-                          <FileText className="w-5 h-5 text-muted-foreground flex-shrink-0" />
-                          <span className="text-sm flex-1 truncate">{file.name}</span>
-                          <span className="text-xs text-muted-foreground">
-                            {(file.size / 1024 / 1024).toFixed(2)} MB
-                          </span>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                            onClick={() => removeAttachment(index)}
-                          >
-                            <X className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      ))}
+                  {!attachment ? (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      <Upload className="w-4 h-4 mr-2" />
+                      Выбрать файл
+                    </Button>
+                  ) : (
+                    <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                      <FileText className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                      <span className="text-sm flex-1 truncate">{attachment.name}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {(attachment.size / 1024 / 1024).toFixed(2)} МБ
+                      </span>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                        onClick={removeAttachment}
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
                     </div>
                   )}
                 </div>
@@ -487,14 +552,18 @@ const Checkout = () => {
                 {/* Comment */}
                 <div className="pt-4 border-t">
                   <div className="space-y-2">
-                    <Label htmlFor="comment">Комментарий к заказу</Label>
+                    <Label htmlFor="comment" className={validationErrors.comment ? 'text-destructive' : ''}>
+                      Комментарий к заказу *
+                    </Label>
                     <Textarea
                       id="comment"
                       name="comment"
+                      required
                       value={formData.comment}
                       onChange={handleInputChange}
                       placeholder="Дополнительные пожелания, вопросы..."
                       rows={4}
+                      className={validationErrors.comment ? 'border-destructive ring-destructive' : ''}
                     />
                   </div>
 
@@ -511,6 +580,15 @@ const Checkout = () => {
                   </div>
                 </div>
 
+                {/* Turnstile */}
+                <div className="pt-4 border-t">
+                  <TurnstileWidget
+                    onVerify={handleTurnstileVerify}
+                    onError={handleTurnstileError}
+                    onExpire={handleTurnstileExpire}
+                  />
+                </div>
+
                 {/* Submit */}
                 <div className="pt-4 border-t">
                   <p className="text-sm text-muted-foreground mb-4">
@@ -523,7 +601,7 @@ const Checkout = () => {
                     type="submit" 
                     size="lg" 
                     className="w-full"
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || !turnstileToken}
                   >
                     {isSubmitting ? (
                       <>

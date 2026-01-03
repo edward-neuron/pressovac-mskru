@@ -98,6 +98,14 @@ export const stripHtmlToText = (html: string): string => {
   // 8f) IMPORTANT: Force newline before "Обращаем ваше внимание" text
   text = text.replace(/([.!?:;])\s*(Обращаем ваше внимание)/gi, "$1\n\n$2");
 
+  // 8g) CRITICAL: Split numbered lists like "1. Item one2. Item two3. Item three" into separate lines
+  // Pattern: number followed by period/dot, then text, then another number with period
+  // This handles cases where numbered items are concatenated without spaces
+  text = text.replace(/(\d+)\.\s*/g, "\n$1. ");
+  
+  // 8h) Also handle "Основные преимущества:" followed by numbered items - add newline after colon
+  text = text.replace(/(Основные преимущества|Технические характеристики|Характеристики):\s*(?=\d+\.)/gi, "$1:\n");
+
   // 9) Clean up whitespace.
   text = text.replace(/\u00A0/g, " ");
   text = text.replace(/[ \t]+/g, " ");

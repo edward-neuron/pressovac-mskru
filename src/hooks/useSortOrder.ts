@@ -78,23 +78,20 @@ export function useSortOrder() {
     loadFromDatabase();
   }, []);
 
-  // Save to database
+  // Save to database via edge function
   const saveToDatabase = async (data: SortOrderData) => {
     setIsSaving(true);
     try {
-      const { error } = await supabase
-        .from('store_sort_order')
-        .upsert({
+      const { data: result, error } = await supabase.functions.invoke('update-sort-order', {
+        body: {
           scope: DB_SCOPE,
           categories: data.categories,
           products: data.products
-        }, {
-          onConflict: 'scope'
-        });
+        }
+      });
 
       if (error) {
         console.error('Error saving sort order to database:', error);
-        // Fall back to localStorage only
       } else {
         console.log('Sort order saved to database');
       }

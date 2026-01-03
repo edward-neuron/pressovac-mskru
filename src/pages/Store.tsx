@@ -109,10 +109,10 @@ const CategoryCard = ({ category, image, productCount, onClick, index }: Categor
         onClick={onClick}
         className="group relative bg-primary rounded-xl overflow-hidden hover:shadow-lg hover:bg-primary/90 transition-all duration-300 text-left w-full"
       >
-        <div className="flex items-center gap-3 px-4 py-4">
+        <div className="flex items-center gap-3 px-4 py-4 min-h-[72px]">
           <ShoppingCart className="w-5 h-5 text-primary-foreground flex-shrink-0" />
           <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-semibold text-primary-foreground leading-tight">
+            <h3 className="text-sm font-semibold text-primary-foreground leading-tight line-clamp-2">
               {category.name}
             </h3>
             <span className="text-xs text-primary-foreground/70">

@@ -49,7 +49,7 @@ const Checkout = () => {
 
   const handleTurnstileError = useCallback(() => {
     setTurnstileToken(null);
-    toast.error('Ошибка проверки безопасности. Обновите страницу.');
+    // Don't show toast - handled silently or in preview mode
   }, []);
 
   const handleTurnstileExpire = useCallback(() => {

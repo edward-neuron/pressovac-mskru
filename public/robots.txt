@@ -5,7 +5,7 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://pressovac-msk.ru/sitemap.xml
+Sitemap: https://www.pressovac-msk.ru/sitemap.xml
 
 # Crawl-delay for polite crawling
 Crawl-delay: 1

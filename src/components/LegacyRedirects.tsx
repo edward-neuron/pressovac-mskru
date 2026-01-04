@@ -37,7 +37,7 @@ const redirectMap: Record<string, string> = {
   '/pdf-brochures': '/catalog',
   '/pdf-brochures-link': '/catalog',
   '/loan-programs': '/catalog',
-  '/shop-online-topmenu': '/catalog',
+  '/shop-online-topmenu': '/store',
   
   // Статьи и новости
   '/articles': '/articles',
@@ -48,7 +48,7 @@ const redirectMap: Record<string, string> = {
 // Паттерны для частичного совпадения (начало пути)
 const redirectPatterns: Array<{ pattern: string; target: string }> = [
   // Интернет-магазин -> Каталог
-  { pattern: '/shop-online-topmenu/', target: '/catalog' },
+  { pattern: '/shop-online-topmenu/', target: '/store' },
   
   // Оборудование
   { pattern: '/ductcleaning-equipment-v2/', target: '/catalog' },

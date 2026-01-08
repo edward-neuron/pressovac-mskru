@@ -323,7 +323,7 @@ export const brushMachinesData: BrushMachinesCategory = {
     },
     {
       id: 'atex-machines',
-      title: 'Машины с маркировкой взрывозащиты',
+      title: 'Машины P40 с маркировкой взрывозащиты АТЕХ',
       description: 'Щёточные машины во взрывозащищённом исполнении ATEX для работы с взрывоопасными средами',
       image: greaseRemoval31,
       isAtex: true,

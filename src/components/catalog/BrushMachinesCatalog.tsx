@@ -57,7 +57,7 @@ export const BrushMachinesCatalog = ({ onSubcategoryChange }: BrushMachinesCatal
                 onClick={() => setSelectedSubcategory(subcategory)}
                 className={`group p-4 rounded-xl border transition-all text-left ${
                   subcategory.isAtex
-                    ? 'bg-red-600 hover:bg-red-700 border-red-700 hover:border-red-800'
+                    ? 'bg-gradient-to-r from-slate-700 to-red-700 hover:from-slate-600 hover:to-red-600 border-slate-600 hover:border-slate-500'
                     : 'bg-muted/50 hover:bg-primary/10 border-border hover:border-primary/30'
                 }`}
               >

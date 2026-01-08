@@ -26,6 +26,7 @@ import { useYmlStore, YmlProduct, YmlCategory } from '@/hooks/useYmlStore';
 import { useSortOrder } from '@/hooks/useSortOrder';
 import { ShoppingCart, ArrowLeft, Search, Loader2, Settings, X, Home, ChevronRight } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { getPreviewImageUrl } from '@/lib/imageOptimization';
 
 // Import category images
 import category1 from '@/assets/store/category-1.webp';
@@ -489,7 +490,7 @@ const Store = () => {
                             >
                               {product.picture ? (
                                 <img 
-                                  src={product.picture} 
+                                  src={getPreviewImageUrl(product.picture)} 
                                   alt={product.name}
                                   className="w-full h-full object-contain p-2"
                                   loading="lazy"
@@ -639,7 +640,7 @@ const Store = () => {
                                     >
                                       {product.picture ? (
                                         <img 
-                                          src={product.picture} 
+                                          src={getPreviewImageUrl(product.picture)} 
                                           alt={product.name}
                                           className="w-full h-full object-contain p-2"
                                           loading="lazy"

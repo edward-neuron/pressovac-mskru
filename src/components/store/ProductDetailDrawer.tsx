@@ -7,6 +7,7 @@ import { useCart } from '@/contexts/CartContext';
 import { parseDescriptionBlocks, stripHtmlToText } from '@/lib/descriptionFormatting';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { FlyingCartAnimation } from './FlyingCartAnimation';
+import { getFullImageUrl } from '@/lib/imageOptimization';
 
 interface ProductDetailDrawerProps {
   product: YmlProduct | null;
@@ -215,7 +216,7 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
             {product.picture ? (
               <img
                 ref={imageRef}
-                src={product.picture}
+                src={getFullImageUrl(product.picture)}
                 alt={product.name}
                 className="w-full h-full object-contain p-4"
                 loading="lazy"

@@ -164,7 +164,7 @@ export const vacuumEquipmentData: VacuumEquipmentCategory = {
     },
     {
       id: 'su-atex',
-      title: 'Взрывозащищённые установки SU ATEX',
+      title: 'Установки SU7.5 с маркировкой взрывозащиты АТЕХ',
       description: 'Вакуумные установки во взрывозащищённом исполнении для работы с взрывоопасными средами',
       image: vacuumSu31,
       isAtex: true,

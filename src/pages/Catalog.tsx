@@ -18,6 +18,7 @@ import { DisinfectionEquipmentCatalog } from '@/components/catalog/DisinfectionE
 import { VideoInspectionCatalog } from '@/components/catalog/VideoInspectionCatalog';
 import { CompressorEquipmentCatalog } from '@/components/catalog/CompressorEquipmentCatalog';
 import { AccessoriesCatalog } from '@/components/catalog/AccessoriesCatalog';
+import { useCopyProtection } from '@/hooks/useCopyProtection';
 import brushMachinesMain from '@/assets/brush-machines-main-1-1.webp';
 import flexibleShafts31 from '@/assets/flexible-shafts-3-1.webp';
 import dryCleaning31 from '@/assets/dry-cleaning-3-1.webp';
@@ -33,7 +34,6 @@ import videoCameras31 from '@/assets/video-cameras-3-1.webp';
 import scannerLocators31 from '@/assets/scanner-locators-3-1.webp';
 import compressorSquareV2 from '@/assets/compressor-square-v2.webp';
 import accessories31 from '@/assets/accessories-3-1.webp';
-
 // SEO data
 const catalogBreadcrumbs = [
   { name: 'Главная', url: '/' },
@@ -166,6 +166,9 @@ const categories: Category[] = [
 ];
 
 const Catalog = () => {
+  // Защита от копирования контента каталога
+  useCopyProtection(true);
+  
   const [brushEquipmentImage, setBrushEquipmentImage] = useState<string>('default');
   const [vacuumImage, setVacuumImage] = useState<string>('default');
   const [disinfectionImage, setDisinfectionImage] = useState<string>('default');

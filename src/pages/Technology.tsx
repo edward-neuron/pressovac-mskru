@@ -173,21 +173,37 @@ const Technology = () => {
 
   return (
     <Layout>
-      {/* Hero */}
-      <section className="section-padding hero-gradient">
-        <div className="container-custom">
+      {/* Hero with Video Background */}
+      <section className="relative section-padding overflow-hidden min-h-[60vh] flex items-center">
+        {/* Video Background */}
+        <div className="absolute inset-0 z-0">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover"
+          >
+            <source src="/videos/technology-promo.mp4" type="video/mp4" />
+          </video>
+          {/* Dark Overlay for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/60 to-background/80" />
+        </div>
+
+        {/* Content */}
+        <div className="container-custom relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="max-w-3xl mx-auto text-center"
           >
-            <span className="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
+            <span className="inline-block px-4 py-2 rounded-full bg-primary/20 text-primary text-sm font-medium mb-4 backdrop-blur-sm">
               О технологии
             </span>
-            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-foreground drop-shadow-lg">
               Технология <span className="text-gradient">очистки вентиляции</span>
             </h1>
-            <p className="text-lg text-muted-foreground leading-relaxed">
+            <p className="text-lg text-foreground/90 leading-relaxed drop-shadow-md">
               Узнайте, как работает профессиональная система очистки вентиляции 
               с использованием оборудования Pressovac
             </p>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
 import { SEOHead } from '@/components/seo/SEOHead';
@@ -168,6 +168,16 @@ const categories: Category[] = [
 const Catalog = () => {
   // Защита от копирования контента каталога
   useCopyProtection(true);
+  
+  // CSS-блокировка выделения текста для дополнительной защиты
+  useEffect(() => {
+    document.body.style.userSelect = 'none';
+    document.body.style.webkitUserSelect = 'none';
+    return () => {
+      document.body.style.userSelect = '';
+      document.body.style.webkitUserSelect = '';
+    };
+  }, []);
   
   const [brushEquipmentImage, setBrushEquipmentImage] = useState<string>('default');
   const [vacuumImage, setVacuumImage] = useState<string>('default');

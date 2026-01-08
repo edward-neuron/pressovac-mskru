@@ -197,7 +197,7 @@ const Technology = () => {
             animate={{ opacity: 1, y: 0 }}
             className="max-w-3xl mx-auto text-center"
           >
-            <span className="inline-block px-4 py-2 rounded-full bg-primary/20 text-primary text-sm font-medium mb-4 backdrop-blur-sm">
+            <span className="inline-block px-5 py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-semibold mb-4 shadow-lg">
               О технологии
             </span>
             <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-foreground drop-shadow-lg">

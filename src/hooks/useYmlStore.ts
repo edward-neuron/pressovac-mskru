@@ -29,12 +29,21 @@ interface YmlStoreState {
   fetchedAt: string | null;
 }
 
-// Cache for YML data
+// Cache for data
 let cachedData: { 
   categories: YmlCategory[]; 
   products: YmlProduct[]; 
   fetchedAt: string 
 } | null = null;
+
+// Helper function to format price
+function formatPrice(price: number): string {
+  return new Intl.NumberFormat('ru-RU', {
+    style: 'decimal',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(Math.round(price)) + ' ₽';
+}
 
 export function useYmlStore() {
   const [state, setState] = useState<YmlStoreState>({
@@ -52,30 +61,51 @@ export function useYmlStore() {
 
     const fetchData = async () => {
       try {
-        const { data, error } = await supabase.functions.invoke('fetch-yml-prices');
-        
-        if (error) {
-          throw new Error(error.message);
-        }
-        
-        if (data.success) {
-          cachedData = { 
-            categories: data.categories || [], 
-            products: data.products || [],
-            fetchedAt: data.fetchedAt 
-          };
-          setState({
-            categories: data.categories || [],
-            products: data.products || [],
-            isLoading: false,
-            error: null,
-            fetchedAt: data.fetchedAt
-          });
-        } else {
-          throw new Error(data.error || 'Failed to fetch YML data');
-        }
+        // Fetch directly from database tables
+        const [categoriesRes, productsRes] = await Promise.all([
+          supabase.from('product_categories').select('*').order('id'),
+          supabase.from('products').select('*').eq('available', true).order('id')
+        ]);
+
+        if (categoriesRes.error) throw categoriesRes.error;
+        if (productsRes.error) throw productsRes.error;
+
+        // Transform data to match expected interface
+        const categories: YmlCategory[] = (categoriesRes.data || []).map((c, idx) => ({
+          id: c.id,
+          name: c.name,
+          parentId: c.parent_id || undefined,
+          sortOrder: idx
+        }));
+
+        const products: YmlProduct[] = (productsRes.data || []).map((p, idx) => ({
+          id: p.id,
+          name: p.name,
+          description: p.description || undefined,
+          price: formatPrice(Number(p.price)),
+          priceNum: Number(p.price),
+          url: `https://shop-pressovac.ru/product/${p.id}`, // Legacy URL for compatibility
+          vendorCode: p.vendor_code || undefined,
+          picture: p.picture || undefined,
+          categoryId: p.category_id,
+          sortOrder: idx
+        }));
+
+        cachedData = { 
+          categories, 
+          products,
+          fetchedAt: new Date().toISOString()
+        };
+
+        setState({
+          categories,
+          products,
+          isLoading: false,
+          error: null,
+          fetchedAt: cachedData.fetchedAt
+        });
       } catch (err) {
-        console.error('Error fetching YML data:', err);
+        console.error('Error fetching store data:', err);
         setState(prev => ({
           ...prev,
           isLoading: false,

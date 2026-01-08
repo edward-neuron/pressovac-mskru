@@ -14,6 +14,77 @@ export type Database = {
   }
   public: {
     Tables: {
+      product_categories: {
+        Row: {
+          created_at: string | null
+          id: string
+          name: string
+          parent_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id: string
+          name: string
+          parent_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          name?: string
+          parent_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_categories_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "product_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      products: {
+        Row: {
+          available: boolean | null
+          category_id: string
+          created_at: string | null
+          currency_id: string | null
+          description: string | null
+          id: string
+          name: string
+          picture: string | null
+          price: number
+          updated_at: string | null
+          vendor_code: string | null
+        }
+        Insert: {
+          available?: boolean | null
+          category_id: string
+          created_at?: string | null
+          currency_id?: string | null
+          description?: string | null
+          id: string
+          name: string
+          picture?: string | null
+          price: number
+          updated_at?: string | null
+          vendor_code?: string | null
+        }
+        Update: {
+          available?: boolean | null
+          category_id?: string
+          created_at?: string | null
+          currency_id?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          picture?: string | null
+          price?: number
+          updated_at?: string | null
+          vendor_code?: string | null
+        }
+        Relationships: []
+      }
       store_sort_order: {
         Row: {
           categories: Json

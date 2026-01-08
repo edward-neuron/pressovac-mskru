@@ -174,43 +174,43 @@ const Technology = () => {
   return (
     <Layout>
       {/* Hero with Video Background */}
-      <section className="relative section-padding overflow-hidden min-h-[60vh] flex items-center">
-        {/* Video Background */}
-        <div className="absolute inset-0 z-0 bg-background">
+      <section className="relative overflow-hidden">
+        {/* Video Background - пропорциональное масштабирование */}
+        <div className="relative w-full bg-background">
           <video
             autoPlay
             loop
             muted
             playsInline
-            className="w-full h-full object-cover object-center"
-            style={{ objectPosition: '50% 50%' }}
+            className="w-full h-auto block"
           >
             <source src="/videos/technology-promo.mp4" type="video/mp4" />
           </video>
           {/* Dark Overlay for text readability */}
           <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/60 to-background/80" />
-        </div>
-
-        {/* Content */}
-        <div className="container-custom relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="max-w-3xl mx-auto text-center"
-          >
-            <span className="inline-block px-5 py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-semibold mb-4 shadow-lg">
-              О технологии
-            </span>
-            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-foreground drop-shadow-lg">
-              Технология <span className="text-gradient">очистки вентиляции</span>
-            </h1>
-            <p className="text-lg text-foreground/90 leading-relaxed drop-shadow-md">
-              Узнайте, как работает профессиональная система очистки вентиляции 
-              с использованием оборудования Pressovac
-            </p>
-          </motion.div>
+          
+          {/* Content overlaid on video */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="max-w-3xl mx-auto text-center px-4"
+            >
+              <span className="inline-block px-5 py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-semibold mb-4 shadow-lg">
+                О технологии
+              </span>
+              <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-foreground drop-shadow-lg">
+                Технология <span className="text-gradient">очистки вентиляции</span>
+              </h1>
+              <p className="text-lg text-foreground/90 leading-relaxed drop-shadow-md">
+                Узнайте, как работает профессиональная система очистки вентиляции 
+                с использованием оборудования Pressovac
+              </p>
+            </motion.div>
+          </div>
         </div>
       </section>
+
 
       {/* Video Gallery */}
       <section className="section-padding">

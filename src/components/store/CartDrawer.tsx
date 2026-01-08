@@ -11,10 +11,10 @@ interface CartDrawerProps {
 }
 
 export const CartDrawer = ({ children }: CartDrawerProps) => {
-  const { items, updateQuantity, removeItem, totalItems, totalPrice } = useCart();
+  const { items, updateQuantity, removeItem, totalItems, totalPrice, isCartOpen, openCart, closeCart } = useCart();
 
   return (
-    <Sheet>
+    <Sheet open={isCartOpen} onOpenChange={(open) => open ? openCart() : closeCart()}>
       <SheetTrigger asChild>
         {children || (
           <Button variant="outline" size="icon" className="relative">
@@ -133,7 +133,7 @@ export const CartDrawer = ({ children }: CartDrawerProps) => {
             <p className="text-xs text-muted-foreground leading-relaxed">
               Цены условно актуальные, включают НДС 22%. После оформления заказа, вы получите точный расчет. Детали уточняйте у консультанта.
             </p>
-            <Link to="/store/checkout" className="block">
+            <Link to="/store/checkout" className="block" onClick={closeCart}>
               <Button className="w-full" size="lg">
                 Оформить заказ
                 <ArrowRight className="w-4 h-4 ml-2" />

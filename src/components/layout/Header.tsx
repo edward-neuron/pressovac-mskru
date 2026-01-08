@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Phone, ShoppingCart } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
-import pressovacLogo from '@/assets/pressovac-logo.png';
+import pressovacLogo from '@/assets/pressovac-logo.webp';
 
 const navigation = [
   { name: 'Главная', href: '/' },

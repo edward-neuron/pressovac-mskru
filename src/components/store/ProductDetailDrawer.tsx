@@ -189,6 +189,7 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
                 src={product.picture}
                 alt={product.name}
                 className="w-full h-full object-contain p-4"
+                loading="lazy"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-muted-foreground">

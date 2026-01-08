@@ -69,6 +69,7 @@ export const CartDrawer = ({ children }: CartDrawerProps) => {
                         src={item.image || '/placeholder.svg'}
                         alt={item.name}
                         className="w-full h-full object-cover"
+                        loading="lazy"
                       />
                     </div>
 

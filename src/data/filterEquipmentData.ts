@@ -1,9 +1,9 @@
 // Данные для раздела "Фильтрующие установки Pressovac"
 
 // Импорт изображений продуктов (3:1)
-import f50Image from '@/assets/products/f-50.png';
-import f100Image from '@/assets/products/f-100.png';
-import hepa10Image from '@/assets/products/hepa-10.png';
+import f50Image from '@/assets/products/f-50.webp';
+import f100Image from '@/assets/products/f-100.webp';
+import hepa10Image from '@/assets/products/hepa-10.webp';
 export interface FilterProduct {
   id: string;
   name: string;

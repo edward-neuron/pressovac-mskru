@@ -279,6 +279,7 @@ const Technology = () => {
                             src={youtubeThumbnail || rutubeThumbnail}
                             alt={video.title}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            loading="lazy"
                             onError={(e) => {
                               // If YouTube fails, try RuTube
                               if (youtubeThumbnail && e.currentTarget.src === youtubeThumbnail) {

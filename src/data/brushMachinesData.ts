@@ -1,22 +1,22 @@
 // Данные для раздела "Щёточные машины Pressovac"
 
 // Импорт изображений продуктов
-import e20Image from '@/assets/products/e-20.png';
-import e30Image from '@/assets/products/e-30.png';
-import e25lImage from '@/assets/products/e-25l.png';
-import p25p40Image from '@/assets/products/p25-p40.png';
-import fsMiniImage from '@/assets/products/fs-mini.png';
-import fsStandartImage from '@/assets/products/fs-standart.png';
-import fsSteelImage from '@/assets/products/fs-steel.png';
-import scCombi8Image from '@/assets/products/sc-combi-8.png';
-import edw15Image from '@/assets/products/edw-15.png';
-import pdwImage from '@/assets/products/pdw.png';
-import p40AtexImage from '@/assets/products/p40-atex.png';
+import e20Image from '@/assets/products/e-20.webp';
+import e30Image from '@/assets/products/e-30.webp';
+import e25lImage from '@/assets/products/e-25l.webp';
+import p25p40Image from '@/assets/products/p25-p40.webp';
+import fsMiniImage from '@/assets/products/fs-mini.webp';
+import fsStandartImage from '@/assets/products/fs-standart.webp';
+import fsSteelImage from '@/assets/products/fs-steel.webp';
+import scCombi8Image from '@/assets/products/sc-combi-8.webp';
+import edw15Image from '@/assets/products/edw-15.webp';
+import pdwImage from '@/assets/products/pdw.webp';
+import p40AtexImage from '@/assets/products/p40-atex.webp';
 
 // Импорт изображений подкатегорий (3:1)
-import flexibleShafts31 from '@/assets/flexible-shafts-3-1.png';
-import dryCleaning31 from '@/assets/dry-cleaning-3-1.png';
-import greaseRemoval31 from '@/assets/grease-removal-3-1.png';
+import flexibleShafts31 from '@/assets/flexible-shafts-3-1.webp';
+import dryCleaning31 from '@/assets/dry-cleaning-3-1.webp';
+import greaseRemoval31 from '@/assets/grease-removal-3-1.webp';
 export interface Product {
   id: string;
   name: string;

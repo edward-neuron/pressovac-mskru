@@ -1,12 +1,12 @@
 // Данные для раздела "Оборудование для дезинфекции"
 
 // Импорт изображений подкатегорий (3:1)
-import disinfectionTanks31 from '@/assets/disinfection-tanks-3-1.png';
+import disinfectionTanks31 from '@/assets/disinfection-tanks-3-1.webp';
 import disinfectionNozzles31 from '@/assets/disinfection-nozzles-3-1.webp';
 
 // Импорт изображений продуктов (3:1)
-import dTanksImage from '@/assets/products/disinfection-tanks-all.jpg';
-import dNozzleImage from '@/assets/products/d-nozzle.png';
+import dTanksImage from '@/assets/products/disinfection-tanks-all.webp';
+import dNozzleImage from '@/assets/products/d-nozzle.webp';
 
 export interface DisinfectionProduct {
   id: string;

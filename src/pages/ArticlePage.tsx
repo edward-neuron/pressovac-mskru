@@ -322,6 +322,7 @@ const ArticlePage = () => {
                       src={img} 
                       alt={`${article.title} - изображение ${index + 1}`}
                       className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                      loading="lazy"
                     />
                   </div>
                 ))}
@@ -337,6 +338,7 @@ const ArticlePage = () => {
                   src={article.image} 
                   alt={article.title}
                   className="w-full h-auto object-cover"
+                  loading="lazy"
                 />
               </motion.div>
             )}

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { ShoppingCart, Check, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
@@ -6,6 +6,7 @@ import { YmlProduct } from '@/hooks/useYmlStore';
 import { useCart } from '@/contexts/CartContext';
 import { parseDescriptionBlocks, stripHtmlToText } from '@/lib/descriptionFormatting';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { FlyingCartAnimation } from './FlyingCartAnimation';
 
 interface ProductDetailDrawerProps {
   product: YmlProduct | null;
@@ -17,6 +18,13 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
   const { addItem, items, openCart } = useCart();
   const [justAdded, setJustAdded] = useState(false);
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
+  const [flyingItem, setFlyingItem] = useState<{
+    id: string;
+    image: string;
+    startX: number;
+    startY: number;
+  } | null>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
 
   if (!product) return null;
 
@@ -24,6 +32,17 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
   const cartQty = cartItem?.quantity || 0;
 
   const handleAddToCart = () => {
+    // Запуск анимации
+    if (imageRef.current) {
+      const rect = imageRef.current.getBoundingClientRect();
+      setFlyingItem({
+        id: `${product.id}-${Date.now()}`,
+        image: product.picture || '/placeholder.svg',
+        startX: rect.left + rect.width / 2 - 40,
+        startY: rect.top + rect.height / 2 - 40,
+      });
+    }
+
     addItem({
       id: product.id,
       name: product.name,
@@ -195,6 +214,7 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
           <div className="aspect-square bg-white rounded-lg overflow-hidden border border-border/50">
             {product.picture ? (
               <img
+                ref={imageRef}
                 src={product.picture}
                 alt={product.name}
                 className="w-full h-full object-contain p-4"
@@ -206,6 +226,12 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
               </div>
             )}
           </div>
+
+          {/* Flying Animation */}
+          <FlyingCartAnimation 
+            item={flyingItem} 
+            onComplete={() => setFlyingItem(null)} 
+          />
 
           {/* Price & Article */}
           <div className="space-y-2">

@@ -14,7 +14,7 @@ interface ProductDetailDrawerProps {
 }
 
 export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDetailDrawerProps) => {
-  const { addItem, items } = useCart();
+  const { addItem, items, openCart } = useCart();
   const [justAdded, setJustAdded] = useState(false);
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
 
@@ -33,6 +33,15 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
     });
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 1500);
+  };
+
+  const handleButtonClick = () => {
+    if (cartQty > 0 && !justAdded) {
+      onOpenChange(false);
+      openCart();
+    } else {
+      handleAddToCart();
+    }
   };
 
 
@@ -217,7 +226,7 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
           {/* Actions */}
           <div className="space-y-3 pt-4 border-t border-border">
             <Button
-              onClick={handleAddToCart}
+              onClick={handleButtonClick}
               size="lg"
               className={`w-full transition-all duration-300 ${
                 justAdded
@@ -235,7 +244,7 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
               ) : cartQty > 0 ? (
                 <>
                   <ShoppingCart className="w-5 h-5 mr-2" />
-                  В корзине ({cartQty}) — добавить ещё
+                  В корзине ({cartQty})
                 </>
               ) : (
                 <>

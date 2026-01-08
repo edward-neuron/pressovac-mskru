@@ -11,7 +11,7 @@ interface ProductCardProps {
 }
 
 export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
-  const { addItem, items } = useCart();
+  const { addItem, items, openCart } = useCart();
   const [justAdded, setJustAdded] = useState(false);
   
   const isInCart = items.some(item => item.id === product.id);
@@ -27,6 +27,14 @@ export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
     });
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 1500);
+  };
+
+  const handleButtonClick = () => {
+    if (isInCart && !justAdded) {
+      openCart();
+    } else {
+      handleAddToCart();
+    }
   };
 
   return (
@@ -69,13 +77,13 @@ export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
 
         {/* Button */}
         <Button
-          onClick={handleAddToCart}
+          onClick={handleButtonClick}
           size="sm"
           className={`w-full mt-2 transition-all duration-300 ${
             justAdded 
               ? 'bg-green-600 hover:bg-green-600' 
               : isInCart 
-                ? 'bg-primary/80' 
+                ? 'bg-green-600 hover:bg-green-700' 
                 : ''
           }`}
         >
@@ -87,7 +95,7 @@ export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
           ) : isInCart ? (
             <>
               <ShoppingCart className="w-4 h-4 mr-1" />
-              Ещё ({cartItem?.quantity})
+              В корзине ({cartItem?.quantity})
             </>
           ) : (
             'Купить'

@@ -134,12 +134,17 @@ export const CartDrawer = ({ children }: CartDrawerProps) => {
             <p className="text-xs text-muted-foreground leading-relaxed">
               Цены условно актуальные, включают НДС 22%. После оформления заказа, вы получите точный расчет. Детали уточняйте у консультанта.
             </p>
-            <Link to="/store/checkout" className="block" onClick={closeCart}>
-              <Button className="w-full" size="lg">
-                Оформить заказ
-                <ArrowRight className="w-4 h-4 ml-2" />
+            <div className="flex flex-col gap-2">
+              <Link to="/store/checkout" className="block" onClick={closeCart}>
+                <Button className="w-full" size="lg">
+                  Оформить заказ
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </Link>
+              <Button variant="outline" className="w-full" onClick={closeCart}>
+                Продолжить покупки
               </Button>
-            </Link>
+            </div>
           </div>
         )}
       </SheetContent>

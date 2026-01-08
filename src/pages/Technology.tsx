@@ -176,13 +176,14 @@ const Technology = () => {
       {/* Hero with Video Background */}
       <section className="relative section-padding overflow-hidden min-h-[60vh] flex items-center">
         {/* Video Background */}
-        <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 z-0 bg-background">
           <video
             autoPlay
             loop
             muted
             playsInline
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover object-center"
+            style={{ objectPosition: '50% 50%' }}
           >
             <source src="/videos/technology-promo.mp4" type="video/mp4" />
           </video>

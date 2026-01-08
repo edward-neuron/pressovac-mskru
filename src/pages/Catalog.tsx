@@ -18,7 +18,7 @@ import { DisinfectionEquipmentCatalog } from '@/components/catalog/DisinfectionE
 import { VideoInspectionCatalog } from '@/components/catalog/VideoInspectionCatalog';
 import { CompressorEquipmentCatalog } from '@/components/catalog/CompressorEquipmentCatalog';
 import { AccessoriesCatalog } from '@/components/catalog/AccessoriesCatalog';
-import brushMachinesMain from '@/assets/brush-machines-main-1-1.png';
+import brushMachinesMain from '@/assets/brush-machines-main-1-1.webp';
 import flexibleShafts31 from '@/assets/flexible-shafts-3-1.png';
 import dryCleaning31 from '@/assets/dry-cleaning-3-1.png';
 import greaseRemoval31 from '@/assets/grease-removal-3-1.png';
@@ -26,13 +26,13 @@ import vacuumEquipmentMain11 from '@/assets/vacuum-equipment-main-1-1.png';
 import vacuumEquipment31 from '@/assets/vacuum-equipment-3-1.png';
 import filterEquipmentSquare from '@/assets/filter-equipment-square.png';
 import disinfectionSquareV2 from '@/assets/disinfection-square-v2.png';
-import disinfectionBannerV2 from '@/assets/disinfection-banner-v2.png';
+import disinfectionBannerV2 from '@/assets/disinfection-banner-v2.webp';
 import videoInspectionSquareV2 from '@/assets/video-inspection-square-v2.png';
 import videoInspectionBannerV2 from '@/assets/video-inspection-banner-v2.png';
 import videoCameras31 from '@/assets/video-cameras-3-1.png';
 import scannerLocators31 from '@/assets/scanner-locators-3-1.png';
-import compressorSquareV2 from '@/assets/compressor-square-v2.png';
-import accessories31 from '@/assets/accessories-3-1.png';
+import compressorSquareV2 from '@/assets/compressor-square-v2.webp';
+import accessories31 from '@/assets/accessories-3-1.webp';
 
 // SEO data
 const catalogBreadcrumbs = [

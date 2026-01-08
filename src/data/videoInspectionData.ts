@@ -1,22 +1,22 @@
 // Данные для раздела "Видеоинспекция и диагностика"
 
 // Импорт изображений подкатегорий (3:1)
-import videoCameras31 from '@/assets/video-cameras-3-1.png';
-import scannerLocators31 from '@/assets/scanner-locators-3-1.png';
+import videoCameras31 from '@/assets/video-cameras-3-1.webp';
+import scannerLocators31 from '@/assets/scanner-locators-3-1.webp';
 
 // Импорт изображений продуктов (3:1)
-import vs200Image from '@/assets/products/vs-200.png';
-import vs250Image from '@/assets/products/vs-250.png';
-import vs25030mImage from '@/assets/products/vs-250-30m.png';
-import vs350Image from '@/assets/products/vs-350.png';
-import vs700Image from '@/assets/products/vs-700.png';
-import l200Image from '@/assets/products/l-200.png';
+import vs200Image from '@/assets/products/vs-200.webp';
+import vs250Image from '@/assets/products/vs-250.webp';
+import vs25030mImage from '@/assets/products/vs-250-30m.webp';
+import vs350Image from '@/assets/products/vs-350.webp';
+import vs700Image from '@/assets/products/vs-700.webp';
+import l200Image from '@/assets/products/l-200.webp';
 
 // Импорт изображений аксессуаров
-import centeringBrushImage from '@/assets/products/centering-brush.png';
-import cameradomesImage from '@/assets/products/camera-domes.png';
-import protectiveSleeveImage from '@/assets/products/protective-sleeve.png';
-import mobileTrolleyImage from '@/assets/products/mobile-trolley.png';
+import centeringBrushImage from '@/assets/products/centering-brush.webp';
+import cameradomesImage from '@/assets/products/camera-domes.webp';
+import protectiveSleeveImage from '@/assets/products/protective-sleeve.webp';
+import mobileTrolleyImage from '@/assets/products/mobile-trolley.webp';
 
 export interface VideoInspectionProduct {
   id: string;

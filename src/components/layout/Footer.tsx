@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Phone, Mail, MapPin, ExternalLink } from 'lucide-react';
-import pressovacLogo from '@/assets/pressovac-logo.png';
+import pressovacLogo from '@/assets/pressovac-logo.webp';
 
 const navigation = {
   main: [

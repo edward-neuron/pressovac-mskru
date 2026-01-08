@@ -1,4 +1,4 @@
-import k370Square from '@/assets/products/k-370-premium-car-square.png';
+import k370Square from '@/assets/products/k-370-premium-car-square.webp';
 import type { Product } from '@/data/brushMachinesData';
 
 export interface CompressorEquipmentCategory {

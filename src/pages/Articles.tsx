@@ -77,6 +77,7 @@ const Articles = () => {
                         src={article.image} 
                         alt={article.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        loading="lazy"
                       />
                     ) : (
                       <BookOpen className="w-16 h-16 text-primary/30" />

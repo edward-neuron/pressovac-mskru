@@ -1,17 +1,17 @@
 // Данные для раздела "Вакуумные установки Pressovac"
 
 // Импорт изображений подкатегорий (3:1)
-import vacuumSu31 from '@/assets/vacuum-su-3-1.png';
+import vacuumSu31 from '@/assets/vacuum-su-3-1.webp';
 
 // Импорт изображений продуктов (3:1)
-import suImage from '@/assets/products/su.png';
-import s300Image from '@/assets/products/s-300.png';
-import su50Image from '@/assets/products/su-50.png';
-import su100Image from '@/assets/products/su-100.png';
-import suAtexImage from '@/assets/products/su-atex.png';
-import sfu10Image from '@/assets/products/sfu-10.png';
-import sfu25Image from '@/assets/products/sfu-25.png';
-import sfu50Image from '@/assets/products/sfu-50.png';
+import suImage from '@/assets/products/su.webp';
+import s300Image from '@/assets/products/s-300.webp';
+import su50Image from '@/assets/products/su-50.webp';
+import su100Image from '@/assets/products/su-100.webp';
+import suAtexImage from '@/assets/products/su-atex.webp';
+import sfu10Image from '@/assets/products/sfu-10.webp';
+import sfu25Image from '@/assets/products/sfu-25.webp';
+import sfu50Image from '@/assets/products/sfu-50.webp';
 
 export interface VacuumProduct {
   id: string;

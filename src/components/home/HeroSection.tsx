@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Play, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AnimatedWaves } from './AnimatedWaves';
-import equipmentHero from '@/assets/equipment-hero.png';
+import equipmentHero from '@/assets/equipment-hero.webp';
 
 const features = [
   'Финское качество с 1990 года',

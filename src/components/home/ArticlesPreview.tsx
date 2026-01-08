@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Calendar } from 'lucide-react';
-import fireSafety1 from '@/assets/articles/fire-safety-3.jpg';
-import profitable1 from '@/assets/articles/profitable-1.jpg';
-import startingMain from '@/assets/articles/starting-main.jpg';
+import fireSafety1 from '@/assets/articles/fire-safety-3.webp';
+import profitable1 from '@/assets/articles/profitable-1.webp';
+import startingMain from '@/assets/articles/starting-main.webp';
 
 const articles = [
   {

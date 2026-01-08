@@ -5,7 +5,7 @@ import { SEOHead } from '@/components/seo/SEOHead';
 import { GraduationCap, Users, Clock, Award, CheckCircle, ArrowRight, Gift, FileText, Video, Calculator, Briefcase, BookOpen, Headphones, X, ZoomIn } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import calculationSoftwareImg from '@/assets/calculation-software.png';
+import calculationSoftwareImg from '@/assets/calculation-software.webp';
 
 const trainingBreadcrumbs = [
   { name: 'Главная', url: '/' },

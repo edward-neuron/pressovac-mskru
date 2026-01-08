@@ -207,7 +207,7 @@ const Store = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<YmlProduct | null>(null);
   const [productDrawerOpen, setProductDrawerOpen] = useState(false);
-  const { totalItems, totalPrice, addItem, items } = useCart();
+  const { totalItems, totalPrice, addItem, items, openCart } = useCart();
   const { 
     isLoading, 
     error, 
@@ -509,7 +509,7 @@ const Store = () => {
                                 <p className="text-xs text-muted-foreground">Арт: {product.vendorCode}</p>
                               )}
                               <Button
-                                onClick={() => handleAddToCart(product)}
+                                onClick={() => cartQty > 0 ? openCart() : handleAddToCart(product)}
                                 size="sm"
                                 className={`w-full transition-all duration-300 ${cartQty > 0 ? 'bg-green-600 hover:bg-green-700' : ''}`}
                               >
@@ -659,7 +659,7 @@ const Store = () => {
                                         <p className="text-xs text-muted-foreground">Арт: {product.vendorCode}</p>
                                       )}
                                       <Button
-                                        onClick={() => !isEditMode && handleAddToCart(product)}
+                                        onClick={() => !isEditMode && (cartQty > 0 ? openCart() : handleAddToCart(product))}
                                         size="sm"
                                         className={`w-full transition-all duration-300 ${cartQty > 0 ? 'bg-green-600 hover:bg-green-700' : ''}`}
                                         disabled={isEditMode}

@@ -15,6 +15,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import TurnstileWidget from '@/components/TurnstileWidget';
+import { getPreviewImageUrl } from '@/lib/imageOptimization';
 
 const ALLOWED_EXTENSIONS = ['pdf', 'doc', 'docx', 'png', 'jpg', 'jpeg'];
 const BLOCKED_EXTENSIONS = ['exe', 'bat', 'cmd', 'com', 'msi', 'scr', 'pif', 'js', 'vbs', 'wsf', 'hta', 'jar', 'ps1', 'sh', 'php', 'py', 'pl', 'rb'];
@@ -634,7 +635,7 @@ const Checkout = () => {
                     <div key={item.id} className="flex gap-3 pb-4 border-b border-border/50">
                       <div className="w-14 h-14 rounded-lg bg-muted overflow-hidden flex-shrink-0">
                         <img
-                          src={item.image || '/placeholder.svg'}
+                          src={getPreviewImageUrl(item.image)}
                           alt={item.name}
                           className="w-full h-full object-cover"
                           loading="lazy"

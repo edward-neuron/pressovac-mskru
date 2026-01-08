@@ -5,6 +5,7 @@ import { useCart } from '@/contexts/CartContext';
 import { formatPrice } from '@/data/storeData';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getPreviewImageUrl } from '@/lib/imageOptimization';
 
 interface CartDrawerProps {
   children?: React.ReactNode;
@@ -66,7 +67,7 @@ export const CartDrawer = ({ children }: CartDrawerProps) => {
                     {/* Image */}
                     <div className="w-16 h-16 rounded-lg bg-background overflow-hidden flex-shrink-0">
                       <img
-                        src={item.image || '/placeholder.svg'}
+                        src={getPreviewImageUrl(item.image)}
                         alt={item.name}
                         className="w-full h-full object-cover"
                         loading="lazy"

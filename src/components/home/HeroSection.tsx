@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Play, CheckCircle } from 'lucide-react';
@@ -12,10 +13,24 @@ const features = [
   'Обучение персонала',
 ];
 
-export const HeroSection = () => {
+// Memoized feature item for performance
+const FeatureItem = memo(({ feature, index }: { feature: string; index: number }) => (
+  <motion.li
+    initial={{ opacity: 0, y: 10 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.4, delay: 0.3 + index * 0.1 }}
+    className="flex items-center gap-2 text-sm text-foreground"
+  >
+    <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
+    {feature}
+  </motion.li>
+));
+FeatureItem.displayName = 'FeatureItem';
+
+export const HeroSection = memo(() => {
   return (
     <section className="relative hero-gradient overflow-hidden">
-      {/* Animated Waves Background */}
+      {/* Animated Waves Background - lazy */}
       <AnimatedWaves />
       
       {/* Background Pattern */}
@@ -28,9 +43,9 @@ export const HeroSection = () => {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Content */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
+            initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.4 }}
             className="space-y-8"
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
@@ -50,16 +65,7 @@ export const HeroSection = () => {
 
             <ul className="grid grid-cols-2 gap-3">
               {features.map((feature, index) => (
-                <motion.li
-                  key={feature}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: 0.3 + index * 0.1 }}
-                  className="flex items-center gap-2 text-sm text-foreground"
-                >
-                  <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
-                  {feature}
-                </motion.li>
+                <FeatureItem key={feature} feature={feature} index={index} />
               ))}
             </ul>
 
@@ -79,11 +85,11 @@ export const HeroSection = () => {
             </div>
           </motion.div>
 
-          {/* Image */}
+          {/* Image - priority loading */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.4, delay: 0.1 }}
             className="relative"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 rounded-3xl blur-3xl transform scale-110" />
@@ -91,7 +97,10 @@ export const HeroSection = () => {
               <img
                 src={equipmentHero}
                 alt="Оборудование Pressovac для очистки вентиляции"
-                className="w-full h-auto object-contain animate-float"
+                className="w-full h-auto object-contain"
+                loading="eager"
+                fetchPriority="high"
+                decoding="async"
               />
             </div>
             
@@ -99,7 +108,7 @@ export const HeroSection = () => {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.6 }}
+              transition={{ duration: 0.3, delay: 0.4 }}
               className="absolute -bottom-6 -left-6 bg-card rounded-2xl p-4 shadow-card border border-border"
             >
               <div className="flex items-center gap-3">
@@ -117,7 +126,7 @@ export const HeroSection = () => {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.7 }}
+              transition={{ duration: 0.3, delay: 0.5 }}
               className="absolute -top-4 -right-4 bg-primary text-primary-foreground rounded-2xl px-4 py-3 shadow-lg"
             >
               <p className="text-sm font-semibold">Made in Finland 🇫🇮</p>
@@ -127,4 +136,6 @@ export const HeroSection = () => {
       </div>
     </section>
   );
-};
+});
+
+HeroSection.displayName = 'HeroSection';

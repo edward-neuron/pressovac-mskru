@@ -1,10 +1,12 @@
 import { motion } from 'framer-motion';
-import { ShoppingCart, Check } from 'lucide-react';
+import { ShoppingCart, Check, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/contexts/CartContext';
 import { StoreProduct, formatPrice } from '@/data/storeData';
 import { useState, useRef } from 'react';
 import { FlyingCartAnimation } from './FlyingCartAnimation';
+import { getMinOrderConfig } from '@/data/minOrderConfig';
+import { toast } from 'sonner';
 
 interface ProductCardProps {
   product: StoreProduct;
@@ -12,7 +14,7 @@ interface ProductCardProps {
 }
 
 export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
-  const { addItem, items, openCart } = useCart();
+  const { addItem, items, openCart, updateQuantity } = useCart();
   const [justAdded, setJustAdded] = useState(false);
   const [flyingItem, setFlyingItem] = useState<{
     id: string;
@@ -24,8 +26,19 @@ export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
   
   const isInCart = items.some(item => item.id === product.id);
   const cartItem = items.find(item => item.id === product.id);
+  
+  // Проверка минимального заказа
+  const minOrderConfig = getMinOrderConfig(product.name, product.article);
 
   const handleAddToCart = () => {
+    // Проверка минимального заказа - показываем предупреждение
+    if (minOrderConfig) {
+      toast.info(minOrderConfig.message, {
+        icon: <AlertCircle className="w-5 h-5 text-amber-500" />,
+        duration: 4000
+      });
+    }
+
     // Запуск анимации
     if (imageRef.current) {
       const rect = imageRef.current.getBoundingClientRect();
@@ -37,13 +50,27 @@ export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
       });
     }
 
-    addItem({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      image: product.image,
-      article: product.article,
-    });
+    // Если есть минимальный заказ, добавляем сразу минимальное количество
+    const qty = minOrderConfig ? minOrderConfig.minQuantity : 1;
+    
+    if (isInCart && minOrderConfig) {
+      // Если уже в корзине и есть минимум, устанавливаем минимум если меньше
+      if (cartItem && cartItem.quantity < minOrderConfig.minQuantity) {
+        updateQuantity(product.id, minOrderConfig.minQuantity);
+      }
+    } else {
+      // Добавляем с нужным количеством
+      for (let i = 0; i < qty; i++) {
+        addItem({
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          image: product.image,
+          article: product.article,
+        });
+      }
+    }
+    
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 1500);
   };

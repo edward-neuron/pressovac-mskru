@@ -1,13 +1,15 @@
 import { useState, useRef } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, Check, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
+import { ShoppingCart, Check, ExternalLink, ChevronDown, ChevronUp, AlertCircle } from 'lucide-react';
 import { YmlProduct } from '@/hooks/useYmlStore';
 import { useCart } from '@/contexts/CartContext';
 import { parseDescriptionBlocks, stripHtmlToText } from '@/lib/descriptionFormatting';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { FlyingCartAnimation } from './FlyingCartAnimation';
 import { getFullImageUrl } from '@/lib/imageOptimization';
+import { getMinOrderConfig } from '@/data/minOrderConfig';
+import { toast } from 'sonner';
 
 interface ProductDetailDrawerProps {
   product: YmlProduct | null;
@@ -16,7 +18,7 @@ interface ProductDetailDrawerProps {
 }
 
 export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDetailDrawerProps) => {
-  const { addItem, items, openCart } = useCart();
+  const { addItem, items, openCart, updateQuantity } = useCart();
   const [justAdded, setJustAdded] = useState(false);
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
   const [flyingItem, setFlyingItem] = useState<{
@@ -31,8 +33,19 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
 
   const cartItem = items.find(item => item.id === product.id);
   const cartQty = cartItem?.quantity || 0;
+  
+  // Проверка минимального заказа
+  const minOrderConfig = getMinOrderConfig(product.name, product.vendorCode);
 
   const handleAddToCart = () => {
+    // Проверка минимального заказа - показываем предупреждение
+    if (minOrderConfig) {
+      toast.info(minOrderConfig.message, {
+        icon: <AlertCircle className="w-5 h-5 text-amber-500" />,
+        duration: 4000
+      });
+    }
+
     // Запуск анимации
     if (imageRef.current) {
       const rect = imageRef.current.getBoundingClientRect();
@@ -44,13 +57,27 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
       });
     }
 
-    addItem({
-      id: product.id,
-      name: product.name,
-      price: product.priceNum,
-      image: product.picture || '/placeholder.svg',
-      article: product.vendorCode
-    });
+    // Если есть минимальный заказ, добавляем сразу минимальное количество
+    const qty = minOrderConfig ? minOrderConfig.minQuantity : 1;
+    
+    if (cartQty > 0 && minOrderConfig) {
+      // Если уже в корзине и есть минимум, устанавливаем минимум если меньше
+      if (cartQty < minOrderConfig.minQuantity) {
+        updateQuantity(product.id, minOrderConfig.minQuantity);
+      }
+    } else {
+      // Добавляем с нужным количеством
+      for (let i = 0; i < qty; i++) {
+        addItem({
+          id: product.id,
+          name: product.name,
+          price: product.priceNum,
+          image: product.picture || '/placeholder.svg',
+          article: product.vendorCode
+        });
+      }
+    }
+    
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 1500);
   };

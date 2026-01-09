@@ -1,4 +1,5 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   DndContext, 
@@ -204,10 +205,21 @@ const Breadcrumbs = ({ categoryHistory, categories, onNavigateToRoot, onNavigate
 };
 
 const Store = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [categoryHistory, setCategoryHistory] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<YmlProduct | null>(null);
   const [productDrawerOpen, setProductDrawerOpen] = useState(false);
+
+  // Обработка параметра search из URL (при переходе из каталога)
+  useEffect(() => {
+    const urlSearchQuery = searchParams.get('search');
+    if (urlSearchQuery) {
+      setSearchQuery(urlSearchQuery);
+      // Очищаем параметр из URL чтобы не мешал дальнейшей навигации
+      setSearchParams({}, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
   const { totalItems, totalPrice, addItem, items, openCart } = useCart();
   const { 
     isLoading, 

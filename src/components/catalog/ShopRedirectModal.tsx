@@ -8,7 +8,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { ExternalLink, ShoppingCart } from 'lucide-react';
+import { ShoppingCart, ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface ShopRedirectModalProps {
   isOpen: boolean;
@@ -21,12 +22,16 @@ interface ShopRedirectModalProps {
 export const ShopRedirectModal = ({
   isOpen,
   onClose,
-  shopUrl,
   productName,
   price
 }: ShopRedirectModalProps) => {
+  const navigate = useNavigate();
+
   const handleConfirm = () => {
-    window.open(shopUrl, '_blank', 'noopener,noreferrer');
+    // Перенаправляем в наш внутренний магазин с поисковым запросом по названию товара
+    // Берём первые ключевые слова из названия для поиска
+    const searchQuery = productName.split(' ').slice(0, 2).join(' ');
+    navigate(`/store?search=${encodeURIComponent(searchQuery)}`);
     onClose();
   };
 
@@ -52,8 +57,7 @@ export const ShopRedirectModal = ({
           
           <AlertDialogDescription className="text-sm">
             Если вы готовы оформить заказ, нажмите «Перейти в магазин», и вы будете перенаправлены 
-            в раздел товара в нашем интернет-магазине в новой вкладке. Эта страница останется 
-            открытой, и вы сможете вернуться к ней в любой момент.
+            в раздел товара в нашем интернет-магазине.
           </AlertDialogDescription>
         </AlertDialogHeader>
         
@@ -65,8 +69,8 @@ export const ShopRedirectModal = ({
             onClick={handleConfirm}
             className="sm:flex-1 gap-2"
           >
-            <ExternalLink className="w-4 h-4" />
-            Оформить заказ
+            <ArrowRight className="w-4 h-4" />
+            Перейти в магазин
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

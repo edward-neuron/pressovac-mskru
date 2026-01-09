@@ -7,8 +7,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
-import { Link } from 'react-router-dom';
-import { ShopRedirectModal } from './ShopRedirectModal';
+import { Link, useNavigate } from 'react-router-dom';
 import { useYmlPrices } from '@/hooks/useYmlPrices';
 
 // Общий тип для продуктов из разных каталогов
@@ -44,16 +43,21 @@ export const ProductDrawer = ({
   showBackButton = false 
 }: ProductDrawerProps) => {
   const [selectedLength, setSelectedLength] = useState<string | null>(null);
-  const [showShopModal, setShowShopModal] = useState(false);
-  const { findPrice, findShopUrl } = useYmlPrices();
+  const navigate = useNavigate();
+  const { findPrice } = useYmlPrices();
 
   if (!product) return null;
 
   const hasLengths = product.availableLengths && product.availableLengths.length > 0;
   const ymlPrice = findPrice(product.shopUrl, product.name, product.article);
-  const ymlShopUrl = findShopUrl(product.name, product.article);
   const displayPrice = ymlPrice || product.price;
-  const effectiveShopUrl = (product.shopUrl && product.shopUrl !== '#') ? product.shopUrl : ymlShopUrl;
+
+  // Прямой переход в магазин с поиском по артикулу или названию
+  const handleGoToStore = () => {
+    const searchQuery = product.article || product.name.split(' ').slice(0, 2).join(' ');
+    navigate(`/store?search=${encodeURIComponent(searchQuery)}`);
+    onClose();
+  };
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
@@ -155,17 +159,15 @@ export const ProductDrawer = ({
 
           {/* Actions */}
           <div className="flex flex-col gap-3 pt-4 border-t border-border">
-            {/* View Price Button */}
-            {effectiveShopUrl && (
-              <Button 
-                variant="default" 
-                className="w-full" 
-                onClick={() => setShowShopModal(true)}
-              >
-                <ShoppingCart className="w-4 h-4 mr-2" />
-                {displayPrice ? `Оформить заказ — ${displayPrice}` : 'Оформить заказ'}
-              </Button>
-            )}
+            {/* Go to Store Button */}
+            <Button 
+              variant="default" 
+              className="w-full" 
+              onClick={handleGoToStore}
+            >
+              <ShoppingCart className="w-4 h-4 mr-2" />
+              {displayPrice ? `Оформить заказ — ${displayPrice}` : 'Оформить заказ'}
+            </Button>
 
             {/* Brochure Button */}
             {product.brochureUrl ? (
@@ -190,17 +192,6 @@ export const ProductDrawer = ({
             </Button>
           </div>
         </div>
-
-        {/* Shop Redirect Modal */}
-        {effectiveShopUrl && (
-          <ShopRedirectModal
-            isOpen={showShopModal}
-            onClose={() => setShowShopModal(false)}
-            shopUrl={effectiveShopUrl}
-            productName={product.name}
-            price={displayPrice || undefined}
-          />
-        )}
       </SheetContent>
     </Sheet>
   );

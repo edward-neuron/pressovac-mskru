@@ -562,15 +562,27 @@ const Store = () => {
                               )}
                             </button>
                             <div className="p-3 space-y-2">
-                              <div className="text-lg font-bold text-primary">{product.price}</div>
+                              <div className="space-y-0.5">
+                                <div className="text-lg font-bold text-primary">
+                                  {formatPrice(product.priceNum)}
+                                  {minOrder && (
+                                    <span className="text-xs font-medium text-muted-foreground"> / канистра</span>
+                                  )}
+                                </div>
+                                {minOrder && (
+                                  <p className="text-xs text-primary">
+                                    Мин. партия: {minOrder.minQuantity} канистр ({formatPrice(product.priceNum * minOrder.minQuantity)})
+                                  </p>
+                                )}
+                              </div>
                               <h3 className="text-sm font-medium text-foreground line-clamp-4 leading-snug min-h-[4.5rem]">
-                                {product.name}
+                                {minOrder ? product.name.replace(/\s*\(\s*5\s*канистр\s*\)\s*$/i, '').trim() : product.name}
                               </h3>
                               {product.vendorCode && (
                                 <p className="text-xs text-muted-foreground">Арт: {product.vendorCode}</p>
                               )}
                               {minOrder && (
-                                <p className="text-xs text-primary">Мин. заказ: {minOrder.minQuantity} шт.</p>
+                                <p className="text-xs text-primary">Минимальный заказ обязателен</p>
                               )}
                               <Button
                                 onClick={() => cartQty > 0 ? openCart() : handleAddToCart(product)}
@@ -688,6 +700,7 @@ const Store = () => {
                           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                             {productsToShow.map((product, index) => {
                               const cartQty = getCartQuantity(product.id);
+                              const minOrder = getMinOrderConfig(product.name, product.vendorCode);
                               return (
                                 <SortableItem key={product.id} id={product.id} isEditMode={isEditMode}>
                                   <motion.div
@@ -715,12 +728,27 @@ const Store = () => {
                                       )}
                                     </button>
                                     <div className="p-3 space-y-2">
-                                      <div className="text-lg font-bold text-primary">{product.price}</div>
+                                      <div className="space-y-0.5">
+                                        <div className="text-lg font-bold text-primary">
+                                          {formatPrice(product.priceNum)}
+                                          {minOrder && (
+                                            <span className="text-xs font-medium text-muted-foreground"> / канистра</span>
+                                          )}
+                                        </div>
+                                        {minOrder && (
+                                          <p className="text-xs text-primary">
+                                            Мин. партия: {minOrder.minQuantity} канистр ({formatPrice(product.priceNum * minOrder.minQuantity)})
+                                          </p>
+                                        )}
+                                      </div>
                                       <h3 className="text-sm font-medium text-foreground line-clamp-4 leading-snug min-h-[4.5rem]">
-                                        {product.name}
+                                        {minOrder ? product.name.replace(/\s*\(\s*5\s*канистр\s*\)\s*$/i, '').trim() : product.name}
                                       </h3>
                                       {product.vendorCode && (
                                         <p className="text-xs text-muted-foreground">Арт: {product.vendorCode}</p>
+                                      )}
+                                      {minOrder && (
+                                        <p className="text-xs text-primary">Минимальный заказ обязателен</p>
                                       )}
                                       <Button
                                         onClick={() => !isEditMode && (cartQty > 0 ? openCart() : handleAddToCart(product))}

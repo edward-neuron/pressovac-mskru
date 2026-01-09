@@ -128,6 +128,9 @@ export const CartDrawer = ({ children }: CartDrawerProps) => {
                       {item.article && (
                         <span className="text-xs text-muted-foreground">Арт. {item.article}</span>
                       )}
+                      {getMinOrderConfig(item.name, item.article) && (
+                        <span className="text-xs text-primary block">Мин. партия: {getMinOrderConfig(item.name, item.article)?.minQuantity} канистр</span>
+                      )}
                       <div className="font-semibold text-primary mt-1">
                         {formatPrice(item.price)}
                       </div>

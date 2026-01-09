@@ -348,7 +348,11 @@ const Store = () => {
     if (minOrderConfig) {
       toast.warning(minOrderConfig.message, {
         icon: <AlertCircle className="w-5 h-5 text-primary" />,
-        duration: 4000,
+        duration: 12000,
+        action: {
+          label: 'Понятно',
+          onClick: () => {},
+        },
       });
     }
 
@@ -560,6 +564,17 @@ const Store = () => {
                                   <ShoppingCart className="w-12 h-12 opacity-20" />
                                 </div>
                               )}
+
+                              {minOrder && (
+                                <>
+                                  <div className="absolute top-2 left-2 rounded-md border border-border bg-background/90 px-2 py-1 text-[11px] font-semibold text-foreground">
+                                    Мин. партия {minOrder.minQuantity}
+                                  </div>
+                                  <div className="absolute inset-x-2 bottom-2 rounded-md border border-border bg-background/90 px-2 py-1 text-[11px] text-foreground opacity-0 group-hover:opacity-100 transition-opacity">
+                                    Минимальный заказ обязателен
+                                  </div>
+                                </>
+                              )}
                             </button>
                             <div className="p-3 space-y-2">
                               <div className="space-y-0.5">
@@ -725,6 +740,17 @@ const Store = () => {
                                         <div className="w-full h-full flex items-center justify-center text-muted-foreground">
                                           <ShoppingCart className="w-12 h-12 opacity-20" />
                                         </div>
+                                      )}
+
+                                      {minOrder && (
+                                        <>
+                                          <div className="absolute top-2 left-2 rounded-md border border-border bg-background/90 px-2 py-1 text-[11px] font-semibold text-foreground">
+                                            Мин. партия {minOrder.minQuantity}
+                                          </div>
+                                          <div className="absolute inset-x-2 bottom-2 rounded-md border border-border bg-background/90 px-2 py-1 text-[11px] text-foreground opacity-0 group-hover:opacity-100 transition-opacity">
+                                            Минимальный заказ обязателен
+                                          </div>
+                                        </>
                                       )}
                                     </button>
                                     <div className="p-3 space-y-2">

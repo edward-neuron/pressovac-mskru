@@ -91,11 +91,30 @@ const isAccessorySubcategory = (name: string): boolean => {
          !lowerName.includes('гибких валов стандарт и сталь');
 };
 
-// Extract short accessory name for display on placeholder
-const getAccessoryShortName = (name: string): string => {
-  // "Аксессуары для P25 и P40" -> "Аксессуары для P25 и P40"
-  // Keep the full name but format it nicely for the placeholder
-  return name;
+// Extract short accessory name for mobile display
+const getShortAccessoryName = (name: string): string => {
+  // "Аксессуары для P25 и P40" -> "Аксессуары P25 и P40"
+  // "Аксессуары для пневматической машины P40 ATEX" -> "Аксессуары ATEX"
+  // "Аксессуары для вакуумной установки E-20" -> "Аксессуары E-20"
+  
+  const lowerName = name.toLowerCase();
+  
+  // Специальный случай для ATEX
+  if (lowerName.includes('atex')) {
+    return 'Аксессуары ATEX';
+  }
+  
+  // Убираем "для" и сокращаем длинные описания
+  // Ищем модели: P25, P40, E-20, E-25L, E-30, EDW-15 и т.д.
+  const modelMatch = name.match(/([A-Z]+-?\d+[A-Z]*)/gi);
+  if (modelMatch && modelMatch.length > 0) {
+    // Если есть модели, берем их
+    const models = modelMatch.slice(0, 2).join(' и ');
+    return `Аксессуары ${models}`;
+  }
+  
+  // Fallback: просто убираем "для" если название короткое
+  return name.replace(/\s+для\s+/i, ' ');
 };
 
 const CategoryCard = ({ category, image, productCount, onClick, index }: CategoryCardProps) => {
@@ -114,7 +133,11 @@ const CategoryCard = ({ category, image, productCount, onClick, index }: Categor
         <div className="flex items-center gap-3 px-4 py-4 min-h-[72px]">
           <ShoppingCart className="w-5 h-5 text-primary-foreground flex-shrink-0" />
           <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-semibold text-primary-foreground leading-tight line-clamp-2">
+            {/* На мобильных показываем сокращенное название, на десктопе - полное */}
+            <h3 className="text-sm font-semibold text-primary-foreground leading-tight line-clamp-2 sm:hidden">
+              {getShortAccessoryName(category.name)}
+            </h3>
+            <h3 className="text-sm font-semibold text-primary-foreground leading-tight line-clamp-2 hidden sm:block">
               {category.name}
             </h3>
             <span className="text-xs text-primary-foreground/70">
@@ -516,7 +539,7 @@ const Store = () => {
                             </button>
                             <div className="p-3 space-y-2">
                               <div className="text-lg font-bold text-primary">{product.price}</div>
-                              <h3 className="text-sm font-medium text-foreground line-clamp-3 leading-snug min-h-[3.5rem]">
+                              <h3 className="text-sm font-medium text-foreground line-clamp-4 leading-snug min-h-[4.5rem]">
                                 {product.name}
                               </h3>
                               {product.vendorCode && (
@@ -666,7 +689,7 @@ const Store = () => {
                                     </button>
                                                     <div className="p-3 space-y-2">
                                                       <div className="text-lg font-bold text-primary">{product.price}</div>
-                                                      <h3 className="text-sm font-medium text-foreground line-clamp-3 leading-snug min-h-[3.5rem]">
+                                                      <h3 className="text-sm font-medium text-foreground line-clamp-4 leading-snug min-h-[4.5rem]">
                                                         {product.name}
                                                       </h3>
                                                       {product.vendorCode && (

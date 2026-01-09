@@ -1,15 +1,32 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { motion } from 'framer-motion';
+import { Play } from 'lucide-react';
 
 type Platform = 'rutube' | 'youtube';
 
-const VIDEO_URLS = {
-  rutube: 'https://rutube.ru/play/embed/3597bd9053d7a1ab63430e4118fb43c8',
-  youtube: 'https://www.youtube.com/embed/wf2sqiJv_20',
+const VIDEO_DATA = {
+  rutube: {
+    url: 'https://rutube.ru/play/embed/3597bd9053d7a1ab63430e4118fb43c8?autoplay=1',
+    thumbnail: 'https://pic.rutube.ru/video/76/c9/76c9c74e7b1e28d7b936e87e44888c82.jpg',
+  },
+  youtube: {
+    url: 'https://www.youtube.com/embed/wf2sqiJv_20?autoplay=1',
+    thumbnail: 'https://img.youtube.com/vi/wf2sqiJv_20/maxresdefault.jpg',
+  },
 };
 
-export const VideoPreview = () => {
-  const [platform, setPlatform] = useState<Platform>('rutube');
+export const VideoPreview = memo(() => {
+  const [platform, setPlatform] = useState<Platform>('youtube');
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const handlePlay = () => {
+    setIsPlaying(true);
+  };
+
+  const handlePlatformChange = (newPlatform: Platform) => {
+    setPlatform(newPlatform);
+    setIsPlaying(false);
+  };
 
   return (
     <section className="section-padding">
@@ -41,7 +58,7 @@ export const VideoPreview = () => {
           <div className="flex justify-center mb-6">
             <div className="inline-flex gap-3 rounded-full bg-muted p-2">
               <button
-                onClick={() => setPlatform('rutube')}
+                onClick={() => handlePlatformChange('rutube')}
                 className={`px-6 py-2 rounded-full text-sm font-medium transition-all bg-blue-600 text-white ${
                   platform === 'rutube'
                     ? 'shadow-lg ring-2 ring-blue-400 ring-offset-2 ring-offset-background'
@@ -51,7 +68,7 @@ export const VideoPreview = () => {
                 RuTube
               </button>
               <button
-                onClick={() => setPlatform('youtube')}
+                onClick={() => handlePlatformChange('youtube')}
                 className={`px-6 py-2 rounded-full text-sm font-medium transition-all bg-red-600 text-white ${
                   platform === 'youtube'
                     ? 'shadow-lg ring-2 ring-red-400 ring-offset-2 ring-offset-background'
@@ -63,21 +80,45 @@ export const VideoPreview = () => {
             </div>
           </div>
 
-          {/* Video Embed */}
-          <div className="aspect-video rounded-3xl overflow-hidden shadow-xl">
-            <iframe
-              key={platform}
-              src={VIDEO_URLS[platform]}
-              className="w-full h-full"
-              loading="lazy"
-              referrerPolicy={platform === 'rutube' ? 'no-referrer' : 'strict-origin-when-cross-origin'}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              title="Видео о компании Веконт-М"
-            />
+          {/* Video Container */}
+          <div className="aspect-video rounded-3xl overflow-hidden shadow-xl relative bg-black">
+            {isPlaying ? (
+              <iframe
+                key={platform}
+                src={VIDEO_DATA[platform].url}
+                className="w-full h-full"
+                referrerPolicy={platform === 'rutube' ? 'no-referrer' : 'strict-origin-when-cross-origin'}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                title="Видео о компании Веконт-М"
+              />
+            ) : (
+              <button
+                onClick={handlePlay}
+                className="w-full h-full relative group cursor-pointer"
+                aria-label="Воспроизвести видео"
+              >
+                <img
+                  src={VIDEO_DATA[platform].thumbnail}
+                  alt="Превью видео"
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                  width={1280}
+                  height={720}
+                />
+                <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform">
+                    <Play className="w-8 h-8 text-white ml-1" fill="white" />
+                  </div>
+                </div>
+              </button>
+            )}
           </div>
         </motion.div>
       </div>
     </section>
   );
-};
+});
+
+VideoPreview.displayName = 'VideoPreview';

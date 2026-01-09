@@ -161,6 +161,11 @@ const Inquiry = () => {
 
       if (error) throw error;
 
+      // Яндекс.Метрика: цель отправки формы
+      if (typeof window !== 'undefined' && (window as any).ym) {
+        (window as any).ym(202504, 'reachGoal', 'form_submit');
+      }
+
       toast.success('Заявка успешно отправлена! Проверьте почту для подтверждения.');
       
       // Reset form

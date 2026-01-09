@@ -248,6 +248,11 @@ const CallbackFormModal = ({ children }: CallbackFormModalProps) => {
         description: 'Мы свяжемся с вами в указанное время.',
       });
 
+      // Яндекс.Метрика: цель отправки формы
+      if (typeof window !== 'undefined' && (window as any).ym) {
+        (window as any).ym(202504, 'reachGoal', 'form_submit');
+      }
+
       setFormData({
         name: '',
         city: '',

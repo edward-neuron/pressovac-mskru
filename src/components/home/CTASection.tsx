@@ -99,6 +99,11 @@ export const CTASection = () => {
         description: 'Мы свяжемся с вами в ближайшее время',
       });
 
+      // Яндекс.Метрика: цель отправки формы
+      if (typeof window !== 'undefined' && (window as any).ym) {
+        (window as any).ym(202504, 'reachGoal', 'form_submit');
+      }
+
       setFormData({ name: '', phone: '', email: '', message: '' });
       setTurnstileToken(null);
     } catch (error) {

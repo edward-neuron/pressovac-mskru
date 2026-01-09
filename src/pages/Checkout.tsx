@@ -238,6 +238,11 @@ const Checkout = () => {
 
       if (error) throw error;
 
+      // Яндекс.Метрика: цель оформления заказа
+      if (typeof window !== 'undefined' && (window as any).ym) {
+        (window as any).ym(202504, 'reachGoal', 'order_complete');
+      }
+
       setOrderNumber(generatedOrderNumber);
       setOrderSuccess(true);
       clearCart();

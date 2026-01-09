@@ -236,6 +236,11 @@ const Contacts = () => {
 
       if (error) throw error;
 
+      // Яндекс.Метрика: цель отправки формы
+      if (typeof window !== 'undefined' && (window as any).ym) {
+        (window as any).ym(202504, 'reachGoal', 'form_submit');
+      }
+
       toast.success('Сообщение отправлено!');
       setSimpleForm({ name: '', phone: '', email: '', message: '', privacyAccepted: false });
       setSimpleAttachment(null);
@@ -341,6 +346,11 @@ const Contacts = () => {
       });
 
       if (error) throw error;
+
+      // Яндекс.Метрика: цель отправки формы
+      if (typeof window !== 'undefined' && (window as any).ym) {
+        (window as any).ym(202504, 'reachGoal', 'form_submit');
+      }
 
       toast.success('Заявка успешно отправлена!');
       setExtendedForm({

@@ -67,7 +67,13 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const clearCart = () => setItems([]);
-  const openCart = () => setIsCartOpen(true);
+  const openCart = () => {
+    setIsCartOpen(true);
+    // Яндекс.Метрика: цель открытия корзины
+    if (typeof window !== 'undefined' && (window as any).ym) {
+      (window as any).ym(202504, 'reachGoal', 'cart_open');
+    }
+  };
   const closeCart = () => setIsCartOpen(false);
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);

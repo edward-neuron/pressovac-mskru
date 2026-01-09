@@ -103,7 +103,10 @@ export const CartDrawer = ({ children }: CartDrawerProps) => {
           ) : (
             <AnimatePresence mode="popLayout">
               <div className="space-y-4">
-                {items.map((item) => (
+                {items.map((item) => {
+                  const minCfg = getMinOrderConfig(item.name, item.article);
+
+                  return (
                   <motion.div
                     key={item.id}
                     layout
@@ -128,10 +131,15 @@ export const CartDrawer = ({ children }: CartDrawerProps) => {
                       {item.article && (
                         <span className="text-xs text-muted-foreground">Арт. {item.article}</span>
                       )}
-                      {getMinOrderConfig(item.name, item.article) && (
-                        <span className="text-xs text-primary block">Мин. партия: {getMinOrderConfig(item.name, item.article)?.minQuantity} канистр</span>
+
+                      {minCfg && (
+                        <div className="mt-1 inline-flex items-center gap-1 rounded-md border border-border bg-muted px-2 py-1">
+                          <AlertCircle className="w-4 h-4 text-primary" />
+                          <span className="text-sm font-semibold text-foreground">Минимальный заказ: {minCfg.minQuantity} канистр</span>
+                        </div>
                       )}
-                      <div className="font-semibold text-primary mt-1">
+
+                      <div className="font-semibold text-primary mt-2">
                         {formatPrice(item.price)}
                       </div>
                     </div>
@@ -169,7 +177,8 @@ export const CartDrawer = ({ children }: CartDrawerProps) => {
                       </div>
                     </div>
                   </motion.div>
-                ))}
+                  );
+                })}
               </div>
             </AnimatePresence>
           )}

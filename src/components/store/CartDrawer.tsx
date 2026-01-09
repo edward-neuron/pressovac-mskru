@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { ShoppingCart, Plus, Minus, Trash2, ArrowRight, AlertCircle } from 'lucide-react';
@@ -37,6 +38,29 @@ export const CartDrawer = ({ children }: CartDrawerProps) => {
     
     updateQuantity(itemId, newQty);
   };
+
+  // Важное уведомление о минимальном заказе — показываем при открытии корзины (1 раз за открытие)
+  const didNotifyMinOrderRef = useRef(false);
+  useEffect(() => {
+    if (!isCartOpen) {
+      didNotifyMinOrderRef.current = false;
+      return;
+    }
+
+    if (didNotifyMinOrderRef.current) return;
+
+    const minOrderItem = items.find((item) => getMinOrderConfig(item.name, item.article));
+    if (minOrderItem) {
+      const cfg = getMinOrderConfig(minOrderItem.name, minOrderItem.article);
+      if (cfg) {
+        toast.warning(cfg.message, {
+          icon: <AlertCircle className="w-5 h-5 text-amber-500" />,
+          duration: 4000,
+        });
+        didNotifyMinOrderRef.current = true;
+      }
+    }
+  }, [isCartOpen, items]);
 
   return (
     <Sheet open={isCartOpen} onOpenChange={(open) => open ? openCart() : closeCart()}>

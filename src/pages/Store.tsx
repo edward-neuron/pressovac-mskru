@@ -381,8 +381,10 @@ const Store = () => {
         canonical="/store"
       />
 
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-b from-primary/10 via-background to-background pt-24 pb-12">
+      {/* Wrapper to ensure footer stays at bottom when content is small */}
+      <div className="flex flex-col min-h-[calc(100vh-80px)]">
+        {/* Hero Section */}
+        <section className="relative bg-gradient-to-b from-primary/10 via-background to-background pt-24 pb-12">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div>
@@ -469,10 +471,10 @@ const Store = () => {
             </div>
           )}
         </div>
-      </section>
+        </section>
 
-      {/* Main Content */}
-      <section className="py-12 min-h-[60vh]">
+        {/* Main Content - flex-1 ensures it takes remaining space, pushing footer down */}
+        <section className="py-12 flex-1">
         <div className="container mx-auto px-4">
           {isLoading ? (
             <div className="flex items-center justify-center py-20">
@@ -725,7 +727,8 @@ const Store = () => {
             </AnimatePresence>
           )}
         </div>
-      </section>
+        </section>
+      </div> {/* End of flex wrapper */}
 
       {/* Floating Cart Button (Mobile) */}
       {totalItems > 0 && !isEditMode && (

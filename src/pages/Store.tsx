@@ -174,26 +174,27 @@ const Breadcrumbs = ({ categoryHistory, categories, onNavigateToRoot, onNavigate
   const getCategoryName = (id: string) => categories.find(c => c.id === id)?.name || '';
 
   return (
-    <nav className="flex items-center flex-wrap gap-1 text-sm mb-6 bg-muted/30 rounded-lg px-4 py-3">
+    <nav className="flex items-center flex-wrap gap-1.5 text-sm mb-6 bg-primary/10 rounded-lg px-4 py-3 border border-primary/20">
+      {/* Заметная кнопка "Магазин" с иконкой и текстом на всех устройствах */}
       <button
         onClick={onNavigateToRoot}
-        className="flex items-center gap-1 text-primary hover:text-primary/80 transition-colors font-medium"
+        className="flex items-center gap-1.5 bg-primary text-primary-foreground px-3 py-1.5 rounded-md hover:bg-primary/90 transition-colors font-medium text-sm"
       >
         <Home className="w-4 h-4" />
-        <span className="hidden sm:inline">Магазин</span>
+        <span>Магазин</span>
       </button>
       
       {categoryHistory.map((catId, index) => (
-        <div key={catId} className="flex items-center gap-1">
-          <ChevronRight className="w-4 h-4 text-muted-foreground" />
+        <div key={catId} className="flex items-center gap-1.5">
+          <ChevronRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />
           {index === categoryHistory.length - 1 ? (
-            <span className="text-foreground font-medium truncate max-w-[200px]">
+            <span className="text-foreground font-medium truncate max-w-[180px] sm:max-w-[250px]">
               {getCategoryName(catId)}
             </span>
           ) : (
             <button
               onClick={() => onNavigateToLevel(index)}
-              className="text-primary hover:text-primary/80 transition-colors truncate max-w-[150px]"
+              className="text-primary hover:text-primary/80 transition-colors truncate max-w-[120px] sm:max-w-[180px] hover:underline"
             >
               {getCategoryName(catId)}
             </button>
@@ -448,7 +449,7 @@ const Store = () => {
       </section>
 
       {/* Main Content */}
-      <section className="py-12">
+      <section className="py-12 min-h-[60vh]">
         <div className="container mx-auto px-4">
           {isLoading ? (
             <div className="flex items-center justify-center py-20">
@@ -515,7 +516,7 @@ const Store = () => {
                             </button>
                             <div className="p-3 space-y-2">
                               <div className="text-lg font-bold text-primary">{product.price}</div>
-                              <h3 className="text-sm font-medium text-foreground line-clamp-2 leading-tight min-h-[2.5rem]">
+                              <h3 className="text-sm font-medium text-foreground line-clamp-3 leading-snug min-h-[3.5rem]">
                                 {product.name}
                               </h3>
                               {product.vendorCode && (
@@ -663,14 +664,14 @@ const Store = () => {
                                         </div>
                                       )}
                                     </button>
-                                    <div className="p-3 space-y-2">
-                                      <div className="text-lg font-bold text-primary">{product.price}</div>
-                                      <h3 className="text-sm font-medium text-foreground line-clamp-2 leading-tight min-h-[2.5rem]">
-                                        {product.name}
-                                      </h3>
-                                      {product.vendorCode && (
-                                        <p className="text-xs text-muted-foreground">Арт: {product.vendorCode}</p>
-                                      )}
+                                                    <div className="p-3 space-y-2">
+                                                      <div className="text-lg font-bold text-primary">{product.price}</div>
+                                                      <h3 className="text-sm font-medium text-foreground line-clamp-3 leading-snug min-h-[3.5rem]">
+                                                        {product.name}
+                                                      </h3>
+                                                      {product.vendorCode && (
+                                                        <p className="text-xs text-muted-foreground">Арт: {product.vendorCode}</p>
+                                                      )}
                                       <Button
                                         onClick={() => !isEditMode && (cartQty > 0 ? openCart() : handleAddToCart(product))}
                                         size="sm"

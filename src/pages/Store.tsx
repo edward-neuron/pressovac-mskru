@@ -25,9 +25,11 @@ import { ProductDetailDrawer } from '@/components/store/ProductDetailDrawer';
 import { useCart } from '@/contexts/CartContext';
 import { useYmlStore, YmlProduct, YmlCategory } from '@/hooks/useYmlStore';
 import { useSortOrder } from '@/hooks/useSortOrder';
-import { ShoppingCart, ArrowLeft, Search, Loader2, Settings, X, Home, ChevronRight } from 'lucide-react';
+import { ShoppingCart, ArrowLeft, Search, Loader2, Settings, X, Home, ChevronRight, AlertCircle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { getPreviewImageUrl } from '@/lib/imageOptimization';
+import { getMinOrderConfig } from '@/data/minOrderConfig';
+import { toast } from 'sonner';
 
 // Import category images
 import category1 from '@/assets/store/category-1.webp';
@@ -341,13 +343,26 @@ const Store = () => {
   };
 
   const handleAddToCart = (product: YmlProduct) => {
-    addItem({
-      id: product.id,
-      name: product.name,
-      price: product.priceNum,
-      image: product.picture || '/placeholder.svg',
-      article: product.vendorCode
-    });
+    const minOrderConfig = getMinOrderConfig(product.name, product.vendorCode);
+
+    if (minOrderConfig) {
+      toast.warning(minOrderConfig.message, {
+        icon: <AlertCircle className="w-5 h-5 text-primary" />,
+        duration: 4000,
+      });
+    }
+
+    const qty = minOrderConfig ? minOrderConfig.minQuantity : 1;
+
+    for (let i = 0; i < qty; i++) {
+      addItem({
+        id: product.id,
+        name: product.name,
+        price: product.priceNum,
+        image: product.picture || '/placeholder.svg',
+        article: product.vendorCode,
+      });
+    }
   };
 
   const getCartQuantity = (productId: string) => {
@@ -520,6 +535,7 @@ const Store = () => {
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                       {productsToShow.map((product, index) => {
                         const cartQty = getCartQuantity(product.id);
+                        const minOrder = getMinOrderConfig(product.name, product.vendorCode);
                         return (
                           <motion.div
                             key={product.id}
@@ -552,6 +568,9 @@ const Store = () => {
                               </h3>
                               {product.vendorCode && (
                                 <p className="text-xs text-muted-foreground">Арт: {product.vendorCode}</p>
+                              )}
+                              {minOrder && (
+                                <p className="text-xs text-primary">Мин. заказ: {minOrder.minQuantity} шт.</p>
                               )}
                               <Button
                                 onClick={() => cartQty > 0 ? openCart() : handleAddToCart(product)}

@@ -98,6 +98,8 @@ export const HeroSection = memo(() => {
                 src={equipmentHero}
                 alt="Оборудование Pressovac для очистки вентиляции"
                 className="w-full h-auto object-contain"
+                width={600}
+                height={400}
                 loading="eager"
                 fetchPriority="high"
                 decoding="async"

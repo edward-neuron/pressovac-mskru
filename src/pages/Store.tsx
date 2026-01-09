@@ -596,9 +596,6 @@ const Store = () => {
                               {product.vendorCode && (
                                 <p className="text-xs text-muted-foreground">Арт: {product.vendorCode}</p>
                               )}
-                              {minOrder && (
-                                <p className="text-xs text-primary">Минимальный заказ обязателен</p>
-                              )}
                               <Button
                                 onClick={() => cartQty > 0 ? openCart() : handleAddToCart(product)}
                                 size="sm"
@@ -772,9 +769,6 @@ const Store = () => {
                                       </h3>
                                       {product.vendorCode && (
                                         <p className="text-xs text-muted-foreground">Арт: {product.vendorCode}</p>
-                                      )}
-                                      {minOrder && (
-                                        <p className="text-xs text-primary">Минимальный заказ обязателен</p>
                                       )}
                                       <Button
                                         onClick={() => !isEditMode && (cartQty > 0 ? openCart() : handleAddToCart(product))}

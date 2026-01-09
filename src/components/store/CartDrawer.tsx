@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { ShoppingCart, Plus, Minus, Trash2, ArrowRight, AlertCircle } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { formatPrice } from '@/data/storeData';
@@ -133,10 +134,25 @@ export const CartDrawer = ({ children }: CartDrawerProps) => {
                       )}
 
                       {minCfg && (
-                        <div className="mt-1 inline-flex items-center gap-1 rounded-md border border-border bg-muted px-2 py-1">
-                          <AlertCircle className="w-4 h-4 text-primary" />
-                          <span className="text-sm font-semibold text-foreground">Минимальный заказ: {minCfg.minQuantity} канистр</span>
-                        </div>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <div
+                              className="mt-1 inline-flex items-center gap-1 rounded-md border border-border bg-muted px-2 py-1"
+                              role="note"
+                              tabIndex={0}
+                            >
+                              <AlertCircle className="w-4 h-4 text-primary" />
+                              <span className="text-sm font-semibold text-foreground">
+                                Минимальный заказ: {minCfg.minQuantity} канистр
+                              </span>
+                            </div>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p className="max-w-[260px] text-sm">
+                              {minCfg.message}. Количество в корзине не может быть меньше минимума.
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
                       )}
 
                       <div className="font-semibold text-primary mt-2">

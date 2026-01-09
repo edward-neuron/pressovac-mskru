@@ -1,11 +1,13 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, Plus, Minus, Trash2, ArrowRight } from 'lucide-react';
+import { ShoppingCart, Plus, Minus, Trash2, ArrowRight, AlertCircle } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { formatPrice } from '@/data/storeData';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getPreviewImageUrl } from '@/lib/imageOptimization';
+import { getMinOrderConfig, validateMinOrder } from '@/data/minOrderConfig';
+import { toast } from 'sonner';
 
 interface CartDrawerProps {
   children?: React.ReactNode;
@@ -13,6 +15,28 @@ interface CartDrawerProps {
 
 export const CartDrawer = ({ children }: CartDrawerProps) => {
   const { items, updateQuantity, removeItem, totalItems, totalPrice, isCartOpen, openCart, closeCart } = useCart();
+  
+  // Проверяем, есть ли товары с нарушением минимального заказа
+  const hasMinOrderViolation = items.some(item => {
+    const validation = validateMinOrder(item.quantity, item.name, item.article);
+    return validation && !validation.valid;
+  });
+  
+  // Обработчик изменения количества с учетом минимального заказа
+  const handleQuantityChange = (itemId: string, newQty: number, itemName: string, itemArticle?: string) => {
+    const minConfig = getMinOrderConfig(itemName, itemArticle);
+    
+    if (minConfig && newQty < minConfig.minQuantity && newQty > 0) {
+      toast.warning(minConfig.message, {
+        icon: <AlertCircle className="w-5 h-5 text-amber-500" />,
+        duration: 3000
+      });
+      updateQuantity(itemId, minConfig.minQuantity);
+      return;
+    }
+    
+    updateQuantity(itemId, newQty);
+  };
 
   return (
     <Sheet open={isCartOpen} onOpenChange={(open) => open ? openCart() : closeCart()}>
@@ -100,7 +124,7 @@ export const CartDrawer = ({ children }: CartDrawerProps) => {
                           variant="outline"
                           size="icon"
                           className="h-7 w-7"
-                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                          onClick={() => handleQuantityChange(item.id, item.quantity - 1, item.name, item.article)}
                         >
                           <Minus className="w-3 h-3" />
                         </Button>
@@ -111,7 +135,7 @@ export const CartDrawer = ({ children }: CartDrawerProps) => {
                           variant="outline"
                           size="icon"
                           className="h-7 w-7"
-                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          onClick={() => handleQuantityChange(item.id, item.quantity + 1, item.name, item.article)}
                         >
                           <Plus className="w-3 h-3" />
                         </Button>

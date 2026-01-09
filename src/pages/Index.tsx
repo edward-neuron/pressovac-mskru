@@ -1,13 +1,17 @@
+import { lazy, Suspense } from 'react';
 import { Layout } from '@/components/layout/Layout';
 import { SEOHead } from '@/components/seo/SEOHead';
 import { HeroSection } from '@/components/home/HeroSection';
-import { CatalogPreview } from '@/components/home/CatalogPreview';
-import { AboutPreview } from '@/components/home/AboutPreview';
-import { VideoPreview } from '@/components/home/VideoPreview';
-import { ArticlesPreview } from '@/components/home/ArticlesPreview';
-import { CTASection } from '@/components/home/CTASection';
 
-// Structured data for organization
+// Lazy load below-the-fold sections for faster initial render
+const CatalogPreview = lazy(() => import('@/components/home/CatalogPreview').then(m => ({ default: m.CatalogPreview })));
+const AboutPreview = lazy(() => import('@/components/home/AboutPreview').then(m => ({ default: m.AboutPreview })));
+const VideoPreview = lazy(() => import('@/components/home/VideoPreview').then(m => ({ default: m.VideoPreview })));
+const ArticlesPreview = lazy(() => import('@/components/home/ArticlesPreview').then(m => ({ default: m.ArticlesPreview })));
+const CTASection = lazy(() => import('@/components/home/CTASection').then(m => ({ default: m.CTASection })));
+
+// Simple loading fallback
+const SectionLoader = () => <div className="min-h-[200px]" />;
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
@@ -103,11 +107,21 @@ const Index = () => {
         faq={homepageFAQ}
       />
       <HeroSection />
-      <CatalogPreview />
-      <AboutPreview />
-      <VideoPreview />
-      <ArticlesPreview />
-      <CTASection />
+      <Suspense fallback={<SectionLoader />}>
+        <CatalogPreview />
+      </Suspense>
+      <Suspense fallback={<SectionLoader />}>
+        <AboutPreview />
+      </Suspense>
+      <Suspense fallback={<SectionLoader />}>
+        <VideoPreview />
+      </Suspense>
+      <Suspense fallback={<SectionLoader />}>
+        <ArticlesPreview />
+      </Suspense>
+      <Suspense fallback={<SectionLoader />}>
+        <CTASection />
+      </Suspense>
     </Layout>
   );
 };

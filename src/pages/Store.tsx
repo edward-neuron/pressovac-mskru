@@ -315,21 +315,29 @@ const Store = () => {
     return [];
   }, [searchQuery, selectedCategory, searchProducts, getProductsByCategory, getProductSortOrder]);
 
+  const scrollPageTop = () => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  };
+
   const navigateToCategory = (categoryId: string) => {
     setCategoryHistory(prev => [...prev, categoryId]);
+    scrollPageTop();
   };
 
   const navigateBack = () => {
     setCategoryHistory(prev => prev.slice(0, -1));
+    scrollPageTop();
   };
 
   const navigateToRoot = () => {
     setCategoryHistory([]);
     setSearchQuery('');
+    scrollPageTop();
   };
 
   const navigateToLevel = (index: number) => {
     setCategoryHistory(prev => prev.slice(0, index + 1));
+    scrollPageTop();
   };
 
   const handleAddToCart = (product: YmlProduct) => {
@@ -381,10 +389,8 @@ const Store = () => {
         canonical="/store"
       />
 
-      {/* Wrapper to ensure footer stays at bottom when content is small */}
-      <div className="flex flex-col min-h-[calc(100vh-80px)]">
-        {/* Hero Section */}
-        <section className="relative bg-gradient-to-b from-primary/10 via-background to-background pt-24 pb-12">
+      {/* Hero Section */}
+      <section className="relative bg-gradient-to-b from-primary/10 via-background to-background pt-24 pb-12">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div>
@@ -392,7 +398,7 @@ const Store = () => {
                 Магазин Pressovac
               </h1>
               <p className="text-muted-foreground max-w-xl">
-                Профессиональное оборудование для очистки систем вентиляции. 
+                Профессиональное оборудование для очистки систем вентиляции.
                 Добавляйте товары в корзину и оформляйте заказ.
               </p>
             </div>
@@ -410,7 +416,7 @@ const Store = () => {
                     {isEditMode ? <X className="w-4 h-4 mr-2" /> : <Settings className="w-4 h-4 mr-2" />}
                     {isEditMode ? "Завершить" : "Сортировка"}
                   </Button>
-                  
+
                   {isEditMode && (
                     <Button
                       variant="ghost"
@@ -426,8 +432,8 @@ const Store = () => {
 
               {/* Cart Button */}
               <CartDrawer>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   size="lg"
                   className="relative border-primary/30 hover:bg-primary/5"
                 >
@@ -471,10 +477,10 @@ const Store = () => {
             </div>
           )}
         </div>
-        </section>
+      </section>
 
-        {/* Main Content - flex-1 ensures it takes remaining space, pushing footer down */}
-        <section className="py-12 flex-1">
+      {/* Main Content */}
+      <section className="py-12">
         <div className="container mx-auto px-4">
           {isLoading ? (
             <div className="flex items-center justify-center py-20">
@@ -522,13 +528,13 @@ const Store = () => {
                             transition={{ delay: index * 0.02 }}
                             className="group bg-card rounded-xl border border-border/50 overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300"
                           >
-                            <button 
+                            <button
                               onClick={() => handleProductClick(product)}
                               className="aspect-square bg-white relative overflow-hidden cursor-pointer"
                             >
                               {product.picture ? (
-                                <img 
-                                  src={getPreviewImageUrl(product.picture)} 
+                                <img
+                                  src={getPreviewImageUrl(product.picture)}
                                   alt={product.name}
                                   className="w-full h-full object-contain p-2"
                                   loading="lazy"
@@ -615,7 +621,7 @@ const Store = () => {
                   />
 
                   <h2 className="text-2xl font-bold mb-6">{currentCategory?.name}</h2>
-                  
+
                   {/* Show subcategories if they exist */}
                   {hasSubcategories && (
                     <>
@@ -640,14 +646,14 @@ const Store = () => {
                           </div>
                         </SortableContext>
                       </DndContext>
-                      
+
                       {/* Separator if there are also products */}
                       {productsToShow.length > 0 && (
                         <div className="my-8 border-t border-border/50" />
                       )}
                     </>
                   )}
-                  
+
                   {/* Show products directly in this category */}
                   {productsToShow.length > 0 && (
                     <>
@@ -671,14 +677,14 @@ const Store = () => {
                                     transition={{ delay: index * 0.02 }}
                                     className="group bg-card rounded-xl border border-border/50 overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300"
                                   >
-                                    <button 
+                                    <button
                                       onClick={() => handleProductClick(product)}
                                       className="aspect-square bg-white relative overflow-hidden cursor-pointer"
                                       disabled={isEditMode}
                                     >
                                       {product.picture ? (
-                                        <img 
-                                          src={getPreviewImageUrl(product.picture)} 
+                                        <img
+                                          src={getPreviewImageUrl(product.picture)}
                                           alt={product.name}
                                           className="w-full h-full object-contain p-2"
                                           loading="lazy"
@@ -689,14 +695,14 @@ const Store = () => {
                                         </div>
                                       )}
                                     </button>
-                                                    <div className="p-3 space-y-2">
-                                                      <div className="text-lg font-bold text-primary">{product.price}</div>
-                                                      <h3 className="text-sm font-medium text-foreground line-clamp-4 leading-snug min-h-[4.5rem]">
-                                                        {product.name}
-                                                      </h3>
-                                                      {product.vendorCode && (
-                                                        <p className="text-xs text-muted-foreground">Арт: {product.vendorCode}</p>
-                                                      )}
+                                    <div className="p-3 space-y-2">
+                                      <div className="text-lg font-bold text-primary">{product.price}</div>
+                                      <h3 className="text-sm font-medium text-foreground line-clamp-4 leading-snug min-h-[4.5rem]">
+                                        {product.name}
+                                      </h3>
+                                      {product.vendorCode && (
+                                        <p className="text-xs text-muted-foreground">Арт: {product.vendorCode}</p>
+                                      )}
                                       <Button
                                         onClick={() => !isEditMode && (cartQty > 0 ? openCart() : handleAddToCart(product))}
                                         size="sm"
@@ -715,7 +721,7 @@ const Store = () => {
                       </DndContext>
                     </>
                   )}
-                  
+
                   {/* Empty state */}
                   {!hasSubcategories && productsToShow.length === 0 && (
                     <div className="text-center py-12">
@@ -727,8 +733,7 @@ const Store = () => {
             </AnimatePresence>
           )}
         </div>
-        </section>
-      </div> {/* End of flex wrapper */}
+      </section>
 
       {/* Floating Cart Button (Mobile) */}
       {totalItems > 0 && !isEditMode && (

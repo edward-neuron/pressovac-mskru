@@ -29,6 +29,12 @@ export function getOptimizedImageUrl(
     return url;
   }
   
+  // satom.ru блокирует запросы от CDN-прокси, загружаем напрямую
+  // Изображения уже в формате WebP (.webp.jpg - это WebP с неправильным расширением)
+  if (url.includes('satom.ru') || url.includes('images.satom.ru')) {
+    return url;
+  }
+  
   const { quality = 80, width, height } = options;
   
   // Формируем параметры

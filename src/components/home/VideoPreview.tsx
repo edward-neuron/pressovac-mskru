@@ -1,17 +1,16 @@
 import { useState, memo } from 'react';
 import { motion } from 'framer-motion';
 import { Play } from 'lucide-react';
+import videoThumbnail from '@/assets/video-preview-thumbnail.webp';
 
 type Platform = 'rutube' | 'youtube';
 
 const VIDEO_DATA = {
   rutube: {
     url: 'https://rutube.ru/play/embed/3597bd9053d7a1ab63430e4118fb43c8?autoplay=1',
-    thumbnail: 'https://pic.rutube.ru/video/76/c9/76c9c74e7b1e28d7b936e87e44888c82.jpg',
   },
   youtube: {
     url: 'https://www.youtube.com/embed/wf2sqiJv_20?autoplay=1',
-    thumbnail: 'https://img.youtube.com/vi/wf2sqiJv_20/maxresdefault.jpg',
   },
 };
 
@@ -99,12 +98,14 @@ export const VideoPreview = memo(() => {
                 aria-label="Воспроизвести видео"
               >
                 <img
-                  src={VIDEO_DATA[platform].thumbnail}
+                  src={videoThumbnail}
                   alt="Превью видео"
                   className="w-full h-full object-cover"
-                  loading="lazy"
+                  loading="eager"
+                  fetchPriority="high"
                   width={1280}
                   height={720}
+                  decoding="async"
                 />
                 <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors" />
                 <div className="absolute inset-0 flex items-center justify-center">

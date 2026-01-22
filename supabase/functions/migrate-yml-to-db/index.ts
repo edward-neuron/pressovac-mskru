@@ -51,7 +51,14 @@ function parseYmlCategories(xmlText: string): YmlCategory[] {
 
 function parseYmlProducts(xmlText: string): YmlProduct[] {
   const products: YmlProduct[] = [];
-  const offerRegex = /<offer id="([^"]+)"[^>]*available="([^"]+)"[^>]*>([\s\S]*?)<\/offer>/g;
+  
+  // Check if description tags exist in the raw XML
+  const hasDescriptionTags = xmlText.includes('<description>');
+  const hasCdataTags = xmlText.includes('<![CDATA[');
+  console.log(`[DEBUG] XML contains <description> tags: ${hasDescriptionTags}`);
+  console.log(`[DEBUG] XML contains CDATA tags: ${hasCdataTags}`);
+  
+  const offerRegex = /<offer id="([^"]+)"[^>]*available="([^"]+)"[^>]*>([\s\S]*?)<\/offer>/gi;
   let match;
   
   while ((match = offerRegex.exec(xmlText)) !== null) {
@@ -59,13 +66,30 @@ function parseYmlProducts(xmlText: string): YmlProduct[] {
     const available = match[2] === 'true';
     const offerContent = match[3];
     
-    const nameMatch = offerContent.match(/<name>([^<]+)<\/name>/);
-    const priceMatch = offerContent.match(/<price>([^<]+)<\/price>/);
-    const currencyMatch = offerContent.match(/<currencyId>([^<]+)<\/currencyId>/);
-    const categoryMatch = offerContent.match(/<categoryId>([^<]+)<\/categoryId>/);
-    const pictureMatch = offerContent.match(/<picture>([^<]+)<\/picture>/);
-    const vendorCodeMatch = offerContent.match(/<vendorCode>([^<]+)<\/vendorCode>/);
-    const descriptionMatch = offerContent.match(/<description><!\[CDATA\[([\s\S]*?)\]\]><\/description>/);
+    // Extract name - try CDATA first, then plain
+    const nameMatch = offerContent.match(/<name><!\[CDATA\[(.*?)\]\]><\/name>/i) ||
+                      offerContent.match(/<name>([^<]+)<\/name>/i);
+    
+    const priceMatch = offerContent.match(/<price>([^<]+)<\/price>/i);
+    const currencyMatch = offerContent.match(/<currencyId>([^<]+)<\/currencyId>/i);
+    const categoryMatch = offerContent.match(/<categoryId>([^<]+)<\/categoryId>/i);
+    const pictureMatch = offerContent.match(/<picture>([^<]+)<\/picture>/i);
+    
+    // Extract vendorCode - try CDATA first, then plain
+    const vendorCodeMatch = offerContent.match(/<vendorCode><!\[CDATA\[(.*?)\]\]><\/vendorCode>/i) ||
+                            offerContent.match(/<vendorCode>([^<]+)<\/vendorCode>/i);
+    
+    // Extract description - try CDATA first, then plain text (which may contain escaped HTML)
+    let descriptionMatch = offerContent.match(/<description><!\[CDATA\[([\s\S]*?)\]\]><\/description>/i);
+    if (!descriptionMatch) {
+      // Fallback: match description tag with any content (escaped HTML)
+      descriptionMatch = offerContent.match(/<description>([\s\S]*?)<\/description>/i);
+    }
+    
+    // Debug: log products with descriptions
+    if (descriptionMatch && descriptionMatch[1]) {
+      console.log(`[DEBUG] Found description for: ${nameMatch?.[1]?.substring(0, 40)}`);
+    }
     
     if (nameMatch && priceMatch && categoryMatch) {
       products.push({
@@ -75,7 +99,7 @@ function parseYmlProducts(xmlText: string): YmlProduct[] {
         currencyId: currencyMatch ? currencyMatch[1] : 'RUB',
         categoryId: categoryMatch[1],
         picture: pictureMatch ? pictureMatch[1] : undefined,
-        vendorCode: vendorCodeMatch ? vendorCodeMatch[1] : undefined,
+        vendorCode: vendorCodeMatch ? vendorCodeMatch[1]?.trim() : undefined,
         description: descriptionMatch ? descriptionMatch[1] : undefined,
         available
       });
@@ -159,7 +183,17 @@ serve(async (req) => {
       }
     }
     
-    // Insert products in batches
+    // Get existing products to preserve local data
+    const { data: existingProducts } = await supabase
+      .from('products')
+      .select('id, picture, description');
+    
+    const existingMap = new Map<string, { picture?: string; description?: string }>();
+    for (const p of existingProducts || []) {
+      existingMap.set(p.id, { picture: p.picture, description: p.description });
+    }
+    
+    // Insert products in batches, preserving local images and existing descriptions
     const BATCH_SIZE = 100;
     let insertedProducts = 0;
     
@@ -169,17 +203,29 @@ serve(async (req) => {
       const { error: productError } = await supabase
         .from('products')
         .upsert(
-          batch.map(p => ({
-            id: p.id,
-            name: p.name,
-            price: p.price,
-            currency_id: p.currencyId,
-            category_id: p.categoryId,
-            picture: p.picture,
-            vendor_code: p.vendorCode,
-            description: p.description,
-            available: p.available
-          })),
+          batch.map(p => {
+            const existing = existingMap.get(p.id);
+            
+            // Preserve local images (starting with /) - don't overwrite with external URLs
+            const picture = existing?.picture?.startsWith('/') 
+              ? existing.picture 
+              : (p.picture || existing?.picture);
+            
+            // Preserve existing description if YML returns empty but DB has content
+            const description = p.description || existing?.description || null;
+            
+            return {
+              id: p.id,
+              name: p.name,
+              price: p.price,
+              currency_id: p.currencyId,
+              category_id: p.categoryId,
+              picture,
+              vendor_code: p.vendorCode,
+              description,
+              available: p.available
+            };
+          }),
           { onConflict: 'id' }
         );
       

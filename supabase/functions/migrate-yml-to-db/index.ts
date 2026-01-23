@@ -6,6 +6,13 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// ============================================================================
+// DATA LOCK: Prices and images are FROZEN as of January 2025
+// DO NOT modify this function to update prices or images from external sources
+// All 196 products have verified prices and localized images in /images/products/
+// ============================================================================
+const DATA_LOCKED = true;
+
 const YML_BASE_URL = 'https://shop-pressovac.ru/yml-export/02513391f110e59858a2403c4b3bed42/';
 
 function buildYmlUrl(): string {
@@ -52,7 +59,6 @@ function parseYmlCategories(xmlText: string): YmlCategory[] {
 function parseYmlProducts(xmlText: string): YmlProduct[] {
   const products: YmlProduct[] = [];
   
-  // Check if description tags exist in the raw XML
   const hasDescriptionTags = xmlText.includes('<description>');
   const hasCdataTags = xmlText.includes('<![CDATA[');
   console.log(`[DEBUG] XML contains <description> tags: ${hasDescriptionTags}`);
@@ -66,7 +72,6 @@ function parseYmlProducts(xmlText: string): YmlProduct[] {
     const available = match[2] === 'true';
     const offerContent = match[3];
     
-    // Extract name - try CDATA first, then plain
     const nameMatch = offerContent.match(/<name><!\[CDATA\[(.*?)\]\]><\/name>/i) ||
                       offerContent.match(/<name>([^<]+)<\/name>/i);
     
@@ -75,18 +80,14 @@ function parseYmlProducts(xmlText: string): YmlProduct[] {
     const categoryMatch = offerContent.match(/<categoryId>([^<]+)<\/categoryId>/i);
     const pictureMatch = offerContent.match(/<picture>([^<]+)<\/picture>/i);
     
-    // Extract vendorCode - try CDATA first, then plain
     const vendorCodeMatch = offerContent.match(/<vendorCode><!\[CDATA\[(.*?)\]\]><\/vendorCode>/i) ||
                             offerContent.match(/<vendorCode>([^<]+)<\/vendorCode>/i);
     
-    // Extract description - try CDATA first, then plain text (which may contain escaped HTML)
     let descriptionMatch = offerContent.match(/<description><!\[CDATA\[([\s\S]*?)\]\]><\/description>/i);
     if (!descriptionMatch) {
-      // Fallback: match description tag with any content (escaped HTML)
       descriptionMatch = offerContent.match(/<description>([\s\S]*?)<\/description>/i);
     }
     
-    // Debug: log products with descriptions
     if (descriptionMatch && descriptionMatch[1]) {
       console.log(`[DEBUG] Found description for: ${nameMatch?.[1]?.substring(0, 40)}`);
     }
@@ -114,6 +115,19 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // DATA LOCK CHECK - Prevent any external sync when locked
+  if (DATA_LOCKED) {
+    console.log('⚠️ DATA LOCK ACTIVE: Migration blocked. Prices and images are frozen.');
+    return new Response(
+      JSON.stringify({
+        success: false,
+        locked: true,
+        message: 'Data migration is locked. Prices and images are frozen as of January 2025. To unlock, set DATA_LOCKED = false in the edge function.'
+      }),
+      { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
@@ -135,14 +149,11 @@ serve(async (req) => {
     const xmlText = await response.text();
     console.log('YML fetched, size:', xmlText.length);
     
-    // Parse data
     const categories = parseYmlCategories(xmlText);
     const products = parseYmlProducts(xmlText);
     
     console.log(`Parsed ${categories.length} categories and ${products.length} products`);
     
-    // Insert categories first (need to handle parent references)
-    // First, insert categories without parents
     const rootCategories = categories.filter(c => !c.parentId);
     const childCategories = categories.filter(c => c.parentId);
     
@@ -164,7 +175,6 @@ serve(async (req) => {
       }
     }
     
-    // Then insert child categories
     if (childCategories.length > 0) {
       const { error: childError } = await supabase
         .from('product_categories')
@@ -186,14 +196,13 @@ serve(async (req) => {
     // Get existing products to preserve local data
     const { data: existingProducts } = await supabase
       .from('products')
-      .select('id, picture, description');
+      .select('id, picture, description, price');
     
-    const existingMap = new Map<string, { picture?: string; description?: string }>();
+    const existingMap = new Map<string, { picture?: string; description?: string; price?: number }>();
     for (const p of existingProducts || []) {
-      existingMap.set(p.id, { picture: p.picture, description: p.description });
+      existingMap.set(p.id, { picture: p.picture, description: p.description, price: p.price });
     }
     
-    // Insert products in batches, preserving local images and existing descriptions
     const BATCH_SIZE = 100;
     let insertedProducts = 0;
     
@@ -206,18 +215,21 @@ serve(async (req) => {
           batch.map(p => {
             const existing = existingMap.get(p.id);
             
-            // Preserve local images (starting with /) - don't overwrite with external URLs
+            // ALWAYS preserve local images (starting with /)
             const picture = existing?.picture?.startsWith('/') 
               ? existing.picture 
               : (p.picture || existing?.picture);
             
-            // Preserve existing description if YML returns empty but DB has content
-            const description = p.description || existing?.description || null;
+            // ALWAYS preserve existing description if present
+            const description = existing?.description || p.description || null;
+            
+            // ALWAYS preserve existing price if present (price lock)
+            const price = existing?.price ?? p.price;
             
             return {
               id: p.id,
               name: p.name,
-              price: p.price,
+              price,
               currency_id: p.currencyId,
               category_id: p.categoryId,
               picture,
@@ -243,7 +255,7 @@ serve(async (req) => {
         success: true,
         categoriesCount: categories.length,
         productsCount: products.length,
-        message: 'Migration completed successfully'
+        message: 'Migration completed successfully (prices and images preserved)'
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );

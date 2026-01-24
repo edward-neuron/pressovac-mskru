@@ -109,36 +109,39 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
     const { introLines, listItems, sections, footnotes, warnings, isKit } = parseDescriptionBlocks(cleanText);
 
     return (
-      <div className="space-y-3">
-        {/* Intro paragraphs */}
+      <div className="space-y-4">
+        {/* Описание - intro paragraphs */}
         {introLines.length > 0 && (
           <div className="space-y-1">
-            {introLines.map((line, index) => {
-              const isTitleLine = line.toLowerCase().includes('в комплект поставки входит');
-              return (
-                <p key={index} className={`text-sm leading-snug text-foreground ${isTitleLine ? 'font-semibold' : ''}`}>
-                  {line}
-                </p>
-              );
-            })}
+            <p className="font-semibold text-foreground">Описание</p>
+            <div className="space-y-1">
+              {introLines.map((line, index) => {
+                const isTitleLine = line.toLowerCase().includes('в комплект поставки входит');
+                return (
+                  <p key={index} className={`text-sm leading-tight text-foreground ${isTitleLine ? 'font-semibold' : ''}`}>
+                    {line}
+                  </p>
+                );
+              })}
+            </div>
           </div>
         )}
 
         {/* Named sections (Технические спецификации, Применение, Преимущества) */}
         {sections.map((section, sIndex) => (
           <div key={sIndex} className="space-y-1">
-            <p className="text-sm font-semibold text-foreground">{section.title}:</p>
+            <p className="font-semibold text-foreground">{section.title}</p>
             <div className="space-y-0.5">
               {section.items.map((item, iIndex) => {
                 const cleanItem = item.replace(/^[-–—−]\s*/, '').trim();
                 const isListItem = /^[-–—−]/.test(item);
                 return isListItem ? (
-                  <div key={iIndex} className="flex items-start gap-2 text-sm leading-snug text-foreground">
+                  <div key={iIndex} className="flex items-start gap-2 text-sm leading-tight text-foreground">
                     <span className="text-primary mt-0.5 flex-shrink-0">•</span>
                     <span>{cleanItem}</span>
                   </div>
                 ) : (
-                  <p key={iIndex} className="text-sm leading-snug text-foreground">{item}</p>
+                  <p key={iIndex} className="text-sm leading-tight text-foreground">{item}</p>
                 );
               })}
             </div>
@@ -183,16 +186,16 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
         {footnotes.length > 0 && (
           <div className="pt-2 border-t border-border/50 space-y-0.5">
             {footnotes.map((line, index) => (
-              <p key={index} className="text-xs leading-snug text-muted-foreground italic">{line}</p>
+              <p key={index} className="text-xs leading-tight text-muted-foreground italic">{line}</p>
             ))}
           </div>
         )}
 
         {/* Warnings */}
         {warnings.length > 0 && (
-          <div className="mt-3 pt-3 border-t border-amber-500/30 bg-amber-500/5 rounded-lg p-3 space-y-0.5">
+          <div className="mt-3 pt-3 border-t border-amber-500/30 bg-amber-50 dark:bg-amber-950/30 rounded-lg p-3 space-y-0.5">
             {warnings.map((line, index) => (
-              <p key={index} className="text-xs leading-snug text-amber-700 dark:text-amber-400">{line}</p>
+              <p key={index} className="text-xs leading-tight text-amber-700 dark:text-amber-400">{line}</p>
             ))}
           </div>
         )}

@@ -663,7 +663,21 @@ const Store = () => {
                     onNavigateToLevel={navigateToLevel}
                   />
 
-                  <h2 className="text-2xl font-bold mb-6">{currentCategory?.name}</h2>
+                  <h2 className="text-2xl font-bold mb-4">{currentCategory?.name}</h2>
+
+                  {/* ATEX Warning Disclaimer */}
+                  {(currentCategory?.name?.toLowerCase().includes('atex') || 
+                    currentCategory?.name?.toLowerCase().includes('атех') ||
+                    currentCategory?.name?.toLowerCase().includes('взрывозащит')) && (
+                    <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4 mb-6">
+                      <p className="text-sm font-semibold text-amber-700 dark:text-amber-400 mb-2">
+                        Обращаем ваше внимание!
+                      </p>
+                      <p className="text-xs text-amber-700/90 dark:text-amber-400/90 leading-relaxed">
+                        Стоимость оборудования рассчитана с учетом Сертификации по ТР ТС 012/2011 на ноябрь 2022 года и не является Публичной Офертой. В случае подтверждения заказа и заключения договора поставки, цены будут рассчитаны на данный конкретный момент в соответствие с текущими кросс-курсами и стоимостью Сертификатов АТЕХ с маркировкой взрывозащиты на данный момент времени.
+                      </p>
+                    </div>
+                  )}
 
                   {/* Show subcategories if they exist */}
                   {hasSubcategories && (

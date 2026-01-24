@@ -696,11 +696,16 @@ const Store = () => {
                     currentCategory?.name?.toLowerCase().includes('всасывающ') ||
                     currentCategory?.name?.toLowerCase().includes('su series') ||
                     currentCategory?.name?.toLowerCase().includes('sfu series')) && (
-                    <VacuumCalculator onSearchProduct={(query) => {
-                      setCategoryHistory([]);
-                      setSearchQuery(query);
-                      window.scrollTo({ top: 0, behavior: 'auto' });
-                    }} />
+                    <VacuumCalculator 
+                      categoryContext={
+                        currentCategory?.name?.toLowerCase().includes('sfu') ? 'sfu' : 'su'
+                      }
+                      onSearchProduct={(query) => {
+                        setCategoryHistory([]);
+                        setSearchQuery(query);
+                        window.scrollTo({ top: 0, behavior: 'auto' });
+                      }} 
+                    />
                   )}
 
                   {/* ATEX Warning Disclaimer */}

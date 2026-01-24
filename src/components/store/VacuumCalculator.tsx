@@ -137,11 +137,11 @@ export function VacuumCalculator() {
                   )}
                 >
                   <Square className={cn(
-                    "w-6 h-6",
+                    "w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0",
                     ductType === 'rectangular' ? "text-primary" : "text-muted-foreground"
                   )} />
                   <span className={cn(
-                    "font-medium",
+                    "font-medium text-sm sm:text-base",
                     ductType === 'rectangular' ? "text-primary" : "text-foreground"
                   )}>
                     Прямоугольный
@@ -158,11 +158,11 @@ export function VacuumCalculator() {
                   )}
                 >
                   <Circle className={cn(
-                    "w-6 h-6",
+                    "w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0",
                     ductType === 'round' ? "text-primary" : "text-muted-foreground"
                   )} />
                   <span className={cn(
-                    "font-medium",
+                    "font-medium text-sm sm:text-base",
                     ductType === 'round' ? "text-primary" : "text-foreground"
                   )}>
                     Круглый

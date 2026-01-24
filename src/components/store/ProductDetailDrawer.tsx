@@ -105,31 +105,48 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
       return <p className="text-muted-foreground">Описание недоступно</p>;
     }
 
-    // Split into blocks (intro, list, footnotes, warnings)
-    const { introLines, listItems, footnotes, warnings } = parseDescriptionBlocks(cleanText);
+    // Split into blocks (intro, list, sections, footnotes, warnings)
+    const { introLines, listItems, sections, footnotes, warnings, isKit } = parseDescriptionBlocks(cleanText);
 
-    // Check if this is a kit (has list items)
-    const isKit = listItems.length > 0;
-    const itemCount = listItems.length;
+    return (
+      <div className="space-y-3">
+        {/* Intro paragraphs */}
+        {introLines.length > 0 && (
+          <div className="space-y-1">
+            {introLines.map((line, index) => {
+              const isTitleLine = line.toLowerCase().includes('в комплект поставки входит');
+              return (
+                <p key={index} className={`text-sm leading-snug text-foreground ${isTitleLine ? 'font-semibold' : ''}`}>
+                  {line}
+                </p>
+              );
+            })}
+          </div>
+        )}
 
-    if (isKit) {
-      return (
-        <div className="space-y-4">
-          {/* Intro paragraphs always visible */}
-          {introLines.length > 0 && (
-            <div className="space-y-2">
-              {introLines.map((line, index) => {
-                const isTitleLine = line.toLowerCase().includes('в комплект поставки входит');
-                return (
-                  <p key={index} className={`text-sm text-foreground ${isTitleLine ? 'font-semibold' : ''}`}>
-                    {line}
-                  </p>
+        {/* Named sections (Технические спецификации, Применение, Преимущества) */}
+        {sections.map((section, sIndex) => (
+          <div key={sIndex} className="space-y-1">
+            <p className="text-sm font-semibold text-foreground">{section.title}:</p>
+            <div className="space-y-0.5">
+              {section.items.map((item, iIndex) => {
+                const cleanItem = item.replace(/^[-–—−]\s*/, '').trim();
+                const isListItem = /^[-–—−]/.test(item);
+                return isListItem ? (
+                  <div key={iIndex} className="flex items-start gap-2 text-sm leading-snug text-foreground">
+                    <span className="text-primary mt-0.5 flex-shrink-0">•</span>
+                    <span>{cleanItem}</span>
+                  </div>
+                ) : (
+                  <p key={iIndex} className="text-sm leading-snug text-foreground">{item}</p>
                 );
               })}
             </div>
-          )}
+          </div>
+        ))}
 
-          {/* Collapsible list items */}
+        {/* Kit composition - ONLY for real kits with quantities */}
+        {isKit && listItems.length > 0 && (
           <Collapsible open={isDescriptionOpen} onOpenChange={setIsDescriptionOpen}>
             <CollapsibleTrigger asChild>
               <Button 
@@ -137,7 +154,7 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
                 className="w-full justify-between p-2 h-auto text-left hover:bg-primary/5"
               >
                 <span className="text-sm font-medium">
-                  Состав комплекта ({itemCount} поз.)
+                  Состав комплекта ({listItems.length} поз.)
                 </span>
                 {isDescriptionOpen ? (
                   <ChevronUp className="w-4 h-4 text-muted-foreground" />
@@ -147,82 +164,35 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
               </Button>
             </CollapsibleTrigger>
             <CollapsibleContent className="pt-2">
-              <ul className="space-y-1.5">
+              <ul className="space-y-0.5">
                 {listItems.map((line, index) => {
                   const cleanLine = line.replace(/^[-–—]\s*/, '').trim();
                   return (
-                    <li key={index} className="flex items-start gap-2 text-sm text-foreground">
+                    <li key={index} className="flex items-start gap-2 text-sm leading-snug text-foreground">
                       <span className="text-primary mt-0.5 flex-shrink-0">•</span>
                       <span>{cleanLine}</span>
                     </li>
                   );
                 })}
               </ul>
-
-              {/* Footnotes */}
-              {footnotes.length > 0 && (
-                <div className="pt-2 mt-2 border-t border-border/50 space-y-1">
-                  {footnotes.map((line, index) => (
-                    <p key={index} className="text-xs text-muted-foreground italic">{line}</p>
-                  ))}
-                </div>
-              )}
-
-              {/* Warnings */}
-              {warnings.length > 0 && (
-                <div className="mt-4 pt-3 border-t border-amber-500/30 bg-amber-500/5 rounded-lg p-3 space-y-1">
-                  {warnings.map((line, index) => (
-                    <p key={index} className="text-xs text-amber-700 dark:text-amber-400">{line}</p>
-                  ))}
-                </div>
-              )}
             </CollapsibleContent>
           </Collapsible>
-        </div>
-      );
-    }
-
-    // Non-kit products: show everything as before
-    return (
-      <div className="space-y-4">
-        {/* Intro paragraphs */}
-        {introLines.length > 0 && (
-          <div className="space-y-2">
-            {introLines.map((line, index) => (
-              <p key={index} className="text-sm text-foreground">{line}</p>
-            ))}
-          </div>
-        )}
-
-        {/* List items (if any) */}
-        {listItems.length > 0 && (
-          <ul className="space-y-1.5">
-            {listItems.map((line, index) => {
-              const cleanLine = line.replace(/^[-–—]\s*/, '').trim();
-              return (
-                <li key={index} className="flex items-start gap-2 text-sm text-foreground">
-                  <span className="text-primary mt-0.5 flex-shrink-0">•</span>
-                  <span>{cleanLine}</span>
-                </li>
-              );
-            })}
-          </ul>
         )}
 
         {/* Footnotes */}
         {footnotes.length > 0 && (
-          <div className="pt-2 border-t border-border/50 space-y-1">
+          <div className="pt-2 border-t border-border/50 space-y-0.5">
             {footnotes.map((line, index) => (
-              <p key={index} className="text-xs text-muted-foreground italic">{line}</p>
+              <p key={index} className="text-xs leading-snug text-muted-foreground italic">{line}</p>
             ))}
           </div>
         )}
 
         {/* Warnings */}
         {warnings.length > 0 && (
-          <div className="mt-4 pt-3 border-t border-amber-500/30 bg-amber-500/5 rounded-lg p-3 space-y-1">
+          <div className="mt-3 pt-3 border-t border-amber-500/30 bg-amber-500/5 rounded-lg p-3 space-y-0.5">
             {warnings.map((line, index) => (
-              <p key={index} className="text-xs text-amber-700 dark:text-amber-400">{line}</p>
+              <p key={index} className="text-xs leading-snug text-amber-700 dark:text-amber-400">{line}</p>
             ))}
           </div>
         )}

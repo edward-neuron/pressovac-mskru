@@ -36,6 +36,11 @@ let cachedData: {
   fetchedAt: string 
 } | null = null;
 
+// Function to clear cache (exported for manual refresh)
+export function clearYmlStoreCache() {
+  cachedData = null;
+}
+
 // Helper function to format price
 function formatPrice(price: number): string {
   return new Intl.NumberFormat('ru-RU', {
@@ -53,13 +58,16 @@ export function useYmlStore() {
     error: null,
     fetchedAt: cachedData?.fetchedAt || null
   });
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   useEffect(() => {
-    if (cachedData) {
+    if (cachedData && refreshTrigger === 0) {
       return;
     }
 
     const fetchData = async () => {
+      setState(prev => ({ ...prev, isLoading: true }));
+      
       try {
         // Fetch directly from database tables
         const [categoriesRes, productsRes] = await Promise.all([
@@ -115,7 +123,13 @@ export function useYmlStore() {
     };
 
     fetchData();
-  }, []);
+  }, [refreshTrigger]);
+
+  // Force refetch data
+  const refetch = () => {
+    cachedData = null;
+    setRefreshTrigger(prev => prev + 1);
+  };
 
   // Get root categories (no parentId)
   const getRootCategories = () => {
@@ -181,6 +195,7 @@ export function useYmlStore() {
 
   return {
     ...state,
+    refetch,
     getRootCategories,
     getSubcategories,
     getProductsByCategory,

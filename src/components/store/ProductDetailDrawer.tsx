@@ -146,7 +146,7 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
         {/* Named sections (Технические спецификации, Применение, Преимущества) */}
         {sections.map((section, sIndex) => (
           <div key={sIndex} className="space-y-0.5 mt-3">
-            <p className="font-semibold text-foreground">{section.title}</p>
+            <p className="text-sm leading-tight font-semibold text-foreground">{section.title}</p>
             <div className="space-y-0.5">
               {section.items.map((item, iIndex) => {
                 // Handle bold markers in section items
@@ -270,7 +270,7 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
 
           {/* Description */}
           <div className="space-y-2">
-            <h3 className="font-semibold text-foreground">Описание</h3>
+            <h3 className="text-sm leading-tight font-semibold text-foreground">Описание</h3>
             <div className="bg-muted/30 rounded-lg p-4">
               {renderDescription()}
             </div>

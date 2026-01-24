@@ -50,7 +50,8 @@ export const stripHtmlToText = (html: string): string => {
   text = text.replace(/<\/td>/gi, "");
 
   // 3) Convert common structural tags to newlines / list markers.
-  text = text.replace(/<br\s*\/?>/gi, "\n");
+  // Support <br> tags with attributes (e.g. <br style="..." />)
+  text = text.replace(/<br\s*[^>]*>/gi, "\n");
   text = text.replace(/<li[^>]*>/gi, "\n- ");
   text = text.replace(/<\/li>/gi, "\n");
   text = text.replace(/<\/(p|div)\s*>|<hr[^>]*>/gi, "\n");
@@ -68,7 +69,8 @@ export const stripHtmlToText = (html: string): string => {
   text = text.replace(/\s*[•●]\s*/g, "\n- ");
 
   // 7) Normalize dash-bullets variants at line start.
-  text = text.replace(/(^|\n)\s*[–—−]\s+/g, "$1- ");
+  // Include the horizontal bar "―" used in many supplier tech-spec lists.
+  text = text.replace(/(^|\n)\s*[–—−―]\s+/g, "$1- ");
   text = text.replace(/(^|\n)\s*-\s+/g, "$1- ");
 
   // 7b) Normalize asterisk-bullets at line start (with optional leading whitespace).
@@ -264,7 +266,7 @@ export const parseDescriptionBlocks = (text: string): DescriptionBlocks => {
 
     // If we're in a warning block, continue collecting warning lines
     if (inWarning) {
-      if (/^[-–—−*]/.test(line)) {
+      if (/^[-–—−―*]/.test(line)) {
         inWarning = false;
       } else {
         warnings.push(line);
@@ -331,7 +333,7 @@ export const parseDescriptionBlocks = (text: string): DescriptionBlocks => {
     }
 
     if (inFootnote) {
-      if (/^[-–—−]/.test(line) || isSubItem(line)) {
+      if (/^[-–—−―]/.test(line) || isSubItem(line)) {
         if (hasKitQuantity(line)) {
           listItems.push(line);
           hasKitItems = true;
@@ -349,7 +351,7 @@ export const parseDescriptionBlocks = (text: string): DescriptionBlocks => {
     }
 
     // Handle list items (lines starting with dash)
-    if (/^[-–—−]/.test(line)) {
+    if (/^[-–—−―]/.test(line)) {
       if (hasKitQuantity(line)) {
         listItems.push(line);
         hasKitItems = true;

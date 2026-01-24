@@ -120,9 +120,10 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
 
     return (
       <div className="space-y-3">
-        {/* Описание - intro paragraphs (no header here since parent already has one) */}
+        {/* Описание - intro paragraphs */}
         {introLines.length > 0 && (
           <div className="space-y-0.5">
+            <p className="text-sm leading-tight font-semibold text-foreground">Описание</p>
             {introLines.map((line, index) => {
               const isTitleLine = line.toLowerCase().includes('в комплект поставки входит');
               // Handle bold markers
@@ -159,8 +160,8 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
                   );
                 }
                 
-                const cleanItem = item.replace(/^[-–—−]\s*/, '').trim();
-                const isListItem = /^[-–—−]/.test(item);
+                const cleanItem = item.replace(/^[-–—−―]\s*/, '').trim();
+                const isListItem = /^[-–—−―]/.test(item);
                 return isListItem ? (
                   <div key={iIndex} className="flex items-start gap-2 text-sm leading-tight text-foreground">
                     <span className="text-primary mt-0.5 flex-shrink-0">•</span>
@@ -270,7 +271,6 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
 
           {/* Description */}
           <div className="space-y-2">
-            <h3 className="text-sm leading-tight font-semibold text-foreground">Описание</h3>
             <div className="bg-muted/30 rounded-lg p-4">
               {renderDescription()}
             </div>

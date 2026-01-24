@@ -31,6 +31,7 @@ import { Input } from '@/components/ui/input';
 import { getPreviewImageUrl } from '@/lib/imageOptimization';
 import { getMinOrderConfig } from '@/data/minOrderConfig';
 import { toast } from 'sonner';
+import { VacuumCalculator } from '@/components/store/VacuumCalculator';
 
 // Import category images
 import category1 from '@/assets/store/category-1.webp';
@@ -689,6 +690,14 @@ const Store = () => {
                   />
 
                   <h2 className="text-2xl font-bold mb-4">{currentCategory?.name}</h2>
+
+                  {/* Калькулятор подбора вакуумной установки - показываем только для категорий вакуумных/всасывающих установок */}
+                  {(currentCategory?.name?.toLowerCase().includes('вакуумн') || 
+                    currentCategory?.name?.toLowerCase().includes('всасывающ') ||
+                    currentCategory?.name?.toLowerCase().includes('su series') ||
+                    currentCategory?.name?.toLowerCase().includes('sfu series')) && (
+                    <VacuumCalculator />
+                  )}
 
                   {/* ATEX Warning Disclaimer */}
                   {(currentCategory?.name?.toLowerCase().includes('atex') || 

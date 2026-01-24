@@ -38,7 +38,6 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
   const minOrderConfig = getMinOrderConfig(product.name, product.vendorCode);
 
   const handleAddToCart = () => {
-    // Проверка минимального заказа - показываем предупреждение
     if (minOrderConfig) {
       toast.info(minOrderConfig.message, {
         icon: <AlertCircle className="w-5 h-5 text-amber-500" />,
@@ -46,7 +45,6 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
       });
     }
 
-    // Запуск анимации
     if (imageRef.current) {
       const rect = imageRef.current.getBoundingClientRect();
       setFlyingItem({
@@ -57,16 +55,13 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
       });
     }
 
-    // Если есть минимальный заказ, добавляем сразу минимальное количество
     const qty = minOrderConfig ? minOrderConfig.minQuantity : 1;
     
     if (cartQty > 0 && minOrderConfig) {
-      // Если уже в корзине и есть минимум, устанавливаем минимум если меньше
       if (cartQty < minOrderConfig.minQuantity) {
         updateQuantity(product.id, minOrderConfig.minQuantity);
       }
     } else {
-      // Добавляем с нужным количеством
       for (let i = 0; i < qty; i++) {
         addItem({
           id: product.id,
@@ -91,6 +86,23 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
     }
   };
 
+  // Helper to render a text line, handling **bold** markers
+  const renderTextLine = (line: string, index: number, className: string = "") => {
+    // Check if line has bold markers
+    if (line.startsWith('**') && line.endsWith('**')) {
+      const boldText = line.slice(2, -2);
+      return (
+        <p key={index} className={`text-sm leading-tight text-foreground font-semibold ${className}`}>
+          {boldText}
+        </p>
+      );
+    }
+    return (
+      <p key={index} className={`text-sm leading-tight text-foreground ${className}`}>
+        {line}
+      </p>
+    );
+  };
 
   // Parse description to show as list if it contains multiple lines
   const renderDescription = () => {
@@ -98,41 +110,55 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
       return <p className="text-muted-foreground">Описание недоступно</p>;
     }
 
-    // Clean + normalize supplier HTML into readable text
     const cleanText = stripHtmlToText(product.description);
 
     if (!cleanText) {
       return <p className="text-muted-foreground">Описание недоступно</p>;
     }
 
-    // Split into blocks (intro, list, sections, footnotes, warnings)
     const { introLines, listItems, sections, footnotes, warnings, isKit } = parseDescriptionBlocks(cleanText);
 
     return (
-      <div className="space-y-4">
-        {/* Описание - intro paragraphs */}
+      <div className="space-y-3">
+        {/* Описание - intro paragraphs (no header here since parent already has one) */}
         {introLines.length > 0 && (
-          <div className="space-y-1">
-            <p className="font-semibold text-foreground">Описание</p>
-            <div className="space-y-1">
-              {introLines.map((line, index) => {
-                const isTitleLine = line.toLowerCase().includes('в комплект поставки входит');
+          <div className="space-y-0.5">
+            {introLines.map((line, index) => {
+              const isTitleLine = line.toLowerCase().includes('в комплект поставки входит');
+              // Handle bold markers
+              if (line.startsWith('**') && line.endsWith('**')) {
+                const boldText = line.slice(2, -2);
                 return (
-                  <p key={index} className={`text-sm leading-tight text-foreground ${isTitleLine ? 'font-semibold' : ''}`}>
-                    {line}
+                  <p key={index} className="text-sm leading-tight text-foreground font-semibold mt-2">
+                    {boldText}
                   </p>
                 );
-              })}
-            </div>
+              }
+              return (
+                <p key={index} className={`text-sm leading-tight text-foreground ${isTitleLine ? 'font-semibold' : ''}`}>
+                  {line}
+                </p>
+              );
+            })}
           </div>
         )}
 
         {/* Named sections (Технические спецификации, Применение, Преимущества) */}
         {sections.map((section, sIndex) => (
-          <div key={sIndex} className="space-y-1">
+          <div key={sIndex} className="space-y-0.5 mt-3">
             <p className="font-semibold text-foreground">{section.title}</p>
             <div className="space-y-0.5">
               {section.items.map((item, iIndex) => {
+                // Handle bold markers in section items
+                if (item.startsWith('**') && item.endsWith('**')) {
+                  const boldText = item.slice(2, -2);
+                  return (
+                    <p key={iIndex} className="text-sm leading-tight text-foreground font-semibold mt-2">
+                      {boldText}
+                    </p>
+                  );
+                }
+                
                 const cleanItem = item.replace(/^[-–—−]\s*/, '').trim();
                 const isListItem = /^[-–—−]/.test(item);
                 return isListItem ? (
@@ -171,7 +197,7 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
                 {listItems.map((line, index) => {
                   const cleanLine = line.replace(/^[-–—]\s*/, '').trim();
                   return (
-                    <li key={index} className="flex items-start gap-2 text-sm leading-snug text-foreground">
+                    <li key={index} className="flex items-start gap-2 text-sm leading-tight text-foreground">
                       <span className="text-primary mt-0.5 flex-shrink-0">•</span>
                       <span>{cleanLine}</span>
                     </li>
@@ -243,7 +269,7 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
           </div>
 
           {/* Description */}
-          <div className="space-y-3">
+          <div className="space-y-2">
             <h3 className="font-semibold text-foreground">Описание</h3>
             <div className="bg-muted/30 rounded-lg p-4">
               {renderDescription()}

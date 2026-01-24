@@ -40,18 +40,12 @@ export const stripHtmlToText = (html: string): string => {
   text = text.replace(/\r\n?/g, "\n");
 
   // 2b) CRITICAL: Convert HTML table rows to list items BEFORE stripping tags
-  // Pattern: <tr>...<td>Item Name</td><td>Quantity</td>...</tr> => "- Item Name - Quantity"
-  // First, normalize table cells to be separated by " | "
   text = text.replace(/<\/td>\s*<td[^>]*>/gi, " | ");
-  // Add newline before each table row
   text = text.replace(/<tr[^>]*>/gi, "\n");
-  // Remove closing row tags
   text = text.replace(/<\/tr>/gi, "");
-  // Remove table, tbody, thead tags
   text = text.replace(/<\/?table[^>]*>/gi, "\n");
   text = text.replace(/<\/?tbody[^>]*>/gi, "");
   text = text.replace(/<\/?thead[^>]*>/gi, "");
-  // Remove td tags (opening and closing)
   text = text.replace(/<td[^>]*>/gi, "");
   text = text.replace(/<\/td>/gi, "");
 
@@ -78,44 +72,23 @@ export const stripHtmlToText = (html: string): string => {
   text = text.replace(/(^|\n)\s*-\s+/g, "$1- ");
 
   // 7b) Normalize asterisk-bullets at line start (with optional leading whitespace).
-  // Convert "   * Item" to "* Item" on its own line
   text = text.replace(/(^|\n)\s*\*\s+/g, "$1* ");
 
   // 8) If list items were in one sentence after punctuation, force a newline before the dash or asterisk.
-  // Example: "...: - Item1; - Item2" => each on its own line.
-  // Example: "...: * Item1 * Item2" => each on its own line.
-  // BUT: Do NOT break when the dash is followed only by a quantity like "- 1 шт." or "- 2 комп."
-  // Those should stay on the same line as the preceding item.
   text = text.replace(/([:;.!?])\s*[–—−-]\s+(?!\d+\s*(шт|комп|ед|упак))/gi, "$1\n- ");
-  
-  // 8b) Handle asterisk (*) as a list marker within text (not at line start - those are footnotes)
-  // Pattern: after punctuation or space, if we see "* Text" - break before it
   text = text.replace(/([:;.!?])\s*\*\s+(?!\d+\s*(шт|комп|ед|упак))/gi, "$1\n* ");
-  
-  // 8c) Handle asterisk after a list item ending (e.g., "1 комп. * Шланг" => newline before *)
   text = text.replace(/(\d+\s*(шт|комп|ед|упак)\.?)\s+\*\s+/gi, "$1\n* ");
-  
-  // 8d) CRITICAL: Handle dash after a list item ending (e.g., "1 комп.- S-Набор" or "1 комп. - S-Набор")
-  // This catches cases where a new list item starts right after a quantity ending
   text = text.replace(/(\d+\s*(шт|комп|ед|упак)\.?)\s*[–—−-]\s*(?=[A-ZА-ЯЁa-zа-яё])/gi, "$1\n- ");
-  
-  // 8e) Handle cases like "мм - 1 комплект- L" where dash is between quantity and new item
   text = text.replace(/(мм|см)\s*[–—−-]\s*(\d+\s*(шт|комп|комплект|ед|упак)[а-яё]*\.?)\s*[–—−-]\s*/gi, "$1 - $2\n- ");
 
   // 8f) IMPORTANT: Force newline before "Обращаем ваше внимание" text
   text = text.replace(/([.!?:;])\s*(Обращаем ваше внимание)/gi, "$1\n\n$2");
 
-  // 8g) CRITICAL: Split numbered lists like "1. Item one2. Item two3. Item three" into separate lines
-  // Pattern: number followed by period/dot, then text, then another number with period
-  // This handles cases where numbered items are concatenated without spaces
-  // IMPORTANT: Only match numbers at start of string or after whitespace/newline to avoid breaking "Ø800." etc.
+  // 8g) Split numbered lists
   text = text.replace(/(^|\n|\s)(\d+)\.\s+(?=[A-ZА-ЯЁa-zа-яё])/g, "\n$2. ");
-  
-  // 8h) Also handle "Основные преимущества:" followed by numbered items - add newline after colon
   text = text.replace(/(Основные преимущества|Технические характеристики|Характеристики):\s*(?=\d+\.)/gi, "$1:\n");
   
-  // 8i) CRITICAL: Remove "Спецификация комплекта:" header that appears before kit composition
-  // This line should be removed as the composition is shown in "Состав комплекта" collapsible
+  // 8i) Remove "Спецификация комплекта:" header
   text = text.replace(/Спецификация комплекта:\s*/gi, "");
 
   // 9) Clean up whitespace.
@@ -128,16 +101,12 @@ export const stripHtmlToText = (html: string): string => {
 };
 
 // Helper to check if a line is a sub-item (e.g., "* Item - 1 шт.")
-// vs a footnote (e.g., "* Комплект поставки..." without quantity at end)
 const isSubItem = (line: string): boolean => {
-  // Sub-items typically end with quantity like "- 1 шт." or "- 1 комп."
-  // Pattern: ends with "- NUMBER UNIT" or just has quantity patterns
   return /[-–—]\s*\d+\s*(шт|комп|ед|упак|комплект)/i.test(line);
 };
 
 // Check if a line contains a quantity pattern indicating it's a kit component
 const hasKitQuantity = (line: string): boolean => {
-  // Kit items have patterns like "- 1 шт", "- 2 комп", etc.
   return /[-–—]\s*\d+\s*(шт|комп|ед|упак|комплект)/i.test(line);
 };
 
@@ -146,26 +115,36 @@ const isWarningStart = (line: string): boolean => {
   return /^Обращаем ваше внимание/i.test(line);
 };
 
-// Check if line is a section header (ends with ":")
+// Check if line is a main section header (ends with ":")
 const isSectionHeader = (line: string): boolean => {
-  // Common section headers in product descriptions
+  const trimmed = line.trim();
   const headerPatterns = [
-    /^Технические (спецификации|характеристики):/i,
-    /^Применение:/i,
-    /^Преимущества:/i,
-    /^Основные преимущества:/i,
-    /^Особенности:/i,
-    /^Комплектация:/i,
-    /^Характеристики:/i,
-    /^Описание:/i,
+    /^Технические\s+(спецификации|характеристики):?$/i,
+    /^Применение:?$/i,
+    /^Преимущества:?$/i,
+    /^Основные\s+преимущества:?$/i,
+    /^Особенности:?$/i,
+    /^Комплектация:?$/i,
+    /^Характеристики:?$/i,
   ];
-  return headerPatterns.some(p => p.test(line.trim()));
+  return headerPatterns.some(p => p.test(trimmed));
+};
+
+// Check if line is a product sub-header that should be bold but stays in description
+// Examples: "G-3 Фильтр грубой очистки", "F-7 Фильтр тонкой очистки", "G3 - F7 STANDART / EU7 (207.002.012)"
+const isSubHeader = (line: string): boolean => {
+  const subHeaderPatterns = [
+    /^[GFgf]-?\d+\s+(Фильтр|фильтр)/i,                    // G-3 Фильтр грубой очистки
+    /^[GFgf]\d+\s*-\s*[GFgf]\d+\s+(STANDART|STANDARD)/i,  // G3 - F7 STANDART / EU7
+    /^HAC-\d+\s+HEPA/i,                                    // HAC-10 HEPA Air Cleaner
+  ];
+  return subHeaderPatterns.some(p => p.test(line.trim()));
 };
 
 // Check if line looks like a technical spec (starts with "― " or "- " followed by parameter name and colon/value)
 const isTechSpecLine = (line: string): boolean => {
-  // Pattern: "― Мощность мотора: 285 Ватт" or "- Напряжение: 230В"
-  return /^[―–—-]\s*[А-ЯЁA-Z][а-яёa-zA-Z\s]+:/.test(line);
+  // Pattern: "― Мощность мотора: 285 Ватт" or "- Напряжение: 230В" or "- Размеры 592 x 592"
+  return /^[―–—-]\s*[А-ЯЁA-Z][а-яёa-zA-Z\s]+[:\s]\s*\S/.test(line);
 };
 
 // Extract section name from header line
@@ -175,23 +154,15 @@ const extractSectionTitle = (line: string): string => {
 
 // Check if line is a table row (contains " | " separator with quantity)
 const isTableRow = (line: string): boolean => {
-  // Table rows typically have format "Item Name | Quantity"
-  // Must have actual content on the left side, not just whitespace or pipe
   const parts = line.split("|").map(p => p.trim());
-  // Valid table row has non-empty first part and a number in second part
   return parts.length >= 2 && parts[0].length > 0 && /^\d+$/.test(parts[1]);
 };
 
 // Check if line is an empty or invalid table row that should be skipped
 const isEmptyTableRow = (line: string): boolean => {
-  // Empty rows are just "|" or " | " or multiple pipes with only whitespace
   const cleaned = line.replace(/\|/g, "").trim();
   if (cleaned.length === 0 || line.trim() === "|") return true;
-  
-  // Also skip lines that end with "|" but don't have a valid quantity after it
-  // These are table rows with empty second cell (e.g., "сухая очистка... |")
   if (/\|\s*$/.test(line.trim())) return true;
-  
   return false;
 };
 
@@ -199,7 +170,6 @@ const isEmptyTableRow = (line: string): boolean => {
 const tableRowToListItem = (line: string): string => {
   const parts = line.split("|").map(p => p.trim());
   if (parts.length >= 2 && parts[0] && parts[1]) {
-    // Add "шт" after the quantity number
     return `- ${parts[0]} - ${parts[1]} шт`;
   }
   return line;
@@ -220,12 +190,16 @@ export const parseDescriptionBlocks = (text: string): DescriptionBlocks => {
   let inFootnote = false;
   let inWarning = false;
   let currentSection: DescriptionSection | null = null;
-  let hasKitItems = false; // Track if we have real kit items with quantities
+  let hasKitItems = false;
 
-  for (const line of lines) {
+  // First pass: identify where tech specs start by looking for patterns
+  // This helps handle HEPA-10 where "Технические спецификации:" header exists in text
+  
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+
     // Check for warning block start
     if (isWarningStart(line)) {
-      // Save current section if any
       if (currentSection && currentSection.items.length > 0) {
         sections.push(currentSection);
         currentSection = null;
@@ -237,24 +211,26 @@ export const parseDescriptionBlocks = (text: string): DescriptionBlocks => {
 
     // If we're in a warning block, continue collecting warning lines
     if (inWarning) {
-      // Warning block ends when we hit a new list item or asterisk line
       if (/^[-–—−*]/.test(line)) {
         inWarning = false;
-        // Process this line normally below
       } else {
         warnings.push(line);
         continue;
       }
     }
 
-    // Skip empty table rows (just "|" or whitespace)
+    // Skip empty table rows
     if (isEmptyTableRow(line)) {
       continue;
     }
 
-    // Check for section headers (e.g., "Технические спецификации:")
+    // Skip duplicate "Описание" headers
+    if (/^Описание:?$/i.test(line.trim())) {
+      continue;
+    }
+
+    // Check for main section headers (e.g., "Технические спецификации:", "Применение:", "Преимущества:")
     if (isSectionHeader(line)) {
-      // Save previous section if any
       if (currentSection && currentSection.items.length > 0) {
         sections.push(currentSection);
       }
@@ -265,8 +241,18 @@ export const parseDescriptionBlocks = (text: string): DescriptionBlocks => {
       continue;
     }
 
-    // CRITICAL: Check if line is a table row (from HTML table parsing)
-    // Format: "Item Name | Quantity"
+    // Check if this line is a sub-header (bold text within description)
+    // Mark it specially so UI can render it bold
+    if (isSubHeader(line)) {
+      if (currentSection) {
+        currentSection.items.push(`**${line}**`);
+      } else {
+        introLines.push(`**${line}**`);
+      }
+      continue;
+    }
+
+    // Check for table row (from HTML table parsing)
     if (isTableRow(line)) {
       const converted = tableRowToListItem(line);
       listItems.push(converted);
@@ -276,16 +262,12 @@ export const parseDescriptionBlocks = (text: string): DescriptionBlocks => {
 
     // Check if line starts with asterisk
     if (/^\*/.test(line)) {
-      // If it's a sub-item (ends with quantity), treat as list item, not footnote
       if (isSubItem(line)) {
-        // Convert * to - for consistency in list display
         const converted = line.replace(/^\*\s*/, "- ");
         listItems.push(converted);
         hasKitItems = true;
         continue;
       }
-      // Otherwise it's a real footnote
-      // Save current section first
       if (currentSection && currentSection.items.length > 0) {
         sections.push(currentSection);
         currentSection = null;
@@ -296,39 +278,31 @@ export const parseDescriptionBlocks = (text: string): DescriptionBlocks => {
     }
 
     if (inFootnote) {
-      // Check if this line could be a sub-item that follows a footnote start
-      // but is actually a continuation of list
       if (/^[-–—−]/.test(line) || isSubItem(line)) {
         if (hasKitQuantity(line)) {
           listItems.push(line);
           hasKitItems = true;
         } else if (currentSection) {
           currentSection.items.push(line);
+        } else if (sections.length > 0) {
+          sections[sections.length - 1].items.push(line);
         } else {
-          // Check if any previous section can take this
-          if (sections.length > 0) {
-            sections[sections.length - 1].items.push(line);
-          } else {
-            introLines.push(line);
-          }
+          introLines.push(line);
         }
         continue;
       }
-      // Everything after the first "*" is treated as part of footnote block.
       footnotes.push(line);
       continue;
     }
 
     // Handle list items (lines starting with dash)
     if (/^[-–—−]/.test(line)) {
-      // Check if it's a kit item (has quantity) or just a spec/feature item
       if (hasKitQuantity(line)) {
         listItems.push(line);
         hasKitItems = true;
       } else if (isTechSpecLine(line)) {
-        // This is a technical specification line - ensure we have a tech specs section
+        // This is a technical specification line
         if (!currentSection || !currentSection.title.toLowerCase().includes('техническ')) {
-          // Save previous section if any
           if (currentSection && currentSection.items.length > 0) {
             sections.push(currentSection);
           }
@@ -339,10 +313,8 @@ export const parseDescriptionBlocks = (text: string): DescriptionBlocks => {
         }
         currentSection.items.push(line);
       } else if (currentSection) {
-        // Add to current section
         currentSection.items.push(line);
       } else {
-        // No section yet - this is a standalone list item, add to intro
         introLines.push(line);
       }
       continue;
@@ -350,7 +322,6 @@ export const parseDescriptionBlocks = (text: string): DescriptionBlocks => {
 
     // Regular text line
     if (currentSection) {
-      // If we're in a section and this is a spec line (like "― Мощность: 285 Вт")
       currentSection.items.push(line);
     } else {
       introLines.push(line);

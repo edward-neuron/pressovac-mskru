@@ -101,10 +101,15 @@ export const stripHtmlToText = (html: string): string => {
   // 8g) CRITICAL: Split numbered lists like "1. Item one2. Item two3. Item three" into separate lines
   // Pattern: number followed by period/dot, then text, then another number with period
   // This handles cases where numbered items are concatenated without spaces
-  text = text.replace(/(\d+)\.\s*/g, "\n$1. ");
+  // IMPORTANT: Only match numbers at start of string or after whitespace/newline to avoid breaking "Ø800." etc.
+  text = text.replace(/(^|\n|\s)(\d+)\.\s+(?=[A-ZА-ЯЁa-zа-яё])/g, "\n$2. ");
   
   // 8h) Also handle "Основные преимущества:" followed by numbered items - add newline after colon
   text = text.replace(/(Основные преимущества|Технические характеристики|Характеристики):\s*(?=\d+\.)/gi, "$1:\n");
+  
+  // 8i) CRITICAL: Remove "Спецификация комплекта:" header that appears before kit composition
+  // This line should be removed as the composition is shown in "Состав комплекта" collapsible
+  text = text.replace(/Спецификация комплекта:\s*/gi, "");
 
   // 9) Clean up whitespace.
   text = text.replace(/\u00A0/g, " ");

@@ -8,26 +8,28 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { cn } from '@/lib/utils';
 
 type DuctType = 'round' | 'rectangular';
+type CategoryContext = 'sfu' | 'su' | 'default';
 
 interface VacuumUnit {
   name: string;
   capacity: number; // м³/час
   power: string;
   article: string;
+  series: 'SFU' | 'SU';
 }
 
 // Данные вакуумных установок для рекомендаций
 const vacuumUnits: VacuumUnit[] = [
-  { name: 'SFU-10', capacity: 1000, power: '0,75 кВт', article: '206.003.010' },
-  { name: 'SU-15', capacity: 1500, power: '1,1 кВт', article: '206.001.001' },
-  { name: 'SU-24', capacity: 2400, power: '1,5 кВт', article: '206.001.009' },
-  { name: 'SFU-25', capacity: 2500, power: '1,5 кВт', article: '206.003.011' },
-  { name: 'SU-50 (S200)', capacity: 5000, power: '2,2 кВт', article: '206.002.006' },
-  { name: 'SFU-50', capacity: 5000, power: '2,2 кВт', article: '206.003.001' },
-  { name: 'SU 2,2 кВт (S300)', capacity: 5500, power: '2,2 кВт', article: '206.001.006' },
-  { name: 'SU-100', capacity: 10000, power: '4 кВт', article: '206.002.100' },
-  { name: 'SU-100 ASC', capacity: 10000, power: '4 кВт', article: '206.002.101' },
-  { name: 'SU-7,5 кВт АТЕХ', capacity: 10000, power: '7,5 кВт', article: '206.004.006' },
+  { name: 'SFU-10', capacity: 1000, power: '0,75 кВт', article: '206.003.010', series: 'SFU' },
+  { name: 'SU-15', capacity: 1500, power: '1,1 кВт', article: '206.001.001', series: 'SU' },
+  { name: 'SU-24', capacity: 2400, power: '1,5 кВт', article: '206.001.009', series: 'SU' },
+  { name: 'SFU-25', capacity: 2500, power: '1,5 кВт', article: '206.003.011', series: 'SFU' },
+  { name: 'SU-50 (S200)', capacity: 5000, power: '2,2 кВт', article: '206.002.006', series: 'SU' },
+  { name: 'SFU-50', capacity: 5000, power: '2,2 кВт', article: '206.003.001', series: 'SFU' },
+  { name: 'SU 2,2 кВт (S300)', capacity: 5500, power: '2,2 кВт', article: '206.001.006', series: 'SU' },
+  { name: 'SU-100', capacity: 10000, power: '4 кВт', article: '206.002.100', series: 'SU' },
+  { name: 'SU-100 ASC', capacity: 10000, power: '4 кВт', article: '206.002.101', series: 'SU' },
+  { name: 'SU-7,5 кВт АТЕХ', capacity: 10000, power: '7,5 кВт', article: '206.004.006', series: 'SU' },
 ];
 
 const AIR_SPEED = 8; // м/сек - минимальные требования
@@ -35,9 +37,10 @@ const SECONDS_PER_HOUR = 3600;
 
 interface VacuumCalculatorProps {
   onSearchProduct?: (query: string) => void;
+  categoryContext?: CategoryContext;
 }
 
-export function VacuumCalculator({ onSearchProduct }: VacuumCalculatorProps) {
+export function VacuumCalculator({ onSearchProduct, categoryContext = 'default' }: VacuumCalculatorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [ductType, setDuctType] = useState<DuctType>('rectangular');
   const [sideA, setSideA] = useState<string>('400');
@@ -85,15 +88,39 @@ export function VacuumCalculator({ onSearchProduct }: VacuumCalculatorProps) {
     }
   }, [ductType, sideA, sideB, diameter]);
 
-  // Подбор подходящих установок
+  // Подбор подходящих установок с учетом контекста категории
   const recommendedUnits = useMemo(() => {
     if (!calculation) return [];
     
-    return vacuumUnits
-      .filter(unit => unit.capacity >= calculation.minCapacity)
-      .sort((a, b) => a.capacity - b.capacity)
-      .slice(0, 3);
-  }, [calculation]);
+    const suitable = vacuumUnits.filter(unit => unit.capacity >= calculation.minCapacity);
+    
+    // Определяем приоритетную серию в зависимости от контекста
+    const prioritySeries = categoryContext === 'sfu' ? 'SFU' : 'SU';
+    const alternativeSeries = categoryContext === 'sfu' ? 'SU' : 'SFU';
+    
+    // Разделяем на приоритетные и альтернативные
+    const priorityUnits = suitable
+      .filter(unit => unit.series === prioritySeries)
+      .sort((a, b) => a.capacity - b.capacity);
+    
+    const alternativeUnits = suitable
+      .filter(unit => unit.series === alternativeSeries)
+      .sort((a, b) => a.capacity - b.capacity);
+    
+    // Берём до 2 приоритетных и 1 альтернативную
+    const result: VacuumUnit[] = [];
+    result.push(...priorityUnits.slice(0, 2));
+    if (alternativeUnits.length > 0) {
+      result.push(alternativeUnits[0]);
+    }
+    
+    // Если приоритетных мало, добавляем альтернативные
+    if (result.length < 3 && alternativeUnits.length > 1) {
+      result.push(...alternativeUnits.slice(1, 3 - result.length + 1));
+    }
+    
+    return result.slice(0, 3);
+  }, [calculation, categoryContext]);
 
   // Ближайшая установка с запасом мощности
   const bestMatch = recommendedUnits[0];

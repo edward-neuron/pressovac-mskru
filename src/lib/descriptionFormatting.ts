@@ -141,10 +141,50 @@ const isSubHeader = (line: string): boolean => {
   return subHeaderPatterns.some(p => p.test(line.trim()));
 };
 
+// If a line starts with a known sub-header but continues as a long paragraph,
+// split it into: 1) bold subheader line, 2) remaining text line.
+// This prevents accidentally making the whole description bold for single-line descriptions (e.g., HAC-10).
+const splitLeadingSubHeader = (line: string): { header: string; rest: string } | null => {
+  const trimmed = line.trim();
+
+  const candidates: RegExp[] = [
+    /^(HAC-\d+\s+HEPA\s+Air\s+Cleaner)\b/i,
+    /^([GFgf]-?\d+\s+Фильтр[^—–-]{0,40})\b/i,
+    /^([GFgf]\d+\s*-\s*[GFgf]\d+\s+(STANDART|STANDARD)[^—–-]{0,40})\b/i,
+  ];
+
+  const match = candidates.map((r) => trimmed.match(r)).find(Boolean);
+  if (!match || !match[1]) return null;
+
+  const header = match[1].trim();
+  let rest = trimmed.slice(match[0].length).trim();
+
+  // If the remainder begins with a dash, drop it (we render as separate paragraph).
+  rest = rest.replace(/^[—–-]\s*/u, "");
+
+  // Only split if this is clearly more than a title line.
+  if (!rest || trimmed.length <= 90) return null;
+
+  return { header, rest };
+};
+
 // Check if line looks like a technical spec (starts with "― " or "- " followed by parameter name and colon/value)
 const isTechSpecLine = (line: string): boolean => {
   // Pattern: "― Мощность мотора: 285 Ватт" or "- Напряжение: 230В" or "- Размеры 592 x 592"
-  return /^[―–—-]\s*[А-ЯЁA-Z][а-яёa-zA-Z\s]+[:\s]\s*\S/.test(line);
+  const trimmed = line.trim();
+  if (!/^[―–—-]\s*/.test(trimmed)) return false;
+
+  // Primary signal: explicit "Параметр: значение"
+  if (/^[―–—-]\s*[^:]{1,80}:\s*\S/.test(trimmed)) return true;
+
+  // Secondary signal: contains numbers + common units (to avoid misclassifying "Применение" bullets)
+  const hasNumbersAndUnits = /\b\d+[\d\s.,]*\s*(в|ватт|квт|кг|г|мм|см|м|м3\/час|м³\/ч|%|об\/мин|rpm|pa|кпа|ø|диаметр)\b/i.test(trimmed);
+  if (hasNumbersAndUnits) return true;
+
+  // Dimensions like "410 x 540 x 410" (even without explicit unit token)
+  if (/\b\d+\s*[x×]\s*\d+(\s*[x×]\s*\d+)?\b/i.test(trimmed)) return true;
+
+  return false;
 };
 
 // Extract section name from header line
@@ -197,6 +237,19 @@ export const parseDescriptionBlocks = (text: string): DescriptionBlocks => {
   
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
+
+    // Prevent whole-paragraph bolding when supplier provides a single long line starting with a subheader
+    const split = splitLeadingSubHeader(line);
+    if (split) {
+      if (currentSection) {
+        currentSection.items.push(`**${split.header}**`);
+        currentSection.items.push(split.rest);
+      } else {
+        introLines.push(`**${split.header}**`);
+        introLines.push(split.rest);
+      }
+      continue;
+    }
 
     // Check for warning block start
     if (isWarningStart(line)) {
@@ -300,14 +353,18 @@ export const parseDescriptionBlocks = (text: string): DescriptionBlocks => {
       if (hasKitQuantity(line)) {
         listItems.push(line);
         hasKitItems = true;
-      } else if (isTechSpecLine(line)) {
+      } else if (
+        isTechSpecLine(line) &&
+        // Do not hijack named non-technical sections like "Применение" / "Преимущества"
+        !(currentSection && /примен|преим|особенн|комплект/i.test(currentSection.title))
+      ) {
         // This is a technical specification line
         if (!currentSection || !currentSection.title.toLowerCase().includes('техническ')) {
           if (currentSection && currentSection.items.length > 0) {
             sections.push(currentSection);
           }
           currentSection = {
-            title: 'Технические характеристики',
+            title: 'Технические спецификации',
             items: []
           };
         }

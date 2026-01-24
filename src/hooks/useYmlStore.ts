@@ -182,13 +182,147 @@ export function useYmlStore() {
     return products[0]?.picture;
   };
 
-  // Search products by name or vendorCode
-  const searchProducts = (query: string) => {
+  // Словарь синонимов и альтернативных названий для контекстного поиска
+  const synonymsMap: Record<string, string[]> = {
+    // Жир и мойка
+    'жир': ['мойк', 'жиро', 'grease', 'удалени', 'кухон', 'ресторан'],
+    'удаление жира': ['мойк', 'жир', 'grease', 'кухон'],
+    'мойка': ['жир', 'grease', 'удалени'],
+    'grease': ['жир', 'мойк', 'удалени'],
+    
+    // Пылеулавливание = Вакуумные установки
+    'пыл': ['вакуум', 'всасыва', 'sfu', 'su-', 'фильтр', 'hepa'],
+    'пылеулавлива': ['вакуум', 'всасыва', 'sfu', 'su-', 'фильтр', 'hepa'],
+    'пылесос': ['вакуум', 'всасыва', 'sfu', 'su-'],
+    'улавлива': ['вакуум', 'фильтр', 'hepa', 'sfu'],
+    
+    // Вакуум
+    'вакуум': ['всасыва', 'su-', 'sfu', 'пыл', 'фильтр'],
+    'всасыва': ['вакуум', 'su-', 'sfu'],
+    
+    // Щётки
+    'щетк': ['brush', 'щётк', 'кисть'],
+    'щётк': ['brush', 'щетк', 'кисть'],
+    'brush': ['щетк', 'щётк'],
+    
+    // Шланги
+    'шланг': ['hose', 'рукав'],
+    'hose': ['шланг', 'рукав'],
+    'рукав': ['шланг', 'hose'],
+    
+    // Валы
+    'вал': ['shaft', 'гибк'],
+    'shaft': ['вал', 'гибк'],
+    'гибкий вал': ['shaft', 'flex'],
+    
+    // Видеокамеры
+    'камер': ['video', 'видео', 'инспекц', 'vs-', 'vs200', 'vs250', 'vs350', 'vs700'],
+    'видео': ['камер', 'video', 'инспекц', 'vs-'],
+    'video': ['камер', 'видео', 'инспекц'],
+    'инспекц': ['камер', 'видео', 'video', 'vs-'],
+    
+    // Дезинфекция
+    'дезинфекц': ['обеззаражив', 'санитар', 'disinfect'],
+    'обеззаражив': ['дезинфекц', 'санитар'],
+    'санитар': ['дезинфекц', 'обеззаражив'],
+    
+    // Фильтры
+    'фильтр': ['hepa', 'filter', 'sfu', 'очистк'],
+    'hepa': ['фильтр', 'filter', 'sfu'],
+    'filter': ['фильтр', 'hepa'],
+    
+    // АТЕХ
+    'атех': ['atex', 'взрыв', 'взрывозащ'],
+    'atex': ['атех', 'взрыв', 'взрывозащ'],
+    'взрыв': ['atex', 'атех', 'взрывозащ'],
+    'взрывозащ': ['atex', 'атех'],
+    
+    // Аксессуары
+    'аксессуар': ['комплект', 'набор', 'принадлежност'],
+    'комплект': ['набор', 'аксессуар', 'kit'],
+    'набор': ['комплект', 'аксессуар', 'kit'],
+    
+    // Машины для чистки
+    'машин': ['оборудован', 'установк', 'аппарат'],
+    'оборудован': ['машин', 'установк', 'аппарат'],
+    'установк': ['машин', 'оборудован', 'аппарат'],
+    'чистк': ['очистк', 'мойк', 'cleaning'],
+    'очистк': ['чистк', 'мойк', 'cleaning'],
+    'cleaning': ['чистк', 'очистк', 'мойк'],
+    
+    // Компрессоры
+    'компрессор': ['compressor', 'воздух', 'давлен'],
+    'compressor': ['компрессор'],
+    
+    // Люки
+    'люк': ['hatch', 'ревизион', 'service'],
+    'hatch': ['люк', 'ревизион'],
+    'ревизион': ['люк', 'hatch', 'service'],
+  };
+
+  // Функция для получения синонимов
+  const getSynonyms = (query: string): string[] => {
     const lowerQuery = query.toLowerCase();
+    const synonyms: Set<string> = new Set();
+    
+    // Ищем совпадения в ключах словаря
+    for (const [key, values] of Object.entries(synonymsMap)) {
+      if (lowerQuery.includes(key) || key.includes(lowerQuery)) {
+        values.forEach(v => synonyms.add(v));
+      }
+    }
+    
+    return Array.from(synonyms);
+  };
+
+  // Search products by name, vendorCode, description, or synonyms
+  const searchProducts = (query: string) => {
+    const lowerQuery = query.toLowerCase().trim();
+    if (!lowerQuery) return [];
+    
+    const synonyms = getSynonyms(lowerQuery);
+    
+    // Функция проверки совпадения
+    const matchesQuery = (text: string | undefined): boolean => {
+      if (!text) return false;
+      const lowerText = text.toLowerCase();
+      
+      // Прямое совпадение
+      if (lowerText.includes(lowerQuery)) return true;
+      
+      // Проверка синонимов
+      for (const synonym of synonyms) {
+        if (lowerText.includes(synonym)) return true;
+      }
+      
+      return false;
+    };
+    
+    // Также ищем категории по синонимам и добавляем их товары
+    const matchingCategoryIds: Set<string> = new Set();
+    
+    for (const category of state.categories) {
+      if (matchesQuery(category.name)) {
+        matchingCategoryIds.add(category.id);
+        // Добавляем все дочерние категории
+        const addChildren = (parentId: string) => {
+          state.categories
+            .filter(c => c.parentId === parentId)
+            .forEach(child => {
+              matchingCategoryIds.add(child.id);
+              addChildren(child.id);
+            });
+        };
+        addChildren(category.id);
+      }
+    }
+    
     return state.products
       .filter(p => 
-        p.name.toLowerCase().includes(lowerQuery) ||
-        p.vendorCode?.toLowerCase().includes(lowerQuery)
+        matchesQuery(p.name) ||
+        matchesQuery(p.vendorCode) ||
+        matchesQuery(p.description) ||
+        (p.categoryId && matchingCategoryIds.has(p.categoryId))
       )
       .sort((a, b) => a.sortOrder - b.sortOrder);
   };

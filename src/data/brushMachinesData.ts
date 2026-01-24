@@ -65,8 +65,7 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Лёгкий вес'
           ],
           specifications: {
-            'Диаметр': '8 мм',
-            'Материал': 'Сталь с покрытием'
+            'Диаметр': '8 мм'
           },
           availableLengths: ['3 м', '6 м', '9 м'],
           shopUrl: 'https://shop-pressovac.ru/products/gibkie-vrashchayushchiesya-valy-pressovac-f88504918/',
@@ -85,8 +84,7 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Надёжная конструкция'
           ],
           specifications: {
-            'Диаметр': '12 мм',
-            'Материал': 'Высокопрочная сталь'
+            'Диаметр': '12 мм'
           },
           availableLengths: ['3 м', '5 м', '8 м', '12 м', '15 м', '20 м'],
           shopUrl: 'https://shop-pressovac.ru/products/gibkie-vrashchayushchiesya-valy-pressovac-f88504918/',
@@ -105,8 +103,7 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Для тяжёлых условий'
           ],
           specifications: {
-            'Диаметр': '16 мм',
-            'Материал': 'Легированная сталь'
+            'Диаметр': '16 мм'
           },
           availableLengths: ['3 м', '5 м', '8 м', '12 м', '15 м', '20 м'],
           shopUrl: 'https://shop-pressovac.ru/products/gibkie-vrashchayushchiesya-valy-pressovac-f88504918/',

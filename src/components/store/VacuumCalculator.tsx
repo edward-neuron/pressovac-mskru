@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
-import { Calculator, Circle, Square, Zap, ChevronDown, ArrowRight } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
+import { Calculator, Circle, Square, Zap, ChevronDown, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -32,7 +33,11 @@ const vacuumUnits: VacuumUnit[] = [
 const AIR_SPEED = 8; // м/сек - минимальные требования
 const SECONDS_PER_HOUR = 3600;
 
-export function VacuumCalculator() {
+interface VacuumCalculatorProps {
+  onSearchProduct?: (query: string) => void;
+}
+
+export function VacuumCalculator({ onSearchProduct }: VacuumCalculatorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [ductType, setDuctType] = useState<DuctType>('rectangular');
   const [sideA, setSideA] = useState<string>('400');
@@ -250,7 +255,7 @@ export function VacuumCalculator() {
                         <div
                           key={unit.article}
                           className={cn(
-                            "flex items-center justify-between p-3 rounded-lg border",
+                            "flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-lg border",
                             index === 0
                               ? "bg-primary/5 border-primary/30"
                               : "bg-card border-border"
@@ -269,7 +274,15 @@ export function VacuumCalculator() {
                               </p>
                             </div>
                           </div>
-                          <ArrowRight className="w-4 h-4 text-muted-foreground" />
+                          <Button
+                            variant={index === 0 ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => onSearchProduct?.(unit.article)}
+                            className="gap-2 w-full sm:w-auto"
+                          >
+                            <ExternalLink className="w-4 h-4" />
+                            К товару
+                          </Button>
                         </div>
                       ))}
                     </div>

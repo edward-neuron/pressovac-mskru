@@ -696,7 +696,10 @@ const Store = () => {
                     currentCategory?.name?.toLowerCase().includes('всасывающ') ||
                     currentCategory?.name?.toLowerCase().includes('su series') ||
                     currentCategory?.name?.toLowerCase().includes('sfu series')) && (
-                    <VacuumCalculator />
+                    <VacuumCalculator onSearchProduct={(query) => {
+                      setSearchQuery(query);
+                      navigateToRoot();
+                    }} />
                   )}
 
                   {/* ATEX Warning Disclaimer */}

@@ -200,9 +200,13 @@ export function useYmlStore() {
     'вакуум': ['всасыва', 'su-', 'sfu', 'пыл', 'фильтр'],
     'всасыва': ['вакуум', 'su-', 'sfu'],
     
-    // Щётки
-    'щетк': ['brush', 'щётк', 'кисть'],
-    'щётк': ['brush', 'щетк', 'кисть'],
+    // Щёточные машины (включая машины для удаления жира)
+    'щеточн': ['brush', 'щётк', 'air brushing', 'p25', 'p40', 'pdw', 'grease', 'жир', 'мойк'],
+    'щёточн': ['brush', 'щетк', 'air brushing', 'p25', 'p40', 'pdw', 'grease', 'жир', 'мойк'],
+    
+    // Щётки (аксессуары)
+    'щетк': ['brush', 'щётк'],
+    'щётк': ['brush', 'щетк'],
     'brush': ['щетк', 'щётк'],
     
     // Шланги
@@ -238,9 +242,7 @@ export function useYmlStore() {
     'взрывозащ': ['atex', 'атех'],
     
     // Аксессуары
-    'аксессуар': ['комплект', 'набор', 'принадлежност'],
-    'комплект': ['набор', 'аксессуар', 'kit'],
-    'набор': ['комплект', 'аксессуар', 'kit'],
+    'аксессуар': ['принадлежност'],
     
     // Машины для чистки
     'машин': ['оборудован', 'установк', 'аппарат'],
@@ -260,6 +262,12 @@ export function useYmlStore() {
     'ревизион': ['люк', 'hatch', 'service'],
   };
 
+  // Запросы, при которых нужно исключать комплекты
+  const excludeKitsForQueries = ['щеточн', 'щёточн', 'машин'];
+  
+  // Слова-маркеры комплектов для исключения
+  const kitMarkers = ['комплект', 'kit', 'набор', 'чистящий комплект'];
+
   // Функция для получения синонимов
   const getSynonyms = (query: string): string[] => {
     const lowerQuery = query.toLowerCase();
@@ -275,12 +283,25 @@ export function useYmlStore() {
     return Array.from(synonyms);
   };
 
+  // Проверка, нужно ли исключать комплекты для данного запроса
+  const shouldExcludeKits = (query: string): boolean => {
+    const lowerQuery = query.toLowerCase();
+    return excludeKitsForQueries.some(q => lowerQuery.includes(q));
+  };
+
+  // Проверка, является ли товар комплектом
+  const isKit = (product: YmlProduct): boolean => {
+    const lowerName = product.name.toLowerCase();
+    return kitMarkers.some(marker => lowerName.includes(marker));
+  };
+
   // Search products by name, vendorCode, description, or synonyms
   const searchProducts = (query: string) => {
     const lowerQuery = query.toLowerCase().trim();
     if (!lowerQuery) return [];
     
     const synonyms = getSynonyms(lowerQuery);
+    const excludeKits = shouldExcludeKits(lowerQuery);
     
     // Функция проверки совпадения
     const matchesQuery = (text: string | undefined): boolean => {
@@ -318,12 +339,15 @@ export function useYmlStore() {
     }
     
     return state.products
-      .filter(p => 
-        matchesQuery(p.name) ||
-        matchesQuery(p.vendorCode) ||
-        matchesQuery(p.description) ||
-        (p.categoryId && matchingCategoryIds.has(p.categoryId))
-      )
+      .filter(p => {
+        // Исключаем комплекты если нужно
+        if (excludeKits && isKit(p)) return false;
+        
+        return matchesQuery(p.name) ||
+          matchesQuery(p.vendorCode) ||
+          matchesQuery(p.description) ||
+          (p.categoryId && matchingCategoryIds.has(p.categoryId));
+      })
       .sort((a, b) => a.sortOrder - b.sortOrder);
   };
 

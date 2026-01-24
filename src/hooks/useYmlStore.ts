@@ -182,13 +182,46 @@ export function useYmlStore() {
     return products[0]?.picture;
   };
 
+  // Специальные запросы, которые должны искать только по определённым категориям
+  // Формат: ключ запроса -> массив ID категорий
+  const specialCategoryQueries: Record<string, string[]> = {
+    // Щёточные машины - только машины и валы, без аксессуаров и комплектов
+    'щеточн': [
+      '86975775', // Машины для сухой очистки и дезинфекции
+      '86975795', // Машины для мойки и удаления жира
+      '88504908', // Машины с маркировкой взрывозащиты ATEX
+      '88504918', // Гибкие вращающиеся валы Pressovac (корневая)
+      '88504923', // Гибкие валы Мини
+      '88504928', // Гибкие валы Стандарт
+      '88504933', // Гибкие валы Сталь
+    ],
+    'щёточн': [
+      '86975775',
+      '86975795', 
+      '88504908',
+      '88504918',
+      '88504923',
+      '88504928',
+      '88504933',
+    ],
+    'brushing': [
+      '86975775',
+      '86975795', 
+      '88504908',
+      '88504918',
+      '88504923',
+      '88504928',
+      '88504933',
+    ],
+  };
+
   // Словарь синонимов и альтернативных названий для контекстного поиска
   const synonymsMap: Record<string, string[]> = {
     // Жир и мойка
-    'жир': ['мойк', 'жиро', 'grease', 'удалени', 'кухон', 'ресторан'],
-    'удаление жира': ['мойк', 'жир', 'grease', 'кухон'],
-    'мойка': ['жир', 'grease', 'удалени'],
-    'grease': ['жир', 'мойк', 'удалени'],
+    'жир': ['мойк', 'жиро', 'grease', 'удалени', 'кухон', 'ресторан', 'pdw', 'edw'],
+    'удаление жира': ['мойк', 'жир', 'grease', 'кухон', 'pdw', 'edw'],
+    'мойка': ['жир', 'grease', 'удалени', 'pdw', 'edw'],
+    'grease': ['жир', 'мойк', 'удалени', 'pdw', 'edw'],
     
     // Пылеулавливание = Вакуумные установки
     'пыл': ['вакуум', 'всасыва', 'sfu', 'su-', 'фильтр', 'hepa'],
@@ -200,11 +233,7 @@ export function useYmlStore() {
     'вакуум': ['всасыва', 'su-', 'sfu', 'пыл', 'фильтр'],
     'всасыва': ['вакуум', 'su-', 'sfu'],
     
-    // Щёточные машины (включая машины для удаления жира)
-    'щеточн': ['brush', 'щётк', 'air brushing', 'p25', 'p40', 'pdw', 'grease', 'жир', 'мойк'],
-    'щёточн': ['brush', 'щетк', 'air brushing', 'p25', 'p40', 'pdw', 'grease', 'жир', 'мойк'],
-    
-    // Щётки (аксессуары)
+    // Щётки (аксессуары - отдельно от "щёточная машина")
     'щетк': ['brush', 'щётк'],
     'щётк': ['brush', 'щетк'],
     'brush': ['щетк', 'щётк'],
@@ -262,12 +291,6 @@ export function useYmlStore() {
     'ревизион': ['люк', 'hatch', 'service'],
   };
 
-  // Запросы, при которых нужно исключать комплекты
-  const excludeKitsForQueries = ['щеточн', 'щёточн', 'машин'];
-  
-  // Слова-маркеры комплектов для исключения
-  const kitMarkers = ['комплект', 'kit', 'набор', 'чистящий комплект'];
-
   // Функция для получения синонимов
   const getSynonyms = (query: string): string[] => {
     const lowerQuery = query.toLowerCase();
@@ -283,16 +306,15 @@ export function useYmlStore() {
     return Array.from(synonyms);
   };
 
-  // Проверка, нужно ли исключать комплекты для данного запроса
-  const shouldExcludeKits = (query: string): boolean => {
+  // Проверка на специальный категорийный запрос
+  const getSpecialCategoryIds = (query: string): string[] | null => {
     const lowerQuery = query.toLowerCase();
-    return excludeKitsForQueries.some(q => lowerQuery.includes(q));
-  };
-
-  // Проверка, является ли товар комплектом
-  const isKit = (product: YmlProduct): boolean => {
-    const lowerName = product.name.toLowerCase();
-    return kitMarkers.some(marker => lowerName.includes(marker));
+    for (const [key, categoryIds] of Object.entries(specialCategoryQueries)) {
+      if (lowerQuery.includes(key)) {
+        return categoryIds;
+      }
+    }
+    return null;
   };
 
   // Search products by name, vendorCode, description, or synonyms
@@ -300,8 +322,27 @@ export function useYmlStore() {
     const lowerQuery = query.toLowerCase().trim();
     if (!lowerQuery) return [];
     
+    // Проверяем, есть ли специальный запрос по категориям
+    const specialCategoryIds = getSpecialCategoryIds(lowerQuery);
+    
+    if (specialCategoryIds) {
+      // Для специальных запросов возвращаем только товары из указанных категорий
+      // БЕЗ аксессуаров (исключаем подкатегории с "Аксессуары")
+      return state.products
+        .filter(p => {
+          if (!p.categoryId) return false;
+          // Проверяем, что категория в списке разрешённых
+          if (!specialCategoryIds.includes(p.categoryId)) return false;
+          // Дополнительно проверяем название категории - исключаем аксессуары
+          const category = state.categories.find(c => c.id === p.categoryId);
+          if (category && category.name.toLowerCase().includes('аксессуар')) return false;
+          return true;
+        })
+        .sort((a, b) => a.sortOrder - b.sortOrder);
+    }
+    
+    // Стандартный поиск с синонимами
     const synonyms = getSynonyms(lowerQuery);
-    const excludeKits = shouldExcludeKits(lowerQuery);
     
     // Функция проверки совпадения
     const matchesQuery = (text: string | undefined): boolean => {
@@ -339,15 +380,12 @@ export function useYmlStore() {
     }
     
     return state.products
-      .filter(p => {
-        // Исключаем комплекты если нужно
-        if (excludeKits && isKit(p)) return false;
-        
-        return matchesQuery(p.name) ||
-          matchesQuery(p.vendorCode) ||
-          matchesQuery(p.description) ||
-          (p.categoryId && matchingCategoryIds.has(p.categoryId));
-      })
+      .filter(p => 
+        matchesQuery(p.name) ||
+        matchesQuery(p.vendorCode) ||
+        matchesQuery(p.description) ||
+        (p.categoryId && matchingCategoryIds.has(p.categoryId))
+      )
       .sort((a, b) => a.sortOrder - b.sortOrder);
   };
 

@@ -5,7 +5,6 @@ import { vacuumEquipmentData, VacuumProduct, VacuumSubcategory } from '@/data/va
 import { ProductDrawer } from './ProductDrawer';
 import { Button } from '@/components/ui/button';
 import { useYmlPrices } from '@/hooks/useYmlPrices';
-import { VacuumCalculator } from '@/components/store/VacuumCalculator';
 interface VacuumEquipmentCatalogProps {
   onSubcategoryChange?: (subcategoryId: string | null) => void;
 }
@@ -41,8 +40,6 @@ export function VacuumEquipmentCatalog({ onSubcategoryChange }: VacuumEquipmentC
 
   return (
     <div className="space-y-4">
-      {/* Калькулятор подбора установки */}
-      <VacuumCalculator />
       
       <AnimatePresence mode="wait">
         {!selectedSubcategory ? (

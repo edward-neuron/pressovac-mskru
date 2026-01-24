@@ -231,24 +231,8 @@ export function VacuumCalculator() {
               <span>Скорость воздушного потока: <strong className="text-foreground">8 м/сек</strong> (мин. требования)</span>
             </div>
 
-            {/* Результат расчёта */}
             {calculation && (
               <div className="space-y-4 pt-2">
-                <div className="border-t border-border pt-4">
-                  <h4 className="font-semibold text-sm mb-3">Расчёт:</h4>
-                  <div className="space-y-2 text-sm font-mono bg-muted/30 rounded-lg p-3">
-                    <p className="text-muted-foreground">
-                      <span className="text-foreground">Площадь сечения:</span> {calculation.formula}
-                    </p>
-                    <p className="text-muted-foreground">
-                      <span className="text-foreground">Коэффициент:</span> {calculation.coeffFormula}
-                    </p>
-                    <p className="text-muted-foreground">
-                      <span className="text-foreground">Мощность:</span> {calculation.resultFormula}
-                    </p>
-                  </div>
-                </div>
-
                 {/* Минимальная мощность */}
                 <div className="bg-primary/10 border border-primary/20 rounded-xl p-4">
                   <p className="text-sm text-muted-foreground mb-1">Минимальная мощность установки:</p>

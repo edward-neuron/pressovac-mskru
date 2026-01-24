@@ -102,14 +102,12 @@ export const Footer = () => {
               </li>
               <li className="flex items-start gap-3">
                 <ExternalLink className="w-5 h-5 text-accent mt-0.5" />
-                <a 
-                  href="https://shop-pressovac.ru" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
+                <Link 
+                  to="/store"
                   className="text-sm hover:text-accent transition-colors"
                 >
                   Интернет-магазин
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

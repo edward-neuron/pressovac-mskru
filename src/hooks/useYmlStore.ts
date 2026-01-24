@@ -92,7 +92,7 @@ export function useYmlStore() {
           description: p.description || undefined,
           price: formatPrice(Number(p.price)),
           priceNum: Number(p.price),
-          url: `https://shop-pressovac.ru/product/${p.id}`, // Legacy URL for compatibility
+          url: `/store?search=${encodeURIComponent(p.name)}`, // Internal store URL
           vendorCode: p.vendor_code || undefined,
           picture: p.picture || undefined,
           categoryId: p.category_id,

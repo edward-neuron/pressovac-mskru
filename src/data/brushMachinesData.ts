@@ -68,7 +68,7 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Диаметр': '10 мм'
           },
           availableLengths: ['3 м', '6 м', '9 м'],
-          shopUrl: 'https://shop-pressovac.ru/products/gibkie-vrashchayushchiesya-valy-pressovac-f88504918/',
+          shopUrl: '/store?search=гибкие+валы+мини',
           pricePrefix: 'от',
           vendorCodePattern: '205.004',
           image: fsMiniImage
@@ -87,7 +87,7 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Диаметр': '10 мм'
           },
           availableLengths: ['3 м', '5 м', '8 м', '12 м', '15 м', '20 м'],
-          shopUrl: 'https://shop-pressovac.ru/products/gibkie-vrashchayushchiesya-valy-pressovac-f88504918/',
+          shopUrl: '/store?search=гибкие+валы+стандарт',
           pricePrefix: 'от',
           vendorCodePattern: '205.001',
           image: fsStandartImage
@@ -106,7 +106,7 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Диаметр': '10 мм'
           },
           availableLengths: ['3 м', '5 м', '8 м', '12 м', '15 м', '20 м'],
-          shopUrl: 'https://shop-pressovac.ru/products/gibkie-vrashchayushchiesya-valy-pressovac-f88504918/',
+          shopUrl: '/store?search=стальные+валы',
           pricePrefix: 'от',
           vendorCodePattern: '205.002',
           image: fsSteelImage

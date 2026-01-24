@@ -162,6 +162,12 @@ const isSectionHeader = (line: string): boolean => {
   return headerPatterns.some(p => p.test(line.trim()));
 };
 
+// Check if line looks like a technical spec (starts with "― " or "- " followed by parameter name and colon/value)
+const isTechSpecLine = (line: string): boolean => {
+  // Pattern: "― Мощность мотора: 285 Ватт" or "- Напряжение: 230В"
+  return /^[―–—-]\s*[А-ЯЁA-Z][а-яёa-zA-Z\s]+:/.test(line);
+};
+
 // Extract section name from header line
 const extractSectionTitle = (line: string): string => {
   return line.replace(/:$/, '').trim();
@@ -319,11 +325,24 @@ export const parseDescriptionBlocks = (text: string): DescriptionBlocks => {
       if (hasKitQuantity(line)) {
         listItems.push(line);
         hasKitItems = true;
+      } else if (isTechSpecLine(line)) {
+        // This is a technical specification line - ensure we have a tech specs section
+        if (!currentSection || !currentSection.title.toLowerCase().includes('техническ')) {
+          // Save previous section if any
+          if (currentSection && currentSection.items.length > 0) {
+            sections.push(currentSection);
+          }
+          currentSection = {
+            title: 'Технические характеристики',
+            items: []
+          };
+        }
+        currentSection.items.push(line);
       } else if (currentSection) {
         // Add to current section
         currentSection.items.push(line);
       } else {
-        // No section yet - this is a standalone list item, add to intro or create unnamed section
+        // No section yet - this is a standalone list item, add to intro
         introLines.push(line);
       }
       continue;

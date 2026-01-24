@@ -60,7 +60,7 @@ export const vacuumEquipmentData: VacuumEquipmentCategory = {
           specifications: {
             'Производительность': '1 500 м³/час',
             'Мощность': '1,1 кВт',
-            'Напряжение': '380 В',
+            'Напряжение': '220 В',
             'Страна': 'Финляндия'
           },
           image: suImage
@@ -79,7 +79,7 @@ export const vacuumEquipmentData: VacuumEquipmentCategory = {
           specifications: {
             'Производительность': '2 400 м³/час',
             'Мощность': '1,5 кВт',
-            'Напряжение': '380 В',
+            'Напряжение': '220 В',
             'Страна': 'Финляндия'
           },
           image: suImage
@@ -117,7 +117,7 @@ export const vacuumEquipmentData: VacuumEquipmentCategory = {
           specifications: {
             'Производительность': '5 000 м³/час',
             'Мощность': '2,2 кВт',
-            'Напряжение': '380 В',
+            'Напряжение': '220 В',
             'Страна': 'Финляндия'
           },
           image: su50Image

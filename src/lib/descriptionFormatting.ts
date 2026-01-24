@@ -1,10 +1,17 @@
 // Utilities for turning supplier HTML-ish descriptions into readable text blocks.
 
+export type DescriptionSection = {
+  title: string;
+  items: string[];
+};
+
 export type DescriptionBlocks = {
   introLines: string[];
-  listItems: string[];
+  listItems: string[]; // Only for kit compositions
+  sections: DescriptionSection[]; // For named sections like "Технические спецификации:", "Применение:", etc.
   footnotes: string[];
   warnings: string[]; // For "Обращаем ваше внимание!" blocks
+  isKit: boolean; // True only if this is a real kit with quantities
 };
 
 const decodeHtmlEntities = (input: string): string => {
@@ -128,9 +135,36 @@ const isSubItem = (line: string): boolean => {
   return /[-–—]\s*\d+\s*(шт|комп|ед|упак|комплект)/i.test(line);
 };
 
+// Check if a line contains a quantity pattern indicating it's a kit component
+const hasKitQuantity = (line: string): boolean => {
+  // Kit items have patterns like "- 1 шт", "- 2 комп", etc.
+  return /[-–—]\s*\d+\s*(шт|комп|ед|упак|комплект)/i.test(line);
+};
+
 // Check if line starts a warning/notice block
 const isWarningStart = (line: string): boolean => {
   return /^Обращаем ваше внимание/i.test(line);
+};
+
+// Check if line is a section header (ends with ":")
+const isSectionHeader = (line: string): boolean => {
+  // Common section headers in product descriptions
+  const headerPatterns = [
+    /^Технические (спецификации|характеристики):/i,
+    /^Применение:/i,
+    /^Преимущества:/i,
+    /^Основные преимущества:/i,
+    /^Особенности:/i,
+    /^Комплектация:/i,
+    /^Характеристики:/i,
+    /^Описание:/i,
+  ];
+  return headerPatterns.some(p => p.test(line.trim()));
+};
+
+// Extract section name from header line
+const extractSectionTitle = (line: string): string => {
+  return line.replace(/:$/, '').trim();
 };
 
 // Check if line is a table row (contains " | " separator with quantity)
@@ -172,16 +206,24 @@ export const parseDescriptionBlocks = (text: string): DescriptionBlocks => {
     .filter(Boolean);
 
   const introLines: string[] = [];
-  const listItems: string[] = [];
+  const listItems: string[] = []; // Only for kit compositions
+  const sections: DescriptionSection[] = [];
   const footnotes: string[] = [];
   const warnings: string[] = [];
 
   let inFootnote = false;
   let inWarning = false;
+  let currentSection: DescriptionSection | null = null;
+  let hasKitItems = false; // Track if we have real kit items with quantities
 
   for (const line of lines) {
     // Check for warning block start
     if (isWarningStart(line)) {
+      // Save current section if any
+      if (currentSection && currentSection.items.length > 0) {
+        sections.push(currentSection);
+        currentSection = null;
+      }
       inWarning = true;
       warnings.push(line);
       continue;
@@ -204,21 +246,44 @@ export const parseDescriptionBlocks = (text: string): DescriptionBlocks => {
       continue;
     }
 
+    // Check for section headers (e.g., "Технические спецификации:")
+    if (isSectionHeader(line)) {
+      // Save previous section if any
+      if (currentSection && currentSection.items.length > 0) {
+        sections.push(currentSection);
+      }
+      currentSection = {
+        title: extractSectionTitle(line),
+        items: []
+      };
+      continue;
+    }
+
     // CRITICAL: Check if line is a table row (from HTML table parsing)
     // Format: "Item Name | Quantity"
     if (isTableRow(line)) {
-      listItems.push(tableRowToListItem(line));
+      const converted = tableRowToListItem(line);
+      listItems.push(converted);
+      hasKitItems = true;
       continue;
     }
+
     // Check if line starts with asterisk
     if (/^\*/.test(line)) {
       // If it's a sub-item (ends with quantity), treat as list item, not footnote
       if (isSubItem(line)) {
         // Convert * to - for consistency in list display
-        listItems.push(line.replace(/^\*\s*/, "- "));
+        const converted = line.replace(/^\*\s*/, "- ");
+        listItems.push(converted);
+        hasKitItems = true;
         continue;
       }
       // Otherwise it's a real footnote
+      // Save current section first
+      if (currentSection && currentSection.items.length > 0) {
+        sections.push(currentSection);
+        currentSection = null;
+      }
       inFootnote = true;
       footnotes.push(line);
       continue;
@@ -228,7 +293,19 @@ export const parseDescriptionBlocks = (text: string): DescriptionBlocks => {
       // Check if this line could be a sub-item that follows a footnote start
       // but is actually a continuation of list
       if (/^[-–—−]/.test(line) || isSubItem(line)) {
-        listItems.push(line);
+        if (hasKitQuantity(line)) {
+          listItems.push(line);
+          hasKitItems = true;
+        } else if (currentSection) {
+          currentSection.items.push(line);
+        } else {
+          // Check if any previous section can take this
+          if (sections.length > 0) {
+            sections[sections.length - 1].items.push(line);
+          } else {
+            introLines.push(line);
+          }
+        }
         continue;
       }
       // Everything after the first "*" is treated as part of footnote block.
@@ -236,18 +313,42 @@ export const parseDescriptionBlocks = (text: string): DescriptionBlocks => {
       continue;
     }
 
+    // Handle list items (lines starting with dash)
     if (/^[-–—−]/.test(line)) {
-      listItems.push(line);
+      // Check if it's a kit item (has quantity) or just a spec/feature item
+      if (hasKitQuantity(line)) {
+        listItems.push(line);
+        hasKitItems = true;
+      } else if (currentSection) {
+        // Add to current section
+        currentSection.items.push(line);
+      } else {
+        // No section yet - this is a standalone list item, add to intro or create unnamed section
+        introLines.push(line);
+      }
       continue;
     }
 
-    introLines.push(line);
+    // Regular text line
+    if (currentSection) {
+      // If we're in a section and this is a spec line (like "― Мощность: 285 Вт")
+      currentSection.items.push(line);
+    } else {
+      introLines.push(line);
+    }
+  }
+
+  // Save last section if any
+  if (currentSection && currentSection.items.length > 0) {
+    sections.push(currentSection);
   }
 
   return {
     introLines,
     listItems,
+    sections,
     footnotes,
     warnings,
+    isKit: hasKitItems && listItems.length > 0,
   };
 };

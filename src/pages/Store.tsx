@@ -25,7 +25,7 @@ import { ProductDetailDrawer } from '@/components/store/ProductDetailDrawer';
 import { useCart } from '@/contexts/CartContext';
 import { useYmlStore, YmlProduct, YmlCategory } from '@/hooks/useYmlStore';
 import { useSortOrder } from '@/hooks/useSortOrder';
-import { ShoppingCart, ArrowLeft, Search, Loader2, Settings, X, Home, ChevronRight, AlertCircle } from 'lucide-react';
+import { ShoppingCart, ArrowLeft, Search, Loader2, Settings, X, Home, ChevronRight, AlertCircle, RefreshCw } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { getPreviewImageUrl } from '@/lib/imageOptimization';
 import { getMinOrderConfig } from '@/data/minOrderConfig';
@@ -256,8 +256,18 @@ const Store = () => {
     getProductsCount,
     getCategoryImage,
     searchProducts,
-    categories 
+    categories,
+    refetch
   } = useYmlStore();
+  
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  
+  const handleRefreshCatalog = async () => {
+    setIsRefreshing(true);
+    refetch();
+    toast.success('Каталог обновлён');
+    setTimeout(() => setIsRefreshing(false), 1000);
+  };
   
   const {
     isEditMode,
@@ -624,7 +634,19 @@ const Store = () => {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                 >
-                  <h2 className="text-2xl font-bold mb-6">Оборудование и аксессуары</h2>
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-2xl font-bold">Оборудование и аксессуары</h2>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleRefreshCatalog}
+                      disabled={isRefreshing || isLoading}
+                      className="gap-2"
+                    >
+                      <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+                      <span className="hidden sm:inline">Обновить каталог</span>
+                    </Button>
+                  </div>
                   <DndContext
                     sensors={sensors}
                     collisionDetection={closestCenter}

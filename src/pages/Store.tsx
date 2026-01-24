@@ -697,8 +697,9 @@ const Store = () => {
                     currentCategory?.name?.toLowerCase().includes('su series') ||
                     currentCategory?.name?.toLowerCase().includes('sfu series')) && (
                     <VacuumCalculator onSearchProduct={(query) => {
+                      setCategoryHistory([]);
                       setSearchQuery(query);
-                      navigateToRoot();
+                      window.scrollTo({ top: 0, behavior: 'auto' });
                     }} />
                   )}
 

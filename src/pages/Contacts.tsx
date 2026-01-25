@@ -556,7 +556,7 @@ const Contacts = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2">Сообщение *</label>
+                    <label className="block text-sm font-medium mb-2">Сообщение (от 80 до 1000 символов) *</label>
                     <textarea
                       rows={5}
                       required
@@ -564,13 +564,14 @@ const Contacts = () => {
                       onChange={(e) => setSimpleForm(prev => ({ ...prev, message: e.target.value }))}
                       className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:border-primary transition-colors resize-none"
                       placeholder="Опишите вашу задачу: форма и характер отложений, диаметр воздуховодов, особенности объекта, конкретный вопрос..."
+                      maxLength={1000}
                     />
                     <div className="flex justify-between items-center mt-1">
                       <p className="text-xs text-muted-foreground">
                         Минимум {MIN_SIMPLE_MESSAGE_LENGTH} символов
                       </p>
                       <p className={`text-xs ${simpleForm.message.trim().length >= MIN_SIMPLE_MESSAGE_LENGTH ? 'text-green-600' : 'text-muted-foreground'}`}>
-                        {simpleForm.message.trim().length} / {MIN_SIMPLE_MESSAGE_LENGTH}
+                        {simpleForm.message.trim().length} / 1000
                       </p>
                     </div>
                   </div>

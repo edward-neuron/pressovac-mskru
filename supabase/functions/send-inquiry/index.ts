@@ -315,7 +315,7 @@ const handler = async (req: Request): Promise<Response> => {
           
           <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
           <p style="color: #666; font-size: 12px;">
-            Заказ оформлен на сайте pressovac-msk.ru (проверка Turnstile пройдена ✓)
+            Заказ оформлен на сайте pressovac-moscow.ru (проверка Turnstile пройдена ✓)
           </p>
         </div>
       `;
@@ -356,17 +356,17 @@ const handler = async (req: Request): Promise<Response> => {
         
         <hr>
         <p style="color: #666; font-size: 12px;">
-          Заявка отправлена с сайта pressovac-msk.ru (проверка Turnstile пройдена ✓)
+          Заявка отправлена с сайта pressovac-moscow.ru (проверка Turnstile пройдена ✓)
         </p>
       `;
     }
 
-    console.log("Sending email to sales@pressovac-msk.ru");
+    console.log("Sending email to sales@pressovac-moscow.ru");
 
     // Send email to sales team
     const { data: salesData, error: salesError } = await resend.emails.send({
-      from: "Pressovac Moscow <info@pressovac-msk.ru>",
-      to: ["sales@pressovac-msk.ru"],
+      from: "Pressovac Moscow <info@pressovac-moscow.ru>",
+      to: ["sales@pressovac-moscow.ru"],
       reply_to: emailRaw || undefined,
       subject: emailSubjectRaw,
       html: emailHtml,
@@ -453,7 +453,7 @@ const handler = async (req: Request): Promise<Response> => {
               <h3 style="margin-top: 0; color: #333;">Наши контакты</h3>
               <p style="margin: 5px 0;">📞 +7 (499) 677-20-10 (многоканальный)</p>
               <p style="margin: 5px 0;">📞 +7 (925) 85-349-74 (консультант онлайн)</p>
-              <p style="margin: 5px 0;">✉️ sales@pressovac-msk.ru</p>
+              <p style="margin: 5px 0;">✉️ sales@pressovac-moscow.ru</p>
             </div>
             
             <p style="color: #999; font-size: 12px; margin-top: 30px;">
@@ -463,7 +463,7 @@ const handler = async (req: Request): Promise<Response> => {
             <p style="color: #999; font-size: 12px;">
               С уважением,<br>
               Команда Pressovac Moscow<br>
-              <a href="https://pressovac-msk.ru" style="color: #0066cc;">pressovac-msk.ru</a>
+              <a href="https://pressovac-moscow.ru" style="color: #0066cc;">pressovac-moscow.ru</a>
             </p>
           </div>
         `;
@@ -492,14 +492,14 @@ const handler = async (req: Request): Promise<Response> => {
             <p style="color: #999; font-size: 12px;">
               С уважением,<br>
               Команда Pressovac Moscow<br>
-              <a href="https://pressovac-msk.ru" style="color: #0066cc;">pressovac-msk.ru</a>
+              <a href="https://pressovac-moscow.ru" style="color: #0066cc;">pressovac-moscow.ru</a>
             </p>
           </div>
         `;
       }
 
       const { data: clientData, error: clientError } = await resend.emails.send({
-        from: "Pressovac Moscow <info@pressovac-msk.ru>",
+        from: "Pressovac Moscow <info@pressovac-moscow.ru>",
         to: [emailRaw],
         subject: isStoreOrder ? `Заказ №${orderNumber} принят — Pressovac Moscow` : "Ваша заявка получена — Pressovac Moscow",
         html: clientEmailHtml,

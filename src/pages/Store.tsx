@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -238,16 +238,7 @@ const Store = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<YmlProduct | null>(null);
   const [productDrawerOpen, setProductDrawerOpen] = useState(false);
-
-  // Обработка параметра search из URL (при переходе из каталога)
-  useEffect(() => {
-    const urlSearchQuery = searchParams.get('search');
-    if (urlSearchQuery) {
-      setSearchQuery(urlSearchQuery);
-      // Очищаем параметр из URL чтобы не мешал дальнейшей навигации
-      setSearchParams({}, { replace: true });
-    }
-  }, [searchParams, setSearchParams]);
+  const [urlInitialized, setUrlInitialized] = useState(false);
   const { totalItems, totalPrice, addItem, items, openCart } = useCart();
   const { 
     isLoading, 
@@ -259,10 +250,81 @@ const Store = () => {
     getCategoryImage,
     searchProducts,
     categories,
+    products: allProducts,
     refetch
   } = useYmlStore();
   
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const isUpdatingFromUrl = useRef(false);
+  
+  // Build category path from leaf to root (for URL initialization)
+  const buildCategoryPath = useCallback((categoryId: string): string[] => {
+    const path: string[] = [];
+    let current = categories.find(c => c.id === categoryId);
+    while (current) {
+      path.unshift(current.id);
+      current = current.parentId ? categories.find(c => c.id === current!.parentId) : undefined;
+    }
+    return path;
+  }, [categories]);
+
+  // Initialize state from URL params once data is loaded
+  useEffect(() => {
+    if (isLoading || categories.length === 0 || urlInitialized) return;
+    
+    isUpdatingFromUrl.current = true;
+    
+    const urlSearch = searchParams.get('search');
+    const urlCategory = searchParams.get('category');
+    const urlProduct = searchParams.get('product');
+    
+    if (urlSearch) {
+      setSearchQuery(urlSearch);
+    } else if (urlCategory) {
+      // Build full path from root to this category
+      const path = buildCategoryPath(urlCategory);
+      if (path.length > 0) {
+        setCategoryHistory(path);
+      }
+    }
+    
+    if (urlProduct && allProducts.length > 0) {
+      const product = allProducts.find(p => p.id === urlProduct);
+      if (product) {
+        setSelectedProduct(product);
+        setProductDrawerOpen(true);
+        // Also set category path if not already set
+        if (!urlCategory && !urlSearch && product.categoryId) {
+          const path = buildCategoryPath(product.categoryId);
+          if (path.length > 0) {
+            setCategoryHistory(path);
+          }
+        }
+      }
+    }
+    
+    setUrlInitialized(true);
+    setTimeout(() => { isUpdatingFromUrl.current = false; }, 100);
+  }, [isLoading, categories, allProducts, urlInitialized, searchParams, buildCategoryPath]);
+
+  // Sync state changes TO URL (skip when initializing from URL)
+  useEffect(() => {
+    if (!urlInitialized || isUpdatingFromUrl.current) return;
+    
+    const params: Record<string, string> = {};
+    
+    if (searchQuery) {
+      params.search = searchQuery;
+    } else if (categoryHistory.length > 0) {
+      params.category = categoryHistory[categoryHistory.length - 1];
+    }
+    
+    if (productDrawerOpen && selectedProduct) {
+      params.product = selectedProduct.id;
+    }
+    
+    setSearchParams(params, { replace: true });
+  }, [categoryHistory, searchQuery, productDrawerOpen, selectedProduct, urlInitialized, setSearchParams]);
   
   const handleRefreshCatalog = async () => {
     setIsRefreshing(true);
@@ -312,8 +374,7 @@ const Store = () => {
   
   const hasSubcategories = subcategories.length > 0;
   
-  // Get and sort products - show products directly in category when there are no subcategories
-  // OR when category has both products and subcategories, show only products directly in this category
+  // Get and sort products
   const productsToShow = useMemo(() => {
     if (searchQuery) {
       return searchProducts(searchQuery)
@@ -321,7 +382,6 @@ const Store = () => {
         .sort((a, b) => a.customOrder - b.customOrder);
     }
     if (selectedCategory) {
-      // Get products directly in this category (not in subcategories)
       return getProductsByCategory(selectedCategory)
         .map(prod => ({ ...prod, customOrder: getProductSortOrder(prod.id, prod.sortOrder) }))
         .sort((a, b) => a.customOrder - b.customOrder);
@@ -882,7 +942,10 @@ const Store = () => {
       <ProductDetailDrawer
         product={selectedProduct}
         open={productDrawerOpen}
-        onOpenChange={setProductDrawerOpen}
+        onOpenChange={(open) => {
+          setProductDrawerOpen(open);
+          if (!open) setSelectedProduct(null);
+        }}
       />
     </Layout>
   );

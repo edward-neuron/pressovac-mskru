@@ -179,8 +179,8 @@ const CategoryCard = ({ category, image, productCount, onClick, index }: Categor
           </div>
         )}
         {isKitsCategory && (
-          <div className="absolute bottom-0 inset-x-0 bg-green-600 text-white text-[10px] sm:text-xs font-bold text-center py-1 px-1 leading-tight">
-            Комплект = скидка ~до 5%
+          <div className="absolute bottom-0 inset-x-0 bg-green-600/90 text-white text-[9px] sm:text-[11px] font-bold text-center py-1.5 px-1 leading-tight shadow-md">
+            При покупке готового комплекта — цена меньше ~до 5%
           </div>
         )}
       </div>

@@ -154,6 +154,8 @@ const CategoryCard = ({ category, image, productCount, onClick, index }: Categor
     );
   }
   
+  const isKitsCategory = category.name.toLowerCase().includes('готовые комплекты');
+
   return (
     <motion.button
       initial={{ opacity: 0, y: 20 }}
@@ -174,6 +176,11 @@ const CategoryCard = ({ category, image, productCount, onClick, index }: Categor
         ) : (
           <div className="w-full h-full bg-white flex items-center justify-center text-muted-foreground">
             <ShoppingCart className="w-12 h-12 opacity-20" />
+          </div>
+        )}
+        {isKitsCategory && (
+          <div className="absolute bottom-0 inset-x-0 bg-green-600 text-white text-[10px] sm:text-xs font-bold text-center py-1 px-1 leading-tight">
+            Комплект = скидка ~до 5%
           </div>
         )}
       </div>

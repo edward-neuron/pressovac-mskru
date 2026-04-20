@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Zap, Shield, Wrench, GraduationCap } from 'lucide-react';
+import { ArrowRight, Zap, Shield, Wrench, GraduationCap, ShoppingCart } from 'lucide-react';
 
 const categories = [
   {
@@ -114,6 +114,25 @@ export const CatalogPreview = () => {
           >
             Смотреть весь каталог
             <ArrowRight className="w-5 h-5" />
+          </Link>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.5 }}
+          className="mt-8 flex justify-center"
+        >
+          <Link
+            to="/store"
+            className="group inline-flex items-center gap-3 px-6 py-4 rounded-2xl bg-gradient-to-r from-primary to-primary/80 text-primary-foreground font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all"
+          >
+            <ShoppingCart className="w-6 h-6" />
+            <span className="text-base md:text-lg">
+              Купить оборудование в нашем интернет-магазине
+            </span>
+            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </Link>
         </motion.div>
       </div>

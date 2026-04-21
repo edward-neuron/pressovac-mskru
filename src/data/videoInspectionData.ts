@@ -63,6 +63,7 @@ export const videoInspectionData: VideoInspectionCategory = {
             'Модуль записи': 'Отсутствует',
             'Страна': 'Германия'
           },
+          shopUrl: '/store?category=88505018',
           image: vs200Image
         },
         {
@@ -78,6 +79,7 @@ export const videoInspectionData: VideoInspectionCategory = {
             'Цифровой регистратор': '2 GB SD-Card',
             'Страна': 'Германия'
           },
+          shopUrl: '/store?category=88505018',
           image: vs250Image
         },
         {
@@ -98,6 +100,7 @@ export const videoInspectionData: VideoInspectionCategory = {
             'Батареи': '1',
             'Страна': 'Германия'
           },
+          shopUrl: '/store?category=88505018',
           image: vs25030mImage
         },
         {
@@ -114,6 +117,7 @@ export const videoInspectionData: VideoInspectionCategory = {
             'Класс защиты': 'IP67',
             'Страна': 'Германия'
           },
+          shopUrl: '/store?category=88505018',
           image: vs350Image
         },
         {
@@ -129,6 +133,7 @@ export const videoInspectionData: VideoInspectionCategory = {
             'Управление': 'Джойстик',
             'Страна': 'Германия'
           },
+          shopUrl: '/store?category=88505018',
           image: vs700Image
         }
       ]
@@ -153,6 +158,7 @@ export const videoInspectionData: VideoInspectionCategory = {
             'Звуковой сигнал': 'Да',
             'Страна': 'Германия'
           },
+          shopUrl: '/store?category=88505018',
           image: l200Image
         }
       ]
@@ -178,6 +184,7 @@ export const videoInspectionData: VideoInspectionCategory = {
             'Совместимость': 'VS350',
             'Страна': 'Германия'
           },
+          shopUrl: '/store?category=88505018',
           image: centeringBrushImage
         },
         {
@@ -195,6 +202,7 @@ export const videoInspectionData: VideoInspectionCategory = {
             'Количество': '10 шт.',
             'Страна': 'Германия'
           },
+          shopUrl: '/store?category=88505018',
           image: cameradomesImage
         },
         {
@@ -211,6 +219,7 @@ export const videoInspectionData: VideoInspectionCategory = {
             'Диаметр': 'Ø40мм',
             'Страна': 'Германия'
           },
+          shopUrl: '/store?category=88505018',
           image: protectiveSleeveImage
         },
         {
@@ -229,6 +238,7 @@ export const videoInspectionData: VideoInspectionCategory = {
             'Для каналов': '> 150мм',
             'Страна': 'Германия'
           },
+          shopUrl: '/store?category=88505018',
           image: mobileTrolleyImage
         }
       ]

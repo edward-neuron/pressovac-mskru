@@ -115,15 +115,6 @@ export const BrushMachinesCatalog = ({ onSubcategoryChange }: BrushMachinesCatal
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {selectedSubcategory.products.map((product) => {
-                // Для товаров с паттерном (гибкие валы) - ищем минимальную цену
-                const ymlPrice = product.vendorCodePattern 
-                  ? findMinPriceByPattern(product.vendorCodePattern)
-                  : findPrice(product.shopUrl, product.name, product.article);
-                const ymlShopUrl = findShopUrl(product.name, product.article);
-                const displayPrice = ymlPrice || product.price;
-                const hasShopLink = (product.shopUrl && product.shopUrl !== '#') || ymlShopUrl;
-                const pricePrefix = product.pricePrefix || '';
-                
                 return (
                   <button
                     key={product.id}
@@ -138,20 +129,10 @@ export const BrushMachinesCatalog = ({ onSubcategoryChange }: BrushMachinesCatal
                         <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
                           {product.description}
                         </p>
-                        {displayPrice && hasShopLink && (
-                          <div className="flex items-center gap-2 mt-2">
-                            <ShoppingCart className="w-4 h-4 text-primary" />
-                            <span className="text-sm font-semibold text-primary">
-                              {pricePrefix && <span className="font-normal">{pricePrefix} </span>}
-                              {displayPrice}
-                            </span>
-                          </div>
-                        )}
-                        {pricesLoading && !displayPrice && (
-                          <div className="flex items-center gap-2 mt-2">
-                            <div className="w-16 h-4 bg-muted animate-pulse rounded" />
-                          </div>
-                        )}
+                        <div className="inline-flex items-center gap-2 mt-3 px-3 py-1.5 rounded-lg bg-primary/10 text-primary text-xs font-semibold">
+                          <ShoppingCart className="w-3.5 h-3.5" />
+                          Посмотреть цену в магазине
+                        </div>
                       </div>
                       <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all shrink-0 mt-1" />
                     </div>

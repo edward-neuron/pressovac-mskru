@@ -8,7 +8,6 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet';
 import { Link, useNavigate } from 'react-router-dom';
-import { useYmlPrices } from '@/hooks/useYmlPrices';
 
 // Общий тип для продуктов из разных каталогов
 export interface DrawerProduct {
@@ -44,13 +43,10 @@ export const ProductDrawer = ({
 }: ProductDrawerProps) => {
   const [selectedLength, setSelectedLength] = useState<string | null>(null);
   const navigate = useNavigate();
-  const { findPrice } = useYmlPrices();
 
   if (!product) return null;
 
   const hasLengths = product.availableLengths && product.availableLengths.length > 0;
-  const ymlPrice = findPrice(product.shopUrl, product.name, product.article);
-  const displayPrice = ymlPrice || product.price;
 
   // Прямой переход в магазин: если задан shopUrl (категория), используем его, иначе поиск по артикулу/названию
   const handleGoToStore = () => {
@@ -170,7 +166,7 @@ export const ProductDrawer = ({
               onClick={handleGoToStore}
             >
               <ShoppingCart className="w-4 h-4 mr-2" />
-              {displayPrice ? `Оформить заказ — ${displayPrice}` : 'Оформить заказ'}
+              Перейти в магазин
             </Button>
 
             {/* Brochure Button */}

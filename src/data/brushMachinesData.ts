@@ -136,6 +136,7 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Тип привода': 'Электрический',
             'Страна': 'Финляндия'
           },
+          shopUrl: '/store?category=86975775',
           image: e20Image
         },
         {
@@ -155,6 +156,7 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Тип привода': 'Электрический',
             'Страна': 'Финляндия'
           },
+          shopUrl: '/store?category=86975775',
           image: e30Image
         },
         {
@@ -174,6 +176,7 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Тип привода': 'Электрический',
             'Страна': 'Финляндия'
           },
+          shopUrl: '/store?category=86975775',
           image: e25lImage
         },
         {
@@ -193,6 +196,7 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Тип привода': 'Пневматический',
             'Страна': 'Финляндия'
           },
+          shopUrl: '/store?category=86975775',
           image: p25p40Image
         },
         {
@@ -212,6 +216,7 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Тип привода': 'Пневматический',
             'Страна': 'Финляндия'
           },
+          shopUrl: '/store?category=86975775',
           image: p25p40Image
         }
       ]
@@ -238,6 +243,7 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Тип': 'Комбинированный',
             'Страна': 'Финляндия'
           },
+          shopUrl: '/store?category=86975795',
           image: scCombi8Image
         },
         {
@@ -257,6 +263,7 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Тип привода': 'Электрический',
             'Страна': 'Финляндия'
           },
+          shopUrl: '/store?category=86975795',
           image: edw15Image
         },
         {
@@ -276,6 +283,7 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Тип привода': 'Пневматический',
             'Страна': 'Финляндия'
           },
+          shopUrl: '/store?category=86975795',
           image: pdwImage
         },
         {
@@ -295,6 +303,7 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Тип привода': 'Пневматический',
             'Страна': 'Финляндия'
           },
+          shopUrl: '/store?category=86975795',
           image: pdwImage
         },
         {
@@ -314,6 +323,7 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Тип привода': 'Пневматический',
             'Страна': 'Финляндия'
           },
+          shopUrl: '/store?category=86975795',
           image: pdwImage
         }
       ]
@@ -329,7 +339,6 @@ export const brushMachinesData: BrushMachinesCategory = {
           id: 'atex-p40',
           name: 'Установка АTEX Air Brushing Reel P40',
           article: '201.001.202',
-          price: '1 781 200 ₽',
           description: 'Пневматическая щёточная машина во взрывозащищённом исполнении для очистки воздуховодов в зонах с взрывоопасными средами.',
           features: [
             'Длина вала: 40 м',
@@ -344,13 +353,13 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Защита': 'ATEX',
             'Страна': 'Финляндия'
           },
+          shopUrl: '/store?category=88504908',
           image: p40AtexImage
         },
         {
           id: 'atex-p40-kit',
           name: 'Комплект оборудования P-40 АТЕХ с Аксессуарами',
           article: '211.634.476',
-          price: '5 532 560 ₽',
           description: `Информация о товаре
 Pressovac Oy: Финляндия
 Вес: 210,00 кг
@@ -368,6 +377,7 @@ Pressovac Oy: Финляндия
             'Страна': 'Финляндия',
             'Вес': '210,00 кг'
           },
+          shopUrl: '/store?category=88504908',
           image: p40AtexImage
         }
       ]

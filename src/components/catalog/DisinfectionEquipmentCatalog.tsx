@@ -5,7 +5,6 @@ import { disinfectionEquipmentData, DisinfectionProduct, DisinfectionSubcategory
 
 import { ProductDrawer } from './ProductDrawer';
 import { Button } from '@/components/ui/button';
-import { useYmlPrices } from '@/hooks/useYmlPrices';
 
 interface DisinfectionEquipmentCatalogProps {
   onSubcategoryChange?: (subcategoryId: string | null) => void;
@@ -15,7 +14,6 @@ export function DisinfectionEquipmentCatalog({ onSubcategoryChange }: Disinfecti
   const [selectedSubcategory, setSelectedSubcategory] = useState<DisinfectionSubcategory | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<DisinfectionProduct | null>(null);
   const [isProductOpen, setIsProductOpen] = useState(false);
-  const { findPrice, findShopUrl, isLoading: pricesLoading } = useYmlPrices();
 
   useEffect(() => {
     onSubcategoryChange?.(selectedSubcategory?.id || null);
@@ -100,11 +98,6 @@ export function DisinfectionEquipmentCatalog({ onSubcategoryChange }: Disinfecti
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {selectedSubcategory.products.map((product) => {
-                const ymlPrice = findPrice(product.shopUrl, product.name, product.article);
-                const ymlShopUrl = findShopUrl(product.name, product.article);
-                const displayPrice = ymlPrice || product.price;
-                const hasShopLink = (product.shopUrl && product.shopUrl !== '#') || ymlShopUrl;
-                
                 return (
                   <button
                     key={product.id}
@@ -119,19 +112,10 @@ export function DisinfectionEquipmentCatalog({ onSubcategoryChange }: Disinfecti
                         <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
                           {product.description}
                         </p>
-                        {displayPrice && hasShopLink && (
-                          <div className="flex items-center gap-2 mt-2">
-                            <ShoppingCart className="w-4 h-4 text-primary" />
-                            <span className="text-sm font-semibold text-primary">
-                              {displayPrice}
-                            </span>
-                          </div>
-                        )}
-                        {pricesLoading && !displayPrice && (
-                          <div className="flex items-center gap-2 mt-2">
-                            <div className="w-16 h-4 bg-muted animate-pulse rounded" />
-                          </div>
-                        )}
+                        <div className="inline-flex items-center gap-2 mt-3 px-3 py-1.5 rounded-lg bg-primary/10 text-primary text-xs font-semibold">
+                          <ShoppingCart className="w-3.5 h-3.5" />
+                          Посмотреть цену в магазине
+                        </div>
                       </div>
                       <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all shrink-0 mt-1" />
                     </div>
@@ -144,11 +128,7 @@ export function DisinfectionEquipmentCatalog({ onSubcategoryChange }: Disinfecti
       </AnimatePresence>
 
       <ProductDrawer
-        product={selectedProduct ? {
-          ...selectedProduct,
-          price: findPrice(selectedProduct.shopUrl, selectedProduct.name, selectedProduct.article) || undefined,
-          shopUrl: selectedProduct.shopUrl || findShopUrl(selectedProduct.name, selectedProduct.article) || undefined
-        } : null}
+        product={selectedProduct}
         isOpen={isProductOpen}
         onClose={handleCloseProduct}
         onBack={handleBackToSubcategory}

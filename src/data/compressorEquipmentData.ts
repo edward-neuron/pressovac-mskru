@@ -28,7 +28,7 @@ export const compressorEquipmentData: CompressorEquipmentCategory = {
         'Привод': 'прямой привод',
         'Вид': 'передвижной'
       },
-      shopUrl: '#'
+      shopUrl: '/store?category=86975935'
     }
   ]
 };

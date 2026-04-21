@@ -54,6 +54,7 @@ export const filterEquipmentData: FilterEquipmentCategory = {
             'Вес': '30 кг',
             'Страна': 'Финляндия'
           },
+          shopUrl: '/store?category=86975890',
           image: f50Image
         },
         {
@@ -76,6 +77,7 @@ export const filterEquipmentData: FilterEquipmentCategory = {
             'Вес': '45 кг',
             'Страна': 'Финляндия'
           },
+          shopUrl: '/store?category=86975890',
           image: f100Image
         }
       ]
@@ -106,6 +108,7 @@ export const filterEquipmentData: FilterEquipmentCategory = {
             'Вес': '21 кг (с фильтрами)',
             'Страна': 'Финляндия'
           },
+          shopUrl: '/store?category=86975890',
           image: hepa10Image
         }
       ]
@@ -126,7 +129,8 @@ export const filterEquipmentData: FilterEquipmentCategory = {
             'F-7 Фильтр тонкой очистки': 'Удерживает до 75% частиц размером менее 0,4 мкм; Эффективность очистки Ee 80-90%, Ea 45%',
             'Индекс Ee': 'Частицы размером более 0,4 мкм',
             'Индекс Ea': 'Частицы размером менее 0,4 мкм'
-          }
+          },
+          shopUrl: '/store?category=86975890'
         },
         {
           id: 'g3f7-pocket-sfu50',
@@ -139,7 +143,8 @@ export const filterEquipmentData: FilterEquipmentCategory = {
             'F-7 Фильтр тонкой очистки': 'Удерживает до 75% частиц размером менее 0,4 мкм; Эффективность очистки Ee 80-90%, Ea 45%',
             'Индекс Ee': 'Частицы размером более 0,4 мкм',
             'Индекс Ea': 'Частицы размером менее 0,4 мкм'
-          }
+          },
+          shopUrl: '/store?category=86975890'
         }
       ]
     }

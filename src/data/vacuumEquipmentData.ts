@@ -63,6 +63,7 @@ export const vacuumEquipmentData: VacuumEquipmentCategory = {
             'Напряжение': '220 В',
             'Страна': 'Финляндия'
           },
+          shopUrl: '/store?category=88504978',
           image: suImage
         },
         {
@@ -82,6 +83,7 @@ export const vacuumEquipmentData: VacuumEquipmentCategory = {
             'Напряжение': '220 В',
             'Страна': 'Финляндия'
           },
+          shopUrl: '/store?category=88504978',
           image: suImage
         },
         {
@@ -101,6 +103,7 @@ export const vacuumEquipmentData: VacuumEquipmentCategory = {
             'Напряжение': '380 В',
             'Страна': 'Финляндия'
           },
+          shopUrl: '/store?category=88504978',
           image: s300Image
         },
         {
@@ -120,6 +123,7 @@ export const vacuumEquipmentData: VacuumEquipmentCategory = {
             'Напряжение': '220 В',
             'Страна': 'Финляндия'
           },
+          shopUrl: '/store?category=88504978',
           image: su50Image
         },
         {
@@ -139,6 +143,7 @@ export const vacuumEquipmentData: VacuumEquipmentCategory = {
             'Напряжение': '380 В',
             'Страна': 'Финляндия'
           },
+          shopUrl: '/store?category=88504978',
           image: su100Image
         },
         {
@@ -158,6 +163,7 @@ export const vacuumEquipmentData: VacuumEquipmentCategory = {
             'Напряжение': '380 В',
             'Страна': 'Финляндия'
           },
+          shopUrl: '/store?category=88504978',
           image: su100Image
         }
       ]
@@ -190,6 +196,7 @@ export const vacuumEquipmentData: VacuumEquipmentCategory = {
             'Защита': 'ATEX',
             'Страна': 'Финляндия'
           },
+          shopUrl: '/store?category=88504908',
           image: suAtexImage
         }
       ]
@@ -217,6 +224,7 @@ export const vacuumEquipmentData: VacuumEquipmentCategory = {
             'Мощность': '0,75 кВт',
             'Страна': 'Финляндия'
           },
+          shopUrl: '/store?category=86975885',
           image: sfu10Image
         },
         {
@@ -236,6 +244,7 @@ export const vacuumEquipmentData: VacuumEquipmentCategory = {
             'Мощность': '1,5 кВт',
             'Страна': 'Финляндия'
           },
+          shopUrl: '/store?category=86975885',
           image: sfu25Image
         },
         {
@@ -255,6 +264,7 @@ export const vacuumEquipmentData: VacuumEquipmentCategory = {
             'Мощность': '2,2 кВт',
             'Страна': 'Финляндия'
           },
+          shopUrl: '/store?category=86975885',
           image: sfu50Image
         }
       ]

@@ -54,6 +54,7 @@ export const disinfectionEquipmentData: DisinfectionEquipmentCategory = {
             'Объём': '5 л',
             'Страна': 'Финляндия'
           },
+          shopUrl: '/store?category=88504943',
           image: dTanksImage
         },
         {
@@ -70,6 +71,7 @@ export const disinfectionEquipmentData: DisinfectionEquipmentCategory = {
             'Объём': '10 л',
             'Страна': 'Финляндия'
           },
+          shopUrl: '/store?category=88504943',
           image: dTanksImage
         },
         {
@@ -86,6 +88,7 @@ export const disinfectionEquipmentData: DisinfectionEquipmentCategory = {
             'Объём': '20 л',
             'Страна': 'Финляндия'
           },
+          shopUrl: '/store?category=88504943',
           image: dTanksImage
         }
       ]
@@ -110,6 +113,7 @@ export const disinfectionEquipmentData: DisinfectionEquipmentCategory = {
             'Тип': 'Насадка',
             'Страна': 'Финляндия'
           },
+          shopUrl: '/store?category=88504943',
           image: dNozzleImage
         }
       ]

@@ -68,7 +68,7 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Диаметр': '10 мм'
           },
           availableLengths: ['3 м', '6 м', '9 м'],
-          shopUrl: '/store?search=гибкие+валы+мини',
+          shopUrl: '/store?category=88504923',
           pricePrefix: 'от',
           vendorCodePattern: '205.004',
           image: fsMiniImage
@@ -87,7 +87,7 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Диаметр': '10 мм'
           },
           availableLengths: ['3 м', '5 м', '8 м', '12 м', '15 м', '20 м'],
-          shopUrl: '/store?search=гибкие+валы+стандарт',
+          shopUrl: '/store?category=88504928',
           pricePrefix: 'от',
           vendorCodePattern: '205.001',
           image: fsStandartImage
@@ -106,7 +106,7 @@ export const brushMachinesData: BrushMachinesCategory = {
             'Диаметр': '10 мм'
           },
           availableLengths: ['3 м', '5 м', '8 м', '12 м', '15 м', '20 м'],
-          shopUrl: '/store?search=стальные+валы',
+          shopUrl: '/store?category=88504933',
           pricePrefix: 'от',
           vendorCodePattern: '205.002',
           image: fsSteelImage

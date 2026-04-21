@@ -52,10 +52,14 @@ export const ProductDrawer = ({
   const ymlPrice = findPrice(product.shopUrl, product.name, product.article);
   const displayPrice = ymlPrice || product.price;
 
-  // Прямой переход в магазин с поиском по артикулу или названию
+  // Прямой переход в магазин: если задан shopUrl (категория), используем его, иначе поиск по артикулу/названию
   const handleGoToStore = () => {
-    const searchQuery = product.article || product.name.split(' ').slice(0, 2).join(' ');
-    navigate(`/store?search=${encodeURIComponent(searchQuery)}`);
+    if (product.shopUrl) {
+      navigate(product.shopUrl);
+    } else {
+      const searchQuery = product.article || product.name.split(' ').slice(0, 2).join(' ');
+      navigate(`/store?search=${encodeURIComponent(searchQuery)}`);
+    }
     onClose();
   };
 

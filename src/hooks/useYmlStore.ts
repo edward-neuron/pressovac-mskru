@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import fallbackStoreData from '@/data/storeFallback.json';
 
 const STORE_CACHE_KEY = 'pressovac-store-cache-v2';
 
@@ -40,6 +41,50 @@ interface YmlStoreState {
 // Cache for data
 let cachedData: CachedStoreData | null = null;
 const productDescriptionCache = new Map<string, string | undefined>();
+
+function createStoreSnapshot(
+  rawCategories: Array<{ id: string; name: string; parent_id?: string | null }>,
+  rawProducts: Array<{
+    id: string;
+    name: string;
+    price: number | string;
+    category_id?: string | null;
+    picture?: string | null;
+    vendor_code?: string | null;
+    description?: string | null;
+  }>,
+  fetchedAt = new Date().toISOString()
+): CachedStoreData {
+  const categories: YmlCategory[] = rawCategories.map((c, idx) => ({
+    id: c.id,
+    name: c.name,
+    parentId: c.parent_id || undefined,
+    sortOrder: idx,
+  }));
+
+  const products: YmlProduct[] = rawProducts.map((p, idx) => ({
+    id: p.id,
+    name: p.name,
+    description: p.description ?? productDescriptionCache.get(p.id),
+    price: formatPrice(Number(p.price)),
+    priceNum: Number(p.price),
+    url: `/store?search=${encodeURIComponent(p.name)}`,
+    vendorCode: p.vendor_code || undefined,
+    picture: p.picture || undefined,
+    categoryId: p.category_id || undefined,
+    sortOrder: idx,
+  }));
+
+  return { categories, products, fetchedAt };
+}
+
+function getEmbeddedFallbackStoreData(): CachedStoreData {
+  return createStoreSnapshot(
+    fallbackStoreData.categories,
+    fallbackStoreData.products,
+    'embedded-fallback'
+  );
+}
 
 function readPersistentCache(): CachedStoreData | null {
   if (typeof window === 'undefined') return null;
@@ -137,32 +182,11 @@ export function useYmlStore() {
         if (categoriesRes.error) throw categoriesRes.error;
         if (productsRes.error) throw productsRes.error;
 
-        // Transform data to match expected interface
-        const categories: YmlCategory[] = (categoriesRes.data || []).map((c, idx) => ({
-          id: c.id,
-          name: c.name,
-          parentId: c.parent_id || undefined,
-          sortOrder: idx
-        }));
-
-        const products: YmlProduct[] = (productsRes.data || []).map((p, idx) => ({
-          id: p.id,
-          name: p.name,
-          description: productDescriptionCache.get(p.id),
-          price: formatPrice(Number(p.price)),
-          priceNum: Number(p.price),
-          url: `/store?search=${encodeURIComponent(p.name)}`, // Internal store URL
-          vendorCode: p.vendor_code || undefined,
-          picture: p.picture || undefined,
-          categoryId: p.category_id,
-          sortOrder: idx
-        }));
-
-        cachedData = { 
-          categories, 
-          products,
-          fetchedAt: new Date().toISOString()
-        };
+        cachedData = createStoreSnapshot(
+          categoriesRes.data || [],
+          productsRes.data || [],
+          new Date().toISOString()
+        );
 
         writePersistentCache(cachedData);
 
@@ -175,7 +199,7 @@ export function useYmlStore() {
         });
       } catch (err) {
         console.error('Error fetching store data:', err);
-        const fallbackCache = cachedData || readPersistentCache();
+        const fallbackCache = cachedData || readPersistentCache() || getEmbeddedFallbackStoreData();
 
         if (fallbackCache) {
           setState({
@@ -185,6 +209,8 @@ export function useYmlStore() {
             error: null,
             fetchedAt: fallbackCache.fetchedAt
           });
+
+          cachedData = fallbackCache;
           return;
         }
 

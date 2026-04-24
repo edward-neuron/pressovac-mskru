@@ -36,6 +36,7 @@ export function useSortOrder() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const isEditorMode = typeof window !== 'undefined' && window.parent !== window;
 
   // Load from database on mount
   useEffect(() => {
@@ -60,7 +61,7 @@ export function useSortOrder() {
           setSortOrder(dbData);
           saveToLocalStorage(dbData); // Sync to localStorage
           console.log('Sort order loaded from database');
-        } else {
+        } else if (isEditorMode) {
           // No data in DB, use localStorage and save to DB
           const localData = getStoredOrder();
           if (Object.keys(localData.categories).length > 0 || Object.keys(localData.products).length > 0) {
@@ -76,7 +77,7 @@ export function useSortOrder() {
     };
 
     loadFromDatabase();
-  }, []);
+  }, [isEditorMode]);
 
   // Save to database via edge function
   const saveToDatabase = async (data: SortOrderData) => {
@@ -106,9 +107,12 @@ export function useSortOrder() {
   useEffect(() => {
     if (!isLoading) {
       saveToLocalStorage(sortOrder);
-      saveToDatabase(sortOrder);
+
+      if (isEditorMode && isEditMode) {
+        saveToDatabase(sortOrder);
+      }
     }
-  }, [sortOrder, isLoading]);
+  }, [sortOrder, isLoading, isEditorMode, isEditMode]);
 
   const reorderCategories = useCallback((categoryIds: string[]) => {
     setSortOrder(prev => {

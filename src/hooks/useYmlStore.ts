@@ -1,6 +1,14 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
+const STORE_CACHE_KEY = 'pressovac-store-cache-v2';
+
+interface CachedStoreData {
+  categories: YmlCategory[];
+  products: YmlProduct[];
+  fetchedAt: string;
+}
+
 export interface YmlProduct {
   id: string;
   name: string;
@@ -30,11 +38,53 @@ interface YmlStoreState {
 }
 
 // Cache for data
-let cachedData: { 
-  categories: YmlCategory[]; 
-  products: YmlProduct[]; 
-  fetchedAt: string 
-} | null = null;
+let cachedData: CachedStoreData | null = null;
+const productDescriptionCache = new Map<string, string | undefined>();
+
+function readPersistentCache(): CachedStoreData | null {
+  if (typeof window === 'undefined') return null;
+
+  try {
+    const raw = window.localStorage.getItem(STORE_CACHE_KEY);
+    if (!raw) return null;
+
+    const parsed = JSON.parse(raw) as CachedStoreData;
+    if (!Array.isArray(parsed.categories) || !Array.isArray(parsed.products) || !parsed.fetchedAt) {
+      return null;
+    }
+
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function writePersistentCache(data: CachedStoreData) {
+  if (typeof window === 'undefined') return;
+
+  try {
+    window.localStorage.setItem(STORE_CACHE_KEY, JSON.stringify(data));
+  } catch {
+    // ignore storage quota / private mode errors
+  }
+}
+
+async function withRetry<T>(operation: () => Promise<T>, attempts = 3): Promise<T> {
+  let lastError: unknown;
+
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      return await operation();
+    } catch (error) {
+      lastError = error;
+      if (attempt < attempts) {
+        await new Promise((resolve) => window.setTimeout(resolve, attempt * 400));
+      }
+    }
+  }
+
+  throw lastError;
+}
 
 // Function to clear cache (exported for manual refresh)
 export function clearYmlStoreCache() {
@@ -51,12 +101,18 @@ function formatPrice(price: number): string {
 }
 
 export function useYmlStore() {
+  const initialCache = cachedData || readPersistentCache();
+
+  if (!cachedData && initialCache) {
+    cachedData = initialCache;
+  }
+
   const [state, setState] = useState<YmlStoreState>({
-    categories: cachedData?.categories || [],
-    products: cachedData?.products || [],
-    isLoading: !cachedData,
+    categories: initialCache?.categories || [],
+    products: initialCache?.products || [],
+    isLoading: !initialCache,
     error: null,
-    fetchedAt: cachedData?.fetchedAt || null
+    fetchedAt: initialCache?.fetchedAt || null
   });
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
@@ -69,11 +125,14 @@ export function useYmlStore() {
       setState(prev => ({ ...prev, isLoading: true }));
       
       try {
-        // Fetch directly from database tables
-        const [categoriesRes, productsRes] = await Promise.all([
+        const [categoriesRes, productsRes] = await withRetry(() => Promise.all([
           supabase.from('product_categories').select('*').order('id'),
-          supabase.from('products').select('*').eq('available', true).order('id')
-        ]);
+          supabase
+            .from('products')
+            .select('id, name, price, category_id, picture, vendor_code')
+            .eq('available', true)
+            .order('id')
+        ]));
 
         if (categoriesRes.error) throw categoriesRes.error;
         if (productsRes.error) throw productsRes.error;
@@ -89,7 +148,7 @@ export function useYmlStore() {
         const products: YmlProduct[] = (productsRes.data || []).map((p, idx) => ({
           id: p.id,
           name: p.name,
-          description: p.description || undefined,
+          description: productDescriptionCache.get(p.id),
           price: formatPrice(Number(p.price)),
           priceNum: Number(p.price),
           url: `/store?search=${encodeURIComponent(p.name)}`, // Internal store URL
@@ -105,6 +164,8 @@ export function useYmlStore() {
           fetchedAt: new Date().toISOString()
         };
 
+        writePersistentCache(cachedData);
+
         setState({
           categories,
           products,
@@ -114,6 +175,19 @@ export function useYmlStore() {
         });
       } catch (err) {
         console.error('Error fetching store data:', err);
+        const fallbackCache = cachedData || readPersistentCache();
+
+        if (fallbackCache) {
+          setState({
+            categories: fallbackCache.categories,
+            products: fallbackCache.products,
+            isLoading: false,
+            error: null,
+            fetchedAt: fallbackCache.fetchedAt
+          });
+          return;
+        }
+
         setState(prev => ({
           ...prev,
           isLoading: false,
@@ -129,6 +203,47 @@ export function useYmlStore() {
   const refetch = () => {
     cachedData = null;
     setRefreshTrigger(prev => prev + 1);
+  };
+
+  const loadProductDetails = async (product: YmlProduct): Promise<YmlProduct> => {
+    if (product.description !== undefined) return product;
+
+    try {
+      const { data, error } = await withRetry(() =>
+        supabase
+          .from('products')
+          .select('description')
+          .eq('id', product.id)
+          .maybeSingle()
+      );
+
+      if (error) throw error;
+
+      const description = data?.description || undefined;
+      productDescriptionCache.set(product.id, description);
+
+      const nextProduct = {
+        ...product,
+        description,
+      };
+
+      setState(prev => ({
+        ...prev,
+        products: prev.products.map((item) => item.id === product.id ? nextProduct : item),
+      }));
+
+      if (cachedData) {
+        cachedData = {
+          ...cachedData,
+          products: cachedData.products.map((item) => item.id === product.id ? nextProduct : item),
+        };
+        writePersistentCache(cachedData);
+      }
+
+      return nextProduct;
+    } catch {
+      return product;
+    }
   };
 
   // Get root categories (no parentId)
@@ -413,6 +528,7 @@ export function useYmlStore() {
   return {
     ...state,
     refetch,
+    loadProductDetails,
     getRootCategories,
     getSubcategories,
     getProductsByCategory,

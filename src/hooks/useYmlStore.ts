@@ -191,8 +191,8 @@ export function useYmlStore() {
         writePersistentCache(cachedData);
 
         setState({
-          categories,
-          products,
+          categories: cachedData.categories,
+          products: cachedData.products,
           isLoading: false,
           error: null,
           fetchedAt: cachedData.fetchedAt

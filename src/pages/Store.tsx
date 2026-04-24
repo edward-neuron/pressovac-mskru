@@ -258,7 +258,8 @@ const Store = () => {
     searchProducts,
     categories,
     products: allProducts,
-    refetch
+    refetch,
+    loadProductDetails
   } = useYmlStore();
   
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -298,8 +299,10 @@ const Store = () => {
     if (urlProduct && allProducts.length > 0) {
       const product = allProducts.find(p => p.id === urlProduct);
       if (product) {
-        setSelectedProduct(product);
-        setProductDrawerOpen(true);
+        loadProductDetails(product).then((fullProduct) => {
+          setSelectedProduct(fullProduct);
+          setProductDrawerOpen(true);
+        });
         // Also set category path if not already set
         if (!urlCategory && !urlSearch && product.categoryId) {
           const path = buildCategoryPath(product.categoryId);
@@ -454,8 +457,10 @@ const Store = () => {
 
   const handleProductClick = (product: YmlProduct) => {
     if (isEditMode) return;
-    setSelectedProduct(product);
-    setProductDrawerOpen(true);
+    loadProductDetails(product).then((fullProduct) => {
+      setSelectedProduct(fullProduct);
+      setProductDrawerOpen(true);
+    });
   };
 
   const handleDragEndCategories = (event: DragEndEvent, categoryList: YmlCategory[]) => {
@@ -588,8 +593,12 @@ const Store = () => {
               <span className="ml-3 text-muted-foreground">Загрузка каталога...</span>
             </div>
           ) : error ? (
-            <div className="text-center py-20 text-destructive">
-              <p>Ошибка загрузки: {error}</p>
+            <div className="text-center py-20 space-y-4">
+              <p className="text-destructive">Ошибка загрузки: {error}</p>
+              <Button variant="outline" onClick={handleRefreshCatalog} disabled={isRefreshing}>
+                <RefreshCw className={`w-4 h-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+                Повторить загрузку
+              </Button>
             </div>
           ) : (
             <AnimatePresence mode="wait">

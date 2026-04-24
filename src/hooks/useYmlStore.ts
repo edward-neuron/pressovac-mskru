@@ -209,13 +209,13 @@ export function useYmlStore() {
     if (product.description !== undefined) return product;
 
     try {
-      const { data, error } = await withRetry(() =>
-        supabase
+      const { data, error } = await withRetry(async () => {
+        return await supabase
           .from('products')
           .select('description')
           .eq('id', product.id)
-          .maybeSingle()
-      );
+          .maybeSingle();
+      });
 
       if (error) throw error;
 

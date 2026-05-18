@@ -10,6 +10,7 @@ import TurnstileWidget from '@/components/TurnstileWidget';
 export const CTASection = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [isTurnstileActivated, setIsTurnstileActivated] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -19,7 +20,16 @@ export const CTASection = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+    if (!isTurnstileActivated) {
+      setIsTurnstileActivated(true);
+    }
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const activateTurnstile = () => {
+    if (!isTurnstileActivated) {
+      setIsTurnstileActivated(true);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -63,9 +73,10 @@ export const CTASection = () => {
     }
 
     if (!turnstileToken) {
+      activateTurnstile();
       toast({
         title: 'Ошибка',
-        description: 'Пожалуйста, подтвердите, что вы не робот',
+        description: 'Подтвердите проверку безопасности и отправьте форму ещё раз',
         variant: 'destructive',
       });
       return;
@@ -106,6 +117,7 @@ export const CTASection = () => {
 
       setFormData({ name: '', phone: '', email: '', message: '' });
       setTurnstileToken(null);
+      setIsTurnstileActivated(false);
     } catch (error) {
       console.error('Error submitting form:', error);
       toast({
@@ -181,6 +193,7 @@ export const CTASection = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
+                  onFocus={activateTurnstile}
                   placeholder="Ваше имя *"
                   className="w-full px-4 py-3 rounded-lg bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 focus:outline-none focus:border-primary-foreground/50"
                   required
@@ -192,6 +205,7 @@ export const CTASection = () => {
                   name="phone"
                   value={formData.phone}
                   onChange={handleInputChange}
+                  onFocus={activateTurnstile}
                   placeholder="+7 (999) 123-45-67 *"
                   className="w-full px-4 py-3 rounded-lg bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 focus:outline-none focus:border-primary-foreground/50"
                   required
@@ -203,6 +217,7 @@ export const CTASection = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
+                  onFocus={activateTurnstile}
                   placeholder="Email *"
                   className="w-full px-4 py-3 rounded-lg bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 focus:outline-none focus:border-primary-foreground/50"
                   required
@@ -213,6 +228,7 @@ export const CTASection = () => {
                   name="message"
                   value={formData.message}
                   onChange={handleInputChange}
+                  onFocus={activateTurnstile}
                   placeholder="Сообщение (минимум 80 символов) *"
                   rows={3}
                   className="w-full px-4 py-3 rounded-lg bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 focus:outline-none focus:border-primary-foreground/50 resize-none"
@@ -224,8 +240,18 @@ export const CTASection = () => {
                 </p>
               </div>
               
-              <div className="flex justify-center">
-                <TurnstileWidget onVerify={setTurnstileToken} />
+              <div className="flex min-h-[65px] justify-center">
+                {isTurnstileActivated ? (
+                  <TurnstileWidget onVerify={setTurnstileToken} />
+                ) : (
+                  <button
+                    type="button"
+                    onClick={activateTurnstile}
+                    className="text-sm text-primary-foreground/80 underline underline-offset-4 hover:text-primary-foreground"
+                  >
+                    Открыть проверку безопасности
+                  </button>
+                )}
               </div>
 
               <Button 

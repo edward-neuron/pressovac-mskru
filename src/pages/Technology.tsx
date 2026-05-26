@@ -182,6 +182,8 @@ const Technology = () => {
             loop
             muted
             playsInline
+            preload="metadata"
+            poster="/videos/technology-promo-poster.jpg"
             className="w-full h-auto block"
           >
             <source src="/videos/technology-promo.mp4" type="video/mp4" />

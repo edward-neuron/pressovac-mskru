@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import CallbackFormModal from '@/components/CallbackFormModal';
 import TurnstileWidget from '@/components/TurnstileWidget';
+import { showTechWorksAlert } from '@/components/TechWorksAlert';
 import {
   Tooltip,
   TooltipContent,

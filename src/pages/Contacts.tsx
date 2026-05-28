@@ -249,7 +249,7 @@ const Contacts = () => {
       setFormType(null);
     } catch (err: any) {
       console.error('Simple inquiry submit error:', err);
-      toast.error('Ошибка при отправке. Попробуйте позже.');
+      showTechWorksAlert();
     } finally {
       setSimpleSubmitting(false);
     }
@@ -373,7 +373,7 @@ const Contacts = () => {
       setFormType(null);
     } catch (err: any) {
       console.error('Extended inquiry submit error:', err);
-      toast.error('Ошибка при отправке. Попробуйте позже.');
+      showTechWorksAlert();
     } finally {
       setExtendedSubmitting(false);
     }

@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import CallbackFormModal from '@/components/CallbackFormModal';
 import TurnstileWidget from '@/components/TurnstileWidget';
+import { showTechWorksAlert } from '@/components/TechWorksAlert';
 import {
   Tooltip,
   TooltipContent,
@@ -249,7 +250,7 @@ const Contacts = () => {
       setFormType(null);
     } catch (err: any) {
       console.error('Simple inquiry submit error:', err);
-      toast.error('Ошибка при отправке. Попробуйте позже.');
+      showTechWorksAlert();
     } finally {
       setSimpleSubmitting(false);
     }
@@ -373,7 +374,7 @@ const Contacts = () => {
       setFormType(null);
     } catch (err: any) {
       console.error('Extended inquiry submit error:', err);
-      toast.error('Ошибка при отправке. Попробуйте позже.');
+      showTechWorksAlert();
     } finally {
       setExtendedSubmitting(false);
     }

@@ -23,6 +23,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Link } from 'react-router-dom';
 import TurnstileWidget from '@/components/TurnstileWidget';
+import { showTechWorksAlert } from '@/components/TechWorksAlert';
 
 interface CallbackFormModalProps {
   children: React.ReactNode;
@@ -268,11 +269,7 @@ const CallbackFormModal = ({ children }: CallbackFormModalProps) => {
       setOpen(false);
     } catch (error) {
       console.error('Error sending callback request:', error);
-      toast({
-        title: 'Ошибка отправки',
-        description: 'Попробуйте позже или позвоните нам напрямую.',
-        variant: 'destructive',
-      });
+      showTechWorksAlert();
     } finally {
       setIsSubmitting(false);
     }

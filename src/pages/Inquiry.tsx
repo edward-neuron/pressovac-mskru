@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import TurnstileWidget from '@/components/TurnstileWidget';
+import { showTechWorksAlert } from '@/components/TechWorksAlert';
 
 interface FormData {
   company: string;
@@ -190,7 +191,7 @@ const Inquiry = () => {
       }
     } catch (error: any) {
       console.error('Error submitting inquiry:', error);
-      toast.error('Ошибка при отправке заявки. Попробуйте позже.');
+      showTechWorksAlert();
     } finally {
       setIsSubmitting(false);
     }

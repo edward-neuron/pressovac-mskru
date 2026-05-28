@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { LegacyRedirects } from "@/components/LegacyRedirects";
 import { CartProvider } from "@/contexts/CartContext";
+import { TechWorksAlert } from "@/components/TechWorksAlert";
 import Index from "./pages/Index";
 import About from "./pages/About";
 import Catalog from "./pages/Catalog";
@@ -30,6 +31,7 @@ const App = () => (
       <CartProvider>
         <Toaster />
         <Sonner />
+        <TechWorksAlert />
         <BrowserRouter>
           <ScrollToTop />
           <LegacyRedirects />

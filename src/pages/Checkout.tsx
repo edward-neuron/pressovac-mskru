@@ -249,7 +249,8 @@ const Checkout = () => {
       
     } catch (error: any) {
       console.error('Error submitting order:', error);
-      toast.error('Ошибка при отправке заказа. Попробуйте позже.');
+      const { showTechWorksAlert } = await import('@/components/TechWorksAlert');
+      showTechWorksAlert();
     } finally {
       setIsSubmitting(false);
     }

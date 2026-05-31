@@ -259,7 +259,7 @@ const handler = async (req: Request): Promise<Response> => {
           
           <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
           <p style="color: #666; font-size: 12px;">
-            Заказ оформлен на сайте pressovac-moscow.ru (проверка Turnstile пройдена ✓)
+            Заказ оформлен на сайте pressovac-moscow.ru
           </p>
         </div>
       `;
@@ -300,7 +300,7 @@ const handler = async (req: Request): Promise<Response> => {
         
         <hr>
         <p style="color: #666; font-size: 12px;">
-          Заявка отправлена с сайта pressovac-moscow.ru (проверка Turnstile пройдена ✓)
+          Заявка отправлена с сайта pressovac-moscow.ru
         </p>
       `;
     }

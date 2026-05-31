@@ -609,14 +609,9 @@ const Contacts = () => {
                     </label>
                   </div>
 
-                  {/* Turnstile Widget */}
-                  <TurnstileWidget
-                    onVerify={handleSimpleTurnstileVerify}
-                    onError={handleSimpleTurnstileError}
-                    onExpire={handleSimpleTurnstileExpire}
-                  />
+                  <Honeypot value={simpleHoneypot} onChange={setSimpleHoneypot} />
 
-                  <Button type="submit" size="lg" className="w-full" disabled={simpleSubmitting || !simpleForm.privacyAccepted || !simpleTurnstileToken}>
+                  <Button type="submit" size="lg" className="w-full" disabled={simpleSubmitting || !simpleForm.privacyAccepted}>
                     {simpleSubmitting ? (
                       <>
                         <Loader2 className="w-5 h-5 animate-spin" />
@@ -899,14 +894,9 @@ const Contacts = () => {
                      </label>
                    </div>
 
-                   {/* Turnstile Widget */}
-                   <TurnstileWidget
-                     onVerify={handleExtendedTurnstileVerify}
-                     onError={handleExtendedTurnstileError}
-                     onExpire={handleExtendedTurnstileExpire}
-                   />
+                   <Honeypot value={extendedHoneypot} onChange={setExtendedHoneypot} />
 
-                   <Button type="submit" size="lg" className="w-full" disabled={extendedSubmitting || !extendedForm.privacyAccepted || !extendedTurnstileToken}>
+                   <Button type="submit" size="lg" className="w-full" disabled={extendedSubmitting || !extendedForm.privacyAccepted}>
                      {extendedSubmitting ? (
                        <>
                          <Loader2 className="w-5 h-5 animate-spin" />

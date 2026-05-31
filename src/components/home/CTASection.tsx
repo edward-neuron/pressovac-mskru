@@ -5,12 +5,12 @@ import { ArrowRight, FileText, Phone, Send, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import TurnstileWidget from '@/components/TurnstileWidget';
+import Honeypot, { isBotSubmission } from '@/components/Honeypot';
 
 export const CTASection = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
-  const [isTurnstileActivated, setIsTurnstileActivated] = useState(false);
+  const [honeypot, setHoneypot] = useState('');
+  const [formOpenedAt] = useState(() => Date.now());
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -20,20 +20,17 @@ export const CTASection = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    if (!isTurnstileActivated) {
-      setIsTurnstileActivated(true);
-    }
     setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const activateTurnstile = () => {
-    if (!isTurnstileActivated) {
-      setIsTurnstileActivated(true);
-    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Honeypot / time-trap anti-bot check
+    if (isBotSubmission(honeypot, formOpenedAt)) {
+      toast({ title: 'Спасибо, заявка отправлена!' });
+      return;
+    }
 
     // Validation
     if (!formData.name.trim()) {
@@ -72,16 +69,6 @@ export const CTASection = () => {
       return;
     }
 
-    if (!turnstileToken) {
-      activateTurnstile();
-      toast({
-        title: 'Ошибка',
-        description: 'Подтвердите проверку безопасности и отправьте форму ещё раз',
-        variant: 'destructive',
-      });
-      return;
-    }
-
     setIsSubmitting(true);
 
     try {
@@ -92,7 +79,6 @@ export const CTASection = () => {
           phone: formData.phone.trim(),
           email: formData.email.trim(),
           message: formData.message.trim(),
-          turnstileToken,
         },
       });
 
@@ -116,8 +102,7 @@ export const CTASection = () => {
       }
 
       setFormData({ name: '', phone: '', email: '', message: '' });
-      setTurnstileToken(null);
-      setIsTurnstileActivated(false);
+      setHoneypot('');
     } catch (error) {
       console.error('Error submitting form:', error);
       toast({

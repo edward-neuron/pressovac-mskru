@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback } from 'react';
+import { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
 import { SEOHead } from '@/components/seo/SEOHead';
@@ -9,7 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import CallbackFormModal from '@/components/CallbackFormModal';
-import TurnstileWidget from '@/components/TurnstileWidget';
+import Honeypot, { isBotSubmission } from '@/components/Honeypot';
 import { showTechWorksAlert } from '@/components/TechWorksAlert';
 import {
   Tooltip,
@@ -53,7 +53,8 @@ const Contacts = () => {
   const [simpleSubmitting, setSimpleSubmitting] = useState(false);
   const [simpleAttachment, setSimpleAttachment] = useState<File | null>(null);
   const simpleFileInputRef = useRef<HTMLInputElement>(null);
-  const [simpleTurnstileToken, setSimpleTurnstileToken] = useState<string | null>(null);
+  const [simpleHoneypot, setSimpleHoneypot] = useState('');
+  const [simpleFormOpenedAt, setSimpleFormOpenedAt] = useState(() => Date.now());
   const [simpleForm, setSimpleForm] = useState({
     name: '',
     phone: '',
@@ -62,23 +63,11 @@ const Contacts = () => {
     privacyAccepted: false,
   });
 
-  const handleSimpleTurnstileVerify = useCallback((token: string) => {
-    setSimpleTurnstileToken(token);
-  }, []);
-
-  const handleSimpleTurnstileError = useCallback(() => {
-    setSimpleTurnstileToken(null);
-    toast.error('Ошибка проверки безопасности. Обновите страницу.');
-  }, []);
-
-  const handleSimpleTurnstileExpire = useCallback(() => {
-    setSimpleTurnstileToken(null);
-  }, []);
-
   const [extendedSubmitting, setExtendedSubmitting] = useState(false);
   const [extendedAttachment, setExtendedAttachment] = useState<File | null>(null);
   const extendedFileInputRef = useRef<HTMLInputElement>(null);
-  const [extendedTurnstileToken, setExtendedTurnstileToken] = useState<string | null>(null);
+  const [extendedHoneypot, setExtendedHoneypot] = useState('');
+  const [extendedFormOpenedAt, setExtendedFormOpenedAt] = useState(() => Date.now());
   const [extendedForm, setExtendedForm] = useState({
     company: '',
     contactPerson: '',
@@ -93,19 +82,6 @@ const Contacts = () => {
     needsTraining: false,
     privacyAccepted: false,
   });
-
-  const handleExtendedTurnstileVerify = useCallback((token: string) => {
-    setExtendedTurnstileToken(token);
-  }, []);
-
-  const handleExtendedTurnstileError = useCallback(() => {
-    setExtendedTurnstileToken(null);
-    toast.error('Ошибка проверки безопасности. Обновите страницу.');
-  }, []);
-
-  const handleExtendedTurnstileExpire = useCallback(() => {
-    setExtendedTurnstileToken(null);
-  }, []);
 
   // Allowed file extensions (safe files only)
   const ALLOWED_EXTENSIONS = ['pdf', 'doc', 'docx', 'png', 'jpg', 'jpeg'];
@@ -165,6 +141,11 @@ const Contacts = () => {
   const handleSimpleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (isBotSubmission(simpleHoneypot, simpleFormOpenedAt)) {
+      toast.success('Сообщение отправлено!');
+      return;
+    }
+
     if (!simpleForm.name || !simpleForm.phone || !simpleForm.email || !simpleForm.message) {
       toast.error('Заполните обязательные поля');
       return;
@@ -178,11 +159,6 @@ const Contacts = () => {
 
     if (!simpleForm.privacyAccepted) {
       toast.error('Необходимо согласие с политикой обработки персональных данных');
-      return;
-    }
-
-    if (!simpleTurnstileToken) {
-      toast.error('Пожалуйста, подтвердите, что вы не робот');
       return;
     }
 
@@ -231,7 +207,6 @@ const Contacts = () => {
           subject: 'Быстрая заявка с страницы Контакты',
           attachmentPath,
           attachmentFileName,
-          turnstileToken: simpleTurnstileToken,
         },
       });
 
@@ -245,7 +220,8 @@ const Contacts = () => {
       toast.success('Сообщение отправлено!');
       setSimpleForm({ name: '', phone: '', email: '', message: '', privacyAccepted: false });
       setSimpleAttachment(null);
-      setSimpleTurnstileToken(null);
+      setSimpleHoneypot('');
+      setSimpleFormOpenedAt(Date.now());
       if (simpleFileInputRef.current) simpleFileInputRef.current.value = '';
       setFormType(null);
     } catch (err: any) {
@@ -276,6 +252,11 @@ const Contacts = () => {
   const handleExtendedSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (isBotSubmission(extendedHoneypot, extendedFormOpenedAt)) {
+      toast.success('Заявка успешно отправлена!');
+      return;
+    }
+
     if (!extendedForm.company || !extendedForm.contactPerson || !extendedForm.phone || !extendedForm.email) {
       toast.error('Заполните обязательные поля');
       return;
@@ -298,11 +279,6 @@ const Contacts = () => {
 
     if (!extendedForm.privacyAccepted) {
       toast.error('Необходимо согласие с политикой обработки персональных данных');
-      return;
-    }
-
-    if (!extendedTurnstileToken) {
-      toast.error('Пожалуйста, подтвердите, что вы не робот');
       return;
     }
 
@@ -343,7 +319,7 @@ const Contacts = () => {
       }
 
       const { error } = await supabase.functions.invoke('send-inquiry', {
-        body: { ...extendedForm, attachmentPath, attachmentFileName, turnstileToken: extendedTurnstileToken },
+        body: { ...extendedForm, attachmentPath, attachmentFileName },
       });
 
       if (error) throw error;
@@ -369,7 +345,8 @@ const Contacts = () => {
         privacyAccepted: false,
       });
       setExtendedAttachment(null);
-      setExtendedTurnstileToken(null);
+      setExtendedHoneypot('');
+      setExtendedFormOpenedAt(Date.now());
       if (extendedFileInputRef.current) extendedFileInputRef.current.value = '';
       setFormType(null);
     } catch (err: any) {
@@ -632,14 +609,9 @@ const Contacts = () => {
                     </label>
                   </div>
 
-                  {/* Turnstile Widget */}
-                  <TurnstileWidget
-                    onVerify={handleSimpleTurnstileVerify}
-                    onError={handleSimpleTurnstileError}
-                    onExpire={handleSimpleTurnstileExpire}
-                  />
+                  <Honeypot value={simpleHoneypot} onChange={setSimpleHoneypot} />
 
-                  <Button type="submit" size="lg" className="w-full" disabled={simpleSubmitting || !simpleForm.privacyAccepted || !simpleTurnstileToken}>
+                  <Button type="submit" size="lg" className="w-full" disabled={simpleSubmitting || !simpleForm.privacyAccepted}>
                     {simpleSubmitting ? (
                       <>
                         <Loader2 className="w-5 h-5 animate-spin" />
@@ -922,14 +894,9 @@ const Contacts = () => {
                      </label>
                    </div>
 
-                   {/* Turnstile Widget */}
-                   <TurnstileWidget
-                     onVerify={handleExtendedTurnstileVerify}
-                     onError={handleExtendedTurnstileError}
-                     onExpire={handleExtendedTurnstileExpire}
-                   />
+                   <Honeypot value={extendedHoneypot} onChange={setExtendedHoneypot} />
 
-                   <Button type="submit" size="lg" className="w-full" disabled={extendedSubmitting || !extendedForm.privacyAccepted || !extendedTurnstileToken}>
+                   <Button type="submit" size="lg" className="w-full" disabled={extendedSubmitting || !extendedForm.privacyAccepted}>
                      {extendedSubmitting ? (
                        <>
                          <Loader2 className="w-5 h-5 animate-spin" />

@@ -5,12 +5,12 @@ import { ArrowRight, FileText, Phone, Send, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import TurnstileWidget from '@/components/TurnstileWidget';
+import Honeypot, { isBotSubmission } from '@/components/Honeypot';
 
 export const CTASection = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
-  const [isTurnstileActivated, setIsTurnstileActivated] = useState(false);
+  const [honeypot, setHoneypot] = useState('');
+  const [formOpenedAt] = useState(() => Date.now());
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -20,20 +20,17 @@ export const CTASection = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    if (!isTurnstileActivated) {
-      setIsTurnstileActivated(true);
-    }
     setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const activateTurnstile = () => {
-    if (!isTurnstileActivated) {
-      setIsTurnstileActivated(true);
-    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Honeypot / time-trap anti-bot check
+    if (isBotSubmission(honeypot, formOpenedAt)) {
+      toast({ title: 'Спасибо, заявка отправлена!' });
+      return;
+    }
 
     // Validation
     if (!formData.name.trim()) {
@@ -72,16 +69,6 @@ export const CTASection = () => {
       return;
     }
 
-    if (!turnstileToken) {
-      activateTurnstile();
-      toast({
-        title: 'Ошибка',
-        description: 'Подтвердите проверку безопасности и отправьте форму ещё раз',
-        variant: 'destructive',
-      });
-      return;
-    }
-
     setIsSubmitting(true);
 
     try {
@@ -92,7 +79,6 @@ export const CTASection = () => {
           phone: formData.phone.trim(),
           email: formData.email.trim(),
           message: formData.message.trim(),
-          turnstileToken,
         },
       });
 
@@ -116,8 +102,7 @@ export const CTASection = () => {
       }
 
       setFormData({ name: '', phone: '', email: '', message: '' });
-      setTurnstileToken(null);
-      setIsTurnstileActivated(false);
+      setHoneypot('');
     } catch (error) {
       console.error('Error submitting form:', error);
       toast({
@@ -193,7 +178,6 @@ export const CTASection = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  onFocus={activateTurnstile}
                   placeholder="Ваше имя *"
                   className="w-full px-4 py-3 rounded-lg bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 focus:outline-none focus:border-primary-foreground/50"
                   required
@@ -205,7 +189,6 @@ export const CTASection = () => {
                   name="phone"
                   value={formData.phone}
                   onChange={handleInputChange}
-                  onFocus={activateTurnstile}
                   placeholder="+7 (999) 123-45-67 *"
                   className="w-full px-4 py-3 rounded-lg bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 focus:outline-none focus:border-primary-foreground/50"
                   required
@@ -217,7 +200,6 @@ export const CTASection = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  onFocus={activateTurnstile}
                   placeholder="Email *"
                   className="w-full px-4 py-3 rounded-lg bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 focus:outline-none focus:border-primary-foreground/50"
                   required
@@ -228,7 +210,6 @@ export const CTASection = () => {
                   name="message"
                   value={formData.message}
                   onChange={handleInputChange}
-                  onFocus={activateTurnstile}
                   placeholder="Сообщение (минимум 80 символов) *"
                   rows={3}
                   className="w-full px-4 py-3 rounded-lg bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 focus:outline-none focus:border-primary-foreground/50 resize-none"
@@ -240,19 +221,7 @@ export const CTASection = () => {
                 </p>
               </div>
               
-              <div className="flex min-h-[65px] justify-center">
-                {isTurnstileActivated ? (
-                  <TurnstileWidget onVerify={setTurnstileToken} />
-                ) : (
-                  <button
-                    type="button"
-                    onClick={activateTurnstile}
-                    className="text-sm text-primary-foreground/80 underline underline-offset-4 hover:text-primary-foreground"
-                  >
-                    Открыть проверку безопасности
-                  </button>
-                )}
-              </div>
+              <Honeypot value={honeypot} onChange={setHoneypot} />
 
               <Button 
                 type="submit" 

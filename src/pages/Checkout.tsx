@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
 import { SEOHead } from '@/components/seo/SEOHead';
@@ -14,7 +14,7 @@ import { ArrowLeft, ShoppingBag, Check, Loader2, Minus, Plus, Trash2, Upload, X,
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
-import TurnstileWidget from '@/components/TurnstileWidget';
+import Honeypot, { isBotSubmission } from '@/components/Honeypot';
 import { getPreviewImageUrl } from '@/lib/imageOptimization';
 
 const ALLOWED_EXTENSIONS = ['pdf', 'doc', 'docx', 'png', 'jpg', 'jpeg'];
@@ -30,7 +30,8 @@ const Checkout = () => {
   const [orderNumber, setOrderNumber] = useState('');
   const [attachment, setAttachment] = useState<File | null>(null);
   const [validationErrors, setValidationErrors] = useState<Record<string, boolean>>({});
-  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [honeypot, setHoneypot] = useState('');
+  const [formOpenedAt] = useState(() => Date.now());
   
   const [formData, setFormData] = useState({
     name: '',
@@ -43,19 +44,6 @@ const Checkout = () => {
     comment: '',
     callbackRequested: false,
   });
-
-  const handleTurnstileVerify = useCallback((token: string) => {
-    setTurnstileToken(token);
-  }, []);
-
-  const handleTurnstileError = useCallback(() => {
-    setTurnstileToken(null);
-    // Don't show toast - handled silently or in preview mode
-  }, []);
-
-  const handleTurnstileExpire = useCallback(() => {
-    setTurnstileToken(null);
-  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -161,18 +149,19 @@ const Checkout = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
+    // Honeypot / time-trap anti-bot check
+    if (isBotSubmission(honeypot, formOpenedAt)) {
+      toast.success('Спасибо, заказ отправлен!');
+      return;
+    }
+
     if (items.length === 0) {
       toast.error('Корзина пуста. Добавьте товары перед оформлением заказа');
       return;
     }
 
     if (!validateForm()) {
-      return;
-    }
-
-    if (!turnstileToken) {
-      toast.error('Пожалуйста, подтвердите, что вы не робот');
       return;
     }
 
@@ -231,7 +220,6 @@ const Checkout = () => {
           totalPrice,
           attachmentPath,
           attachmentFileName,
-          turnstileToken,
           subject: `Заказ №${generatedOrderNumber} из интернет-магазина`,
         },
       });
@@ -587,14 +575,7 @@ const Checkout = () => {
                   </div>
                 </div>
 
-                {/* Turnstile */}
-                <div className="pt-4 border-t">
-                  <TurnstileWidget
-                    onVerify={handleTurnstileVerify}
-                    onError={handleTurnstileError}
-                    onExpire={handleTurnstileExpire}
-                  />
-                </div>
+                <Honeypot value={honeypot} onChange={setHoneypot} />
 
                 {/* Submit */}
                 <div className="pt-4 border-t">
@@ -608,7 +589,7 @@ const Checkout = () => {
                     type="submit" 
                     size="lg" 
                     className="w-full"
-                    disabled={isSubmitting || !turnstileToken}
+                    disabled={isSubmitting}
                   >
                     {isSubmitting ? (
                       <>

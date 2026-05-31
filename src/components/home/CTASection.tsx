@@ -178,7 +178,6 @@ export const CTASection = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  onFocus={activateTurnstile}
                   placeholder="Ваше имя *"
                   className="w-full px-4 py-3 rounded-lg bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 focus:outline-none focus:border-primary-foreground/50"
                   required
@@ -190,7 +189,6 @@ export const CTASection = () => {
                   name="phone"
                   value={formData.phone}
                   onChange={handleInputChange}
-                  onFocus={activateTurnstile}
                   placeholder="+7 (999) 123-45-67 *"
                   className="w-full px-4 py-3 rounded-lg bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 focus:outline-none focus:border-primary-foreground/50"
                   required
@@ -202,7 +200,6 @@ export const CTASection = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  onFocus={activateTurnstile}
                   placeholder="Email *"
                   className="w-full px-4 py-3 rounded-lg bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 focus:outline-none focus:border-primary-foreground/50"
                   required
@@ -213,7 +210,6 @@ export const CTASection = () => {
                   name="message"
                   value={formData.message}
                   onChange={handleInputChange}
-                  onFocus={activateTurnstile}
                   placeholder="Сообщение (минимум 80 символов) *"
                   rows={3}
                   className="w-full px-4 py-3 rounded-lg bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 focus:outline-none focus:border-primary-foreground/50 resize-none"
@@ -225,19 +221,7 @@ export const CTASection = () => {
                 </p>
               </div>
               
-              <div className="flex min-h-[65px] justify-center">
-                {isTurnstileActivated ? (
-                  <TurnstileWidget onVerify={setTurnstileToken} />
-                ) : (
-                  <button
-                    type="button"
-                    onClick={activateTurnstile}
-                    className="text-sm text-primary-foreground/80 underline underline-offset-4 hover:text-primary-foreground"
-                  >
-                    Открыть проверку безопасности
-                  </button>
-                )}
-              </div>
+              <Honeypot value={honeypot} onChange={setHoneypot} />
 
               <Button 
                 type="submit" 

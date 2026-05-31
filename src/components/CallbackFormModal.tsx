@@ -22,7 +22,7 @@ import { Paperclip, PhoneCall, Send, Loader2, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Link } from 'react-router-dom';
-import TurnstileWidget from '@/components/TurnstileWidget';
+import Honeypot, { isBotSubmission } from '@/components/Honeypot';
 import { showTechWorksAlert } from '@/components/TechWorksAlert';
 
 interface CallbackFormModalProps {
@@ -47,7 +47,8 @@ const CallbackFormModal = ({ children }: CallbackFormModalProps) => {
 
   const [attachment, setAttachment] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [honeypot, setHoneypot] = useState('');
+  const [formOpenedAt, setFormOpenedAt] = useState(() => Date.now());
 
   const [formData, setFormData] = useState({
     name: '',
@@ -59,23 +60,6 @@ const CallbackFormModal = ({ children }: CallbackFormModalProps) => {
     message: '',
     privacyAccepted: false,
   });
-
-  const handleTurnstileVerify = useCallback((token: string) => {
-    setTurnstileToken(token);
-  }, []);
-
-  const handleTurnstileError = useCallback(() => {
-    setTurnstileToken(null);
-    toast({
-      title: 'Ошибка проверки безопасности',
-      description: 'Обновите страницу и попробуйте снова.',
-      variant: 'destructive',
-    });
-  }, [toast]);
-
-  const handleTurnstileExpire = useCallback(() => {
-    setTurnstileToken(null);
-  }, []);
 
   // Lazy message patterns to block
   const LAZY_MESSAGE_PATTERNS = [
@@ -160,6 +144,12 @@ const CallbackFormModal = ({ children }: CallbackFormModalProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Honeypot / time-trap anti-bot check
+    if (isBotSubmission(honeypot, formOpenedAt)) {
+      toast({ title: 'Спасибо, заявка отправлена!' });
+      return;
+    }
+
     // Validate required fields
     if (!formData.name || !formData.city || !formData.company || !formData.phone || !formData.email) {
       toast({
@@ -182,14 +172,6 @@ const CallbackFormModal = ({ children }: CallbackFormModalProps) => {
     if (!formData.privacyAccepted) {
       toast({
         title: 'Необходимо согласие с политикой обработки персональных данных',
-        variant: 'destructive',
-      });
-      return;
-    }
-
-    if (!turnstileToken) {
-      toast({
-        title: 'Пожалуйста, подтвердите, что вы не робот',
         variant: 'destructive',
       });
       return;
@@ -238,7 +220,6 @@ const CallbackFormModal = ({ children }: CallbackFormModalProps) => {
           message: `Заказ обратного звонка\n\nГород: ${formData.city}\nУдобное время: ${formData.preferredTime || 'Не указано'}\n\nСообщение:\n${formData.message || 'Не указано'}`,
           subject: 'Заказ обратного звонка',
           attachmentPath,
-          turnstileToken,
         },
       });
 
@@ -265,7 +246,8 @@ const CallbackFormModal = ({ children }: CallbackFormModalProps) => {
         privacyAccepted: false,
       });
       removeAttachment();
-      setTurnstileToken(null);
+      setHoneypot('');
+      setFormOpenedAt(Date.now());
       setOpen(false);
     } catch (error) {
       console.error('Error sending callback request:', error);
@@ -440,18 +422,13 @@ const CallbackFormModal = ({ children }: CallbackFormModalProps) => {
             </label>
           </div>
 
-          {/* Turnstile Widget */}
-          <TurnstileWidget
-            onVerify={handleTurnstileVerify}
-            onError={handleTurnstileError}
-            onExpire={handleTurnstileExpire}
-          />
+          <Honeypot value={honeypot} onChange={setHoneypot} />
 
           <Button
             type="submit"
             size="lg"
             className="w-full"
-            disabled={isSubmitting || !formData.privacyAccepted || !turnstileToken}
+            disabled={isSubmitting || !formData.privacyAccepted}
           >
             {isSubmitting ? (
               <>

@@ -141,6 +141,11 @@ const Contacts = () => {
   const handleSimpleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (isBotSubmission(simpleHoneypot, simpleFormOpenedAt)) {
+      toast.success('Сообщение отправлено!');
+      return;
+    }
+
     if (!simpleForm.name || !simpleForm.phone || !simpleForm.email || !simpleForm.message) {
       toast.error('Заполните обязательные поля');
       return;
@@ -154,11 +159,6 @@ const Contacts = () => {
 
     if (!simpleForm.privacyAccepted) {
       toast.error('Необходимо согласие с политикой обработки персональных данных');
-      return;
-    }
-
-    if (!simpleTurnstileToken) {
-      toast.error('Пожалуйста, подтвердите, что вы не робот');
       return;
     }
 
@@ -207,7 +207,6 @@ const Contacts = () => {
           subject: 'Быстрая заявка с страницы Контакты',
           attachmentPath,
           attachmentFileName,
-          turnstileToken: simpleTurnstileToken,
         },
       });
 
@@ -221,7 +220,8 @@ const Contacts = () => {
       toast.success('Сообщение отправлено!');
       setSimpleForm({ name: '', phone: '', email: '', message: '', privacyAccepted: false });
       setSimpleAttachment(null);
-      setSimpleTurnstileToken(null);
+      setSimpleHoneypot('');
+      setSimpleFormOpenedAt(Date.now());
       if (simpleFileInputRef.current) simpleFileInputRef.current.value = '';
       setFormType(null);
     } catch (err: any) {
@@ -252,6 +252,11 @@ const Contacts = () => {
   const handleExtendedSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (isBotSubmission(extendedHoneypot, extendedFormOpenedAt)) {
+      toast.success('Заявка успешно отправлена!');
+      return;
+    }
+
     if (!extendedForm.company || !extendedForm.contactPerson || !extendedForm.phone || !extendedForm.email) {
       toast.error('Заполните обязательные поля');
       return;
@@ -274,11 +279,6 @@ const Contacts = () => {
 
     if (!extendedForm.privacyAccepted) {
       toast.error('Необходимо согласие с политикой обработки персональных данных');
-      return;
-    }
-
-    if (!extendedTurnstileToken) {
-      toast.error('Пожалуйста, подтвердите, что вы не робот');
       return;
     }
 
@@ -319,7 +319,7 @@ const Contacts = () => {
       }
 
       const { error } = await supabase.functions.invoke('send-inquiry', {
-        body: { ...extendedForm, attachmentPath, attachmentFileName, turnstileToken: extendedTurnstileToken },
+        body: { ...extendedForm, attachmentPath, attachmentFileName },
       });
 
       if (error) throw error;
@@ -345,7 +345,8 @@ const Contacts = () => {
         privacyAccepted: false,
       });
       setExtendedAttachment(null);
-      setExtendedTurnstileToken(null);
+      setExtendedHoneypot('');
+      setExtendedFormOpenedAt(Date.now());
       if (extendedFileInputRef.current) extendedFileInputRef.current.value = '';
       setFormType(null);
     } catch (err: any) {

@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.send-inquiry]
 verify_jwt = false
+
+[functions.migrate-yml-to-db]
+verify_jwt = true

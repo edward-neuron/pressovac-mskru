@@ -135,6 +135,46 @@ const handler = async (req: Request): Promise<Response> => {
     let attachmentUrlResolved = (data.attachmentUrl || "").trim();
 
     if (!attachmentUrlResolved && attachmentPath) {
+      // Server-side validation of uploaded file (type + size).
+      // Cannot trust client checks alone.
+      const ALLOWED_MIMETYPES = new Set([
+        "application/pdf",
+        "image/jpeg",
+        "image/png",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      ]);
+      const MAX_BYTES = 10 * 1024 * 1024;
+
+      const lastSlash = attachmentPath.lastIndexOf("/");
+      const dir = lastSlash >= 0 ? attachmentPath.slice(0, lastSlash) : "";
+      const baseName = lastSlash >= 0 ? attachmentPath.slice(lastSlash + 1) : attachmentPath;
+
+      const { data: listed, error: listError } = await supabaseAdmin.storage
+        .from("inquiry-attachments")
+        .list(dir, { search: baseName, limit: 1 });
+
+      if (listError || !listed || listed.length === 0) {
+        console.error("Attachment lookup failed:", listError);
+        return new Response(
+          JSON.stringify({ error: "Файл не найден" }),
+          { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+        );
+      }
+
+      const meta = listed[0].metadata as { size?: number; mimetype?: string } | null;
+      const fileSize = Number(meta?.size ?? 0);
+      const fileMime = String(meta?.mimetype ?? "");
+
+      if (fileSize > MAX_BYTES || !ALLOWED_MIMETYPES.has(fileMime)) {
+        console.error("Attachment rejected:", { fileSize, fileMime });
+        await supabaseAdmin.storage.from("inquiry-attachments").remove([attachmentPath]);
+        return new Response(
+          JSON.stringify({ error: "Недопустимый тип или размер файла (макс. 10 МБ; PDF, JPG, PNG, DOC, DOCX)" }),
+          { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+        );
+      }
+
       const { data: signed, error: signedError } = await supabaseAdmin.storage
         .from("inquiry-attachments")
         .createSignedUrl(attachmentPath, 60 * 60 * 24 * 7);

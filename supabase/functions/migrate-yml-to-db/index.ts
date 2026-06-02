@@ -139,11 +139,15 @@ serve(async (req) => {
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
-    const { data: isAdmin, error: roleErr } = await supabaseAdmin.rpc('has_role', {
-      _user_id: userData.user.id,
-      _role: 'admin',
-    });
-    if (roleErr || !isAdmin) {
+
+    const { data: adminRole, error: roleErr } = await supabaseAdmin
+      .from('user_roles')
+      .select('id')
+      .eq('user_id', userData.user.id)
+      .eq('role', 'admin')
+      .maybeSingle();
+
+    if (roleErr || !adminRole) {
       return new Response(
         JSON.stringify({ error: 'Forbidden: admin role required' }),
         { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

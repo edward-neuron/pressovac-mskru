@@ -9,7 +9,7 @@ import "@fontsource/inter/400.css";
 import "@fontsource/inter/500.css";
 import "./index.css";
 
-// Build marker: force production rebuild to pick up VITE_SUPABASE_URL=api.pressovac-msk.ru (2026-06-04)
+// Build marker: force production rebuild to pick up VITE_SUPABASE_URL=api.pressovac-msk.ru (2026-06-06 rebuild #2)
 
 createRoot(document.getElementById("root")!).render(
   <HelmetProvider>

@@ -182,7 +182,7 @@ const Technology = () => {
             loop
             muted
             playsInline
-            preload="metadata"
+            preload="auto"
             poster="/videos/technology-promo-poster.jpg"
             className="w-full h-auto block"
           >

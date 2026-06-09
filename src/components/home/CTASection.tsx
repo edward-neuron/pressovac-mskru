@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import Honeypot, { isBotSubmission } from '@/components/Honeypot';
+import { showTechWorksAlert } from '@/components/TechWorksAlert';
 
 export const CTASection = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -105,11 +106,7 @@ export const CTASection = () => {
       setHoneypot('');
     } catch (error) {
       console.error('Error submitting form:', error);
-      toast({
-        title: 'Ошибка',
-        description: (error as any)?.message || 'Не удалось отправить заявку. Попробуйте позже.',
-        variant: 'destructive',
-      });
+      showTechWorksAlert();
     } finally {
       setIsSubmitting(false);
     }

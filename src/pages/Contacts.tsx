@@ -6,6 +6,7 @@ import { Phone, Mail, MapPin, Clock, Send, FileText, MessageSquare, CheckCircle,
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { supabase } from '@/integrations/supabase/client';
+import { invokeWithTimeout } from '@/lib/invokeWithTimeout';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import CallbackFormModal from '@/components/CallbackFormModal';
@@ -198,7 +199,7 @@ const Contacts = () => {
         attachmentFileName = simpleAttachment.name;
       }
 
-      const { error } = await supabase.functions.invoke('send-inquiry', {
+      const { error } = await invokeWithTimeout('send-inquiry', {
         body: {
           name: simpleForm.name,
           phone: simpleForm.phone,
@@ -318,7 +319,7 @@ const Contacts = () => {
         attachmentFileName = extendedAttachment.name;
       }
 
-      const { error } = await supabase.functions.invoke('send-inquiry', {
+      const { error } = await invokeWithTimeout('send-inquiry', {
         body: { ...extendedForm, attachmentPath, attachmentFileName },
       });
 

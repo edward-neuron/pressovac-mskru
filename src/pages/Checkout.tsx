@@ -14,6 +14,7 @@ import { ArrowLeft, ShoppingBag, Check, Loader2, Minus, Plus, Trash2, Upload, X,
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { invokeWithTimeout } from '@/lib/invokeWithTimeout';
 import Honeypot, { isBotSubmission } from '@/components/Honeypot';
 import { getPreviewImageUrl } from '@/lib/imageOptimization';
 
@@ -203,7 +204,7 @@ const Checkout = () => {
         image: item.image || '',
       }));
 
-      const { error } = await supabase.functions.invoke('send-inquiry', {
+      const { error } = await invokeWithTimeout('send-inquiry', {
         body: {
           type: 'store-order',
           orderNumber: generatedOrderNumber,

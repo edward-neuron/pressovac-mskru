@@ -21,6 +21,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Paperclip, PhoneCall, Send, Loader2, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { invokeWithTimeout } from '@/lib/invokeWithTimeout';
 import { Link } from 'react-router-dom';
 import Honeypot, { isBotSubmission } from '@/components/Honeypot';
 import { showTechWorksAlert } from '@/components/TechWorksAlert';
@@ -211,7 +212,7 @@ const CallbackFormModal = ({ children }: CallbackFormModalProps) => {
         attachmentPath = fileName;
       }
 
-      const { error } = await supabase.functions.invoke('send-inquiry', {
+      const { error } = await invokeWithTimeout('send-inquiry', {
         body: {
           name: formData.name,
           email: formData.email,

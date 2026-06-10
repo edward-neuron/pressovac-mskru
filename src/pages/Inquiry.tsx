@@ -5,6 +5,7 @@ import { FileText, Send, CheckCircle, Loader2, Paperclip, X } from 'lucide-react
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { supabase } from '@/integrations/supabase/client';
+import { invokeWithTimeout } from '@/lib/invokeWithTimeout';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import Honeypot, { isBotSubmission } from '@/components/Honeypot';
@@ -145,7 +146,7 @@ const Inquiry = () => {
         attachmentFileName = attachment.name;
       }
 
-      const { error } = await supabase.functions.invoke('send-inquiry', {
+      const { error } = await invokeWithTimeout('send-inquiry', {
         body: { ...formData, attachmentPath, attachmentFileName },
       });
 

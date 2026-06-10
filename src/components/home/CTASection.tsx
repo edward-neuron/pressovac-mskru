@@ -5,6 +5,7 @@ import { ArrowRight, FileText, Phone, Send, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { invokeWithTimeout } from '@/lib/invokeWithTimeout';
 import Honeypot, { isBotSubmission } from '@/components/Honeypot';
 import { showTechWorksAlert } from '@/components/TechWorksAlert';
 
@@ -73,7 +74,7 @@ export const CTASection = () => {
     setIsSubmitting(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('send-inquiry', {
+      const { data, error } = await invokeWithTimeout('send-inquiry', {
         body: {
           type: 'quick-contact',
           name: formData.name.trim(),

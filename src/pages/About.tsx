@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
 import { SEOHead } from '@/components/seo/SEOHead';
 import { Award, Users, Target, Heart, CheckCircle, Play, X } from 'lucide-react';
+import aboutHeroBanner from '@/assets/about-hero-banner.png.asset.json';
 
 const values = [
   { icon: Award, title: 'Качество', description: 'Только оригинальное финское оборудование высочайшего качества' },
@@ -65,25 +66,14 @@ const About = () => {
         faq={aboutFAQ}
       />
       {/* Hero */}
-      <section className="section-padding hero-gradient">
-        <div className="container-custom">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="max-w-3xl mx-auto text-center"
-          >
-            <span className="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
-              О компании
-            </span>
-            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-              Компания <span className="text-gradient">«Веконт-М»</span>
-            </h1>
-            <p className="text-lg text-muted-foreground leading-relaxed">
-              Делаем воздух чище и жизнь комфортнее — мы являемся официальным 
-              дистрибьютором финской фирмы PRESSOVAC Oy на территории России и в странах СНГ
-            </p>
-          </motion.div>
-        </div>
+      <section className="w-full">
+        <h1 className="sr-only">Компания «Веконт-М» — официальный дистрибьютор PRESSOVAC в России и СНГ</h1>
+        <div
+          role="img"
+          aria-label="Компания Веконт-М — эксклюзивный дистрибьютор PRESSOVAC в России и СНГ"
+          className="w-full aspect-[1920/810] bg-center bg-no-repeat bg-cover"
+          style={{ backgroundImage: `url(${aboutHeroBanner.url})` }}
+        />
       </section>
 
       {/* Story */}

@@ -122,7 +122,7 @@ const Training = () => {
         <img
           src={trainingHeroBanner.url}
           alt="Подготовка и сертификация специалистов Pressovac"
-          className="w-full h-auto aspect-[21/9] object-cover object-center"
+          className="w-full h-auto object-contain"
           loading="eager"
           fetchPriority="high"
           decoding="async"

@@ -220,26 +220,16 @@ const Catalog = () => {
         faq={catalogFAQ}
       />
       {/* Hero */}
-      <section className="section-padding hero-gradient">
-        <div className="container-custom">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="max-w-3xl mx-auto text-center"
-          >
-            <span className="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
-              Каталог оборудования
-            </span>
-            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-              Оборудование <span className="text-gradient">Pressovac</span>
-            </h1>
-            <p className="text-lg text-muted-foreground leading-relaxed">
-              Полный ассортимент профессионального финского оборудования для очистки 
-              и дезинфекции систем вентиляции
-            </p>
-            
-            {/* Плашка Публичная оферта */}
-            <Dialog>
+      <h1 className="sr-only">Оборудование Pressovac — каталог</h1>
+      <section
+        aria-label="Каталог оборудования Pressovac"
+        className="w-full bg-center bg-no-repeat bg-cover aspect-[21/9]"
+        style={{ backgroundImage: `url(${catalogHeroBanner.url})` }}
+      />
+
+      {/* Плашка Публичная оферта */}
+      <section className="py-6 flex justify-center">
+        <Dialog>
               <DialogTrigger asChild>
                 <button className="inline-flex items-center gap-2 mt-6 px-4 py-2 rounded-full border border-border bg-background/50 hover:bg-background/80 text-sm text-muted-foreground hover:text-foreground transition-colors">
                   <FileText className="w-4 h-4" />
@@ -308,9 +298,6 @@ const Catalog = () => {
                 </div>
               </DialogContent>
             </Dialog>
-          </motion.div>
-
-        </div>
       </section>
 
       {/* Categories */}

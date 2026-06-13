@@ -34,6 +34,7 @@ import videoCameras31 from '@/assets/video-cameras-3-1.webp';
 import scannerLocators31 from '@/assets/scanner-locators-3-1.webp';
 import compressorSquareV2 from '@/assets/compressor-square-v2.webp';
 import accessories31 from '@/assets/accessories-3-1.webp';
+import catalogHeroBanner from '@/assets/catalog-hero-banner.png.asset.json';
 // SEO data
 const catalogBreadcrumbs = [
   { name: 'Главная', url: '/' },

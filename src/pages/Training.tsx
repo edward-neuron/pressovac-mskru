@@ -6,7 +6,7 @@ import { GraduationCap, Users, Clock, Award, CheckCircle, ArrowRight, Gift, File
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import calculationSoftwareImg from '@/assets/calculation-software.webp';
-import trainingHeroBanner from '@/assets/training-hero-banner.webp';
+import trainingHeroBanner from '@/assets/training-hero-banner.png.asset.json';
 
 const trainingBreadcrumbs = [
   { name: 'Главная', url: '/' },
@@ -116,43 +116,17 @@ const Training = () => {
           </motion.div>
         )}
       </AnimatePresence>
-      {/* Hero with Banner Background */}
-      <section className="relative min-h-[400px] md:min-h-[500px] flex items-center overflow-hidden">
-        {/* Background Image */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `url(${trainingHeroBanner})` }}
+      {/* Hero Banner */}
+      <section aria-label="Подготовка и сертификация специалистов Pressovac" className="w-full">
+        <h1 className="sr-only">Обучение и сертификация специалистов Pressovac</h1>
+        <img
+          src={trainingHeroBanner.url}
+          alt="Подготовка и сертификация специалистов Pressovac"
+          className="w-full h-auto aspect-[21/9] object-cover object-center"
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
         />
-        {/* Gradient Overlay for readability */}
-        <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/70 to-transparent" />
-        
-        <div className="container-custom relative z-10 py-16 md:py-20">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="max-w-2xl"
-          >
-            <span className="inline-block px-4 py-2 rounded-full bg-primary/20 text-primary text-sm font-medium mb-4 backdrop-blur-sm">
-              Комплексное обучение
-            </span>
-            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-              Помощь <span className="text-gradient">бизнес-партнёру</span>
-            </h1>
-            <p className="text-lg text-muted-foreground leading-relaxed mb-8">
-              Наша цель — добиться успеха наших клиентов. Мы хотим, чтобы вы получали 
-              наилучшие результаты от работы на оборудовании Pressovac
-            </p>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-primary/20 border border-primary/30 backdrop-blur-sm"
-            >
-              <Gift className="w-6 h-6 text-primary" />
-              <span className="font-semibold text-primary">Бесплатно при покупке оборудования</span>
-            </motion.div>
-          </motion.div>
-        </div>
       </section>
 
       {/* Our Mission */}

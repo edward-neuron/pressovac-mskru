@@ -1,5 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Helmet } from 'react-helmet-async';
 import { Layout } from '@/components/layout/Layout';
 import { Play, CheckCircle, ArrowRight, X, Camera, Wind, Flame, Shield, Zap, AlertTriangle, TrendingDown, Bug, Thermometer, Filter } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -173,6 +174,15 @@ const Technology = () => {
 
   return (
     <Layout>
+      <Helmet>
+        <link
+          rel="preload"
+          as="video"
+          href="/videos/technology-promo.mp4"
+          type="video/mp4"
+        />
+        <link rel="preload" as="image" href="/videos/technology-promo-poster.jpg" />
+      </Helmet>
       {/* Hero with Video Background */}
       <section className="relative overflow-hidden">
         {/* Video Background - пропорциональное масштабирование */}
@@ -185,6 +195,7 @@ const Technology = () => {
             preload="auto"
             poster="/videos/technology-promo-poster.jpg"
             className="w-full h-auto block"
+            {...({ fetchpriority: 'high' } as any)}
           >
             <source src="/videos/technology-promo.mp4" type="video/mp4" />
           </video>

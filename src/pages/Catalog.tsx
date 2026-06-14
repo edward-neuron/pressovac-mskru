@@ -223,9 +223,16 @@ const Catalog = () => {
       <h1 className="sr-only">Оборудование Pressovac — каталог</h1>
       <section
         aria-label="Каталог оборудования Pressovac"
-        className="w-full bg-center bg-no-repeat bg-cover aspect-[21/9]"
-        style={{ backgroundImage: `url(${catalogHeroBanner.url})` }}
-      />
+        className="w-full flex justify-center"
+      >
+        <img
+          src={catalogHeroBanner.url}
+          alt="Каталог оборудования Pressovac"
+          className="w-full max-w-[2100px] h-auto object-contain"
+          width={2100}
+          height={800}
+        />
+      </section>
 
       {/* Плашка Публичная оферта */}
       <section className="py-6 flex justify-center">

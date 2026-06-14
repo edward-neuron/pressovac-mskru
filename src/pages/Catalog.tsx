@@ -219,18 +219,16 @@ const Catalog = () => {
         breadcrumbs={catalogBreadcrumbs}
         faq={catalogFAQ}
       />
-      {/* Hero */}
-      <h1 className="sr-only">Оборудование Pressovac — каталог</h1>
-      <section
-        aria-label="Каталог оборудования Pressovac"
-        className="w-full flex justify-center"
-      >
+      {/* Hero Banner */}
+      <section aria-label="Каталог оборудования Pressovac" className="w-full">
+        <h1 className="sr-only">Оборудование Pressovac — каталог</h1>
         <img
           src={catalogHeroBanner.url}
           alt="Каталог оборудования Pressovac"
-          className="w-full max-w-[2100px] h-auto object-contain"
-          width={2100}
-          height={800}
+          className="w-full h-auto object-contain"
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
         />
       </section>
 

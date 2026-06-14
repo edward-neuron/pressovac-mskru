@@ -194,9 +194,8 @@ const Technology = () => {
             playsInline
             preload="auto"
             poster="/videos/technology-promo-poster.jpg"
-            // @ts-expect-error fetchpriority is a valid HTML attribute
-            fetchpriority="high"
             className="w-full h-auto block"
+            {...({ fetchpriority: 'high' } as any)}
           >
             <source src="/videos/technology-promo.mp4" type="video/mp4" />
           </video>

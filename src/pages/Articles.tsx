@@ -37,25 +37,17 @@ const Articles = () => {
         breadcrumbs={articlesBreadcrumbs}
         faq={articlesFAQ}
       />
-      {/* Hero */}
-      <section className="section-padding hero-gradient">
-        <div className="container-custom">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="max-w-3xl mx-auto text-center"
-          >
-            <span className="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
-              Статьи
-            </span>
-            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-              Полезные <span className="text-gradient">материалы</span>
-            </h1>
-            <p className="text-lg text-muted-foreground leading-relaxed">
-              Экспертные статьи о бизнесе по очистке вентиляции, технологиях и оборудовании
-            </p>
-          </motion.div>
-        </div>
+      {/* Hero Banner */}
+      <section aria-label="Технические статьи и экспертные материалы Pressovac" className="w-full">
+        <h1 className="sr-only">Статьи о технологиях очистки вентиляции — экспертные материалы Pressovac</h1>
+        <img
+          src={articlesHeroBanner.url}
+          alt="Технические статьи и экспертные материалы Pressovac"
+          className="w-full h-auto object-contain"
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
+        />
       </section>
 
       {/* Articles Grid */}

@@ -2,7 +2,7 @@ import { useState, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { Layout } from '@/components/layout/Layout';
-import { Play, CheckCircle, ArrowRight, X, Camera, Wind, Flame, Shield, Zap, AlertTriangle, TrendingDown, Bug, Thermometer, Filter } from 'lucide-react';
+import { Play, CheckCircle, ArrowRight, X, Camera, Wind, Flame, Shield, Zap, AlertTriangle, TrendingDown, Bug, Thermometer, Filter, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
@@ -171,6 +171,7 @@ const Technology = () => {
   const [selectedVideo, setSelectedVideo] = useState<{ id: string; title: string } | null>(null);
   const [activeCategory, setActiveCategory] = useState(videoCategories[0].id);
   const [platform, setPlatform] = useState<Platform>('rutube');
+  const [videoReady, setVideoReady] = useState(false);
 
   return (
     <Layout>
@@ -196,9 +197,17 @@ const Technology = () => {
             poster="/videos/technology-promo-poster.jpg"
             className="w-full h-auto block"
             {...({ fetchpriority: 'high' } as any)}
+            onCanPlay={() => setVideoReady(true)}
           >
             <source src="/videos/technology-promo.mp4" type="video/mp4" />
           </video>
+          {/* Loading Overlay */}
+          <div
+            className={`absolute inset-0 bg-background flex flex-col items-center justify-center gap-3 transition-opacity duration-300 ${videoReady ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+          >
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            <span className="text-foreground font-medium">Видео загружается...</span>
+          </div>
           {/* Dark Overlay for text readability */}
           <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/60 to-background/80" />
           

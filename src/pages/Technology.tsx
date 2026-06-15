@@ -197,9 +197,17 @@ const Technology = () => {
             poster="/videos/technology-promo-poster.jpg"
             className="w-full h-auto block"
             {...({ fetchpriority: 'high' } as any)}
+            onCanPlay={() => setVideoReady(true)}
           >
             <source src="/videos/technology-promo.mp4" type="video/mp4" />
           </video>
+          {/* Loading Overlay */}
+          <div
+            className={`absolute inset-0 bg-background flex flex-col items-center justify-center gap-3 transition-opacity duration-300 ${videoReady ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+          >
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            <span className="text-foreground font-medium">Видео загружается...</span>
+          </div>
           {/* Dark Overlay for text readability */}
           <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/60 to-background/80" />
           

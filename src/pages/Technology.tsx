@@ -2,7 +2,7 @@ import { useState, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { Layout } from '@/components/layout/Layout';
-import { Play, CheckCircle, ArrowRight, X, Camera, Wind, Flame, Shield, Zap, AlertTriangle, TrendingDown, Bug, Thermometer, Filter } from 'lucide-react';
+import { Play, CheckCircle, ArrowRight, X, Camera, Wind, Flame, Shield, Zap, AlertTriangle, TrendingDown, Bug, Thermometer, Filter, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';

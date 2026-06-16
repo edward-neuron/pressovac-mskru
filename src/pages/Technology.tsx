@@ -203,10 +203,11 @@ const Technology = () => {
           </video>
           {/* Loading Overlay */}
           <div
-            className={`absolute inset-0 bg-background flex flex-col items-center justify-center gap-3 transition-opacity duration-300 ${videoReady ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+            className={`absolute inset-0 flex flex-col items-center justify-center gap-4 transition-opacity duration-300 ${videoReady ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+            style={{ backgroundColor: 'rgba(0,0,0,0.85)', zIndex: 9999 }}
           >
-            <Loader2 className="w-8 h-8 animate-spin text-primary" />
-            <span className="text-foreground font-medium">Видео загружается...</span>
+            <Loader2 className="w-10 h-10 animate-spin text-white" />
+            <span className="text-white text-xl font-semibold">Видео загружается...</span>
           </div>
           {/* Dark Overlay for text readability */}
           <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/60 to-background/80" />

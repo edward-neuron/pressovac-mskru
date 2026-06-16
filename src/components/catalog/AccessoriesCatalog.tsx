@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, ArrowLeft, ExternalLink } from 'lucide-react';
+import { ChevronRight, ArrowLeft, ExternalLink, ShoppingCart } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { accessoriesData, Subcategory } from '@/data/accessoriesData';
 import { ProductDrawer, DrawerProduct } from './ProductDrawer';
 import { Button } from '@/components/ui/button';
@@ -130,11 +131,21 @@ export const AccessoriesCatalog = ({ onSubcategoryChange }: AccessoriesCatalogPr
                 })}
               </div>
             ) : (
-              <div className="p-6 bg-muted/30 rounded-xl border border-border text-center">
-                <p className="text-muted-foreground">
-                  Товары в данной категории будут добавлены в ближайшее время.
-                </p>
-              </div>
+              <>
+                <div className="p-6 bg-muted/30 rounded-xl border border-border text-center">
+                  <p className="text-muted-foreground">
+                    Товары в данной категории будут добавлены в ближайшее время.
+                  </p>
+                </div>
+                {selectedSubcategory.shopUrl && (
+                  <Link to={selectedSubcategory.shopUrl} className="block mt-3">
+                    <Button className="w-full gap-2">
+                      <ShoppingCart className="w-4 h-4" />
+                      Перейти в магазин
+                    </Button>
+                  </Link>
+                )}
+              </>
             )}
           </motion.div>
         )}

@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { Layout } from '@/components/layout/Layout';
@@ -172,6 +172,7 @@ const Technology = () => {
   const [activeCategory, setActiveCategory] = useState(videoCategories[0].id);
   const [platform, setPlatform] = useState<Platform>('rutube');
   const [videoReady, setVideoReady] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   return (
     <Layout>
@@ -189,6 +190,7 @@ const Technology = () => {
         {/* Video Background - пропорциональное масштабирование */}
         <div className="relative w-full bg-background">
           <video
+            ref={videoRef}
             autoPlay
             loop
             muted

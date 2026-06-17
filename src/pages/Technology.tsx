@@ -172,6 +172,7 @@ const Technology = () => {
   const [activeCategory, setActiveCategory] = useState(videoCategories[0].id);
   const [platform, setPlatform] = useState<Platform>('rutube');
   const [videoReady, setVideoReady] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   return (
     <Layout>

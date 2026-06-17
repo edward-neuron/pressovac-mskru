@@ -190,6 +190,7 @@ const Technology = () => {
         {/* Video Background - пропорциональное масштабирование */}
         <div className="relative w-full bg-background">
           <video
+            ref={videoRef}
             autoPlay
             loop
             muted

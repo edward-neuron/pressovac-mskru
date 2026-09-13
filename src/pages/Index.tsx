@@ -2,7 +2,6 @@ import { lazy, Suspense } from 'react';
 import { Layout } from '@/components/layout/Layout';
 import { SEOHead } from '@/components/seo/SEOHead';
 import { HeroSection } from '@/components/home/HeroSection';
-import { PriceIncreaseBanner } from '@/components/PriceIncreaseBanner';
 
 // Lazy load below-the-fold sections for faster initial render
 const CatalogPreview = lazy(() => import('@/components/home/CatalogPreview').then(m => ({ default: m.CatalogPreview })));

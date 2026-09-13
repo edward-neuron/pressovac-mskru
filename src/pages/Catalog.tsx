@@ -3,7 +3,8 @@ import { motion } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
 import { SEOHead } from '@/components/seo/SEOHead';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Zap, Wind, Wrench, Sparkles, Camera, Settings, Package, FileText } from 'lucide-react';
+import { ArrowRight, Zap, Wind, Wrench, Sparkles, Camera, Settings, Package, FileText, ShoppingCart } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -233,13 +234,14 @@ const Catalog = () => {
       </section>
 
       {/* Плашка Публичная оферта */}
-      <section className="py-6 flex justify-center">
-        <Dialog>
+      <section className="py-6">
+        <div className="container-custom flex flex-col items-center gap-4">
+          <Dialog>
               <DialogTrigger asChild>
-                <button className="inline-flex items-center gap-2 mt-6 px-4 py-2 rounded-full border border-border bg-background/50 hover:bg-background/80 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <Button variant="outline" className="rounded-full text-muted-foreground hover:text-foreground">
                   <FileText className="w-4 h-4" />
                   Публичная оферта
-                </button>
+                </Button>
               </DialogTrigger>
               <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
                 <DialogHeader>
@@ -302,7 +304,15 @@ const Catalog = () => {
                   </p>
                 </div>
               </DialogContent>
-            </Dialog>
+          </Dialog>
+          <Button asChild size="lg" className="w-full max-w-sm text-base font-semibold shadow-lg">
+            <Link to="/store">
+              <ShoppingCart className="w-5 h-5" />
+              Перейти в магазин
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+          </Button>
+        </div>
       </section>
 
       {/* Categories */}

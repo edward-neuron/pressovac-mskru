@@ -106,7 +106,6 @@ const Index = () => {
         structuredData={combinedSchema}
         faq={homepageFAQ}
       />
-      <PriceIncreaseBanner />
       <HeroSection />
       <Suspense fallback={<SectionLoader />}>
         <CatalogPreview />

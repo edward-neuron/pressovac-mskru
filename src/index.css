@@ -198,3 +198,8 @@
   .stagger-4 { animation-delay: 0.4s; }
   .stagger-5 { animation-delay: 0.5s; }
 }
+
+/* Hide Lovable "Edit with Lovable" badge on published site */
+[aria-label="Edit with Lovable"] {
+  display: none !important;
+}

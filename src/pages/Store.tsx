@@ -22,7 +22,7 @@ import { Button } from '@/components/ui/button';
 import { CartDrawer } from '@/components/store/CartDrawer';
 import { SortableItem } from '@/components/store/SortableItem';
 import { ProductDetailDrawer } from '@/components/store/ProductDetailDrawer';
-import { PriceIncreaseBanner } from '@/components/PriceIncreaseBanner';
+
 import { useCart } from '@/contexts/CartContext';
 import { useYmlStore, YmlProduct, YmlCategory } from '@/hooks/useYmlStore';
 import { useSortOrder } from '@/hooks/useSortOrder';
@@ -491,8 +491,6 @@ const Store = () => {
         keywords="купить Pressovac, магазин оборудования для вентиляции, цены Pressovac"
         canonical="/store"
       />
-
-      <PriceIncreaseBanner />
 
       {/* Hero Section */}
       <section className="relative bg-gradient-to-b from-primary/10 via-background to-background pt-24 pb-12">

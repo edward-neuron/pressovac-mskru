@@ -54,6 +54,7 @@ interface InquiryRequest {
   totalPrice?: number;
   attachmentUrl?: string;
   attachmentPath?: string;
+  attachmentBase64?: string;
   attachmentFileName?: string;
   subject?: string;
   /** @deprecated kept for backward compatibility — ignored by server */
@@ -134,7 +135,70 @@ const handler = async (req: Request): Promise<Response> => {
     const attachmentFileName = escapeHtml((data.attachmentFileName || "").trim().slice(0, 255));
     let attachmentUrlResolved = (data.attachmentUrl || "").trim();
 
-    if (!attachmentUrlResolved && attachmentPath) {
+    const attachmentBase64 = (data.attachmentBase64 || "").trim();
+    const rawAttachmentFileName = (data.attachmentFileName || "").trim().slice(0, 255);
+
+    if (!attachmentUrlResolved && attachmentBase64 && rawAttachmentFileName) {
+      const MAX_BYTES = 10 * 1024 * 1024;
+      const EXT_MIME: Record<string, string> = {
+        pdf: "application/pdf",
+        doc: "application/msword",
+        docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        png: "image/png",
+        jpg: "image/jpeg",
+        jpeg: "image/jpeg",
+      };
+
+      const ext = rawAttachmentFileName.split(".").pop()?.toLowerCase() || "";
+      const contentType = EXT_MIME[ext];
+
+      if (!contentType) {
+        return new Response(
+          JSON.stringify({ error: "Недопустимый тип файла (PDF, JPG, PNG, DOC, DOCX)" }),
+          { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+        );
+      }
+
+      let bytes: Uint8Array;
+      try {
+        const binary = atob(attachmentBase64);
+        bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+      } catch (decodeError) {
+        console.error("Attachment decode error:", decodeError);
+        return new Response(
+          JSON.stringify({ error: "Не удалось прочитать файл" }),
+          { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+        );
+      }
+
+      if (bytes.length > MAX_BYTES) {
+        return new Response(
+          JSON.stringify({ error: "Файл слишком большой (макс. 10 МБ)" }),
+          { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+        );
+      }
+
+      const storedName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${ext}`;
+
+      const { error: uploadError } = await supabaseAdmin.storage
+        .from("inquiry-attachments")
+        .upload(storedName, bytes, { contentType });
+
+      if (uploadError) {
+        console.error("Attachment upload error:", uploadError);
+      } else {
+        const { data: signed, error: signedError } = await supabaseAdmin.storage
+          .from("inquiry-attachments")
+          .createSignedUrl(storedName, 60 * 60 * 24 * 7);
+
+        if (signedError) {
+          console.error("Signed URL error:", signedError);
+        } else {
+          attachmentUrlResolved = signed?.signedUrl ?? "";
+        }
+      }
+    } else if (!attachmentUrlResolved && attachmentPath) {
       // Server-side validation of uploaded file (type + size).
       // Cannot trust client checks alone.
       const ALLOWED_MIMETYPES = new Set([

@@ -123,31 +123,32 @@ const Inquiry = () => {
     setIsSubmitting(true);
 
     try {
-      let attachmentPath: string | undefined;
+      let attachmentBase64: string | undefined;
       let attachmentFileName: string | undefined;
 
-      // Upload file if present
+      // Read file as base64 and send it within the request body
       if (attachment) {
-        const fileExt = attachment.name.split('.').pop();
-        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-
-        const { error: uploadError } = await supabase.storage
-          .from('inquiry-attachments')
-          .upload(fileName, attachment);
-
-        if (uploadError) {
-          console.error('File upload error:', uploadError);
-          toast.error('Ошибка загрузки файла');
+        try {
+          attachmentBase64 = await new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+              const result = String(reader.result || '');
+              resolve(result.slice(result.indexOf(',') + 1));
+            };
+            reader.onerror = () => reject(reader.error);
+            reader.readAsDataURL(attachment);
+          });
+          attachmentFileName = attachment.name;
+        } catch (readError) {
+          console.error('File read error:', readError);
+          toast.error('Ошибка чтения файла');
           setIsSubmitting(false);
           return;
         }
-
-        attachmentPath = fileName;
-        attachmentFileName = attachment.name;
       }
 
       const { error } = await invokeWithTimeout('send-inquiry', {
-        body: { ...formData, attachmentPath, attachmentFileName },
+        body: { ...formData, attachmentBase64, attachmentFileName },
       });
 
       if (error) throw error;

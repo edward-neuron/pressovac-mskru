@@ -54,6 +54,7 @@ interface InquiryRequest {
   totalPrice?: number;
   attachmentUrl?: string;
   attachmentPath?: string;
+  attachmentBase64?: string;
   attachmentFileName?: string;
   subject?: string;
   /** @deprecated kept for backward compatibility — ignored by server */

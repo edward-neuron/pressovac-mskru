@@ -166,7 +166,7 @@ const Contacts = () => {
     setSimpleSubmitting(true);
 
     try {
-      let attachmentPath: string | undefined;
+      let attachmentBase64: string | undefined;
       let attachmentFileName: string | undefined;
 
       if (simpleAttachment) {
@@ -181,22 +181,23 @@ const Contacts = () => {
           return;
         }
 
-        const fileExt = simpleAttachment.name.split('.').pop();
-        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-
-        const { error: uploadError } = await supabase.storage
-          .from('inquiry-attachments')
-          .upload(fileName, simpleAttachment);
-
-        if (uploadError) {
-          console.error('Simple form upload error:', uploadError);
-          toast.error('Ошибка загрузки файла');
+        try {
+          attachmentBase64 = await new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+              const result = String(reader.result || '');
+              resolve(result.slice(result.indexOf(',') + 1));
+            };
+            reader.onerror = () => reject(reader.error);
+            reader.readAsDataURL(simpleAttachment);
+          });
+          attachmentFileName = simpleAttachment.name;
+        } catch (readError) {
+          console.error('Simple form file read error:', readError);
+          toast.error('Ошибка чтения файла');
           setSimpleSubmitting(false);
           return;
         }
-
-        attachmentPath = fileName;
-        attachmentFileName = simpleAttachment.name;
       }
 
       const { error } = await invokeWithTimeout('send-inquiry', {
@@ -206,7 +207,7 @@ const Contacts = () => {
           email: simpleForm.email,
           message: simpleForm.message,
           subject: 'Быстрая заявка с страницы Контакты',
-          attachmentPath,
+          attachmentBase64,
           attachmentFileName,
         },
       });
@@ -286,7 +287,7 @@ const Contacts = () => {
     setExtendedSubmitting(true);
 
     try {
-      let attachmentPath: string | undefined;
+      let attachmentBase64: string | undefined;
       let attachmentFileName: string | undefined;
 
       if (extendedAttachment) {
@@ -301,26 +302,27 @@ const Contacts = () => {
           return;
         }
 
-        const fileExt = extendedAttachment.name.split('.').pop();
-        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-
-        const { error: uploadError } = await supabase.storage
-          .from('inquiry-attachments')
-          .upload(fileName, extendedAttachment);
-
-        if (uploadError) {
-          console.error('Extended form upload error:', uploadError);
-          toast.error('Ошибка загрузки файла');
+        try {
+          attachmentBase64 = await new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+              const result = String(reader.result || '');
+              resolve(result.slice(result.indexOf(',') + 1));
+            };
+            reader.onerror = () => reject(reader.error);
+            reader.readAsDataURL(extendedAttachment);
+          });
+          attachmentFileName = extendedAttachment.name;
+        } catch (readError) {
+          console.error('Extended form file read error:', readError);
+          toast.error('Ошибка чтения файла');
           setExtendedSubmitting(false);
           return;
         }
-
-        attachmentPath = fileName;
-        attachmentFileName = extendedAttachment.name;
       }
 
       const { error } = await invokeWithTimeout('send-inquiry', {
-        body: { ...extendedForm, attachmentPath, attachmentFileName },
+        body: { ...extendedForm, attachmentBase64, attachmentFileName },
       });
 
       if (error) throw error;

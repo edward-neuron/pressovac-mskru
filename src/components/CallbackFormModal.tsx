@@ -181,7 +181,8 @@ const CallbackFormModal = ({ children }: CallbackFormModalProps) => {
     setIsSubmitting(true);
 
     try {
-      let attachmentPath: string | undefined;
+      let attachmentBase64: string | undefined;
+      let attachmentFileName: string | undefined;
 
       if (attachment) {
         if (attachment.size > 10 * 1024 * 1024) {
@@ -193,23 +194,25 @@ const CallbackFormModal = ({ children }: CallbackFormModalProps) => {
           return;
         }
 
-        const fileExt = attachment.name.split('.').pop();
-        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-
-        const { error: uploadError } = await supabase.storage
-          .from('inquiry-attachments')
-          .upload(fileName, attachment);
-
-        if (uploadError) {
-          console.error('Callback attachment upload error:', uploadError);
+        try {
+          attachmentBase64 = await new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+              const result = String(reader.result || '');
+              resolve(result.slice(result.indexOf(',') + 1));
+            };
+            reader.onerror = () => reject(reader.error);
+            reader.readAsDataURL(attachment);
+          });
+          attachmentFileName = attachment.name;
+        } catch (readError) {
+          console.error('Callback attachment read error:', readError);
           toast({
-            title: 'Ошибка загрузки файла',
+            title: 'Ошибка чтения файла',
             variant: 'destructive',
           });
           return;
         }
-
-        attachmentPath = fileName;
       }
 
       const { error } = await invokeWithTimeout('send-inquiry', {
@@ -220,7 +223,8 @@ const CallbackFormModal = ({ children }: CallbackFormModalProps) => {
           company: formData.company,
           message: `Заказ обратного звонка\n\nГород: ${formData.city}\nУдобное время: ${formData.preferredTime || 'Не указано'}\n\nСообщение:\n${formData.message || 'Не указано'}`,
           subject: 'Заказ обратного звонка',
-          attachmentPath,
+          attachmentBase64,
+          attachmentFileName,
         },
       });
 

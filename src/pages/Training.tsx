@@ -6,7 +6,7 @@ import { GraduationCap, Users, Clock, Award, CheckCircle, ArrowRight, Gift, File
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import calculationSoftwareImg from '@/assets/calculation-software.webp';
-import trainingHeroBanner from '@/assets/training-hero-banner-v2.png';
+import trainingHeroBanner from '@/assets/training-hero-banner-v2.webp';
 
 const trainingBreadcrumbs = [
   { name: 'Главная', url: '/' },

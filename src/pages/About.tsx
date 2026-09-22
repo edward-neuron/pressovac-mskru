@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
 import { SEOHead } from '@/components/seo/SEOHead';
 import { Award, Users, Target, Heart, CheckCircle, Play, X } from 'lucide-react';
-import aboutHeroBanner from '@/assets/about-hero-banner.png';
+import aboutHeroBanner from '@/assets/about-hero-banner.webp';
 
 const values = [
   { icon: Award, title: 'Качество', description: 'Только оригинальное финское оборудование высочайшего качества' },

@@ -4,7 +4,7 @@ import { SEOHead } from '@/components/seo/SEOHead';
 import { Link } from 'react-router-dom';
 import { ArrowRight, BookOpen, Calendar } from 'lucide-react';
 import { articlesData } from '@/data/articlesData';
-import articlesHeroBanner from '@/assets/articles-hero-banner.png.asset.json';
+import articlesHeroBanner from '@/assets/articles-hero-banner.png';
 
 const articlesBreadcrumbs = [
   { name: 'Главная', url: '/' },
@@ -41,7 +41,7 @@ const Articles = () => {
       <section aria-label="Технические статьи и экспертные материалы Pressovac" className="w-full">
         <h1 className="sr-only">Статьи о технологиях очистки вентиляции — экспертные материалы Pressovac</h1>
         <img
-          src={articlesHeroBanner.url}
+          src={articlesHeroBanner}
           alt="Технические статьи и экспертные материалы Pressovac"
           className="w-full h-auto object-contain"
           loading="eager"

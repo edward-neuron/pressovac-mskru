@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
 import { SEOHead } from '@/components/seo/SEOHead';
 import { Award, Users, Target, Heart, CheckCircle, Play, X } from 'lucide-react';
-import aboutHeroBanner from '@/assets/about-hero-banner.png.asset.json';
+import aboutHeroBanner from '@/assets/about-hero-banner.png';
 
 const values = [
   { icon: Award, title: 'Качество', description: 'Только оригинальное финское оборудование высочайшего качества' },
@@ -72,7 +72,7 @@ const About = () => {
           role="img"
           aria-label="Компания Веконт-М — эксклюзивный дистрибьютор PRESSOVAC в России и СНГ"
           className="w-full aspect-[1920/810] bg-center bg-no-repeat bg-cover"
-          style={{ backgroundImage: `url(${aboutHeroBanner.url})` }}
+          style={{ backgroundImage: `url(${aboutHeroBanner})` }}
         />
       </section>
 

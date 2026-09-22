@@ -6,7 +6,7 @@ import { GraduationCap, Users, Clock, Award, CheckCircle, ArrowRight, Gift, File
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import calculationSoftwareImg from '@/assets/calculation-software.webp';
-import trainingHeroBanner from '@/assets/training-hero-banner.png.asset.json';
+import trainingHeroBanner from '@/assets/training-hero-banner-v2.png';
 
 const trainingBreadcrumbs = [
   { name: 'Главная', url: '/' },
@@ -120,7 +120,7 @@ const Training = () => {
       <section aria-label="Подготовка и сертификация специалистов Pressovac" className="w-full">
         <h1 className="sr-only">Обучение и сертификация специалистов Pressovac</h1>
         <img
-          src={trainingHeroBanner.url}
+          src={trainingHeroBanner}
           alt="Подготовка и сертификация специалистов Pressovac"
           className="w-full h-auto object-contain"
           loading="eager"

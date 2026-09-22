@@ -35,7 +35,7 @@ import videoCameras31 from '@/assets/video-cameras-3-1.webp';
 import scannerLocators31 from '@/assets/scanner-locators-3-1.webp';
 import compressorSquareV2 from '@/assets/compressor-square-v2.webp';
 import accessories31 from '@/assets/accessories-3-1.webp';
-import catalogHeroBanner from '@/assets/catalog-hero-banner.png.asset.json';
+import catalogHeroBanner from '@/assets/catalog-hero-banner.png';
 // SEO data
 const catalogBreadcrumbs = [
   { name: 'Главная', url: '/' },
@@ -224,7 +224,7 @@ const Catalog = () => {
       <section aria-label="Каталог оборудования Pressovac" className="w-full">
         <h1 className="sr-only">Оборудование Pressovac — каталог</h1>
         <img
-          src={catalogHeroBanner.url}
+          src={catalogHeroBanner}
           alt="Каталог оборудования Pressovac"
           className="w-full h-auto object-contain"
           loading="eager"

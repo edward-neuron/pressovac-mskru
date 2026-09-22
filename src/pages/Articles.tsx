@@ -4,7 +4,7 @@ import { SEOHead } from '@/components/seo/SEOHead';
 import { Link } from 'react-router-dom';
 import { ArrowRight, BookOpen, Calendar } from 'lucide-react';
 import { articlesData } from '@/data/articlesData';
-import articlesHeroBanner from '@/assets/articles-hero-banner.png';
+import articlesHeroBanner from '@/assets/articles-hero-banner.webp';
 
 const articlesBreadcrumbs = [
   { name: 'Главная', url: '/' },

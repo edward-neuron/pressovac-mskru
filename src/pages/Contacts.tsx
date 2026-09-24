@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import contactsHeroBanner from '@/assets/contacts-hero-banner.webp';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
 import { SEOHead } from '@/components/seo/SEOHead';
@@ -372,7 +373,15 @@ const Contacts = () => {
       />
       {/* Form Type Selection - Right at the top */}
       {!formType && (
-        <section className="section-padding">
+        <section
+          className="section-padding"
+          style={{
+            backgroundImage: `url(${contactsHeroBanner})`,
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center center',
+          }}
+        >
           <div className="container-custom">
             <motion.div
               initial={{ opacity: 0, y: 20 }}

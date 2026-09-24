@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import contactsHeroBanner from '@/assets/contacts-hero-banner.webp';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
 import { SEOHead } from '@/components/seo/SEOHead';
@@ -370,6 +371,18 @@ const Contacts = () => {
         breadcrumbs={contactsBreadcrumbs}
         faq={contactsFAQ}
       />
+      {/* Hero Banner */}
+      <section aria-label="Контакты Pressovac" className="w-full">
+        <h1 className="sr-only">Контакты Pressovac — мы на связи</h1>
+        <img
+          src={contactsHeroBanner}
+          alt="Мы на связи Pressovac — контакты, склад, техническая поддержка"
+          className="w-full h-auto object-contain"
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
+        />
+      </section>
       {/* Form Type Selection - Right at the top */}
       {!formType && (
         <section className="section-padding">

@@ -371,17 +371,21 @@ const Contacts = () => {
         breadcrumbs={contactsBreadcrumbs}
         faq={contactsFAQ}
       />
+      {/* Hero Banner */}
+      <section aria-label="Контакты Pressovac" className="w-full">
+        <h1 className="sr-only">Контакты Pressovac — мы на связи</h1>
+        <img
+          src={contactsHeroBanner}
+          alt="Мы на связи Pressovac — контакты, склад, техническая поддержка"
+          className="w-full h-auto object-contain"
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
+        />
+      </section>
       {/* Form Type Selection - Right at the top */}
       {!formType && (
-        <section
-          className="section-padding"
-          style={{
-            backgroundImage: `url(${contactsHeroBanner})`,
-            backgroundSize: 'cover',
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'center center',
-          }}
-        >
+        <section className="section-padding">
           <div className="container-custom">
             <motion.div
               initial={{ opacity: 0, y: 20 }}

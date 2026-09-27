@@ -50,19 +50,19 @@ import category13 from '@/assets/store/category-13.webp';
 
 // Mapping of category names to custom images
 const categoryImageMap: Record<string, string> = {
-  'Готовые комплекты оборудования': category1,
-  'Машины для сухой очистки и дезинфекции': category2,
-  'Машины с маркировкой взрывозащиты ATEX': category3,
-  'Машины для мойки и удаления жира': category4,
-  'Оборудование для дезинфекции': category5,
-  'Вакуумные Всасывающие установки SU series': category6,
-  'Фильтро-Вакуумные Установки SFU series': category7,
-  'Фильтрующие установки FU series': category8,
-  'Гибкие вращающиеся валы Pressovac': category9,
-  'Чистящие щётки Pressovac': category10,
-  'Аксессуары к воздуховодам': category11,
-  'Видео-инспекционное оборудование': category12,
-  'Компрессоры': category13,
+  'Готовые решения и комплекты оборудования': category1,
+  'Щеточные машины для сухой очистки и дезинфекции': category2,
+  'Оборудование с маркировкой взрывозащиты ATEX': category3,
+  'Щеточные машины для мойки и удаления жира': category4,
+  'Дезинфекция вентиляции с щеточными машинами и валами': category5,
+  'Вакуумные установки SU серия от 1500 до 10000 куб/час': category6,
+  'Фильтро-Вакуумные Установки SFU от 1000 до 5000 куб/час': category7,
+  'Фильтрующие установки FU\nот 5000 до 10000 куб/час': category8,
+  'Гибкие валы Pressovac Мини, Cтандарт, Сталь, Аксессуары': category9,
+  'Чистящие щётки Pressovac для разных типов задач и грязи': category10,
+  'Аксессуары к воздуховодам и техническому обслуживанию': category11,
+  'Видео-инспекционное оборудование от 250 до 800 мм': category12,
+  'Компрессоры Премиум 24/7': category13,
 };
 
 // Helper function to get custom category image
@@ -154,7 +154,7 @@ const CategoryCard = ({ category, image, productCount, onClick, index }: Categor
     );
   }
   
-  const isKitsCategory = category.name.toLowerCase().includes('готовые комплекты');
+  const isKitsCategory = category.id === '86975750';
 
   return (
     <motion.button
@@ -185,7 +185,7 @@ const CategoryCard = ({ category, image, productCount, onClick, index }: Categor
         )}
       </div>
       <div className="px-2 py-2 border-t border-border/30">
-        <h3 className="text-xs font-medium text-primary leading-tight line-clamp-2 min-h-[2rem] hover:underline">
+        <h3 className="text-xs font-medium text-primary leading-tight line-clamp-2 min-h-[2rem] hover:underline whitespace-pre-line">
           {category.name}
         </h3>
         <span className="text-xs text-muted-foreground">

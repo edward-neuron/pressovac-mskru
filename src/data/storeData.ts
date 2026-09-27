@@ -28,7 +28,7 @@ export interface StoreCategory {
 export const storeCategories: StoreCategory[] = [
   {
     id: 'kits',
-    name: 'Готовые комплекты оборудования',
+    name: 'Готовые решения и комплекты оборудования',
     description: 'Полные комплекты для различных типов очистки',
     image: '/placeholder.svg',
     productCount: 26,
@@ -41,7 +41,7 @@ export const storeCategories: StoreCategory[] = [
   },
   {
     id: 'dry-cleaning',
-    name: 'Машины для сухой очистки и дезинфекции',
+    name: 'Щеточные машины для сухой очистки и дезинфекции',
     description: 'Электрические и пневматические щёточные машины',
     image: '/placeholder.svg',
     productCount: 27,
@@ -53,7 +53,7 @@ export const storeCategories: StoreCategory[] = [
   },
   {
     id: 'atex',
-    name: 'Машины с маркировкой взрывозащиты ATEX',
+    name: 'Оборудование с маркировкой взрывозащиты ATEX',
     description: 'Оборудование для работы во взрывоопасных средах',
     image: '/placeholder.svg',
     productCount: 6,
@@ -63,7 +63,7 @@ export const storeCategories: StoreCategory[] = [
   },
   {
     id: 'grease-removal',
-    name: 'Машины для мойки и удаления жира',
+    name: 'Щеточные машины для мойки и удаления жира',
     description: 'Моющие машины для кухонных вытяжек и жировых отложений',
     image: '/placeholder.svg',
     productCount: 29,
@@ -74,35 +74,35 @@ export const storeCategories: StoreCategory[] = [
   },
   {
     id: 'disinfection',
-    name: 'Оборудование для дезинфекции',
+    name: 'Дезинфекция вентиляции с щеточными машинами и валами',
     description: 'Баки, насадки и комплектующие для обработки',
     image: '/placeholder.svg',
     productCount: 7,
   },
   {
     id: 'vacuum-su',
-    name: 'Вакуумные Всасывающие установки SU series',
+    name: 'Вакуумные установки SU серия от 1500 до 10000 куб/час',
     description: 'Мощные вакуумные установки для сбора загрязнений',
     image: '/placeholder.svg',
     productCount: 6,
   },
   {
     id: 'vacuum-sfu',
-    name: 'Фильтро-Вакуумные Установки SFU series',
+    name: 'Фильтро-Вакуумные Установки SFU от 1000 до 5000 куб/час',
     description: 'Установки со встроенной фильтрацией',
     image: '/placeholder.svg',
     productCount: 4,
   },
   {
     id: 'filter',
-    name: 'Фильтрующие установки FU series',
+    name: 'Фильтрующие установки FU\nот 5000 до 10000 куб/час',
     description: 'Фильтрующие блоки и системы очистки воздуха',
     image: '/placeholder.svg',
     productCount: 4,
   },
   {
     id: 'flexible-shafts',
-    name: 'Гибкие вращающиеся валы Pressovac',
+    name: 'Гибкие валы Pressovac Мини, Cтандарт, Сталь, Аксессуары',
     description: 'Гибкие валы для передачи вращения к щёткам',
     image: '/placeholder.svg',
     productCount: 17,
@@ -115,7 +115,7 @@ export const storeCategories: StoreCategory[] = [
   },
   {
     id: 'brushes',
-    name: 'Чистящие щётки Pressovac',
+    name: 'Чистящие щётки Pressovac для разных типов задач и грязи',
     description: 'Щётки различных типов и диаметров',
     image: '/placeholder.svg',
     productCount: 18,
@@ -129,7 +129,7 @@ export const storeCategories: StoreCategory[] = [
   },
   {
     id: 'duct-accessories',
-    name: 'Аксессуары к воздуховодам',
+    name: 'Аксессуары к воздуховодам и техническому обслуживанию',
     description: 'Шланги, лючки, адаптеры, заглушки и скребки',
     image: '/placeholder.svg',
     productCount: 42,
@@ -144,14 +144,14 @@ export const storeCategories: StoreCategory[] = [
   },
   {
     id: 'video',
-    name: 'Видео-инспекционное оборудование',
+    name: 'Видео-инспекционное оборудование от 250 до 800 мм',
     description: 'Камеры и системы для визуального контроля воздуховодов',
     image: '/placeholder.svg',
     productCount: 9,
   },
   {
     id: 'compressors',
-    name: 'Компрессоры',
+    name: 'Компрессоры Премиум 24/7',
     description: 'Компрессоры для пневматического оборудования',
     image: '/placeholder.svg',
     productCount: 1,

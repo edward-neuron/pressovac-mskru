@@ -4,6 +4,23 @@ import fallbackStoreData from '@/data/storeFallback.json';
 
 const STORE_CACHE_KEY = 'pressovac-store-cache-v2';
 
+// Keep category labels consistent when an older browser cache is still present.
+const categoryNames: Record<string, string> = {
+  '86975750': 'Готовые решения и комплекты оборудования',
+  '86975775': 'Щеточные машины для сухой очистки и дезинфекции',
+  '86975795': 'Щеточные машины для мойки и удаления жира',
+  '86975885': 'Фильтро-Вакуумные Установки SFU от 1000 до 5000 куб/час',
+  '86975890': 'Фильтрующие установки FU\nот 5000 до 10000 куб/час',
+  '86975935': 'Компрессоры Премиум 24/7',
+  '88504908': 'Оборудование с маркировкой взрывозащиты ATEX',
+  '88504918': 'Гибкие валы Pressovac Мини, Cтандарт, Сталь, Аксессуары',
+  '88504943': 'Дезинфекция вентиляции с щеточными машинами и валами',
+  '88504948': 'Чистящие щётки Pressovac для разных типов задач и грязи',
+  '88504978': 'Вакуумные установки SU серия от 1500 до 10000 куб/час',
+  '88504983': 'Аксессуары к воздуховодам и техническому обслуживанию',
+  '88505018': 'Видео-инспекционное оборудование от 250 до 800 мм',
+};
+
 interface CachedStoreData {
   categories: YmlCategory[];
   products: YmlProduct[];
@@ -57,7 +74,7 @@ function createStoreSnapshot(
 ): CachedStoreData {
   const categories: YmlCategory[] = rawCategories.map((c, idx) => ({
     id: c.id,
-    name: c.name,
+    name: categoryNames[c.id] ?? c.name,
     parentId: c.parent_id || undefined,
     sortOrder: idx,
   }));
@@ -98,7 +115,13 @@ function readPersistentCache(): CachedStoreData | null {
       return null;
     }
 
-    return parsed;
+    return {
+      ...parsed,
+      categories: parsed.categories.map(category => ({
+        ...category,
+        name: categoryNames[category.id] ?? category.name,
+      })),
+    };
   } catch {
     return null;
   }

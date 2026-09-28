@@ -27,7 +27,7 @@ export function SortableItem({ id, isEditMode, children }: SortableItemProps) {
   };
 
   return (
-    <div ref={setNodeRef} style={style} className="relative">
+    <div ref={setNodeRef} style={style} className="relative h-full">
       {isEditMode && (
         <button
           className="absolute top-2 right-2 z-10 bg-primary/90 text-primary-foreground p-1.5 rounded-md cursor-grab active:cursor-grabbing shadow-lg hover:bg-primary transition-colors"

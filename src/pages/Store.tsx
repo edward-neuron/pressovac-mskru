@@ -162,7 +162,7 @@ const CategoryCard = ({ category, image, productCount, onClick, index }: Categor
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.03 }}
       onClick={onClick}
-      className="group relative bg-card rounded-lg border border-border/50 overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300 text-left w-full"
+      className="group relative h-full flex flex-col bg-card rounded-lg border border-border/50 overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300 text-left w-full"
     >
       <div className="aspect-square relative overflow-hidden">
         {image ? (
@@ -185,7 +185,7 @@ const CategoryCard = ({ category, image, productCount, onClick, index }: Categor
         )}
       </div>
       <div className="px-2 py-2 border-t border-border/30">
-        <h3 className="text-xs font-medium text-primary leading-tight line-clamp-2 min-h-[2rem] hover:underline whitespace-pre-line">
+        <h3 className="text-xs font-medium text-primary leading-tight hover:underline whitespace-pre-line">
           {category.name}
         </h3>
         <span className="text-xs text-muted-foreground">

@@ -34,19 +34,19 @@ import { toast } from 'sonner';
 import { VacuumCalculator } from '@/components/store/VacuumCalculator';
 
 // Import category images
-import category1 from '@/assets/store/category-1.webp';
-import category2 from '@/assets/store/category-2.webp';
-import category3 from '@/assets/store/category-3.webp';
-import category4 from '@/assets/store/category-4.webp';
-import category5 from '@/assets/store/category-5.webp';
-import category6 from '@/assets/store/category-6.webp';
-import category7 from '@/assets/store/category-7.webp';
-import category8 from '@/assets/store/category-8.webp';
-import category9 from '@/assets/store/category-9.webp';
-import category10 from '@/assets/store/category-10.webp';
-import category11 from '@/assets/store/category-11.webp';
-import category12 from '@/assets/store/category-12.webp';
-import category13 from '@/assets/store/category-13.webp';
+import category1 from '@/assets/store/category-1-v2.webp';
+import category2 from '@/assets/store/category-2-v2.webp';
+import category3 from '@/assets/store/category-3-v2.webp';
+import category4 from '@/assets/store/category-4-v2.webp';
+import category5 from '@/assets/store/category-5-v2.webp';
+import category6 from '@/assets/store/category-6-v2.webp';
+import category7 from '@/assets/store/category-7-v2.webp';
+import category8 from '@/assets/store/category-8-v2.webp';
+import category9 from '@/assets/store/category-9-v2.webp';
+import category10 from '@/assets/store/category-10-v2.webp';
+import category11 from '@/assets/store/category-11-v2.webp';
+import category12 from '@/assets/store/category-12-v2.webp';
+import category13 from '@/assets/store/category-13-v2.webp';
 
 // Mapping of category names to custom images
 const categoryImageMap: Record<string, string> = {

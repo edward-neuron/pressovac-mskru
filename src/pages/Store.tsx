@@ -127,12 +127,13 @@ const CategoryCard = ({ category, image, productCount, onClick, index }: Categor
   // For accessory subcategories, show a flat banner instead of square card
   if (isAccessory) {
     return (
-      <motion.button
+      <motion.a
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: index * 0.03 }}
-        onClick={onClick}
-        className="group relative bg-primary rounded-xl overflow-hidden hover:shadow-lg hover:bg-primary/90 transition-all duration-300 text-left w-full"
+        href={`/store?category=${category.id}`}
+        onClick={(e) => { e.preventDefault(); onClick(); }}
+        className="group relative bg-primary rounded-xl overflow-hidden hover:shadow-lg hover:bg-primary/90 transition-all duration-300 text-left w-full cursor-pointer block"
       >
         <div className="flex items-center gap-3 px-4 py-4 min-h-[72px]">
           <ShoppingCart className="w-5 h-5 text-primary-foreground flex-shrink-0" />
@@ -150,19 +151,20 @@ const CategoryCard = ({ category, image, productCount, onClick, index }: Categor
           </div>
           <ChevronRight className="w-5 h-5 text-primary-foreground/70 flex-shrink-0 group-hover:translate-x-1 transition-transform" />
         </div>
-      </motion.button>
+      </motion.a>
     );
   }
   
   const isKitsCategory = category.id === '86975750';
 
   return (
-    <motion.button
+    <motion.a
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.03 }}
-      onClick={onClick}
-      className="group relative h-full flex flex-col bg-card rounded-lg border border-border/50 overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300 text-left w-full"
+      href={`/store?category=${category.id}`}
+      onClick={(e) => { e.preventDefault(); onClick(); }}
+      className="group relative h-full flex flex-col bg-card rounded-lg border border-border/50 overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300 text-left w-full cursor-pointer"
     >
       <div className="aspect-square relative overflow-hidden">
         {image ? (
@@ -192,7 +194,7 @@ const CategoryCard = ({ category, image, productCount, onClick, index }: Categor
           {productCount}
         </span>
       </div>
-    </motion.button>
+    </motion.a>
   );
 };
 
@@ -636,9 +638,10 @@ const Store = () => {
                             transition={{ delay: index * 0.02 }}
                             className="group bg-card rounded-xl border border-border/50 overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300"
                           >
-                            <button
-                              onClick={() => handleProductClick(product)}
-                              className="aspect-square bg-white relative overflow-hidden cursor-pointer"
+                            <a
+                              href={`/store?product=${product.id}`}
+                              onClick={(e) => { e.preventDefault(); handleProductClick(product); }}
+                              className="block w-full aspect-square bg-white relative overflow-hidden cursor-pointer"
                             >
                               {product.picture ? (
                                 <img
@@ -663,7 +666,7 @@ const Store = () => {
                                   </div>
                                 </>
                               )}
-                            </button>
+                            </a>
                             <div className="p-3 space-y-2">
                               <div className="space-y-0.5">
                                 <div className="text-lg font-bold text-primary">
@@ -678,9 +681,15 @@ const Store = () => {
                                   </p>
                                 )}
                               </div>
-                              <h3 className="text-sm font-medium text-foreground line-clamp-4 leading-snug min-h-[4.5rem]">
-                                {minOrder ? product.name.replace(/\s*\(\s*5\s*канистр\s*\)\s*$/i, '').trim() : product.name}
-                              </h3>
+                              <a
+                                href={`/store?product=${product.id}`}
+                                onClick={(e) => { e.preventDefault(); handleProductClick(product); }}
+                                className="block"
+                              >
+                                <h3 className="text-sm font-medium text-foreground line-clamp-4 leading-snug min-h-[4.5rem]">
+                                  {minOrder ? product.name.replace(/\s*\(\s*5\s*канистр\s*\)\s*$/i, '').trim() : product.name}
+                                </h3>
+                              </a>
                               {product.vendorCode && (
                                 <p className="text-xs text-muted-foreground">Арт: {product.vendorCode}</p>
                               )}
@@ -852,10 +861,10 @@ const Store = () => {
                                     transition={{ delay: index * 0.02 }}
                                     className="group bg-card rounded-xl border border-border/50 overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300"
                                   >
-                                    <button
-                                      onClick={() => handleProductClick(product)}
-                                      className="aspect-square bg-white relative overflow-hidden cursor-pointer"
-                                      disabled={isEditMode}
+                                    <a
+                                      href={`/store?product=${product.id}`}
+                                      onClick={(e) => { e.preventDefault(); if (!isEditMode) handleProductClick(product); }}
+                                      className="block w-full aspect-square bg-white relative overflow-hidden cursor-pointer"
                                     >
                                       {product.picture ? (
                                         <img
@@ -880,7 +889,7 @@ const Store = () => {
                                           </div>
                                         </>
                                       )}
-                                    </button>
+                                    </a>
                                     <div className="p-3 space-y-2">
                                       <div className="space-y-0.5">
                                         <div className="text-lg font-bold text-primary">
@@ -895,9 +904,15 @@ const Store = () => {
                                           </p>
                                         )}
                                       </div>
-                                      <h3 className="text-sm font-medium text-foreground line-clamp-4 leading-snug min-h-[4.5rem]">
-                                        {minOrder ? product.name.replace(/\s*\(\s*5\s*канистр\s*\)\s*$/i, '').trim() : product.name}
-                                      </h3>
+                                      <a
+                                        href={`/store?product=${product.id}`}
+                                        onClick={(e) => { e.preventDefault(); if (!isEditMode) handleProductClick(product); }}
+                                        className="block"
+                                      >
+                                        <h3 className="text-sm font-medium text-foreground line-clamp-4 leading-snug min-h-[4.5rem]">
+                                          {minOrder ? product.name.replace(/\s*\(\s*5\s*канистр\s*\)\s*$/i, '').trim() : product.name}
+                                        </h3>
+                                      </a>
                                       {product.vendorCode && (
                                         <p className="text-xs text-muted-foreground">Арт: {product.vendorCode}</p>
                                       )}

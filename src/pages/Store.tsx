@@ -402,8 +402,8 @@ const Store = () => {
   }, [searchQuery, selectedCategory, searchProducts, getProductsByCategory, getProductSortOrder]);
 
   const scrollPageTop = () => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-  };
+  if (typeof window !== 'undefined') window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+};
 
   const navigateToCategory = (categoryId: string) => {
     setCategoryHistory(prev => [...prev, categoryId]);

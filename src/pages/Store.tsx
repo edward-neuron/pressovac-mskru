@@ -510,7 +510,7 @@ const Store = () => {
 
             <div className="flex items-center gap-3">
               {/* Edit Mode Toggle - only visible in Lovable editor (iframe) */}
-              {window.parent !== window && (
+              if (typeof window !== 'undefined' && window.parent !== window) {
                 <>
                   <Button
                     variant={isEditMode ? "default" : "outline"}
@@ -786,7 +786,7 @@ const Store = () => {
                       onSearchProduct={(query) => {
                         setCategoryHistory([]);
                         setSearchQuery(query);
-                        window.scrollTo({ top: 0, behavior: 'auto' });
+                        if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'auto' });
                       }} 
                     />
                   )}

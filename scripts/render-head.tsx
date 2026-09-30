@@ -2,11 +2,12 @@
 // SSR-прокладка: рендерит AppContent под StaticRouter, возвращает head-теги из Helmet.
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import helmetAsync from "react-helmet-async";
+import * as helmetAsync from "react-helmet-async";
 import { StaticRouter } from "react-router-dom/server";
 import { AppContent } from "../src/App";
 
-const { HelmetProvider } = helmetAsync;
+const HelmetProvider =
+  helmetAsync.HelmetProvider ?? (helmetAsync as any).default?.HelmetProvider;
 
 export function renderHead(route: string): string {
   const helmetContext: Record<string, any> = {};

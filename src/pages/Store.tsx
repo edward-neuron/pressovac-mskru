@@ -510,7 +510,7 @@ const Store = () => {
 
             <div className="flex items-center gap-3">
               {/* Edit Mode Toggle - only visible in Lovable editor (iframe) */}
-              if (typeof window !== 'undefined' && window.parent !== window) {
+              {typeof window !== 'undefined' && window.parent !== window && (
                 <>
                   <Button
                     variant={isEditMode ? "default" : "outline"}

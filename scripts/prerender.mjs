@@ -2,23 +2,23 @@
 import { readFileSync, writeFileSync, mkdirSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
-import { execSync } from "child_process";
+import { createServer } from "vite";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
 const DIST = resolve(ROOT, "dist");
 
-// --- 1. Pull slugs via regex — avoids tsx importing binary assets ---
+// --- 1. Slug'и статей берём из исходника регуляркой (без импорта ассетов) ---
 const dataSource = readFileSync(
   resolve(ROOT, "src/data/articlesData.ts"),
   "utf8"
 );
-const slugMatches = [...dataSource.matchAll(/slug:\s*['"]([^'"]+)['"]/g)];
-const articleSlugs = slugMatches.map((m) => m[1]);
+const articleSlugs = [...dataSource.matchAll(/slug:\s*['"]([^'"]+)['"]/g)].map(
+  (m) => m[1]
+);
+console.log(`Found ${articleSlugs.length} article slugs`);
 
-console.log(`Found ${articleSlugs.length} article slugs:`, articleSlugs);
-
-// --- 2. Static routes ---
+// --- 2. Маршруты ---
 const STATIC_ROUTES = [
   "/",
   "/about",
@@ -31,57 +31,44 @@ const STATIC_ROUTES = [
   "/delivery",
   "/privacy",
 ];
-
 const ARTICLE_ROUTES = articleSlugs.map((s) => `/articles/${s}`);
 const ALL_ROUTES = [...STATIC_ROUTES, ...ARTICLE_ROUTES];
 
 console.log(`Prerendering ${ALL_ROUTES.length} routes...`);
 
-// --- 3. Base HTML shell from Vite output ---
+// --- 3. Базовый HTML от Vite ---
 const baseHtml = readFileSync(resolve(DIST, "index.html"), "utf8");
 
-// --- 4. Render each route via tsx + ReactDOMServer ---
-for (const route of ALL_ROUTES) {
-  const headHtml = execSync(
-    `npx tsx --eval "
-      import React from 'react';
-      import { renderToStaticMarkup } from 'react-dom/server';
-      import { HelmetProvider } from 'react-helmet-async';
-      import { StaticRouter } from 'react-router-dom/server';
-      import App from './src/App.tsx';
+// --- 4. Поднимаем Vite в SSR-режиме (умеет .webp, css, alias @) ---
+const vite = await createServer({
+  root: ROOT,
+  server: { middlewareMode: true },
+  appType: "custom",
+  logLevel: "warn",
+});
 
-      const helmetContext = {};
-      renderToStaticMarkup(
-        React.createElement(HelmetProvider, { context: helmetContext },
-          React.createElement(StaticRouter, { location: '${route}' },
-            React.createElement(App)
-          )
-        )
-      );
-      const { helmet } = helmetContext;
-      const head = [
-        helmet.title.toString(),
-        helmet.meta.toString(),
-        helmet.link.toString(),
-        helmet.script.toString(),
-      ].filter(Boolean).join('\\n    ');
-      process.stdout.write(head);
-    "`,
-    { cwd: ROOT, encoding: "utf8" }
-  ).trim();
+try {
+  const { renderHead } = await vite.ssrLoadModule("/scripts/render-head.tsx");
 
-  let html = baseHtml
-    .replace(/<title>[^<]*<\/title>/, "")
-    .replace("<head>", `<head>\n    ${headHtml}`);
+  for (const route of ALL_ROUTES) {
+    let head = "";
+    try {
+      head = renderHead(route);
+    } catch (e) {
+      console.warn(`⚠ ${route} — head render failed: ${e.message}`);
+    }
 
-  const outDir =
-    route === "/"
-      ? DIST
-      : resolve(DIST, ...route.replace(/^\//, "").split("/"));
+    let html = baseHtml.replace(/<title>[^<]*<\/title>/, "");
+    html = html.replace("<head>", `<head>\n    ${head}`);
 
-  mkdirSync(outDir, { recursive: true });
-  writeFileSync(resolve(outDir, "index.html"), html, "utf8");
-  console.log(`✓ ${route}`);
+    const outDir =
+      route === "/" ? DIST : resolve(DIST, ...route.slice(1).split("/"));
+    mkdirSync(outDir, { recursive: true });
+    writeFileSync(resolve(outDir, "index.html"), html, "utf8");
+    console.log(`✓ ${route}`);
+  }
+} finally {
+  await vite.close();
 }
 
 console.log(`\n✓ Done — ${ALL_ROUTES.length} routes prerendered.`);

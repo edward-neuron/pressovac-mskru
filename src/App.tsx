@@ -25,37 +25,43 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-const App = () => (
+// Контент приложения без роутера — используется и на клиенте, и при SSR-пререндере
+export const AppContent = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <CartProvider>
         <Toaster />
         <Sonner />
         <TechWorksAlert />
-        <BrowserRouter>
-          <ScrollToTop />
-          <LegacyRedirects />
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/catalog" element={<Catalog />} />
-            <Route path="/store" element={<Store />} />
-            <Route path="/store/checkout" element={<Checkout />} />
-            <Route path="/technology" element={<Technology />} />
-            <Route path="/training" element={<Training />} />
-            <Route path="/articles" element={<Articles />} />
-            <Route path="/articles/:slug" element={<ArticlePage />} />
-            <Route path="/contacts" element={<Contacts />} />
-            <Route path="/inquiry" element={<Inquiry />} />
-            <Route path="/delivery" element={<Delivery />} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route path="/admin/products" element={<AdminProducts />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
+        <ScrollToTop />
+        <LegacyRedirects />
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/catalog" element={<Catalog />} />
+          <Route path="/store" element={<Store />} />
+          <Route path="/store/checkout" element={<Checkout />} />
+          <Route path="/technology" element={<Technology />} />
+          <Route path="/training" element={<Training />} />
+          <Route path="/articles" element={<Articles />} />
+          <Route path="/articles/:slug" element={<ArticlePage />} />
+          <Route path="/contacts" element={<Contacts />} />
+          <Route path="/inquiry" element={<Inquiry />} />
+          <Route path="/delivery" element={<Delivery />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/admin/products" element={<AdminProducts />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
       </CartProvider>
     </TooltipProvider>
   </QueryClientProvider>
+);
+
+// Клиентская обёртка: только здесь есть BrowserRouter
+const App = () => (
+  <BrowserRouter>
+    <AppContent />
+  </BrowserRouter>
 );
 
 export default App;

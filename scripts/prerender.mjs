@@ -27,6 +27,7 @@ const STATIC_ROUTES = [
   "/store",
   "/technology",
   "/training",
+  "/articles",
   "/delivery",
   "/privacy",
 ];

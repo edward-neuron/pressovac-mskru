@@ -2,6 +2,7 @@ import { useState, useCallback, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { Layout } from '@/components/layout/Layout';
+import { SEOHead } from '@/components/seo/SEOHead';
 import { Play, CheckCircle, ArrowRight, X, Camera, Wind, Flame, Shield, Zap, AlertTriangle, TrendingDown, Bug, Thermometer, Filter, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
@@ -176,6 +177,11 @@ const Technology = () => {
 
   return (
     <Layout>
+      <SEOHead
+        title="Технология очистки вентиляции Pressovac | Веконт-М"
+        description="Сухая очистка, удаление жира и нагара, видеоинспекция и дезинфекция воздуховодов. Оборудование Pressovac для ресторанов, бизнес-центров и производств."
+        canonical="/technology"
+      />
       <Helmet>
         <link
           rel="preload"

@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
+import { SEOHead } from '@/components/seo/SEOHead';
 import { FileText, Send, CheckCircle, Loader2, Paperclip, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -194,6 +195,11 @@ const Inquiry = () => {
 
   return (
     <Layout>
+            <SEOHead
+        title="Запрос оборудования Pressovac | Подбор и расчёт"
+        description="Оставьте запрос — подберём оборудование Pressovac под ваш объект и объём работ. Вакуумные установки, щёточные машины, видеоинспекция. Москва, доставка по России и СНГ."
+        canonical="/inquiry"
+      />
       {/* Hero */}
       <section className="section-padding hero-gradient">
         <div className="container-custom">

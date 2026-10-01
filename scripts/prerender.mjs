@@ -30,6 +30,7 @@ const STATIC_ROUTES = [
   "/articles",
   "/delivery",
   "/privacy",
+  "/inquiry",
 ];
 const ARTICLE_ROUTES = articleSlugs.map((s) => `/articles/${s}`);
 const ALL_ROUTES = [...STATIC_ROUTES, ...ARTICLE_ROUTES];

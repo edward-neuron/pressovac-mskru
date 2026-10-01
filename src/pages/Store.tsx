@@ -502,7 +502,7 @@ const Store = () => {
     seoProductId,
     searchQuery ? null : seoCategoryId,
     productDrawerOpen && selectedProduct
-      ? { name: selectedProduct.name, price: selectedProduct.price, article: (selectedProduct as any).article, image: (selectedProduct as any).image }
+      ? { name: selectedProduct.name, price: Number(selectedProduct.price) || undefined, article: (selectedProduct as any).article, image: (selectedProduct as any).image }
       : undefined
   );
 

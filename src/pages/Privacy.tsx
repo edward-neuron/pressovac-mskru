@@ -1,8 +1,14 @@
 import { Layout } from "@/components/layout/Layout";
+import { SEOHead } from "@/components/seo/SEOHead";
 
 const Privacy = () => {
   return (
     <Layout>
+            <SEOHead
+        title="Политика обработки персональных данных | Pressovac"
+        description="Политика оператора в отношении обработки персональных данных в соответствии с ФЗ № 152-ФЗ от 27.07.2006."
+        canonical="/privacy"
+      />
       <div className="bg-primary py-16">
         <div className="container mx-auto px-4">
           <h1 className="text-3xl md:text-4xl font-bold text-primary-foreground text-center">

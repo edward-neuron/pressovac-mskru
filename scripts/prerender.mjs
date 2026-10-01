@@ -33,7 +33,15 @@ const STATIC_ROUTES = [
   "/inquiry",
 ];
 const ARTICLE_ROUTES = articleSlugs.map((s) => `/articles/${s}`);
-const ALL_ROUTES = [...STATIC_ROUTES, ...ARTICLE_ROUTES];
+// Категории и товары магазина — отдельные индексируемые адреса
+const storeData = JSON.parse(
+  readFileSync(resolve(ROOT, "src/data/storeFallback.json"), "utf8")
+);
+const STORE_ROUTES = [
+  ...storeData.categories.map((c) => `/store/category/${c.id}`),
+  ...storeData.products.map((p) => `/store/product/${p.id}`),
+];
+const ALL_ROUTES = [...STATIC_ROUTES, ...ARTICLE_ROUTES, ...STORE_ROUTES];
 
 console.log(`Prerendering ${ALL_ROUTES.length} routes...`);
 

@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useParams, useNavigate, createSearchParams } from 'react-router-dom';
+import { getStoreSeo } from '@/lib/storeSeo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   DndContext, 
@@ -242,7 +243,11 @@ const Breadcrumbs = ({ categoryHistory, categories, onNavigateToRoot, onNavigate
 };
 
 const Store = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const routeParams = useParams<{ productId?: string; categoryId?: string }>();
+  const urlProductId = routeParams.productId ?? searchParams.get('product');
+  const urlCategoryId = routeParams.categoryId ?? searchParams.get('category');
   const [categoryHistory, setCategoryHistory] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<YmlProduct | null>(null);
@@ -285,8 +290,8 @@ const Store = () => {
     isUpdatingFromUrl.current = true;
     
     const urlSearch = searchParams.get('search');
-    const urlCategory = searchParams.get('category');
-    const urlProduct = searchParams.get('product');
+    const urlCategory = urlCategoryId;
+    const urlProduct = urlProductId;
     
     if (urlSearch) {
       setSearchQuery(urlSearch);
@@ -317,7 +322,7 @@ const Store = () => {
     
     setUrlInitialized(true);
     setTimeout(() => { isUpdatingFromUrl.current = false; }, 100);
-  }, [isLoading, categories, allProducts, urlInitialized, searchParams, buildCategoryPath]);
+  }, [isLoading, categories, allProducts, urlInitialized, searchParams, buildCategoryPath, urlCategoryId, urlProductId]);
 
   // Sync state changes TO URL (skip when initializing from URL)
   useEffect(() => {
@@ -335,8 +340,10 @@ const Store = () => {
       params.product = selectedProduct.id;
     }
     
-    setSearchParams(params, { replace: true });
-  }, [categoryHistory, searchQuery, productDrawerOpen, selectedProduct, urlInitialized, setSearchParams]);
+    // Пришли по индексируемому адресу /store/product/:id или /store/category/:id —
+    // дальше работаем в обычном формате /store?...
+    navigate({ pathname: '/store', search: `?${createSearchParams(params)}` }, { replace: true });
+  }, [categoryHistory, searchQuery, productDrawerOpen, selectedProduct, urlInitialized, navigate]);
   
   const handleRefreshCatalog = async () => {
     setIsRefreshing(true);
@@ -485,13 +492,30 @@ const Store = () => {
     }
   };
 
+  const seoProductId = productDrawerOpen && selectedProduct
+    ? selectedProduct.id
+    : (!urlInitialized ? urlProductId : null);
+  const seoCategoryId = categoryHistory.length > 0
+    ? categoryHistory[categoryHistory.length - 1]
+    : (!urlInitialized ? urlCategoryId : null);
+  const seo = getStoreSeo(
+    seoProductId,
+    searchQuery ? null : seoCategoryId,
+    productDrawerOpen && selectedProduct
+      ? { name: selectedProduct.name, price: Number(selectedProduct.price) || undefined, article: (selectedProduct as any).article, image: (selectedProduct as any).image }
+      : undefined
+  );
+
   return (
     <Layout>
       <SEOHead 
-        title="Магазин оборудования Pressovac | Купить оборудование для очистки вентиляции"
-        description="Купить профессиональное оборудование Pressovac для очистки вентиляции. Вакуумные установки, щёточные машины, видеоинспекция. Доставка по России."
+        title={seo.title}
+        description={seo.description}
         keywords="купить Pressovac, магазин оборудования для вентиляции, цены Pressovac"
-        canonical="/store"
+        canonical={seo.canonical}
+        ogType={seo.ogType}
+        {...(seo.ogImage ? { ogImage: seo.ogImage } : {})}
+        {...(seo.structuredData ? { structuredData: seo.structuredData } : {})}
       />
 
       {/* Hero Section */}

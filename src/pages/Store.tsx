@@ -243,7 +243,11 @@ const Breadcrumbs = ({ categoryHistory, categories, onNavigateToRoot, onNavigate
 };
 
 const Store = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const routeParams = useParams<{ productId?: string; categoryId?: string }>();
+  const urlProductId = routeParams.productId ?? searchParams.get('product');
+  const urlCategoryId = routeParams.categoryId ?? searchParams.get('category');
   const [categoryHistory, setCategoryHistory] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<YmlProduct | null>(null);

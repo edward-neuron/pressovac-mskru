@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import Honeypot, { isBotSubmission } from '@/components/Honeypot';
 import { showTechWorksAlert } from '@/components/TechWorksAlert';
+import { onLeadInquiry } from '@/lib/analytics';
 
 interface FormData {
   company: string;
@@ -154,10 +155,7 @@ const Inquiry = () => {
 
       if (error) throw error;
 
-      // Яндекс.Метрика: цель отправки формы
-      if (typeof window !== 'undefined' && (window as any).ym) {
-        (window as any).ym(202504, 'reachGoal', 'form_submit');
-      }
+      onLeadInquiry();
 
       toast.success('Заявка успешно отправлена! Проверьте почту для подтверждения.');
       

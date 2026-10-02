@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { onAddToCart, track } from '@/lib/analytics';
 
 export interface CartItem {
   id: string;
@@ -41,6 +42,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, [items]);
 
   const addItem = (item: Omit<CartItem, 'quantity'>) => {
+    onAddToCart(
+      { item_id: item.id, item_name: item.name, price: item.price },
+      item.price
+    );
     setItems(prev => {
       const existing = prev.find(i => i.id === item.id);
       if (existing) {
@@ -69,10 +74,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const clearCart = () => setItems([]);
   const openCart = () => {
     setIsCartOpen(true);
-    // Яндекс.Метрика: цель открытия корзины
-    if (typeof window !== 'undefined' && (window as any).ym) {
-      (window as any).ym(202504, 'reachGoal', 'cart_open');
-    }
+    // Метрика + GA4 через единый слой
+    track('cart_open');
   };
   const closeCart = () => setIsCartOpen(false);
 

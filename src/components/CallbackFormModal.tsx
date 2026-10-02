@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
+import { onLeadCallback } from '@/lib/analytics';
 import { Paperclip, PhoneCall, Send, Loader2, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -235,10 +236,7 @@ const CallbackFormModal = ({ children }: CallbackFormModalProps) => {
         description: 'Мы свяжемся с вами в указанное время.',
       });
 
-      // Яндекс.Метрика: цель отправки формы
-      if (typeof window !== 'undefined' && (window as any).ym) {
-        (window as any).ym(202504, 'reachGoal', 'form_submit');
-      }
+      onLeadCallback();
 
       setFormData({
         name: '',

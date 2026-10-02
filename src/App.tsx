@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ScrollToTop } from "@/components/ScrollToTop";
+import { AnalyticsRouteTracker } from "@/components/AnalyticsRouteTracker";
 import { LegacyRedirects } from "@/components/LegacyRedirects";
 import { CartProvider } from "@/contexts/CartContext";
 import { TechWorksAlert } from "@/components/TechWorksAlert";
@@ -34,6 +35,7 @@ export const AppContent = () => (
         <Sonner />
         <TechWorksAlert />
         <ScrollToTop />
+        <AnalyticsRouteTracker />
         <LegacyRedirects />
         <Routes>
           <Route path="/" element={<Index />} />

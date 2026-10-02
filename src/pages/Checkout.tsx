@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useCart } from '@/contexts/CartContext';
+import { trackPurchase } from '@/lib/analytics';
 import { formatPrice } from '@/data/storeData';
 import { ArrowLeft, ShoppingBag, Check, Loader2, Minus, Plus, Trash2, Upload, X, Phone, FileText, CheckCircle2 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -227,10 +228,17 @@ const Checkout = () => {
 
       if (error) throw error;
 
-      // Яндекс.Метрика: цель оформления заказа
-      if (typeof window !== 'undefined' && (window as any).ym) {
-        (window as any).ym(202504, 'reachGoal', 'order_complete');
-      }
+      // Метрика (order_complete) + GA4 (purchase) через единый слой
+      trackPurchase(
+        String(generatedOrderNumber),
+        totalPrice,
+        orderItems.map((i) => ({
+          item_id: i.sku || i.name,
+          item_name: i.name,
+          price: i.price,
+          quantity: i.quantity,
+        }))
+      );
 
       setOrderNumber(generatedOrderNumber);
       setOrderSuccess(true);

@@ -18,6 +18,7 @@ import {
   rectSortingStrategy 
 } from '@dnd-kit/sortable';
 import { Layout } from '@/components/layout/Layout';
+import { onProductView } from '@/lib/analytics';
 import { SEOHead } from '@/components/seo/SEOHead';
 import { Button } from '@/components/ui/button';
 import { CartDrawer } from '@/components/store/CartDrawer';
@@ -466,6 +467,11 @@ const Store = () => {
 
   const handleProductClick = (product: YmlProduct) => {
     if (isEditMode) return;
+    onProductView({
+      item_id: product.id,
+      item_name: product.name,
+      price: product.priceNum,
+    });
     loadProductDetails(product).then((fullProduct) => {
       setSelectedProduct(fullProduct);
       setProductDrawerOpen(true);

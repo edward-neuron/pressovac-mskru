@@ -13,6 +13,7 @@ import { Link } from 'react-router-dom';
 import CallbackFormModal from '@/components/CallbackFormModal';
 import Honeypot, { isBotSubmission } from '@/components/Honeypot';
 import { showTechWorksAlert } from '@/components/TechWorksAlert';
+import { onLeadContact } from '@/lib/analytics';
 import {
   Tooltip,
   TooltipContent,
@@ -215,10 +216,7 @@ const Contacts = () => {
 
       if (error) throw error;
 
-      // Яндекс.Метрика: цель отправки формы
-      if (typeof window !== 'undefined' && (window as any).ym) {
-        (window as any).ym(202504, 'reachGoal', 'form_submit');
-      }
+      onLeadContact();
 
       toast.success('Сообщение отправлено!');
       setSimpleForm({ name: '', phone: '', email: '', message: '', privacyAccepted: false });
@@ -328,10 +326,7 @@ const Contacts = () => {
 
       if (error) throw error;
 
-      // Яндекс.Метрика: цель отправки формы
-      if (typeof window !== 'undefined' && (window as any).ym) {
-        (window as any).ym(202504, 'reachGoal', 'form_submit');
-      }
+      onLeadContact();
 
       toast.success('Заявка успешно отправлена!');
       setExtendedForm({

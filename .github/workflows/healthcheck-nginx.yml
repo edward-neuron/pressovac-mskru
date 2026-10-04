@@ -1,4 +1,4 @@
-name: Healthcheck & Auto-restart Nginx
+name: Healthcheck & Auto-restart Nginx 
 
 on:
   schedule:

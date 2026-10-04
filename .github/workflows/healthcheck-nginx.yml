@@ -14,8 +14,8 @@ jobs:
         id: healthcheck
         continue-on-error: true
         run: |
-          echo "🔍 Проверяю https://api.pressovac-msk.ru/health"
-          if curl -f -m 10 https://api.pressovac-msk.ru/2>&1 | grep -q "200\|301\|302"; then
+          echo "🔍 Проверяю https://api.pressovac-msk.ru/"
+          if curl -s -o /dev/null -w "%{http_code}" -m 10 https://api.pressovac-msk.ru/ | grep -qE "^(200|301|302|401)$"; then
             echo "status=ok" >> $GITHUB_OUTPUT
             echo "✅ Прокси работает нормально"
           else
@@ -42,8 +42,8 @@ jobs:
         run: |
           echo "⏳ Жду 5 секунд после перезапуска"
           sleep 5
-          echo "🔍 Проверяю прокси снова"
-          if curl -f -m 10 https://api.pressovac-msk.ru/2>&1 | grep -q "200\|301\|302"; then
+          echo "🔍 Проверяю https://api.pressovac-msk.ru/"
+          if curl -s -o /dev/null -w "%{http_code}" -m 10 https://api.pressovac-msk.ru/ | grep -qE "^(200|301|302|401)$"; then
             echo "✅ Перезапуск помог, прокси снова работает"
           else
             echo "❌ Перезапуск не помог, требуется ручная проверка"

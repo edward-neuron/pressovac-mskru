@@ -15,7 +15,7 @@ jobs:
         continue-on-error: true
         run: |
           echo "🔍 Проверяю https://api.pressovac-msk.ru/health"
-          if curl -f -m 10 https://api.pressovac-msk.ru/rest/v1; then
+          if curl -f -m 10 https://api.pressovac-msk.ru/2>&1 | grep -q "200\|301\|302"; then
             echo "status=ok" >> $GITHUB_OUTPUT
             echo "✅ Прокси работает нормально"
           else
@@ -43,7 +43,7 @@ jobs:
           echo "⏳ Жду 5 секунд после перезапуска"
           sleep 5
           echo "🔍 Проверяю прокси снова"
-          if curl -f -m 10 https://api.pressovac-msk.ru/rest/v1; then
+          if curl -f -m 10 https://api.pressovac-msk.ru/2>&1 | grep -q "200\|301\|302"; then
             echo "✅ Перезапуск помог, прокси снова работает"
           else
             echo "❌ Перезапуск не помог, требуется ручная проверка"

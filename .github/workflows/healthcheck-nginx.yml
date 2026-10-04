@@ -1,0 +1,51 @@
+name: Healthcheck & Auto-restart Nginx
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  check-and-restart:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Check proxy health
+        id: healthcheck
+        continue-on-error: true
+        run: |
+          echo "🔍 Проверяю https://api.pressovac-msk.ru/health"
+          if curl -f -m 10 https://api.pressovac-msk.ru/health; then
+            echo "status=ok" >> $GITHUB_OUTPUT
+            echo "✅ Прокси работает нормально"
+          else
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "❌ Прокси не отвечает"
+          fi
+
+      - name: Setup SSH
+        if: steps.healthcheck.outputs.status == 'failed'
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H pressovac-msk.ru >> ~/.ssh/known_hosts
+
+      - name: Restart nginx
+        if: steps.healthcheck.outputs.status == 'failed'
+        run: |
+          echo "🔄 Перезапускаю nginx на сервере"
+          ssh -i ~/.ssh/id_ed25519 root@pressovac-msk.ru "systemctl restart nginx && systemctl status nginx --no-pager"
+
+      - name: Verify recovery
+        if: steps.healthcheck.outputs.status == 'failed'
+        run: |
+          echo "⏳ Жду 5 секунд после перезапуска"
+          sleep 5
+          echo "🔍 Проверяю прокси снова"
+          if curl -f -m 10 https://api.pressovac-msk.ru/health; then
+            echo "✅ Перезапуск помог, прокси снова работает"
+          else
+            echo "❌ Перезапуск не помог, требуется ручная проверка"
+            exit 1
+          fi

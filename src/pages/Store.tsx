@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import { useSearchParams, useParams, useNavigate, createSearchParams } from 'react-router-dom';
-import { getStoreSeo } from '@/lib/storeSeo';
+import { getStoreSeo , resolveStoreSlug, PRODUCT_SLUGS, CATEGORY_SLUGS } from '@/lib/storeSeo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   DndContext, 
@@ -246,9 +246,20 @@ const Breadcrumbs = ({ categoryHistory, categories, onNavigateToRoot, onNavigate
 const Store = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const routeParams = useParams<{ productId?: string; categoryId?: string }>();
-  const urlProductId = routeParams.productId ?? searchParams.get('product');
-  const urlCategoryId = routeParams.categoryId ?? searchParams.get('category');
+  const routeParams = useParams<{ productId?: string; categoryId?: string; slug?: string }>();
+  const slugIds = resolveStoreSlug(routeParams.slug);
+  const urlProductId = slugIds.productId ?? routeParams.productId ?? searchParams.get('product');
+  const urlCategoryId = slugIds.categoryId ?? routeParams.categoryId ?? searchParams.get('category');
+  // Редирект старых адресов тестовых товаров/разделов на ЧПУ
+  useEffect(() => {
+    if (routeParams.slug) return;
+    const keys = [...searchParams.keys()];
+    const pid = routeParams.productId ?? (keys.length === 1 ? searchParams.get('product') : null);
+    const cid = routeParams.categoryId ?? (keys.length === 1 ? searchParams.get('category') : null);
+    if (pid && PRODUCT_SLUGS[pid]) navigate(`/store/${PRODUCT_SLUGS[pid]}`, { replace: true });
+    else if (cid && CATEGORY_SLUGS[cid]) navigate(`/store/${CATEGORY_SLUGS[cid]}`, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const [categoryHistory, setCategoryHistory] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<YmlProduct | null>(null);
@@ -343,6 +354,16 @@ const Store = () => {
     
     // Пришли по индексируемому адресу /store/product/:id или /store/category/:id —
     // дальше работаем в обычном формате /store?...
+    // ЧПУ: если в адресе только тестовый товар или раздел — показываем короткий адрес
+    const keys = Object.keys(params);
+    if (keys.length === 1 && keys[0] === 'product' && PRODUCT_SLUGS[params.product]) {
+      navigate(`/store/${PRODUCT_SLUGS[params.product]}`, { replace: true });
+      return;
+    }
+    if (keys.length === 1 && keys[0] === 'category' && CATEGORY_SLUGS[params.category]) {
+      navigate(`/store/${CATEGORY_SLUGS[params.category]}`, { replace: true });
+      return;
+    }
     navigate({ pathname: '/store', search: `?${createSearchParams(params)}` }, { replace: true });
   }, [categoryHistory, searchQuery, productDrawerOpen, selectedProduct, urlInitialized, navigate]);
   

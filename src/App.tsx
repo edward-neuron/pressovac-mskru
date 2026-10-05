@@ -44,6 +44,7 @@ export const AppContent = () => (
           <Route path="/store" element={<Store />} />
           <Route path="/store/product/:productId" element={<Store />} />
           <Route path="/store/category/:categoryId" element={<Store />} />
+          <Route path="/store/:slug" element={<Store />} />
           <Route path="/store/checkout" element={<Checkout />} />
           <Route path="/technology" element={<Technology />} />
           <Route path="/training" element={<Training />} />

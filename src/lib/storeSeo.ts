@@ -10,8 +10,18 @@ type FbCategory = { id: string; name: string; parent_id: string | null };
 const products = (fallback as any).products as FbProduct[];
 const categories = (fallback as any).categories as FbCategory[];
 
-export const storeProductPath = (id: string) => `/store/product/${id}`;
-export const storeCategoryPath = (id: string) => `/store/category/${id}`;
+// ЧПУ-адреса (тестовое внедрение: 2 раздела, 2 товара)
+export const CATEGORY_SLUGS: Record<string, string> = { '86975775': 'dry-cleaning', '86975750': 'kits' };
+export const PRODUCT_SLUGS: Record<string, string> = { '198978976': 'p40', '198978986': 'e-20' };
+export const resolveStoreSlug = (slug?: string): { productId?: string; categoryId?: string } => {
+  if (!slug) return {};
+  const c = Object.keys(CATEGORY_SLUGS).find((k) => CATEGORY_SLUGS[k] === slug);
+  if (c) return { categoryId: c };
+  const pr = Object.keys(PRODUCT_SLUGS).find((k) => PRODUCT_SLUGS[k] === slug);
+  return pr ? { productId: pr } : {};
+};
+export const storeProductPath = (id: string) => PRODUCT_SLUGS[id] ? `/store/${PRODUCT_SLUGS[id]}` : `/store/product/${id}`;
+export const storeCategoryPath = (id: string) => CATEGORY_SLUGS[id] ? `/store/${CATEGORY_SLUGS[id]}` : `/store/category/${id}`;
 
 const clean = (s: string) => s.replace(/\s+/g, ' ').trim();
 

@@ -250,6 +250,16 @@ const Store = () => {
   const slugIds = resolveStoreSlug(routeParams.slug);
   const urlProductId = slugIds.productId ?? routeParams.productId ?? searchParams.get('product');
   const urlCategoryId = slugIds.categoryId ?? routeParams.categoryId ?? searchParams.get('category');
+  // Редирект старых адресов тестовых товаров/разделов на ЧПУ
+  useEffect(() => {
+    if (routeParams.slug) return;
+    const keys = [...searchParams.keys()];
+    const pid = routeParams.productId ?? (keys.length === 1 ? searchParams.get('product') : null);
+    const cid = routeParams.categoryId ?? (keys.length === 1 ? searchParams.get('category') : null);
+    if (pid && PRODUCT_SLUGS[pid]) navigate(`/store/${PRODUCT_SLUGS[pid]}`, { replace: true });
+    else if (cid && CATEGORY_SLUGS[cid]) navigate(`/store/${CATEGORY_SLUGS[cid]}`, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const [categoryHistory, setCategoryHistory] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<YmlProduct | null>(null);

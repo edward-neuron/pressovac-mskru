@@ -11,13 +11,16 @@ const products = (fallback as any).products as FbProduct[];
 const categories = (fallback as any).categories as FbCategory[];
 
 // ЧПУ-адреса (тестовое внедрение: 2 раздела, 2 товара)
+// Разделы: /store/{slug}; товары: /store/product/{модель}-{артикул}
 export const CATEGORY_SLUGS: Record<string, string> = { '86975775': 'dry-cleaning', '86975750': 'kits' };
-export const PRODUCT_SLUGS: Record<string, string> = { '198978976': 'p40', '198978986': 'e-20' };
+export const PRODUCT_SLUGS: Record<string, string> = { '198978976': 'product/p40-201-001-102', '198978986': 'product/e-20-201-002-003' };
+// Старые короткие тестовые адреса -> новые (301)
+export const LEGACY_SLUG_REDIRECTS: Record<string, string> = { 'p40': '/store/product/p40-201-001-102', 'e-20': '/store/product/e-20-201-002-003' };
 export const resolveStoreSlug = (slug?: string): { productId?: string; categoryId?: string } => {
   if (!slug) return {};
   const c = Object.keys(CATEGORY_SLUGS).find((k) => CATEGORY_SLUGS[k] === slug);
   if (c) return { categoryId: c };
-  const pr = Object.keys(PRODUCT_SLUGS).find((k) => PRODUCT_SLUGS[k] === slug);
+  const pr = Object.keys(PRODUCT_SLUGS).find((k) => PRODUCT_SLUGS[k] === slug || PRODUCT_SLUGS[k] === `product/${slug}`);
   return pr ? { productId: pr } : {};
 };
 export const storeProductPath = (id: string) => PRODUCT_SLUGS[id] ? `/store/${PRODUCT_SLUGS[id]}` : `/store/product/${id}`;

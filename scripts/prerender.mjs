@@ -41,7 +41,8 @@ const STORE_ROUTES = [
   ...storeData.categories.map((c) => `/store/category/${c.id}`),
   ...storeData.products.map((p) => `/store/product/${p.id}`),
 ];
-const ALL_ROUTES = [...STATIC_ROUTES, ...ARTICLE_ROUTES, ...STORE_ROUTES];
+const SLUG_ROUTES = ['/store/dry-cleaning', '/store/kits', '/store/p40', '/store/e-20'];
+const ALL_ROUTES = [...SLUG_ROUTES, ...STATIC_ROUTES, ...ARTICLE_ROUTES, ...STORE_ROUTES];
 
 console.log(`Prerendering ${ALL_ROUTES.length} routes...`);
 

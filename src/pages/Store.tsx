@@ -247,11 +247,15 @@ const Store = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const routeParams = useParams<{ productId?: string; categoryId?: string; slug?: string }>();
-  const slugIds = resolveStoreSlug(routeParams.slug);
+  const slugIds = resolveStoreSlug(routeParams.slug ?? routeParams.productId);
   const urlProductId = slugIds.productId ?? routeParams.productId ?? searchParams.get('product');
   const urlCategoryId = slugIds.categoryId ?? routeParams.categoryId ?? searchParams.get('category');
   // Редирект старых адресов тестовых товаров/разделов на ЧПУ
   useEffect(() => {
+    if (routeParams.slug && LEGACY_SLUG_REDIRECTS[routeParams.slug]) {
+      navigate(LEGACY_SLUG_REDIRECTS[routeParams.slug], { replace: true });
+      return;
+    }
     if (routeParams.slug) return;
     const keys = [...searchParams.keys()];
     const pid = routeParams.productId ?? (keys.length === 1 ? searchParams.get('product') : null);

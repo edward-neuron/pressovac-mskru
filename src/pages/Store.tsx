@@ -716,11 +716,11 @@ const Store = () => {
                                     Мин. партия {minOrder.minQuantity}
                                   </div>
                                   <div className="absolute inset-x-2 bottom-2 rounded-md border border-border bg-background/90 px-2 py-1 text-[11px] text-foreground opacity-0 group-hover:opacity-100 transition-opacity">
-                                    Минимальный заказ обязателен
+                                     Минимальный заказ обязателен
                                   </div>
                                 </>
                               )}
-                            </a>
+                            </Link>
                             <div className="p-3 space-y-2">
                               <div className="space-y-0.5">
                                 <div className="text-lg font-bold text-primary">
@@ -742,7 +742,7 @@ const Store = () => {
                                 <h3 className="text-sm font-medium text-foreground line-clamp-4 leading-snug min-h-[4.5rem]">
                                   {minOrder ? product.name.replace(/\s*\(\s*5\s*канистр\s*\)\s*$/i, '').trim() : product.name}
                                 </h3>
-                              </a>
+                              </Link>
                               {product.vendorCode && (
                                 <p className="text-xs text-muted-foreground">Арт: {product.vendorCode}</p>
                               )}
@@ -938,11 +938,11 @@ const Store = () => {
                                             Мин. партия {minOrder.minQuantity}
                                           </div>
                                           <div className="absolute inset-x-2 bottom-2 rounded-md border border-border bg-background/90 px-2 py-1 text-[11px] text-foreground opacity-0 group-hover:opacity-100 transition-opacity">
-                                            Минимальный заказ обязателен
+                                           Минимальный заказ обязателен
                                           </div>
                                         </>
                                       )}
-                                    </a>
+                                    </Link>
                                     <div className="p-3 space-y-2">
                                       <div className="space-y-0.5">
                                         <div className="text-lg font-bold text-primary">
@@ -965,7 +965,7 @@ const Store = () => {
                                         <h3 className="text-sm font-medium text-foreground line-clamp-4 leading-snug min-h-[4.5rem]">
                                           {minOrder ? product.name.replace(/\s*\(\s*5\s*канистр\s*\)\s*$/i, '').trim() : product.name}
                                         </h3>
-                                      </a>
+                                      </Link>
                                       {product.vendorCode && (
                                         <p className="text-xs text-muted-foreground">Арт: {product.vendorCode}</p>
                                       )}

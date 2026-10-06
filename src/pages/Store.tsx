@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
-import { useSearchParams, useParams, useNavigate, createSearchParams, Link } from 'react-router-dom';
+import { useSearchParams, useParams, useNavigate, useLocation, createSearchParams, Link } from 'react-router-dom';
 import { getStoreSeo , resolveStoreSlug, storeProductPath, PRODUCT_SLUGS, CATEGORY_SLUGS, LEGACY_SLUG_REDIRECTS } from '@/lib/storeSeo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -246,6 +246,7 @@ const Breadcrumbs = ({ categoryHistory, categories, onNavigateToRoot, onNavigate
 const Store = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const routeParams = useParams<{ productId?: string; categoryId?: string; slug?: string }>();
   const slugIds = resolveStoreSlug(routeParams.slug ?? routeParams.productId);
   const urlProductId = slugIds.productId ?? routeParams.productId ?? searchParams.get('product');
@@ -358,6 +359,13 @@ const Store = () => {
     
     // Пришли по индексируемому адресу /store/product/:id или /store/category/:id —
     // дальше работаем в обычном формате /store?...
+    // ЧПУ: если уже на красивом адресе открытого товара/раздела — адрес не трогаем
+    const prettyPath = productDrawerOpen && selectedProduct && PRODUCT_SLUGS[selectedProduct.id]
+      ? `/store/${PRODUCT_SLUGS[selectedProduct.id]}`
+      : (!productDrawerOpen && !searchQuery && categoryHistory.length > 0 && CATEGORY_SLUGS[categoryHistory[categoryHistory.length - 1]])
+        ? `/store/${CATEGORY_SLUGS[categoryHistory[categoryHistory.length - 1]]}`
+        : null;
+    if (prettyPath && location.pathname === prettyPath) return;
     // ЧПУ: если в адресе только тестовый товар или раздел — показываем короткий адрес
     const keys = Object.keys(params);
     if (keys.length === 1 && keys[0] === 'product' && PRODUCT_SLUGS[params.product]) {

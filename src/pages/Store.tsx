@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import { useSearchParams, useParams, useNavigate, createSearchParams } from 'react-router-dom';
-import { getStoreSeo , resolveStoreSlug, PRODUCT_SLUGS, CATEGORY_SLUGS } from '@/lib/storeSeo';
+import { getStoreSeo , resolveStoreSlug, PRODUCT_SLUGS, CATEGORY_SLUGS, LEGACY_SLUG_REDIRECTS } from '@/lib/storeSeo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   DndContext, 

@@ -503,6 +503,15 @@ const Store = () => {
     });
   };
 
+  // Открытие карточки товара при переходе по прямой ссылке (ЧПУ /store/product/...)
+  useEffect(() => {
+    if (!urlInitialized || isLoading || !urlProductId) return;
+    if (selectedProduct?.id === urlProductId) return;
+    const product = allProducts.find(p => p.id === urlProductId);
+    if (product) handleProductClick(product);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [urlProductId, urlInitialized, isLoading, allProducts]);
+
   const handleDragEndCategories = (event: DragEndEvent, categoryList: YmlCategory[]) => {
     const { active, over } = event;
     if (over && active.id !== over.id) {

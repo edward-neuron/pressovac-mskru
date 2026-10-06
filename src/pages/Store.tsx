@@ -357,15 +357,18 @@ const Store = () => {
       params.product = selectedProduct.id;
     }
     
-    // Пришли по индексируемому адресу /store/product/:id или /store/category/:id —
-    // дальше работаем в обычном формате /store?...
-    // ЧПУ: если уже на красивом адресе открытого товара/раздела — адрес не трогаем
+    // Прямая ссылка на товар ещё открывается — адрес не трогаем
+    if (urlProductId && !(productDrawerOpen && selectedProduct?.id === urlProductId)) return;
+    // ЧПУ: состояние соответствует красивому адресу — используем его
     const prettyPath = productDrawerOpen && selectedProduct && PRODUCT_SLUGS[selectedProduct.id]
       ? `/store/${PRODUCT_SLUGS[selectedProduct.id]}`
       : (!productDrawerOpen && !searchQuery && categoryHistory.length > 0 && CATEGORY_SLUGS[categoryHistory[categoryHistory.length - 1]])
         ? `/store/${CATEGORY_SLUGS[categoryHistory[categoryHistory.length - 1]]}`
         : null;
-    if (prettyPath && location.pathname === prettyPath) return;
+    if (prettyPath) {
+      if (location.pathname !== prettyPath) navigate(prettyPath, { replace: true });
+      return;
+    }
     // ЧПУ: если в адресе только тестовый товар или раздел — показываем короткий адрес
     const keys = Object.keys(params);
     if (keys.length === 1 && keys[0] === 'product' && PRODUCT_SLUGS[params.product]) {

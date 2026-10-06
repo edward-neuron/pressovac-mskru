@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
-import { useSearchParams, useParams, useNavigate, createSearchParams } from 'react-router-dom';
-import { getStoreSeo , resolveStoreSlug, PRODUCT_SLUGS, CATEGORY_SLUGS, LEGACY_SLUG_REDIRECTS } from '@/lib/storeSeo';
+import { useSearchParams, useParams, useNavigate, useLocation, createSearchParams, Link } from 'react-router-dom';
+import { getStoreSeo , resolveStoreSlug, storeProductPath, PRODUCT_SLUGS, CATEGORY_SLUGS, LEGACY_SLUG_REDIRECTS } from '@/lib/storeSeo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   DndContext, 
@@ -246,6 +246,7 @@ const Breadcrumbs = ({ categoryHistory, categories, onNavigateToRoot, onNavigate
 const Store = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const routeParams = useParams<{ productId?: string; categoryId?: string; slug?: string }>();
   const slugIds = resolveStoreSlug(routeParams.slug ?? routeParams.productId);
   const urlProductId = slugIds.productId ?? routeParams.productId ?? searchParams.get('product');
@@ -356,8 +357,18 @@ const Store = () => {
       params.product = selectedProduct.id;
     }
     
-    // Пришли по индексируемому адресу /store/product/:id или /store/category/:id —
-    // дальше работаем в обычном формате /store?...
+    // Прямая ссылка на товар ещё открывается — адрес не трогаем
+    if (urlProductId && !(productDrawerOpen && selectedProduct?.id === urlProductId)) return;
+    // ЧПУ: состояние соответствует красивому адресу — используем его
+    const prettyPath = productDrawerOpen && selectedProduct && PRODUCT_SLUGS[selectedProduct.id]
+      ? `/store/${PRODUCT_SLUGS[selectedProduct.id]}`
+      : (!productDrawerOpen && !searchQuery && categoryHistory.length > 0 && CATEGORY_SLUGS[categoryHistory[categoryHistory.length - 1]])
+        ? `/store/${CATEGORY_SLUGS[categoryHistory[categoryHistory.length - 1]]}`
+        : null;
+    if (prettyPath) {
+      if (location.pathname !== prettyPath) navigate(prettyPath, { replace: true });
+      return;
+    }
     // ЧПУ: если в адресе только тестовый товар или раздел — показываем короткий адрес
     const keys = Object.keys(params);
     if (keys.length === 1 && keys[0] === 'product' && PRODUCT_SLUGS[params.product]) {
@@ -502,6 +513,15 @@ const Store = () => {
       setProductDrawerOpen(true);
     });
   };
+
+  // Открытие карточки товара при переходе по прямой ссылке (ЧПУ /store/product/...)
+  useEffect(() => {
+    if (!urlInitialized || isLoading || !urlProductId) return;
+    if (selectedProduct?.id === urlProductId) return;
+    const product = allProducts.find(p => p.id === urlProductId);
+    if (product) handleProductClick(product);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [urlProductId, urlInitialized, isLoading, allProducts]);
 
   const handleDragEndCategories = (event: DragEndEvent, categoryList: YmlCategory[]) => {
     const { active, over } = event;
@@ -693,9 +713,8 @@ const Store = () => {
                             transition={{ delay: index * 0.02 }}
                             className="group bg-card rounded-xl border border-border/50 overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300"
                           >
-                            <a
-                              href={`/store?product=${product.id}`}
-                              onClick={(e) => { e.preventDefault(); handleProductClick(product); }}
+                            <Link
+                              to={storeProductPath(product.id)}
                               className="block w-full aspect-square bg-white relative overflow-hidden cursor-pointer"
                             >
                               {product.picture ? (
@@ -717,11 +736,11 @@ const Store = () => {
                                     Мин. партия {minOrder.minQuantity}
                                   </div>
                                   <div className="absolute inset-x-2 bottom-2 rounded-md border border-border bg-background/90 px-2 py-1 text-[11px] text-foreground opacity-0 group-hover:opacity-100 transition-opacity">
-                                    Минимальный заказ обязателен
+                                     Минимальный заказ обязателен
                                   </div>
                                 </>
                               )}
-                            </a>
+                            </Link>
                             <div className="p-3 space-y-2">
                               <div className="space-y-0.5">
                                 <div className="text-lg font-bold text-primary">
@@ -736,15 +755,14 @@ const Store = () => {
                                   </p>
                                 )}
                               </div>
-                              <a
-                                href={`/store?product=${product.id}`}
-                                onClick={(e) => { e.preventDefault(); handleProductClick(product); }}
+                              <Link
+                                to={storeProductPath(product.id)}
                                 className="block"
                               >
                                 <h3 className="text-sm font-medium text-foreground line-clamp-4 leading-snug min-h-[4.5rem]">
                                   {minOrder ? product.name.replace(/\s*\(\s*5\s*канистр\s*\)\s*$/i, '').trim() : product.name}
                                 </h3>
-                              </a>
+                              </Link>
                               {product.vendorCode && (
                                 <p className="text-xs text-muted-foreground">Арт: {product.vendorCode}</p>
                               )}
@@ -916,9 +934,9 @@ const Store = () => {
                                     transition={{ delay: index * 0.02 }}
                                     className="group bg-card rounded-xl border border-border/50 overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300"
                                   >
-                                    <a
-                                      href={`/store?product=${product.id}`}
-                                      onClick={(e) => { e.preventDefault(); if (!isEditMode) handleProductClick(product); }}
+                                    <Link
+                                      to={storeProductPath(product.id)}
+                                      onClick={isEditMode ? (e) => e.preventDefault() : undefined}
                                       className="block w-full aspect-square bg-white relative overflow-hidden cursor-pointer"
                                     >
                                       {product.picture ? (
@@ -940,11 +958,11 @@ const Store = () => {
                                             Мин. партия {minOrder.minQuantity}
                                           </div>
                                           <div className="absolute inset-x-2 bottom-2 rounded-md border border-border bg-background/90 px-2 py-1 text-[11px] text-foreground opacity-0 group-hover:opacity-100 transition-opacity">
-                                            Минимальный заказ обязателен
+                                           Минимальный заказ обязателен
                                           </div>
                                         </>
                                       )}
-                                    </a>
+                                    </Link>
                                     <div className="p-3 space-y-2">
                                       <div className="space-y-0.5">
                                         <div className="text-lg font-bold text-primary">
@@ -959,15 +977,15 @@ const Store = () => {
                                           </p>
                                         )}
                                       </div>
-                                      <a
-                                        href={`/store?product=${product.id}`}
-                                        onClick={(e) => { e.preventDefault(); if (!isEditMode) handleProductClick(product); }}
+                                      <Link
+                                        to={storeProductPath(product.id)}
+                                        onClick={isEditMode ? (e) => e.preventDefault() : undefined}
                                         className="block"
                                       >
                                         <h3 className="text-sm font-medium text-foreground line-clamp-4 leading-snug min-h-[4.5rem]">
                                           {minOrder ? product.name.replace(/\s*\(\s*5\s*канистр\s*\)\s*$/i, '').trim() : product.name}
                                         </h3>
-                                      </a>
+                                      </Link>
                                       {product.vendorCode && (
                                         <p className="text-xs text-muted-foreground">Арт: {product.vendorCode}</p>
                                       )}

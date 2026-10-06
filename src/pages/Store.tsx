@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
-import { useSearchParams, useParams, useNavigate, createSearchParams } from 'react-router-dom';
-import { getStoreSeo , resolveStoreSlug, PRODUCT_SLUGS, CATEGORY_SLUGS, LEGACY_SLUG_REDIRECTS } from '@/lib/storeSeo';
+import { useSearchParams, useParams, useNavigate, createSearchParams, Link } from 'react-router-dom';
+import { getStoreSeo , resolveStoreSlug, storeProductPath, PRODUCT_SLUGS, CATEGORY_SLUGS, LEGACY_SLUG_REDIRECTS } from '@/lib/storeSeo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   DndContext, 
@@ -693,9 +693,8 @@ const Store = () => {
                             transition={{ delay: index * 0.02 }}
                             className="group bg-card rounded-xl border border-border/50 overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300"
                           >
-                            <a
-                              href={`/store?product=${product.id}`}
-                              onClick={(e) => { e.preventDefault(); handleProductClick(product); }}
+                            <Link
+                              to={storeProductPath(product.id)}
                               className="block w-full aspect-square bg-white relative overflow-hidden cursor-pointer"
                             >
                               {product.picture ? (
@@ -736,9 +735,8 @@ const Store = () => {
                                   </p>
                                 )}
                               </div>
-                              <a
-                                href={`/store?product=${product.id}`}
-                                onClick={(e) => { e.preventDefault(); handleProductClick(product); }}
+                              <Link
+                                to={storeProductPath(product.id)}
                                 className="block"
                               >
                                 <h3 className="text-sm font-medium text-foreground line-clamp-4 leading-snug min-h-[4.5rem]">
@@ -916,9 +914,9 @@ const Store = () => {
                                     transition={{ delay: index * 0.02 }}
                                     className="group bg-card rounded-xl border border-border/50 overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300"
                                   >
-                                    <a
-                                      href={`/store?product=${product.id}`}
-                                      onClick={(e) => { e.preventDefault(); if (!isEditMode) handleProductClick(product); }}
+                                    <Link
+                                      to={storeProductPath(product.id)}
+                                      onClick={isEditMode ? (e) => e.preventDefault() : undefined}
                                       className="block w-full aspect-square bg-white relative overflow-hidden cursor-pointer"
                                     >
                                       {product.picture ? (
@@ -959,9 +957,9 @@ const Store = () => {
                                           </p>
                                         )}
                                       </div>
-                                      <a
-                                        href={`/store?product=${product.id}`}
-                                        onClick={(e) => { e.preventDefault(); if (!isEditMode) handleProductClick(product); }}
+                                      <Link
+                                        to={storeProductPath(product.id)}
+                                        onClick={isEditMode ? (e) => e.preventDefault() : undefined}
                                         className="block"
                                       >
                                         <h3 className="text-sm font-medium text-foreground line-clamp-4 leading-snug min-h-[4.5rem]">

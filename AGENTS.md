@@ -1,0 +1,1 @@
+- Store SEO slugs live in a fixed table (src/data/storeSlugs.json) keyed by product/category id — never regenerate existing slugs, because published URLs must stay stable.

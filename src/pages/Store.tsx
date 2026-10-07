@@ -380,7 +380,7 @@ const Store = () => {
       return;
     }
     navigate({ pathname: '/store', search: `?${createSearchParams(params)}` }, { replace: true });
-  }, [categoryHistory, searchQuery, productDrawerOpen, selectedProduct, urlInitialized, navigate]);
+  }, [categoryHistory, searchQuery, productDrawerOpen, selectedProduct, urlInitialized, navigate, urlProductId, location.pathname]);
   
   const handleRefreshCatalog = async () => {
     setIsRefreshing(true);
@@ -1046,7 +1046,20 @@ const Store = () => {
         open={productDrawerOpen}
         onOpenChange={(open) => {
           setProductDrawerOpen(open);
-          if (!open) setSelectedProduct(null);
+          if (!open) {
+            setSelectedProduct(null);
+            // Закрыли карточку, открытую по прямой ссылке — возвращаемся в раздел
+            if (urlProductId) {
+              const cid = categoryHistory[categoryHistory.length - 1];
+              if (searchQuery) {
+                navigate(`/store?search=${encodeURIComponent(searchQuery)}`, { replace: true });
+              } else if (cid) {
+                navigate(CATEGORY_SLUGS[cid] ? `/store/${CATEGORY_SLUGS[cid]}` : `/store?category=${cid}`, { replace: true });
+              } else {
+                navigate('/store', { replace: true });
+              }
+            }
+          }
         }}
       />
     </Layout>

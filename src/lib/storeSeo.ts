@@ -10,10 +10,11 @@ type FbCategory = { id: string; name: string; parent_id: string | null };
 const products = (fallback as any).products as FbProduct[];
 const categories = (fallback as any).categories as FbCategory[];
 
-// ЧПУ-адреса (тестовое внедрение: 2 раздела, 2 товара)
+// ЧПУ-адреса для всех разделов и товаров (фиксированная таблица, не генерируется на лету)
 // Разделы: /store/{slug}; товары: /store/product/{модель}-{артикул}
-export const CATEGORY_SLUGS: Record<string, string> = { '86975775': 'dry-cleaning', '86975750': 'kits' };
-export const PRODUCT_SLUGS: Record<string, string> = { '198978976': 'product/p40-201-001-102', '198978986': 'product/e-20-201-002-003' };
+import slugs from '@/data/storeSlugs.json';
+export const CATEGORY_SLUGS: Record<string, string> = (slugs as any).categories;
+export const PRODUCT_SLUGS: Record<string, string> = (slugs as any).products;
 // Старые короткие тестовые адреса -> новые (301)
 export const LEGACY_SLUG_REDIRECTS: Record<string, string> = { 'p40': '/store/product/p40-201-001-102', 'e-20': '/store/product/e-20-201-002-003' };
 export const resolveStoreSlug = (slug?: string): { productId?: string; categoryId?: string } => {

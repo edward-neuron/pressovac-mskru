@@ -37,11 +37,16 @@ const ARTICLE_ROUTES = articleSlugs.map((s) => `/articles/${s}`);
 const storeData = JSON.parse(
   readFileSync(resolve(ROOT, "src/data/storeFallback.json"), "utf8")
 );
+const slugs = JSON.parse(readFileSync(resolve(ROOT, "src/data/storeSlugs.json"), "utf8"));
+// Старые адреса по id тоже получают HTML (canonical указывает на ЧПУ)
 const STORE_ROUTES = [
   ...storeData.categories.map((c) => `/store/category/${c.id}`),
   ...storeData.products.map((p) => `/store/product/${p.id}`),
 ];
-const SLUG_ROUTES = ['/store/dry-cleaning', '/store/kits', '/store/product/p40-201-001-102', '/store/product/e-20-201-002-003'];
+const SLUG_ROUTES = [
+  ...Object.values(slugs.categories).map((s) => `/store/${s}`),
+  ...Object.values(slugs.products).map((s) => `/store/${s}`),
+];
 const ALL_ROUTES = [...SLUG_ROUTES, ...STATIC_ROUTES, ...ARTICLE_ROUTES, ...STORE_ROUTES];
 
 console.log(`Prerendering ${ALL_ROUTES.length} routes...`);

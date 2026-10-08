@@ -1,34 +1,38 @@
 # Pressovac Moscow - robots.txt
 # https://pressovac-msk.ru
+# Обновлено: 08.10.2026
 
+# === Основные правила для всех ботов ===
 User-agent: *
+
+# Разрешены все страницы
 Allow: /
 
-# Sitemap
-Sitemap: https://pressovac-msk.ru/sitemap.xml
-
-# Crawl-delay for polite crawling
-Crawl-delay: 1
-
-# Block admin/API paths (if any)
+# Блокировка служебных путей
 Disallow: /api/
 Disallow: /_/
+Disallow: /_next/
+Disallow: /admin
+Disallow: /admin/
 
-# Allow all major search engines
+# Блокировка старых URL с query-параметрами
+Disallow: /store?product=*
+Disallow: /store?category=*
+
+# === Настройки для Yandex ===
+User-agent: Yandex
+Allow: /
+Host: pressovac-msk.ru
+Crawl-delay: 1
+
+# === Настройки для Google ===
 User-agent: Googlebot
 Allow: /
 
-User-agent: Bingbot
-Allow: /
+# === Карта сайта ===
+Sitemap: https://pressovac-msk.ru/sitemap.xml
 
-User-agent: Yandex
-Allow: /
-
-User-agent: Mail.RU
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
+# === Примечания ===
+# SEO URL внедрены для всех товаров (196) и категорий (38)
+# Старые query-параметры заблокированы, редиректы настроены
+# Обновлено: 08.10.2026

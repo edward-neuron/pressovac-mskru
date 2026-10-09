@@ -14,6 +14,7 @@ import income2 from '@/assets/articles/income-2.webp';
 import income3 from '@/assets/articles/income-3.webp';
 import income4 from '@/assets/articles/income-4.webp';
 import equipmentSelection from '@/assets/articles/equipment-selection.webp';
+import ductCleaningMain from '@/assets/articles/duct-cleaning-main.webp';
 
 export interface ArticleVideo {
   rutubeId: string;

@@ -19,7 +19,7 @@ const organizationSchema = {
   "alternateName": "Pressovac Moscow",
   "url": "https://pressovac-msk.ru",
   "logo": "https://pressovac-msk.ru/og-image.png",
-  "description": "Официальный дистрибьютор финского оборудования Pressovac для очистки вентиляции в России",
+  "description": "Официальный дистрибьютор финского оборудования Pressovac для очистки вентиляции в России и СНГ",
   "address": {
     "@type": "PostalAddress",
     "addressLocality": "Москва",

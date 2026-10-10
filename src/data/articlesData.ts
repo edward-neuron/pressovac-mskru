@@ -603,6 +603,7 @@ export const articlesData: Article[] = [
     author: 'Веконт-М',
     category: 'Технологии',
     readTime: '8 мин',
+    image: ductCleaningMain,  
     content: `
 ## Зачем нужна очистка вентиляции?
 

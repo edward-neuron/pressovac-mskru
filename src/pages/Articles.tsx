@@ -84,26 +84,40 @@ keywords="очистка вентиляции, чистка вентиляции
                     </span>
                     <span>{article.readTime}</span>
                   </div>
-                  <Link to={`/articles/${article.slug}`}>
-                    <h3 className="font-display font-semibold text-lg group-hover:text-primary transition-colors line-clamp-2">
-                      {article.title}
-                    </h3>
-                  </Link>
-                  <p className="text-muted-foreground text-sm line-clamp-3 flex-1">
-                    {article.excerpt}
-                  </p>
-                  <div className="flex items-center justify-between pt-4 border-t border-border">
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Calendar className="w-4 h-4" />
-                      {article.date}
-                    </div>
-                    <Link 
-                      to={`/articles/${article.slug}`}
-                      className="inline-flex items-center gap-1 text-sm font-medium text-primary"
-                    >
-                      Читать
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </Link>
+                  <Link 
+  to={`/articles/${article.slug}`}
+  className="group block h-full"
+>
+  <div className="bg-surface rounded-lg overflow-hidden border border-warm h-full hover:border-primary transition-colors flex flex-col">
+    <img src={article.image} alt={article.title} className="w-full h-48 object-cover" />
+    <div className="p-6 space-y-4 flex-1 flex flex-col">
+      <div className="flex items-center gap-3 text-sm text-muted-foreground">
+        <span className="px-2 py-1 rounded bg-primary/10 text-primary text-xs font-medium">
+          {article.category}
+        </span>
+        <span>{article.readTime}</span>
+      </div>
+      <div className="space-y-4 flex-1 flex flex-col">
+        <h3 className="font-display font-semibold text-lg group-hover:text-primary transition-colors line-clamp-2">
+          {article.title}
+        </h3>
+        <p className="text-muted-foreground text-sm line-clamp-3 flex-1">
+          {article.excerpt}
+        </p>
+        <div className="flex items-center justify-between pt-4 border-t border-border">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Calendar className="w-4 h-4" />
+            {article.date}
+          </div>
+          <div className="inline-flex items-center gap-1 text-sm font-medium text-primary">
+            ЧИТАТЬ
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Link>
                   </div>
                 </div>
               </motion.article>

@@ -594,7 +594,7 @@ export const articlesData: Article[] = [
 [→ Перейти в магазин Pressovac](/store)
     `
   },
-    {
+  {
     id: 7,
     slug: 'ventilation-cleaning-technologies',
     title: 'Очистка вентиляции: оборудование, технологии и методы',

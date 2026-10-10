@@ -62,6 +62,7 @@ const ArticleVideoPlayer = ({ video, compact = false }: { video: ArticleVideo; c
 const ArticlePage = () => {
   const { slug } = useParams<{ slug: string }>();
   const article = slug ? getArticleBySlug(slug) : undefined;
+console.log('🔍 DEBUG:', { slug, article, allArticles: articlesData });
 
   if (!article) {
     return <Navigate to="/articles" replace />;

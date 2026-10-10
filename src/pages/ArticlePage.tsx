@@ -209,7 +209,9 @@ const ArticlePage = () => {
       if (trimmedLine) {
         flushList();
         // Handle inline bold
-        const processedLine = trimmedLine.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        const processedLine = trimmedLine
+  .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+  .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-primary hover:underline font-medium">$1</a>');
         elements.push(
           <p 
             key={index} 

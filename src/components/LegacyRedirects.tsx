@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { articlesData } from '@/data/articlesData';
 
 // Карта редиректов со старого сайта pressovac-msk.ru
 const redirectMap: Record<string, string> = {
@@ -107,15 +108,9 @@ export function LegacyRedirects() {
   useEffect(() => {
     const path = location.pathname;
     
-    // Не перехватываем новые slug-и статей
-    const newArticleSlugs = [
-      'fire-safety-restaurants',
-      'profitable-business', 
-      'starting-cleaning-company',
-      'cleaning-as-profitable-business',
-      'sanitary-norms',
-      'equipment-selection-guide'
-    ];
+    // Не перехватываем slug-и статей — берём актуальный список из данных,
+    // чтобы новые статьи не требовали правки этого файла
+    const newArticleSlugs = articlesData.map((a) => a.slug);
     
     // Проверяем, является ли это новой статьёй
     if (path.startsWith('/articles/')) {

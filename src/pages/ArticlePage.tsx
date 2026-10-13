@@ -82,18 +82,27 @@ console.log('🔍 DEBUG:', { slug, article, allArticles: articlesData });
     let inTable = false;
     let tableRows: string[][] = [];
 
+    const processInline = (text: string) =>
+      text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-primary hover:underline font-medium">$1</a>');
+
     const flushList = () => {
       if (currentList.length > 0) {
         if (listType === 'ul') {
           elements.push(
             <ul key={`list-${elements.length}`} className="list-disc list-inside space-y-2 mb-6 text-muted-foreground">
-              {currentList.map((item, i) => <li key={i}>{item}</li>)}
+              {currentList.map((item, i) => (
+                <li key={i} dangerouslySetInnerHTML={{ __html: processInline(item) }} />
+              ))}
             </ul>
           );
         } else {
           elements.push(
             <ol key={`list-${elements.length}`} className="list-decimal list-inside space-y-2 mb-6 text-muted-foreground">
-              {currentList.map((item, i) => <li key={i}>{item}</li>)}
+              {currentList.map((item, i) => (
+                <li key={i} dangerouslySetInnerHTML={{ __html: processInline(item) }} />
+              ))}
             </ol>
           );
         }

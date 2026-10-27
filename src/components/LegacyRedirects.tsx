@@ -114,7 +114,7 @@ export function LegacyRedirects() {
     
     // Проверяем, является ли это новой статьёй
     if (path.startsWith('/articles/')) {
-      const slug = path.replace('/articles/', '');
+      const slug = path.replace('/articles/', '').replace(/\/+$/, '');
       if (newArticleSlugs.includes(slug)) {
         return; // Не редиректим новые статьи
       }

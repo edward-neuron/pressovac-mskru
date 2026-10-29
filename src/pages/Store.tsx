@@ -51,6 +51,9 @@ const CATEGORY_DESCRIPTIONS: Record<string, string> = {
   '86975935': 'Компрессоры Pressovac Premium серии 24/7 для непрерывной работы. Надёжный источник сжатого воздуха для пневматических щёточных машин.',
 };
 
+// Pricing notice is shown across these root categories and their nested categories.
+const PRICING_NOTICE_ROOT_IDS = new Set(['88504943', '88504918', '88504948', '88504983']);
+
 // Import category images
 import category1 from '@/assets/store/category-1-v2.webp';
 import category2 from '@/assets/store/category-2-v2.webp';
@@ -428,6 +431,8 @@ const Store = () => {
 
   const selectedCategory = categoryHistory.length > 0 ? categoryHistory[categoryHistory.length - 1] : null;
   const currentCategory = categories.find(c => c.id === selectedCategory);
+  const pricingNoticeRoot = selectedCategory ? buildCategoryPath(selectedCategory)[0] : undefined;
+  const showPricingNotice = Boolean(pricingNoticeRoot && PRICING_NOTICE_ROOT_IDS.has(pricingNoticeRoot));
   
   // Get and sort root categories
   const rootCategories = useMemo(() => {
@@ -869,6 +874,13 @@ const Store = () => {
   </p>
 )}
 
+                  {showPricingNotice && (
+                    <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4 mb-6">
+                      <p className="font-semibold text-amber-700 dark:text-amber-400 mb-2">Условия цены и заказа</p>
+                      <p className="text-sm text-amber-700/90 dark:text-amber-400/90 leading-relaxed">Срок поставки оборудования под заказ — 8-10 недель с момента оплаты; сроки перевозки по РФ отсчитываются после поступления товара на склад поставщика. Цены на мелкие штучные товары и аксессуары действуют при заказе вместе с комплектом оборудования объёмом 1-3 европоддона. При отдельном заказе стоимость пересчитывается с учётом фактических расходов на логистику, таможенное оформление и действующих пошлин. Для заказа оборудования объёмом 2-3 европоддона цены на сайте фиксированы.</p>
+                    </div>
+                  )}
+
                   {/* Калькулятор подбора вакуумной установки - показываем только для категорий вакуумных/всасывающих установок */}
                   {(currentCategory?.name?.toLowerCase().includes('вакуумн') || 
                     currentCategory?.name?.toLowerCase().includes('всасывающ') ||
@@ -1065,6 +1077,7 @@ const Store = () => {
       {/* Product Detail Drawer */}
       <ProductDetailDrawer
         product={selectedProduct}
+        showSupplyNotice={Boolean(selectedProduct?.categoryId && PRICING_NOTICE_ROOT_IDS.has(buildCategoryPath(selectedProduct.categoryId)[0] ?? ''))}
         open={productDrawerOpen}
         onOpenChange={(open) => {
           setProductDrawerOpen(open);

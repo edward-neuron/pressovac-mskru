@@ -15,9 +15,10 @@ interface ProductDetailDrawerProps {
   product: YmlProduct | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  showSupplyNotice: boolean;
 }
 
-export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDetailDrawerProps) => {
+export const ProductDetailDrawer = ({ product, open, onOpenChange, showSupplyNotice }: ProductDetailDrawerProps) => {
   const { addItem, items, openCart, updateQuantity } = useCart();
   const [justAdded, setJustAdded] = useState(false);
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
@@ -268,6 +269,13 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange }: ProductDeta
               <p className="text-sm text-muted-foreground">Артикул: {product.vendorCode}</p>
             )}
           </div>
+
+          {showSupplyNotice && (
+            <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-3 space-y-2">
+              <p className="text-xs leading-relaxed text-amber-700 dark:text-amber-400">Оборудование под заказ поставляется в течение 8-10 недель с момента оплаты. Срок перевозки по России отсчитывается после поступления товара на склад поставщика.</p>
+              <p className="text-xs leading-relaxed text-amber-700 dark:text-amber-400">Цена на мелкие товары и аксессуары действует при заказе вместе с комплектом оборудования объёмом 1-3 европоддона. При отдельном заказе стоимость пересчитывается с учётом логистики, таможенного оформления и пошлин. Для заказа оборудования объёмом 2-3 европоддона цены на сайте фиксированы.</p>
+            </div>
+          )}
 
           {/* Description */}
           <div className="space-y-2">

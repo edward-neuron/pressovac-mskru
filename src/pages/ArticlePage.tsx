@@ -238,6 +238,33 @@ console.log('🔍 DEBUG:', { slug, article, allArticles: articlesData });
     return elements;
   };
 
+  const siteUrl = 'https://pressovac-msk.ru';
+  const organizationId = `${siteUrl}/#organization`;
+  const articleImage = article.image || article.images?.[0] || '/og-image.png';
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "@id": `${siteUrl}/articles/${article.slug}#article`,
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `${siteUrl}/articles/${article.slug}`
+    },
+    "headline": article.title,
+    "description": article.excerpt,
+    "image": [new URL(articleImage, siteUrl).href],
+    "datePublished": article.datePublished,
+    "author": {
+      "@type": "Organization",
+      "@id": organizationId,
+      "name": article.author
+    },
+    "publisher": {
+      "@id": organizationId
+    },
+    "articleSection": article.category,
+    "inLanguage": "ru-RU"
+  };
+
   // Breadcrumbs for article
   const articleBreadcrumbs = [
     { name: 'Главная', url: '/' },
@@ -254,8 +281,10 @@ console.log('🔍 DEBUG:', { slug, article, allArticles: articlesData });
         canonical={`/articles/${article.slug}`}
         ogType="article"
         breadcrumbs={articleBreadcrumbs}
+        structuredData={articleSchema}
         article={{
           author: article.author,
+          publishedTime: article.datePublished,
           section: article.category
         }}
       />

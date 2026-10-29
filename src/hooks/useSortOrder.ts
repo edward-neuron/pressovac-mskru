@@ -12,6 +12,9 @@ interface SortOrderData {
 // Load from localStorage as fallback/initial data
 const getStoredOrder = (): SortOrderData => {
   try {
+    if (typeof window === 'undefined') {
+      return { categories: {}, products: {} };
+    }
     const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (stored) {
       return JSON.parse(stored);
@@ -25,6 +28,9 @@ const getStoredOrder = (): SortOrderData => {
 // Save to localStorage (for offline/backup)
 const saveToLocalStorage = (data: SortOrderData) => {
   try {
+    if (typeof window === 'undefined') {
+      return;
+    }
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
   } catch (e) {
     console.error('Error saving sort order to localStorage:', e);

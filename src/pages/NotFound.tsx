@@ -7,6 +7,9 @@ const NotFound = () => {
 
   useEffect(() => {
     console.error("404 Error: User attempted to access non-existent route:", location.pathname);
+    document.querySelectorAll('meta[name="robots"]').forEach((meta) => {
+      meta.setAttribute("content", "noindex, follow");
+    });
   }, [location.pathname]);
 
   return (
@@ -17,7 +20,6 @@ const NotFound = () => {
           name="description"
           content="Запрашиваемая страница не найдена. Перейдите на главную страницу Pressovac или выберите нужный раздел сайта."
         />
-        <meta name="robots" content="noindex, follow" />
         <meta name="googlebot" content="noindex, follow" />
         <meta name="yandex" content="noindex, follow" />
         <link rel="canonical" href={"https://pressovac-msk.ru" + location.pathname} />

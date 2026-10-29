@@ -10,14 +10,12 @@ permissions:
 
 jobs:
   build:
-    name: Build site
+    name: Build site with production npm path
     runs-on: ubuntu-24.04
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
-      - name: Set up Bun
-        uses: oven-sh/setup-bun@v2
-      - name: Install locked dependencies
-        run: bun ci
+      - name: Install dependencies with npm
+        run: npm install --no-audit --no-fund
       - name: Build and prerender site
-        run: bun run build
+        run: npm run build

@@ -26,7 +26,8 @@ export interface Article {
   slug: string;
   title: string;
   excerpt: string;
-  date: string; datePublished: string;
+  date: string;
+  datePublished: string;
   author: string;
   category: string;
   readTime: string;
@@ -42,7 +43,8 @@ export const articlesData: Article[] = [
     slug: 'fire-safety-restaurants',
     title: 'Как обезопасить кафе и рестораны от пожара',
     excerpt: 'Любой ресторан или кафе регулярно встречает пожарных инспекторов с проверкой. Узнайте, какие требования предъявляются к вентиляционным системам и как им соответствовать.',
-    date: '15 декабря 2024', datePublished: '2024-12-15',
+    date: '15 декабря 2024',
+    datePublished: '2024-12-15',
     author: 'Веконт-М',
     category: 'Безопасность',
     readTime: '5 мин',

@@ -15,6 +15,7 @@ const SectionLoader = () => <div className="min-h-[200px]" />;
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
+  "@id": "https://pressovac-msk.ru/#organization",
   "name": "Веконт-М",
   "alternateName": "Pressovac Moscow",
   "url": "https://pressovac-msk.ru",

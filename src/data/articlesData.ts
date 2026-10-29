@@ -27,6 +27,7 @@ export interface Article {
   title: string;
   excerpt: string;
   date: string;
+  datePublished: string;
   author: string;
   category: string;
   readTime: string;
@@ -43,6 +44,7 @@ export const articlesData: Article[] = [
     title: 'Как обезопасить кафе и рестораны от пожара',
     excerpt: 'Любой ресторан или кафе регулярно встречает пожарных инспекторов с проверкой. Узнайте, какие требования предъявляются к вентиляционным системам и как им соответствовать.',
     date: '15 декабря 2024',
+    datePublished: '2024-12-15',
     author: 'Веконт-М',
     category: 'Безопасность',
     readTime: '5 мин',
@@ -106,7 +108,7 @@ export const articlesData: Article[] = [
     slug: 'profitable-business',
     title: 'Прибыльный бизнес на все времена',
     excerpt: 'Хотите открыть интересный бизнес с высокой доходностью и актуальный во все времена? Очистка вентиляции — один из лучших выборов для начинающих предпринимателей.',
-    date: '10 декабря 2024',
+    date: '10 декабря 2024', datePublished: '2024-12-10',
     author: 'Веконт-М',
     category: 'Бизнес',
     readTime: '7 мин',
@@ -181,7 +183,7 @@ export const articlesData: Article[] = [
     slug: 'starting-cleaning-company',
     title: 'Открываем компанию по очистке вентиляции',
     excerpt: 'Пошаговое руководство по открытию бизнеса в сфере очистки вентиляции. От регистрации до первых клиентов — всё, что нужно знать.',
-    date: '5 декабря 2024',
+    date: '5 декабря 2024', datePublished: '2024-12-05',
     author: 'Веконт-М',
     category: 'Руководство',
     readTime: '10 мин',
@@ -280,7 +282,7 @@ export const articlesData: Article[] = [
     slug: 'cleaning-as-profitable-business',
     title: 'Очистка вентиляции как доходный бизнес',
     excerpt: 'Как начать прибыльный бизнес по очистке вентиляции? Знаете ли вы о том, что эта ниша практически не занята в большинстве регионов?',
-    date: '1 декабря 2024',
+    date: '1 декабря 2024', datePublished: '2024-12-01',
     author: 'Веконт-М',
     category: 'Бизнес',
     readTime: '6 мин',
@@ -371,7 +373,7 @@ export const articlesData: Article[] = [
     slug: 'sanitary-norms',
     title: 'Санитарные нормы для систем вентиляции',
     excerpt: 'Обзор актуальных санитарных норм и требований к чистоте вентиляционных систем в различных типах помещений.',
-    date: '25 ноября 2024',
+    date: '25 ноября 2024', datePublished: '2024-11-25',
     author: 'Веконт-М',
     category: 'Законодательство',
     readTime: '8 мин',
@@ -468,7 +470,7 @@ export const articlesData: Article[] = [
     slug: 'equipment-selection-guide',
     title: 'Выбор оборудования для очистки вентиляции',
     excerpt: 'Подробный гид по выбору профессионального оборудования для очистки вентиляционных систем. Сравнение моделей и рекомендации.',
-    date: '20 ноября 2024',
+    date: '20 ноября 2024', datePublished: '2024-11-20',
     author: 'Веконт-М',
     category: 'Оборудование',
     readTime: '9 мин',
@@ -599,7 +601,7 @@ export const articlesData: Article[] = [
     slug: 'ventilation-cleaning-technologies',
     title: 'Очистка вентиляции: оборудование, технологии и методы',
     excerpt: 'Профессиональная очистка вентиляции — залог здоровья, безопасности и соответствия санитарным нормам. Узнайте о современных методах очистки и необходимом оборудовании.',
-    date: '09 октября 2026',
+    date: '09 октября 2026', datePublished: '2026-10-09',
     author: 'Веконт-М',
     category: 'Технологии',
     readTime: '8 мин',

@@ -7,9 +7,12 @@ const NotFound = () => {
 
   useEffect(() => {
     console.error("404 Error: User attempted to access non-existent route:", location.pathname);
-    document.querySelectorAll('meta[name="robots"]').forEach((meta) => {
-      meta.setAttribute("content", "noindex, follow");
+    const frame = window.requestAnimationFrame(() => {
+      document.querySelectorAll('meta[name="robots"]').forEach((meta) => {
+        meta.setAttribute("content", "noindex, follow");
+      });
     });
+    return () => window.cancelAnimationFrame(frame);
   }, [location.pathname]);
 
   return (

@@ -11,7 +11,7 @@ const deliveryBreadcrumbs = [
 const deliveryFAQ = [
   {
     question: "Как осуществляется доставка оборудования Pressovac?",
-    answer: "Оборудование под заказ поставляется в течение 8-10 недель с момента оплаты. После поступления товара на склад поставщика перевозка по Москве и МО занимает 1-2 дня, по регионам РФ — 3-10 дней. Сроки доставки в страны СНГ согласуются отдельно."
+    answer: "Доставка осуществляется ТК Деловые линии по России и ТК JetLogistic в страны СНГ. Оборудование под заказ поставляется в течение 8-10 недель с момента оплаты. Срок перевозки по Москве и МО (1-2 дня) и регионам РФ (3-10 дней) рассчитывается после поступления товара на склад поставщика. Сроки доставки по СНГ согласуются отдельно."
   },
   {
     question: "Есть ли бесплатная доставка?",
@@ -111,7 +111,7 @@ const Delivery = () => {
       </section>
 
       {/* Supply lead time and pricing terms */}
-      <section className="section-padding bg-card">
+      <section className="section-padding">
         <div className="container-custom max-w-4xl">
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-6 text-center">Срок поставки и условия заказа</h2>
           <div className="space-y-4 text-muted-foreground leading-relaxed">

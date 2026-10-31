@@ -105,7 +105,7 @@ const Index = () => {
         keywords="Pressovac, купить оборудование для очистки вентиляции, вакуумные установки Pressovac, щёточные машины для воздуховодов, видеоинспекция вентиляции, дезинфекция воздуховодов, Веконт-М Москва"
         canonical="/"
         structuredData={combinedSchema}
-        faq={homepageFAQ}
+        
       />
       <HeroSection />
       <Suspense fallback={<SectionLoader />}>

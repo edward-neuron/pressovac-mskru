@@ -68,7 +68,6 @@ export function getStoreSeo(productId?: string | null, categoryId?: string | nul
     if (name) {
       const sku = live?.article ?? p?.vendor_code;
       const price = live?.price ?? p?.price;
-      const inStock = live?.inStock ?? p?.available ?? true;
       const image = live?.image ?? p?.picture;
       const canonical = storeProductPath(productId);
       return {
@@ -80,7 +79,9 @@ export function getStoreSeo(productId?: string | null, categoryId?: string | nul
         structuredData: {
           '@context': 'https://schema.org',
           '@type': 'Product',
+          '@id': `${SITE}${canonical}#product`,
           name,
+          url: `${SITE}${canonical}`, 
           ...(sku ? { sku, mpn: sku } : {}),
           ...(image ? { image: image.startsWith('http') ? image : `${SITE}${image}` } : {}),
           brand: { '@type': 'Brand', name: 'Pressovac' },
@@ -89,8 +90,7 @@ export function getStoreSeo(productId?: string | null, categoryId?: string | nul
             url: `${SITE}${canonical}`,
             priceCurrency: 'RUB',
             ...(price ? { price: Number(price).toFixed(2) } : {}),
-            availability: inStock ? 'https://schema.org/InStock' : 'https://schema.org/PreOrder',
-            seller: { '@type': 'Organization', name: 'Pressovac Moscow' },
+            seller: { '@id': `${SITE}/#organization` },
           },
         },
       };

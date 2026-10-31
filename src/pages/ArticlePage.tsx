@@ -258,7 +258,7 @@ console.log('🔍 DEBUG:', { slug, article, allArticles: articlesData });
       ? {
           "@type": "Person",
           "name": "Эдуард Сулейманов",
-          "jobTitle": "Директор компании «Веконт-М»",
+          "jobTitle": "Руководитель компании «Веконт-М»",
           "worksFor": { "@id": organizationId }
         }
       : {
@@ -324,7 +324,7 @@ console.log('🔍 DEBUG:', { slug, article, allArticles: articlesData });
             <div className="flex flex-wrap items-center gap-4 text-muted-foreground">
               <div className="flex items-center gap-2">
                 <User className="w-4 h-4" />
-                {article.slug === 'sanitary-norms' ? 'Эдуард Сулейманов, директор компании «Веконт-М»' : article.author}
+                {article.slug === 'sanitary-norms' ? 'Автор: Эдуард Сулейманов, руководитель компании «Веконт-М»' : article.author}
               </div>
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4" />

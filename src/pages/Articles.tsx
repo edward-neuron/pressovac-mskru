@@ -11,20 +11,6 @@ const articlesBreadcrumbs = [
   { name: 'Статьи', url: '/articles' }
 ];
 
-const articlesFAQ = [
-  {
-    question: "Как начать бизнес по очистке вентиляции?",
-    answer: "Для старта бизнеса по очистке вентиляции необходимо: зарегистрировать ИП/ООО, приобрести минимальный комплект оборудования (вакуумная установка, щёточная машина, видеокамера), пройти обучение и получить необходимые сертификаты."
-  },
-  {
-    question: "Какие требования к очистке вентиляции по СанПиН?",
-    answer: "Согласно СанПиН, очистка вентиляции должна проводиться регулярно с документальным подтверждением. Для предприятий общепита — каждые 3-6 месяцев, для офисов — не реже 1 раза в год."
-  },
-  {
-    question: "Какое оборудование нужно для профессиональной очистки вентиляции?",
-    answer: "Минимальный профессиональный набор включает: вакуумную установку с HEPA-фильтром, щёточную машину с гибким валом, набор щёток разных диаметров, видеокамеру для инспекции и средства дезинфекции."
-  }
-];
 
 const Articles = () => {
   return (
@@ -35,7 +21,6 @@ description="Всё об очистке и чистке вентиляции: п
 keywords="очистка вентиляции, чистка вентиляции, оборудование для очистки вентиляции, технологии очистки воздуховодов, СанПиН вентиляция"
         canonical="/articles"
         breadcrumbs={articlesBreadcrumbs}
-        faq={articlesFAQ}
       />
       {/* Hero Banner */}
       <section aria-label="Технические статьи и экспертные материалы Pressovac" className="w-full">
@@ -95,7 +80,9 @@ keywords="очистка вентиляции, чистка вентиляции
                   <div className="flex items-center justify-between pt-4 border-t border-border">
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <Calendar className="w-4 h-4" />
-                      {article.date}
+                      {article.dateModified
+                        ? `Обновлено ${new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${article.dateModified}T00:00:00Z`))}`
+                        : article.date}
                     </div>
                     <Link 
                       to={`/articles/${article.slug}`}

@@ -253,11 +253,19 @@ console.log('🔍 DEBUG:', { slug, article, allArticles: articlesData });
     "description": article.excerpt,
     "image": [new URL(articleImage, siteUrl).href],
     "datePublished": article.datePublished,
-    "author": {
-      "@type": "Organization",
-      "@id": organizationId,
-      "name": article.author
-    },
+    ...(article.dateModified ? { "dateModified": article.dateModified } : {}),
+    "author": article.slug === 'sanitary-norms'
+      ? {
+          "@type": "Person",
+          "name": "Эдуард Сулейманов",
+          "jobTitle": "Директор компании «Веконт-М»",
+          "worksFor": { "@id": organizationId }
+        }
+      : {
+          "@type": "Organization",
+          "@id": organizationId,
+          "name": article.author
+        },
     "publisher": {
       "@id": organizationId
     },
@@ -316,12 +324,18 @@ console.log('🔍 DEBUG:', { slug, article, allArticles: articlesData });
             <div className="flex flex-wrap items-center gap-4 text-muted-foreground">
               <div className="flex items-center gap-2">
                 <User className="w-4 h-4" />
-                {article.author}
+                {article.slug === 'sanitary-norms' ? 'Эдуард Сулейманов, директор компании «Веконт-М»' : article.author}
               </div>
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4" />
-                {article.date}
+                {article.dateModified ? <>Опубликовано {article.date}</> : article.date}
               </div>
+              {article.dateModified && (
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4" />
+                  Обновлено {new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${article.dateModified}T00:00:00Z`))}
+                </div>
+              )}
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4" />
                 {article.readTime} чтения

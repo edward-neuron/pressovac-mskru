@@ -2,6 +2,7 @@ import fireSafety1 from '@/assets/articles/fire-safety-3.webp';
 import fireSafety2 from '@/assets/articles/fire-safety-4.webp';
 import sanitary1 from '@/assets/articles/sanitary-1.webp';
 import sanitary2 from '@/assets/articles/sanitary-2.webp';
+import sanitaryWide from '@/assets/articles/sanitary-norms-wide.webp';
 import profitable1 from '@/assets/articles/profitable-1.webp';
 import profitable2 from '@/assets/articles/profitable-2.webp';
 import profitable3 from '@/assets/articles/profitable-3.webp';
@@ -35,6 +36,7 @@ export interface Article {
   content: string;
   image?: string;
   images?: string[];
+  detailImage?: string;
   videos?: ArticleVideo[];
 }
 
@@ -380,6 +382,7 @@ export const articlesData: Article[] = [
     readTime: '6 мин',
     image: sanitary1,
     images: [sanitary1, sanitary2],
+    detailImage: sanitaryWide,
     content: `
 ## Главное о периодичности очистки
 

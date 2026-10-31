@@ -364,7 +364,21 @@ console.log('🔍 DEBUG:', { slug, article, allArticles: articlesData });
             )}
 
             {/* Image Gallery */}
-            {article.images && article.images.length > 0 ? (
+            {article.detailImage ? (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.15 }}
+                className="mb-8 rounded-2xl overflow-hidden"
+              >
+                <img
+                  src={article.detailImage}
+                  alt={article.title}
+                  className="w-full h-auto object-cover"
+                  loading="lazy"
+                />
+              </motion.div>
+            ) : article.images && article.images.length > 0 ? (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}

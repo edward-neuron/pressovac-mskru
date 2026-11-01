@@ -26,25 +26,10 @@ const contactsBreadcrumbs = [
   { name: 'Контакты', url: '/contacts' }
 ];
 
-const contactsFAQ = [
-  {
-    question: "Как связаться с компанией Веконт-М?",
-    answer: "Вы можете связаться с нами по телефону (499) 677-2010, по email sales@pressovac-moscow.ru или заполнить форму на сайте. Мы работаем с понедельника по пятницу с 09:00 до 21:00."
-  },
-  {
-    question: "Где находится склад Pressovac в Москве?",
-    answer: "Наш склад находится по адресу: 123007, Москва, 2-й Хорошёвский проезд, 7с1, склад №4. Самовывоз возможен после согласования с менеджером."
-  },
-  {
-    question: "Как заказать оборудование Pressovac?",
-    answer: "Заполните форму заявки на сайте или свяжитесь с нами по телефону. Мы подготовим коммерческое предложение и счёт на оплату в течение 1 рабочего дня."
-  }
-];
-
 const contactInfo: Array<{ icon: typeof Phone; label: string; value: string; href: string; target?: string }> = [
   { icon: Phone, label: 'Телефон', value: '(499) 677-2010', href: 'tel:+74996772010' },
   { icon: Mail, label: 'Email', value: 'sales@pressovac-moscow.ru', href: 'mailto:sales@pressovac-moscow.ru' },
-  { icon: MapPin, label: 'Адрес склада', value: '123007, Москва, 2-й Хорошёвский проезд, 7с1, склад №4', href: 'https://yandex.ru/maps/?text=Москва%2C%202-й%20Хорошёвский%20проезд%2C%207с1', target: '_blank' },
+  { icon: MapPin, label: 'Адрес склада', value: 'МО, г. Одинцово, ул. Луговая, д. 14 (Сколково)', href: 'https://yandex.ru/maps/?text=Одинцово%2C%20ул.%20Луговая%2C%2014%20(Сколково)', target: '_blank' },
   { icon: Clock, label: 'Время работы', value: 'Пн-Пт: 09:00-21:00', href: '#' },
 ];
 
@@ -364,7 +349,6 @@ const Contacts = () => {
         keywords="контакты Веконт-М, Pressovac Москва, заказать оборудование для очистки вентиляции, телефон Pressovac"
         canonical="/contacts"
         breadcrumbs={contactsBreadcrumbs}
-        faq={contactsFAQ}
       />
       {/* Hero Banner */}
       <section aria-label="Контакты Pressovac" className="w-full">

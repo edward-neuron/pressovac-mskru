@@ -254,7 +254,7 @@ console.log('🔍 DEBUG:', { slug, article, allArticles: articlesData });
     "image": [new URL(articleImage, siteUrl).href],
     "datePublished": article.datePublished,
     ...(article.dateModified ? { "dateModified": article.dateModified } : {}),
-    "author": article.slug === 'sanitary-norms'
+    "author": ['sanitary-norms', 'cleaning-as-profitable-business'].includes(article.slug)
       ? {
           "@type": "Person",
           "name": "Эдуард Сулейманов",
@@ -324,7 +324,7 @@ console.log('🔍 DEBUG:', { slug, article, allArticles: articlesData });
             <div className="flex flex-wrap items-center gap-4 text-muted-foreground">
               <div className="flex items-center gap-2">
                 <User className="w-4 h-4" />
-                {article.slug === 'sanitary-norms' ? 'Автор: Эдуард Сулейманов, руководитель компании «Веконт-М»' : article.author}
+                {['sanitary-norms', 'cleaning-as-profitable-business'].includes(article.slug) ? 'Автор: Эдуард Сулейманов, руководитель компании «Веконт-М»' : article.author}
               </div>
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4" />

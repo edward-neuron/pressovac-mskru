@@ -21,16 +21,23 @@ const organizationSchema = {
   "url": "https://pressovac-msk.ru",
   "logo": "https://pressovac-msk.ru/og-image.png",
   "description": "Официальный дистрибьютор финского оборудования Pressovac для очистки вентиляции в России и СНГ",
-  "address": {
-    "@type": "PostalAddress",
-    "addressLocality": "Москва",
-    "addressCountry": "RU"
+  "areaServed": ["Россия", "Страны СНГ"],
+  "location": {
+    "@type": "Place",
+    "name": "Склад компании «Веконт-М»",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "ул. Луговая, д. 14 (Сколково)",
+      "addressLocality": "Одинцово",
+      "addressRegion": "Московская область",
+      "addressCountry": "RU"
+    }
   },
   "contactPoint": {
     "@type": "ContactPoint",
     "telephone": "+7-499-677-20-10",
+    "email": "sales@pressovac-moscow.ru",
     "contactType": "sales",
-    "areaServed": ["RU", "BY", "KZ"],
     "availableLanguage": "Russian"
   },
   "sameAs": []

@@ -254,7 +254,7 @@ console.log('🔍 DEBUG:', { slug, article, allArticles: articlesData });
     "image": [new URL(articleImage, siteUrl).href],
     "datePublished": article.datePublished,
     ...(article.dateModified ? { "dateModified": article.dateModified } : {}),
-    "author": ['sanitary-norms', 'cleaning-as-profitable-business'].includes(article.slug)
+    "author": ['sanitary-norms', 'cleaning-as-profitable-business', 'equipment-selection-guide'].includes(article.slug)
       ? {
           "@type": "Person",
           "name": "Эдуард Сулейманов",
@@ -293,6 +293,7 @@ console.log('🔍 DEBUG:', { slug, article, allArticles: articlesData });
         article={{
           author: article.author,
           publishedTime: article.datePublished,
+          modifiedTime: article.dateModified,
           section: article.category
         }}
       />

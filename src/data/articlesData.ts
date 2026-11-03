@@ -16,6 +16,18 @@ import income3 from '@/assets/articles/income-3.webp';
 import income4 from '@/assets/articles/income-4.webp';
 import equipmentSelection from '@/assets/articles/equipment-selection.webp';
 import ductCleaningMain from '@/assets/articles/duct-cleaning-main.webp';
+import fireSafetyPreview from '@/assets/articles/fire-safety-preview.webp';
+import fireSafetyBanner from '@/assets/articles/fire-safety-banner.webp';
+import profitablePreview from '@/assets/articles/profitable-preview.webp';
+import profitableBanner from '@/assets/articles/profitable-banner.webp';
+import startingPreview from '@/assets/articles/starting-preview.webp';
+import startingBanner from '@/assets/articles/starting-banner.webp';
+import incomePreview from '@/assets/articles/income-preview.webp';
+import incomeBanner from '@/assets/articles/income-banner.webp';
+import equipmentPreview from '@/assets/articles/equipment-preview.webp';
+import equipmentBanner from '@/assets/articles/equipment-banner.webp';
+import ductCleaningPreview from '@/assets/articles/duct-cleaning-preview.webp';
+import ductCleaningBanner from '@/assets/articles/duct-cleaning-banner.webp';
 
 export interface ArticleVideo {
   rutubeId: string;

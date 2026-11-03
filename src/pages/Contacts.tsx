@@ -27,7 +27,7 @@ const contactsBreadcrumbs = [
 ];
 
 const contactInfo: Array<{ icon: typeof Phone; label: string; value: string; href: string; target?: string }> = [
-  { icon: Phone, label: 'Телефон', value: '(499) 677-2010', href: 'tel:+74996772010' },
+  { icon: Phone, label: 'Телефон', value: '(925) 85-349-74', href: 'tel:+79258534974' },
   { icon: Mail, label: 'Email', value: 'sales@pressovac-moscow.ru', href: 'mailto:sales@pressovac-moscow.ru' },
   { icon: MapPin, label: 'Адрес склада', value: 'МО, г. Одинцово, ул. Луговая, д. 14 (Сколково)', href: 'https://yandex.ru/maps/?text=Одинцово%2C%20ул.%20Луговая%2C%2014%20(Сколково)', target: '_blank' },
   { icon: Clock, label: 'Время работы', value: 'Пн-Пт: 09:00-21:00', href: '#' },
@@ -345,7 +345,7 @@ const Contacts = () => {
     <Layout>
       <SEOHead 
         title="Контакты Веконт-М | Заказать оборудование Pressovac"
-        description="Связаться с компанией Веконт-М: телефон (499) 677-2010, email sales@pressovac-moscow.ru. Адрес склада в Москве. Заказать оборудование Pressovac."
+        description="Связаться с компанией Веконт-М: телефон (925) 85-349-74, email sales@pressovac-moscow.ru. Адрес склада в Москве. Заказать оборудование Pressovac."
         keywords="контакты Веконт-М, Pressovac Москва, заказать оборудование для очистки вентиляции, телефон Pressovac"
         canonical="/contacts"
         breadcrumbs={contactsBreadcrumbs}
@@ -446,12 +446,9 @@ const Contacts = () => {
                   <div>
                     <p className="text-sm text-muted-foreground">{item.label}</p>
                     {item.label === 'Телефон' ? (
-                      <div className="mt-0.5 space-y-2">
+                      <div className="mt-0.5">
                         <p className="font-semibold">{item.value}</p>
-                        <div>
-                          <p className="text-sm text-muted-foreground">Консультант:</p>
-                          <p className="font-semibold">(925) 85-349-74</p>
-                        </div>
+                        <p className="text-sm text-muted-foreground">Консультант:</p>
                       </div>
                     ) : (
                       <p className="font-semibold">{item.value}</p>

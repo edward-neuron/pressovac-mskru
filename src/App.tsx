@@ -18,6 +18,7 @@ import Training from "./pages/Training";
 import Articles from "./pages/Articles";
 import ArticlePage from "./pages/ArticlePage";
 import Contacts from "./pages/Contacts";
+import Reviews from "./pages/Reviews";
 import Inquiry from "./pages/Inquiry";
 import Delivery from "./pages/Delivery";
 import Privacy from "./pages/Privacy";
@@ -49,6 +50,7 @@ export const AppContent = () => (
           <Route path="/technology" element={<Technology />} />
           <Route path="/training" element={<Training />} />
           <Route path="/articles" element={<Articles />} />
+          <Route path="/reviews" element={<Reviews />} />
           <Route path="/articles/:slug" element={<ArticlePage />} />
           <Route path="/contacts" element={<Contacts />} />
           <Route path="/inquiry" element={<Inquiry />} />

@@ -28,6 +28,7 @@ const STATIC_ROUTES = [
   "/technology",
   "/training",
   "/articles",
+  "/reviews",
   "/delivery",
   "/privacy",
   "/inquiry",

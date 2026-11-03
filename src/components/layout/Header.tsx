@@ -12,6 +12,7 @@ const navigation = [
   { name: 'Технология', href: '/technology' },
   { name: 'Обучение', href: '/training' },
   { name: 'Статьи', href: '/articles' },
+  { name: 'Отзывы', href: '/reviews' },
   { name: 'Контакты', href: '/contacts' },
 ];
 

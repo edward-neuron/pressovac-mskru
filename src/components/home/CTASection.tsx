@@ -149,7 +149,7 @@ export const CTASection = () => {
                 className="bg-primary-foreground text-primary hover:bg-primary-foreground/90"
                 asChild
               >
-                <a href="tel:+74996772010">
+                <a href="tel:+79258534974">
                   <Phone className="w-5 h-5" />
                   Позвонить нам
                 </a>

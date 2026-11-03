@@ -284,13 +284,6 @@ const Checkout = () => {
                 <h2 className="font-semibold mb-4">Наши контакты</h2>
                 <div className="space-y-3 text-left">
                   <a 
-                    href="tel:+74996772010" 
-                    className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    <Phone className="w-5 h-5" />
-                    <span>+7 (499) 677-20-10 <span className="text-sm">(многоканальный)</span></span>
-                  </a>
-                  <a 
                     href="tel:+79258534974" 
                     className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors"
                   >

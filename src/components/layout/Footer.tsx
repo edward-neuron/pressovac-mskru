@@ -12,6 +12,7 @@ const navigation = {
   services: [
     { name: 'Обучение', href: '/training' },
     { name: 'Статьи', href: '/articles' },
+    { name: 'Отзывы', href: '/reviews' },
     { name: 'Условия поставки', href: '/delivery' },
     { name: 'Опросный лист', href: '/inquiry' },
   ],

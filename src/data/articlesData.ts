@@ -16,6 +16,18 @@ import income3 from '@/assets/articles/income-3.webp';
 import income4 from '@/assets/articles/income-4.webp';
 import equipmentSelection from '@/assets/articles/equipment-selection.webp';
 import ductCleaningMain from '@/assets/articles/duct-cleaning-main.webp';
+import fireSafetyPreview from '@/assets/articles/fire-safety-preview.webp';
+import fireSafetyBanner from '@/assets/articles/fire-safety-banner.webp';
+import profitablePreview from '@/assets/articles/profitable-preview.webp';
+import profitableBanner from '@/assets/articles/profitable-banner.webp';
+import startingPreview from '@/assets/articles/starting-preview.webp';
+import startingBanner from '@/assets/articles/starting-banner.webp';
+import incomePreview from '@/assets/articles/income-preview.webp';
+import incomeBanner from '@/assets/articles/income-banner.webp';
+import equipmentPreview from '@/assets/articles/equipment-preview.webp';
+import equipmentBanner from '@/assets/articles/equipment-banner.webp';
+import ductCleaningPreview from '@/assets/articles/duct-cleaning-preview.webp';
+import ductCleaningBanner from '@/assets/articles/duct-cleaning-banner.webp';
 
 export interface ArticleVideo {
   rutubeId: string;
@@ -51,7 +63,8 @@ export const articlesData: Article[] = [
     author: 'Веконт-М',
     category: 'Безопасность',
     readTime: '5 мин',
-    image: fireSafety1,
+    image: fireSafetyPreview,
+    detailImage: fireSafetyBanner,
     images: [fireSafety1, fireSafety2],
     content: `
 ## Почему рестораны горят?
@@ -112,7 +125,8 @@ export const articlesData: Article[] = [
     author: 'Веконт-М',
     category: 'Бизнес',
     readTime: '7 мин',
-    image: profitable1,
+    image: profitablePreview,
+    detailImage: profitableBanner,
     images: [profitable1, profitable2, profitable3, profitable4],
     content: `
 ## Почему очистка вентиляции — это бизнес будущего?
@@ -187,7 +201,8 @@ export const articlesData: Article[] = [
     author: 'Веконт-М',
     category: 'Руководство',
     readTime: '10 мин',
-    image: startingMain,
+    image: startingPreview,
+    detailImage: startingBanner,
     images: [startingMain, starting1, starting2],
     content: `
 ## Пошаговое руководство по открытию бизнеса
@@ -286,7 +301,8 @@ export const articlesData: Article[] = [
     author: 'Эдуард Сулейманов',
     category: 'Бизнес',
     readTime: '4 мин',
-    image: income1,
+    image: incomePreview,
+    detailImage: incomeBanner,
     images: [income1, income2, income3, income4],
     content: `
 ## Бизнес по очистке вентиляции: что важно оценить
@@ -422,7 +438,8 @@ export const articlesData: Article[] = [
     author: 'Эдуард Сулейманов',
     category: 'Оборудование',
     readTime: '9 мин',
-    image: equipmentSelection,
+    image: equipmentPreview,
+    detailImage: equipmentBanner,
     videos: [
       { rutubeId: '9927894db7f21eb0aad294b3d45a9bf7', youtubeId: 'IURiZ30KPsA' },
       { rutubeId: 'd35efc5eac366396053d3f97f96fc1bc', youtubeId: 'dVYHXnAIwTs' },
@@ -553,7 +570,8 @@ export const articlesData: Article[] = [
     author: 'Веконт-М',
     category: 'Технологии',
     readTime: '8 мин',
-    image: ductCleaningMain,  
+    image: ductCleaningPreview,
+    detailImage: ductCleaningBanner,
     content: `
 ## Зачем нужна очистка вентиляции?
 

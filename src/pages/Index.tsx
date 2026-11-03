@@ -35,7 +35,7 @@ const organizationSchema = {
   },
   "contactPoint": {
     "@type": "ContactPoint",
-    "telephone": "+7-499-677-20-10",
+    "telephone": "+7-925-853-4974",
     "email": "sales@pressovac-moscow.ru",
     "contactType": "sales",
     "availableLanguage": "Russian"

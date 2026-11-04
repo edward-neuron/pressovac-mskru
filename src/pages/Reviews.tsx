@@ -79,7 +79,7 @@ const Reviews = () => (
       breadcrumbs={reviewsBreadcrumbs}
     />
 
-    <section className="relative overflow-hidden bg-gradient-to-r from-primary to-accent pt-20" aria-label="Отзывы клиентов">
+    <section className="relative overflow-hidden bg-background pt-20" aria-label="Отзывы клиентов">
       {reviewsBannerUrl && (
         <>
           <img
@@ -92,11 +92,11 @@ const Reviews = () => (
         </>
       )}
       <div className="container-custom relative py-12">
-        <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-white/80">Отзывы</p>
-        <h1 className="font-display text-3xl font-bold text-white md:text-5xl">
+        <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-primary">Отзывы</p>
+        <h1 className="font-display text-3xl font-bold text-foreground md:text-5xl">
           Отзывы клиентов
         </h1>
-        <p className="mt-5 max-w-3xl leading-relaxed text-white/90">
+        <p className="mt-5 max-w-3xl leading-relaxed text-muted-foreground">
           Подборка отзывов, опубликованных клиентами на Яндекс Картах, в 2GIS и на Flamp.
           Отзывы рассказывают об опыте выбора и покупки оборудования Pressovac,
           консультациях, обучении и поддержке компании Веконт-М.
@@ -108,17 +108,18 @@ const Reviews = () => (
       <div className="container-custom">
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {reviews.map((review) => (
-            <article key={review.author + review.date} className="rounded-2xl border border-border bg-card p-6 shadow-sm">
-              <header className="mb-5 flex flex-wrap items-start justify-between gap-3">
+            <article key={review.author + review.date} className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+              <header className="flex flex-wrap items-start justify-between gap-3 bg-gradient-to-r from-primary to-accent p-6 text-white">
                 <div>
-                  <h2 className="font-display text-lg font-semibold text-foreground">{review.author}</h2>
-                  <p className="mt-1 text-sm text-muted-foreground">{review.date}</p>
+                  <h2 className="font-display text-lg font-semibold text-white">{review.author}</h2>
+                  <p className="mt-1 text-sm text-white/80">{review.date}</p>
                 </div>
-                <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+                <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-medium text-white">
                   {review.source}
                 </span>
               </header>
 
+              <div className="p-6">
               <details className="group">
                 <summary className="list-none cursor-pointer rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary">
                   <p className="leading-relaxed text-foreground">{review.preview}</p>
@@ -141,6 +142,7 @@ const Reviews = () => (
                 Открыть источник
                 <ExternalLink className="h-4 w-4" aria-hidden="true" />
               </a>
+              </div>
             </article>
           ))}
         </div>

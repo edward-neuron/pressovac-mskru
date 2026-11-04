@@ -1,4 +1,5 @@
 import { BadgeCheck, ChevronDown, ExternalLink, Star } from 'lucide-react';
+import { useState } from 'react';
 import { Layout } from '@/components/layout/Layout';
 import { SEOHead } from '@/components/seo/SEOHead';
 
@@ -76,6 +77,89 @@ const reviewsBreadcrumbs = [
   { name: 'Отзывы', url: '/reviews' },
 ];
 
+const ReviewCard = ({ review }: { review: Review }) => {
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <article
+      className="flex h-full flex-col rounded-3xl border border-white/80 bg-gradient-to-br from-white/95 via-white/80 to-sky-50/70 p-6 shadow-[0_18px_48px_-24px_rgba(0,102,204,0.28)] ring-1 ring-sky-100/70 backdrop-blur-xl transition-shadow hover:shadow-[0_22px_56px_-24px_rgba(0,102,204,0.34)] sm:p-7"
+    >
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-600/10">
+          <BadgeCheck className="h-4 w-4" aria-hidden="true" />
+          Проверенный отзыв
+        </span>
+        <p className="text-xs font-medium text-muted-foreground">
+          {review.source} · {review.date}
+        </p>
+      </div>
+
+      <div className="flex items-start gap-3.5">
+        <span
+          aria-hidden="true"
+          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary/10 font-display text-lg font-semibold text-primary ring-1 ring-primary/10"
+        >
+          {review.author.charAt(0).toLocaleUpperCase('ru-RU')}
+        </span>
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+            <h2 className="font-display text-lg font-semibold leading-tight text-foreground">
+              {review.author}
+            </h2>
+            <div
+              role="img"
+              aria-label={"Оценка " + review.rating + " из 5"}
+              className="inline-flex shrink-0 items-center gap-0.5 text-amber-400"
+            >
+              {Array.from({ length: review.rating }, (_, index) => (
+                <Star key={index} className="h-4 w-4 fill-current" aria-hidden="true" />
+              ))}
+            </div>
+          </div>
+          <p className="mt-1 text-sm text-muted-foreground">Клиент компании «Веконт-М»</p>
+        </div>
+      </div>
+
+      <div className="my-5 border-t border-sky-900/10" />
+
+      <p className="line-clamp-3 leading-relaxed text-foreground">{review.preview}</p>
+
+      <div className="mt-auto pt-4">
+        {expanded && (
+          <blockquote className="mb-5 border-t border-sky-900/10 pt-4 leading-relaxed text-foreground/90">
+            {review.text}
+          </blockquote>
+        )}
+
+        <div className="flex items-center justify-between gap-4 border-t border-sky-900/10 pt-5">
+          <button
+            type="button"
+            aria-expanded={expanded}
+            onClick={() => setExpanded((current) => !current)}
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition-colors hover:text-primary/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
+          >
+            {expanded ? 'Свернуть' : 'Читать полностью'}
+            <ChevronDown
+              className={`h-4 w-4 transition-transform ${expanded ? 'rotate-180' : ''}`}
+              aria-hidden="true"
+            />
+          </button>
+
+          <a
+            href={review.sourceUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex shrink-0 items-center gap-1 text-sm font-medium text-muted-foreground transition-colors hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
+          >
+            Источник
+            <ExternalLink className="h-4 w-4" aria-hidden="true" />
+          </a>
+        </div>
+      </div>
+    </article>
+  );
+};
+
 const Reviews = () => (
   <Layout>
     <SEOHead
@@ -115,73 +199,7 @@ const Reviews = () => (
       <div className="container-custom">
         <div className="grid items-stretch gap-6 md:grid-cols-2 xl:grid-cols-3">
           {reviews.map((review) => (
-            <article
-              key={review.author + review.date}
-              className="flex h-full flex-col rounded-3xl border border-white/80 bg-gradient-to-br from-white/95 via-white/80 to-sky-50/70 p-6 shadow-[0_18px_48px_-24px_rgba(0,102,204,0.28)] ring-1 ring-sky-100/70 backdrop-blur-xl transition-shadow hover:shadow-[0_22px_56px_-24px_rgba(0,102,204,0.34)] sm:p-7"
-            >
-              <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-600/10">
-                  <BadgeCheck className="h-4 w-4" aria-hidden="true" />
-                  Проверенный отзыв
-                </span>
-                <p className="text-xs font-medium text-muted-foreground">
-                  {review.source} · {review.date}
-                </p>
-              </div>
-
-              <div className="flex items-start gap-3.5">
-                <span
-                  aria-hidden="true"
-                  className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary/10 font-display text-lg font-semibold text-primary ring-1 ring-primary/10"
-                >
-                  {review.author.charAt(0).toLocaleUpperCase('ru-RU')}
-                </span>
-                <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
-                    <h2 className="font-display text-lg font-semibold leading-tight text-foreground">
-                      {review.author}
-                    </h2>
-                    <div
-                      role="img"
-                      aria-label={"Оценка " + review.rating + " из 5"}
-                      className="inline-flex shrink-0 items-center gap-0.5 text-amber-400"
-                    >
-                      {Array.from({ length: review.rating }, (_, index) => (
-                        <Star key={index} className="h-4 w-4 fill-current" aria-hidden="true" />
-                      ))}
-                    </div>
-                  </div>
-                  <p className="mt-1 text-sm text-muted-foreground">Клиент компании «Веконт-М»</p>
-                </div>
-              </div>
-
-              <div className="my-5 border-t border-sky-900/10" />
-
-              <details className="group flex flex-1 flex-col">
-                <summary className="list-none cursor-pointer rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary [&::-webkit-details-marker]:hidden">
-                  <p className="line-clamp-3 leading-relaxed text-foreground">{review.preview}</p>
-                  <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition-colors group-hover:text-primary/80">
-                    Читать полностью
-                    <ChevronDown className="h-4 w-4 transition-transform group-open:rotate-180" aria-hidden="true" />
-                  </span>
-                </summary>
-                <blockquote className="mt-4 border-t border-sky-900/10 pt-4 leading-relaxed text-foreground/90">
-                  {review.text}
-                </blockquote>
-              </details>
-
-              <div className="mt-auto flex items-center justify-end pt-6">
-                <a
-                  href={review.sourceUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex min-h-8 items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
-                >
-                  Перейти к оригиналу
-                  <ExternalLink className="h-4 w-4" aria-hidden="true" />
-                </a>
-              </div>
-            </article>
+            <ReviewCard key={review.author + review.date} review={review} />
           ))}
         </div>
       </div>

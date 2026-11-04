@@ -169,13 +169,16 @@ const Reviews = () => (
       breadcrumbs={reviewsBreadcrumbs}
     />
 
-    <section className="bg-background py-6 md:py-8" aria-label="Отзывы клиентов">
+    <section aria-label="Отзывы клиентов" className="w-full">
       <img
         src={reviewsHeroBanner}
         alt="География доверия. Реальные отзывы клиентов PRESSOVAC"
         width={2140}
         height={735}
-        className="mx-auto block h-auto w-full max-w-[1920px]"
+        className="h-auto w-full object-contain"
+        loading="eager"
+        fetchPriority="high"
+        decoding="async"
       />
     </section>
 

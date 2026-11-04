@@ -2,6 +2,7 @@ import { BadgeCheck, ChevronDown, ExternalLink, Star } from 'lucide-react';
 import { useState } from 'react';
 import { Layout } from '@/components/layout/Layout';
 import { SEOHead } from '@/components/seo/SEOHead';
+import reviewsHeroBanner from '@/assets/reviews-hero-banner.webp';
 
 type Review = {
   author: string;
@@ -12,8 +13,6 @@ type Review = {
   preview: string;
   text: string;
 };
-
-const reviewsBannerUrl: string | null = null;
 
 const reviews: Review[] = [
   {
@@ -170,29 +169,15 @@ const Reviews = () => (
       breadcrumbs={reviewsBreadcrumbs}
     />
 
-    <section className="relative overflow-hidden bg-background pt-20" aria-label="Отзывы клиентов">
-      {reviewsBannerUrl && (
-        <>
-          <img
-            src={reviewsBannerUrl}
-            alt=""
-            aria-hidden="true"
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-          <div className="absolute inset-0 bg-foreground/60" />
-        </>
-      )}
-      <div className="container-custom relative py-12">
-        <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-primary">Отзывы</p>
-        <h1 className="font-display text-3xl font-bold text-foreground md:text-5xl">
-          Отзывы клиентов
-        </h1>
-        <p className="mt-5 max-w-3xl leading-relaxed text-muted-foreground">
-          Подборка отзывов, опубликованных клиентами на Яндекс Картах, в 2GIS и на Flamp.
-          Отзывы рассказывают об опыте выбора и покупки оборудования Pressovac,
-          консультациях, обучении и поддержке компании Веконт-М.
-        </p>
-      </div>
+    <section className="bg-background py-6 md:py-8" aria-label="Отзывы клиентов">
+      <h1 className="sr-only">Отзывы клиентов</h1>
+      <img
+        src={reviewsHeroBanner}
+        alt="География доверия. Реальные отзывы клиентов PRESSOVAC"
+        width={2140}
+        height={735}
+        className="mx-auto block h-auto w-full max-w-[1920px]"
+      />
     </section>
 
     <section className="section-padding pt-4">

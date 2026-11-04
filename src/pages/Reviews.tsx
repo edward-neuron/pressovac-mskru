@@ -1,10 +1,11 @@
-import { ExternalLink, ChevronDown } from 'lucide-react';
+import { BadgeCheck, ChevronDown, ExternalLink, Star } from 'lucide-react';
 import { Layout } from '@/components/layout/Layout';
 import { SEOHead } from '@/components/seo/SEOHead';
 
 type Review = {
   author: string;
   date: string;
+  rating: number;
   source: string;
   sourceUrl: string;
   preview: string;
@@ -17,6 +18,7 @@ const reviews: Review[] = [
   {
     "author": "Елена К.",
     "date": "18 сентября 2019",
+    "rating": 5,
     "source": "Яндекс Карты",
     "sourceUrl": "https://yandex.com/maps/org/vecont_m/211975092839/reviews/",
     "preview": "Мы уже больше 2 лет и, особенно последний год, рассматривали проект по открытию бизнеса очистки вентиляции на Юге России...",
@@ -25,6 +27,7 @@ const reviews: Review[] = [
   {
     "author": "Елена Н. · Эко-Сибирь",
     "date": "16 декабря 2019",
+    "rating": 5,
     "source": "Яндекс Карты",
     "sourceUrl": "https://yandex.com/maps/org/vecont_m/211975092839/reviews/",
     "preview": "Компания Эко-Сибирь, работает с компанией Веконт-М с 2017 года. За период сотрудничества Веконт-М было поставлено два оборудования комплексной очистки...",
@@ -33,6 +36,7 @@ const reviews: Review[] = [
   {
     "author": "Олег",
     "date": "23 февраля 2021",
+    "rating": 5,
     "source": "Яндекс Карты",
     "sourceUrl": "https://yandex.com/maps/org/vekont_m/211975092839/reviews/?ll=99.505405%2C-3.537040&utm_source=review&z=2",
     "preview": "С компанией Веконт-М сотрудничаем много лет. Оборудования лучше представляемого этой компанией не найти, качественное и...",
@@ -41,6 +45,7 @@ const reviews: Review[] = [
   {
     "author": "andry.tihon77",
     "date": "2 ноября 2021, изменён",
+    "rating": 5,
     "source": "Flamp · отзыв в карточке 2GIS",
     "sourceUrl": "https://flamp.ru/r/4504127918197850/7263327",
     "preview": "Долго искали поставщика оборудование. Вышли на финское оборудование Pressovac, встретились, обсудили и сделали заказ...",
@@ -49,6 +54,7 @@ const reviews: Review[] = [
   {
     "author": "Сергей Николаевич Таманцев",
     "date": "30 октября 2021",
+    "rating": 5,
     "source": "2GIS",
     "sourceUrl": "https://2gis.ru/moscow/firm/4504127918197850/tab/reviews",
     "preview": "Приобрели универсальное оборудование Pressovac с комплектом инструментов и аксессуаров для очистки вентиляции. Долго выбирали...",
@@ -57,6 +63,7 @@ const reviews: Review[] = [
   {
     "author": "aleshina-toma",
     "date": "26 ноября 2015",
+    "rating": 5,
     "source": "Flamp · отзыв в карточке 2GIS",
     "sourceUrl": "https://flamp.ru/r/4504127918197850/1660586",
     "preview": "Сайт и компания Веконьт-М в целом проверены ни одним годом сотрудничества и отзывами других клиентов. Есть собственный опыт общения...",
@@ -106,42 +113,73 @@ const Reviews = () => (
 
     <section className="section-padding pt-4">
       <div className="container-custom">
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid items-stretch gap-6 md:grid-cols-2 xl:grid-cols-3">
           {reviews.map((review) => (
-            <article key={review.author + review.date} className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
-              <header className="flex flex-wrap items-start justify-between gap-3 bg-gradient-to-r from-primary to-accent p-6 text-white">
-                <div>
-                  <h2 className="font-display text-lg font-semibold text-white">{review.author}</h2>
-                  <p className="mt-1 text-sm text-white/80">{review.date}</p>
-                </div>
-                <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-medium text-white">
-                  {review.source}
+            <article
+              key={review.author + review.date}
+              className="flex h-full flex-col rounded-3xl border border-white/80 bg-gradient-to-br from-white/95 via-white/80 to-sky-50/70 p-6 shadow-[0_18px_48px_-24px_rgba(0,102,204,0.28)] ring-1 ring-sky-100/70 backdrop-blur-xl transition-shadow hover:shadow-[0_22px_56px_-24px_rgba(0,102,204,0.34)] sm:p-7"
+            >
+              <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-600/10">
+                  <BadgeCheck className="h-4 w-4" aria-hidden="true" />
+                  Проверенный отзыв
                 </span>
-              </header>
+                <p className="text-xs font-medium text-muted-foreground">
+                  {review.source} · {review.date}
+                </p>
+              </div>
 
-              <div className="p-6">
-              <details className="group">
-                <summary className="list-none cursor-pointer rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary">
-                  <p className="leading-relaxed text-foreground">{review.preview}</p>
-                  <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-primary">
-                    Читать отзыв полностью
+              <div className="flex items-start gap-3.5">
+                <span
+                  aria-hidden="true"
+                  className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary/10 font-display text-lg font-semibold text-primary ring-1 ring-primary/10"
+                >
+                  {review.author.charAt(0).toLocaleUpperCase('ru-RU')}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+                    <h2 className="font-display text-lg font-semibold leading-tight text-foreground">
+                      {review.author}
+                    </h2>
+                    <div
+                      role="img"
+                      aria-label={"Оценка " + review.rating + " из 5"}
+                      className="inline-flex shrink-0 items-center gap-0.5 text-amber-400"
+                    >
+                      {Array.from({ length: review.rating }, (_, index) => (
+                        <Star key={index} className="h-4 w-4 fill-current" aria-hidden="true" />
+                      ))}
+                    </div>
+                  </div>
+                  <p className="mt-1 text-sm text-muted-foreground">Клиент компании «Веконт-М»</p>
+                </div>
+              </div>
+
+              <div className="my-5 border-t border-sky-900/10" />
+
+              <details className="group flex flex-1 flex-col">
+                <summary className="list-none cursor-pointer rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary [&::-webkit-details-marker]:hidden">
+                  <p className="line-clamp-3 leading-relaxed text-foreground">{review.preview}</p>
+                  <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition-colors group-hover:text-primary/80">
+                    Читать полностью
                     <ChevronDown className="h-4 w-4 transition-transform group-open:rotate-180" aria-hidden="true" />
                   </span>
                 </summary>
-                <blockquote className="mt-4 border-t border-border pt-4 leading-relaxed text-foreground">
+                <blockquote className="mt-4 border-t border-sky-900/10 pt-4 leading-relaxed text-foreground/90">
                   {review.text}
                 </blockquote>
               </details>
 
-              <a
-                href={review.sourceUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-5 inline-flex min-h-10 items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/5"
-              >
-                Открыть источник
-                <ExternalLink className="h-4 w-4" aria-hidden="true" />
-              </a>
+              <div className="mt-auto flex items-center justify-end pt-6">
+                <a
+                  href={review.sourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex min-h-8 items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
+                >
+                  Перейти к оригиналу
+                  <ExternalLink className="h-4 w-4" aria-hidden="true" />
+                </a>
               </div>
             </article>
           ))}

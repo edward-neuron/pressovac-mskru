@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react';
 import { Layout } from '@/components/layout/Layout';
 import { SEOHead } from '@/components/seo/SEOHead';
 import { HeroSection } from '@/components/home/HeroSection';
+import pressovacLogo from '@/assets/pressovac-logo.webp';
 
 // Lazy load below-the-fold sections for faster initial render
 const CatalogPreview = lazy(() => import('@/components/home/CatalogPreview').then(m => ({ default: m.CatalogPreview })));
@@ -19,7 +20,7 @@ const organizationSchema = {
   "name": "Веконт-М",
   "alternateName": "Pressovac Moscow",
   "url": "https://pressovac-msk.ru",
-  "logo": "https://pressovac-msk.ru/og-image.png",
+  "logo": new URL(pressovacLogo, "https://pressovac-msk.ru").href,
   "description": "Официальный дистрибьютор финского оборудования Pressovac для очистки вентиляции в России и СНГ",
   "areaServed": ["Россия", "Страны СНГ"],
   "location": {

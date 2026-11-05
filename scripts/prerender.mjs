@@ -63,7 +63,9 @@ const baseHtml = readFileSync(resolve(DIST, "index.html"), "utf8");
 const emittedAssetsBySize = new Map();
 for (const file of readdirSync(OUTPUT_ASSET_ROOT)) {
   const filePath = resolve(OUTPUT_ASSET_ROOT, file);
-  const size = statSync(filePath).size;
+  const fileStats = statSync(filePath);
+  if (!fileStats.isFile()) continue;
+  const size = fileStats.size;
   const sameSizeAssets = emittedAssetsBySize.get(size) ?? [];
   sameSizeAssets.push({ file, filePath });
   emittedAssetsBySize.set(size, sameSizeAssets);
@@ -112,7 +114,7 @@ function resolveProductionAssetUrl(ssrUrl) {
 
 function normalizeSsrAssetUrls(head) {
   return head.replace(
-    /https:\/\/pressovac-msk\.ru\/src\/assets\/[^"'\\s<>]+/g,
+    /https:\/\/pressovac-msk\.ru\/src\/assets\/[^"'\s<>]+/g,
     resolveProductionAssetUrl
   );
 }

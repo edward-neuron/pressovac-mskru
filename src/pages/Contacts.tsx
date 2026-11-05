@@ -907,7 +907,7 @@ const Contacts = () => {
               {/* Benefits */}
               <div className="grid sm:grid-cols-3 gap-4 mt-8">
                 {[
-                  { text: 'Бесплатная консультация' },
+                  { text: 'Консультация по оборудованию' },
                   { text: 'Ответ в течение 24 часов' },
                   { text: 'Индивидуальный подбор' },
                 ].map((item) => (
@@ -952,7 +952,7 @@ const Contacts = () => {
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle className="w-4 h-4 text-primary mt-1 flex-shrink-0" />
-                  <span>Аудит, выявление боли, решение задач</span>
+                  <span>Помогаем разобраться с задачей и подобрать оборудование</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle className="w-4 h-4 text-primary mt-1 flex-shrink-0" />

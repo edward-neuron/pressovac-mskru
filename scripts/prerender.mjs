@@ -1,5 +1,5 @@
 // scripts/prerender.mjs
-import { readFileSync, writeFileSync, mkdirSync } from "fs";
+import { readFileSync, writeFileSync, mkdirSync, readdirSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 import { createServer } from "vite";
@@ -54,6 +54,18 @@ console.log(`Prerendering ${ALL_ROUTES.length} routes...`);
 
 // --- 3. Базовый HTML от Vite ---
 const baseHtml = readFileSync(resolve(DIST, "index.html"), "utf8");
+// Vite SSR возвращает исходный путь импорта; для prerender нужен URL из собранного dist/assets.
+const logoAsset = readdirSync(resolve(DIST, "assets")).find((file) =>
+  /^pressovac-logo-[\w-]+\.webp$/.test(file)
+);
+if (!logoAsset) {
+  throw new Error("Не найден собранный файл логотипа в dist/assets");
+}
+const productionLogoUrl = new URL(
+  `/assets/${logoAsset}`,
+  "https://pressovac-msk.ru"
+).href;
+const ssrLogoUrl = "https://pressovac-msk.ru/src/assets/pressovac-logo.webp";
 
 // --- 4. Поднимаем Vite в SSR-режиме (умеет .webp, css, alias @) ---
 const vite = await createServer({
@@ -69,7 +81,7 @@ try {
   for (const route of ALL_ROUTES) {
     let head = "";
     try {
-      head = renderHead(route);
+      head = renderHead(route).replaceAll(ssrLogoUrl, productionLogoUrl);
     } catch (e) {
       console.warn(`⚠ ${route} — head render failed: ${e.message}`);
     }

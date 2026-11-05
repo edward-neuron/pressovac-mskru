@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Award, Users, Building, Globe } from 'lucide-react';
 
 const stats = [
-  { icon: Award, value: '30+', label: 'лет на рынке' },
-  { icon: Users, value: '500+', label: 'обученных специалистов' },
-  { icon: Building, value: '1000+', label: 'проектов' },
+  { icon: Award, value: '1979', label: 'работа PRESSOVAC в сфере очистки вентиляции' },
+  { icon: Users, value: '1991', label: 'производство оборудования PRESSOVAC' },
+  { icon: Building, value: '2008', label: 'дистрибуция PRESSOVAC компанией Веконт-М' },
   { icon: Globe, value: 'СНГ', label: 'география поставок' },
 ];
 
@@ -33,7 +33,7 @@ export const AboutPreview = () => {
               оборудование для очистки вентиляции и удаления жира в вытяжных системах.
             </p>
             <ul className="space-y-3">
-              {['Делимся опытом и лайфхаками', 'Проводим бесплатный аудит компании', 'Помогаем запустить бизнес', 'Предоставляем комплексное обучение'].map((item) => (
+              {['Делимся опытом и лайфхаками', 'Консультируем по выбору оборудования', 'Помогаем подобрать оборудование для старта бизнеса', 'Обучаем работе с оборудованием'].map((item) => (
                 <li key={item} className="flex items-center gap-3">
                   <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
                     <div className="w-2 h-2 rounded-full bg-primary" />

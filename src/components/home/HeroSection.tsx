@@ -7,7 +7,7 @@ import { AnimatedWaves } from './AnimatedWaves';
 import equipmentHero from '@/assets/equipment-hero.webp';
 
 const features = [
-  'Финское качество с 1990 года',
+  'Опыт в очистке вентиляции с 1979 года',
   'Официальная гарантия',
   'Сервисная поддержка',
   'Обучение персонала',
@@ -59,8 +59,9 @@ export const HeroSection = memo(() => {
             </h1>
 
             <p className="text-lg text-muted-foreground leading-relaxed max-w-lg">
-              Профессиональное финское оборудование PRESSOVAC для очистки и дезинфекции 
-              систем вентиляции. Надёжность и качество с 1990 года.
+              Профессиональное финское оборудование PRESSOVAC для очистки и дезинфекции
+              систем вентиляции. История PRESSOVAC в этой сфере началась в 1979 году,
+              производство оборудования ведётся с 1991 года.
             </p>
 
             <ul className="grid grid-cols-2 gap-3">
@@ -115,11 +116,11 @@ export const HeroSection = memo(() => {
             >
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <span className="font-display font-bold text-xl text-primary">30+</span>
+                  <span className="font-display font-bold text-xl text-primary">1979</span>
                 </div>
                 <div>
-                  <p className="font-display font-semibold text-foreground">лет опыта</p>
-                  <p className="text-sm text-muted-foreground">на рынке</p>
+                  <p className="font-display font-semibold text-foreground">начало работы</p>
+                  <p className="text-sm text-muted-foreground">в сфере очистки вентиляции</p>
                 </div>
               </div>
             </motion.div>

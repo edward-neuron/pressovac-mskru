@@ -1,12 +1,15 @@
 // scripts/prerender.mjs
-import { readFileSync, writeFileSync, mkdirSync, readdirSync } from "fs";
-import { resolve, dirname } from "path";
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, statSync } from "fs";
+import { resolve, dirname, relative, isAbsolute, basename } from "path";
 import { fileURLToPath } from "url";
 import { createServer } from "vite";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
 const DIST = resolve(ROOT, "dist");
+const SITE_URL = "https://pressovac-msk.ru";
+const SOURCE_ASSET_ROOT = resolve(ROOT, "src/assets");
+const OUTPUT_ASSET_ROOT = resolve(DIST, "assets");
 
 // --- 1. Slug'и статей берём из исходника регуляркой (без импорта ассетов) ---
 const dataSource = readFileSync(
@@ -54,18 +57,67 @@ console.log(`Prerendering ${ALL_ROUTES.length} routes...`);
 
 // --- 3. Базовый HTML от Vite ---
 const baseHtml = readFileSync(resolve(DIST, "index.html"), "utf8");
-// Vite SSR возвращает исходный путь импорта; для prerender нужен URL из собранного dist/assets.
-const logoAsset = readdirSync(resolve(DIST, "assets")).find((file) =>
-  /^pressovac-logo-[\w-]+\.webp$/.test(file)
-);
-if (!logoAsset) {
-  throw new Error("Не найден собранный файл логотипа в dist/assets");
+
+// Vite SSR оставляет исходные пути импортированных файлов. Для prerender
+// заменяем их на имена файлов, реально опубликованных в dist/assets.
+const emittedAssetsBySize = new Map();
+for (const file of readdirSync(OUTPUT_ASSET_ROOT)) {
+  const filePath = resolve(OUTPUT_ASSET_ROOT, file);
+  const fileStats = statSync(filePath);
+  if (!fileStats.isFile()) continue;
+  const size = fileStats.size;
+  const sameSizeAssets = emittedAssetsBySize.get(size) ?? [];
+  sameSizeAssets.push({ file, filePath });
+  emittedAssetsBySize.set(size, sameSizeAssets);
 }
-const productionLogoUrl = new URL(
-  `/assets/${logoAsset}`,
-  "https://pressovac-msk.ru"
-).href;
-const ssrLogoUrl = "https://pressovac-msk.ru/src/assets/pressovac-logo.webp";
+const normalizedAssetUrls = new Map();
+
+function resolveProductionAssetUrl(ssrUrl) {
+  const cachedUrl = normalizedAssetUrls.get(ssrUrl);
+  if (cachedUrl) return cachedUrl;
+
+  const parsedUrl = new URL(ssrUrl);
+  const sourceRelativePath = decodeURIComponent(
+    parsedUrl.pathname.slice("/src/assets/".length)
+  );
+  const sourcePath = resolve(SOURCE_ASSET_ROOT, sourceRelativePath);
+  const relativeSourcePath = relative(SOURCE_ASSET_ROOT, sourcePath);
+  if (
+    !relativeSourcePath ||
+    relativeSourcePath.startsWith("..") ||
+    isAbsolute(relativeSourcePath)
+  ) {
+    throw new Error(`Путь SSR-ассета выходит за src/assets: ${ssrUrl}`);
+  }
+
+  const sourceBytes = readFileSync(sourcePath);
+  const candidates = emittedAssetsBySize.get(sourceBytes.length) ?? [];
+  const emittedAsset = candidates.find(({ filePath }) =>
+    readFileSync(filePath).equals(sourceBytes)
+  );
+  if (!emittedAsset) {
+    throw new Error(
+      `SSR-ассет не найден среди собранных файлов dist/assets: ${sourceRelativePath}`
+    );
+  }
+
+  const productionUrl = new URL(
+    `/assets/${basename(emittedAsset.file)}`,
+    SITE_URL
+  );
+  productionUrl.search = parsedUrl.search;
+  productionUrl.hash = parsedUrl.hash;
+  const resolvedUrl = productionUrl.href;
+  normalizedAssetUrls.set(ssrUrl, resolvedUrl);
+  return resolvedUrl;
+}
+
+function normalizeSsrAssetUrls(head) {
+  return head.replace(
+    /https:\/\/pressovac-msk\.ru\/src\/assets\/[^"'\s<>]+/g,
+    resolveProductionAssetUrl
+  );
+}
 
 // --- 4. Поднимаем Vite в SSR-режиме (умеет .webp, css, alias @) ---
 const vite = await createServer({
@@ -81,10 +133,11 @@ try {
   for (const route of ALL_ROUTES) {
     let head = "";
     try {
-      head = renderHead(route).replaceAll(ssrLogoUrl, productionLogoUrl);
+      head = renderHead(route);
     } catch (e) {
       console.warn(`⚠ ${route} — head render failed: ${e.message}`);
     }
+    head = normalizeSsrAssetUrls(head);
 
     let html = baseHtml.replace(/<title>[^<]*<\/title>/, "");
     html = html.replace("<head>", `<head>\n    ${head}`);

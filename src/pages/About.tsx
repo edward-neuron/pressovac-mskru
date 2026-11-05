@@ -24,7 +24,7 @@ const benefits = [
   'Официальный дистрибьютор PRESSOVAC Oy',
   'Гарантия на всё оборудование',
   'Техническая поддержка с 09:00 до 21:00',
-  'Бесплатные консультации',
+  'Консультации по подбору оборудования',
   'Обучение персонала',
   'Помощь в запуске бизнеса',
   'Программа расчёта работ',
@@ -37,8 +37,8 @@ const aboutFAQ = [
     answer: "Веконт-М — официальный дистрибьютор финской компании PRESSOVAC Oy в России и странах СНГ с 2008 года. Мы поставляем профессиональное оборудование для очистки вентиляции и обучаем специалистов."
   },
   {
-    question: "Какие услуги предоставляет Веконт-М?",
-    answer: "Мы предоставляем: продажу оборудования Pressovac, техническую поддержку, обучение персонала, помощь в запуске бизнеса по очистке вентиляции, программу расчёта работ и бизнес-план для старта."
+    question: "Какую поддержку оказывает Веконт-М?",
+    answer: "Веконт-М продаёт оборудование PRESSOVAC и с 2009 года не оказывает услуги по очистке вентиляции. Клиентам доступны техническая поддержка, консультации и обучение."
   },
   {
     question: "Где находится офис компании?",
@@ -90,13 +90,13 @@ const About = () => {
                 Наша история
               </h2>
               <p className="text-muted-foreground leading-relaxed">
-                С 2008 года мы поставляем профессиональное оборудование для очистки 
-                вентиляции и удаления жира в вытяжных системах. За это время мы стали 
-                надёжным партнёром для сотен компаний по всей России и СНГ.
+                Веконт-М поставляет профессиональное оборудование PRESSOVAC для очистки 
+                вентиляции и удаления жира в вытяжных системах с 2008 года. С 2009 года 
+                компания сосредоточена на продаже оборудования и не оказывает услуги по очистке вентиляции.
               </p>
               <p className="text-muted-foreground leading-relaxed">
-                Наша миссия — обеспечивать чистый воздух в помещениях, помогая компаниям 
-                соответствовать санитарным нормам и создавать безопасную среду для людей.
+                Мы помогаем специалистам осваивать технологии очистки через поставку 
+                оборудования, техническую поддержку, консультации и обучение.
               </p>
               <div className="grid grid-cols-2 gap-6 pt-4">
                 {benefits.slice(0, 4).map((benefit) => (
@@ -117,16 +117,16 @@ const About = () => {
               <div className="space-y-6">
                 <div className="text-center">
                   <p className="font-display text-6xl font-bold text-primary">2008</p>
-                  <p className="text-muted-foreground">Год основания</p>
+                  <p className="text-muted-foreground">Начало дистрибуции PRESSOVAC</p>
                 </div>
                 <div className="grid grid-cols-2 gap-6 pt-6 border-t border-border">
                   <div className="text-center">
-                    <p className="font-display text-3xl font-bold text-foreground">500+</p>
-                    <p className="text-sm text-muted-foreground">Обученных специалистов</p>
+                    <p className="font-display text-3xl font-bold text-foreground">1979</p>
+                    <p className="text-sm text-muted-foreground">Начало работы PRESSOVAC в сфере очистки вентиляции</p>
                   </div>
                   <div className="text-center">
-                    <p className="font-display text-3xl font-bold text-foreground">1000+</p>
-                    <p className="text-sm text-muted-foreground">Выполненных проектов</p>
+                    <p className="font-display text-3xl font-bold text-foreground">1991</p>
+                    <p className="text-sm text-muted-foreground">Начало производства оборудования PRESSOVAC</p>
                   </div>
                 </div>
               </div>

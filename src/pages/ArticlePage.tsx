@@ -433,7 +433,7 @@ console.log('🔍 DEBUG:', { slug, article, allArticles: articlesData });
                 Нужна консультация?
               </h3>
               <p className="text-muted-foreground mb-4">
-                Свяжитесь с нами для получения подробной информации об оборудовании и услугах.
+                Свяжитесь с нами, чтобы узнать об оборудовании, технической поддержке и обучении.
               </p>
               <div className="flex flex-wrap gap-3">
                 <Button asChild>

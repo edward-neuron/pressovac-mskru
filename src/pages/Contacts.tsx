@@ -445,14 +445,7 @@ const Contacts = () => {
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">{item.label}</p>
-                    {item.label === 'Телефон' ? (
-                      <div className="mt-0.5">
-                        <p className="font-semibold">{item.value}</p>
-                        <p className="text-sm text-muted-foreground">Консультант:</p>
-                      </div>
-                    ) : (
-                      <p className="font-semibold">{item.value}</p>
-                    )}
+                    <p className="font-semibold">{item.value}</p>
                   </div>
                 </motion.a>
               ))}

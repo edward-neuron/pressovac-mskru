@@ -112,10 +112,11 @@ function resolveProductionAssetUrl(ssrUrl) {
   return resolvedUrl;
 }
 
-function normalizeSsrAssetUrls(head) {
-  return head.replace(
-    /https:\/\/pressovac-msk\.ru\/src\/assets\/[^"'\s<>]+/g,
-    resolveProductionAssetUrl
+function normalizeSsrAssetUrls(markup) {
+  return markup.replace(
+    /(?:https:\/\/pressovac-msk\.ru)?\/src\/assets\/[^"'\s<>]+/g,
+    (ssrUrl) =>
+      resolveProductionAssetUrl(new URL(ssrUrl, SITE_URL).href)
   );
 }
 
@@ -138,6 +139,7 @@ try {
       console.warn(`⚠ ${route} — SSR render failed: ${e.message}`);
     }
     const head = normalizeSsrAssetUrls(page.head);
+    const body = normalizeSsrAssetUrls(page.body);
 
     let html = baseHtml.replace(/<title>[^<]*<\/title>/, "");
     html = html.replace("<head>", `<head>\n    ${head}`);
@@ -155,7 +157,7 @@ try {
       }
       html = html.replace(
         rootPlaceholder,
-        `<div id="root">${page.body}</div>`
+        `<div id="root" data-prerendered="true">${body}</div>`
       );
     }
 

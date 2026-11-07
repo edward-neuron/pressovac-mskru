@@ -114,7 +114,7 @@ function resolveProductionAssetUrl(ssrUrl) {
 
 function normalizeSsrAssetUrls(markup) {
   return markup.replace(
-    /(?:https:\/\/pressovac-msk\.ru)?\/src\/assets\/[^"'\s<>]+/g,
+    /(?:https:\/\/pressovac-msk\.ru)?\/src\/assets\/[^"'()\s<>]+/g,
     (ssrUrl) =>
       resolveProductionAssetUrl(new URL(ssrUrl, SITE_URL).href)
   );

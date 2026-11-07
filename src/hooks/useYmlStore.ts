@@ -1,6 +1,12 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import fallbackStoreData from '@/data/storeFallback.json';
+import {
+  R40_CATEGORY,
+  R40_CATEGORY_ID,
+  R40_PRODUCTS,
+  R40_PRODUCT_IDS,
+} from '@/data/r40ProductFamily';
 
 const STORE_CACHE_KEY = 'pressovac-store-cache-v2';
 
@@ -31,8 +37,9 @@ export interface YmlProduct {
   id: string;
   name: string;
   description?: string;
+  cardDescription?: string;
   price: string;
-  priceNum: number;
+  priceNum: number | null;
   url: string;
   vendorCode?: string;
   picture?: string;
@@ -43,6 +50,7 @@ export interface YmlProduct {
 export interface YmlCategory {
   id: string;
   name: string;
+  description?: string;
   parentId?: string;
   sortOrder: number;
 }
@@ -92,7 +100,29 @@ function createStoreSnapshot(
     sortOrder: idx,
   }));
 
-  return { categories, products, fetchedAt };
+  return {
+    categories: withRepositoryCategories(categories),
+    products: withRepositoryProducts(products),
+    fetchedAt,
+  };
+}
+
+function withRepositoryProducts(products: YmlProduct[]): YmlProduct[] {
+  const existingProducts = products.filter((product) => !R40_PRODUCT_IDS.has(product.id));
+  return [
+    ...existingProducts,
+    ...R40_PRODUCTS.map((product, index) => ({
+      ...product,
+      sortOrder: existingProducts.length + index,
+    })),
+  ];
+}
+
+function withRepositoryCategories(categories: YmlCategory[]): YmlCategory[] {
+  return [
+    ...categories.filter((category) => category.id !== R40_CATEGORY_ID),
+    R40_CATEGORY,
+  ];
 }
 
 function getEmbeddedFallbackStoreData(): CachedStoreData {
@@ -115,12 +145,14 @@ function readPersistentCache(): CachedStoreData | null {
       return null;
     }
 
+    const products = withRepositoryProducts(parsed.products);
     return {
       ...parsed,
-      categories: parsed.categories.map(category => ({
+      categories: withRepositoryCategories(parsed.categories.map(category => ({
         ...category,
         name: categoryNames[category.id] ?? category.name,
-      })),
+      }))),
+      products,
     };
   } catch {
     return null;
@@ -160,7 +192,8 @@ export function clearYmlStoreCache() {
 }
 
 // Helper function to format price
-function formatPrice(price: number): string {
+function formatPrice(price: number | null): string {
+  if (price === null) return '';
   return new Intl.NumberFormat('ru-RU', {
     style: 'decimal',
     minimumFractionDigits: 0,

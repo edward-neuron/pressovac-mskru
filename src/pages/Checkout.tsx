@@ -24,6 +24,7 @@ const BLOCKED_EXTENSIONS = ['exe', 'bat', 'cmd', 'com', 'msi', 'scr', 'pif', 'js
 
 const Checkout = () => {
   const { items, totalPrice, updateQuantity, removeItem, clearCart } = useCart();
+  const hasUnpricedItems = items.some((item) => item.price === null);
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
   
@@ -229,16 +230,18 @@ const Checkout = () => {
       if (error) throw error;
 
       // Метрика (order_complete) + GA4 (purchase) через единый слой
-      trackPurchase(
-        String(generatedOrderNumber),
-        totalPrice,
-        orderItems.map((i) => ({
-          item_id: i.sku || i.name,
-          item_name: i.name,
-          price: i.price,
-          quantity: i.quantity,
-        }))
-      );
+      if (!hasUnpricedItems) {
+        trackPurchase(
+          String(generatedOrderNumber),
+          totalPrice,
+          orderItems.map((i) => ({
+            item_id: i.sku || i.name,
+            item_name: i.name,
+            price: i.price as number,
+            quantity: i.quantity,
+          }))
+        );
+      }
 
       setOrderNumber(generatedOrderNumber);
       setOrderSuccess(true);
@@ -633,7 +636,7 @@ const Checkout = () => {
                       <div className="flex-1 min-w-0">
                         <h4 className="font-medium text-sm line-clamp-1">{item.name}</h4>
                         <div className="text-sm text-primary font-semibold">
-                          {formatPrice(item.price)}
+                          {item.price === null ? 'Стоимость уточняется' : formatPrice(item.price)}
                         </div>
                         <div className="flex items-center gap-1 mt-1">
                           <Button
@@ -673,13 +676,20 @@ const Checkout = () => {
                     <span>{items.reduce((sum, i) => sum + i.quantity, 0)} шт.</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="font-semibold">Итого:</span>
+                    <span className="font-semibold">
+                      {hasUnpricedItems && totalPrice > 0 ? 'Итого по позициям с ценой:' : 'Итого:'}
+                    </span>
                     <span className="text-2xl font-bold text-primary">
-                      {formatPrice(totalPrice)}
+                      {hasUnpricedItems && totalPrice === 0 ? 'Стоимость уточняется' : formatPrice(totalPrice)}
                     </span>
                   </div>
+                  {hasUnpricedItems && (
+                    <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
+                      Стоимость позиций без установленной цены будет подтверждена менеджером.
+                    </p>
+                  )}
                   <p className="text-xs text-muted-foreground mt-3 leading-relaxed">
-                    Цены условно актуальные, включают НДС 22%. После оформления заказа, вы получите точный расчет. Детали уточняйте у консультанта.
+                    Цены указаны с НДС 22%.
                   </p>
                 </div>
               </motion.div>

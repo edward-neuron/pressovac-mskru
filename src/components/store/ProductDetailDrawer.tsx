@@ -10,6 +10,8 @@ import { FlyingCartAnimation } from './FlyingCartAnimation';
 import { getFullImageUrl } from '@/lib/imageOptimization';
 import { getMinOrderConfig } from '@/data/minOrderConfig';
 import { toast } from 'sonner';
+import { R40_PRODUCT_IDS } from '@/data/r40ProductFamily';
+import { R40ProductFamilyDrawer } from '@/components/store/R40ProductFamilyDrawer';
 
 interface ProductDetailDrawerProps {
   product: YmlProduct | null;
@@ -31,6 +33,10 @@ export const ProductDetailDrawer = ({ product, open, onOpenChange, showSupplyNot
   const imageRef = useRef<HTMLImageElement>(null);
 
   if (!product) return null;
+
+  if (R40_PRODUCT_IDS.has(product.id)) {
+    return <R40ProductFamilyDrawer product={product} open={open} onOpenChange={onOpenChange} />;
+  }
 
   const cartItem = items.find(item => item.id === product.id);
   const cartQty = cartItem?.quantity || 0;

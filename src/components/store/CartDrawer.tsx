@@ -156,7 +156,7 @@ export const CartDrawer = ({ children }: CartDrawerProps) => {
                       )}
 
                       <div className="font-semibold text-primary mt-2">
-                        {formatPrice(item.price)}
+                        {item.price === null ? 'Стоимость уточняется' : formatPrice(item.price)}
                       </div>
                     </div>
 
@@ -204,11 +204,24 @@ export const CartDrawer = ({ children }: CartDrawerProps) => {
         {items.length > 0 && (
           <div className="border-t pt-4 space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">Итого:</span>
-              <span className="text-2xl font-bold">{formatPrice(totalPrice)}</span>
+              <span className="text-muted-foreground">
+                {items.some((item) => item.price === null) && totalPrice > 0
+                  ? 'Итого по позициям с ценой:'
+                  : 'Итого:'}
+              </span>
+              <span className="text-2xl font-bold">
+                {items.some((item) => item.price === null) && totalPrice === 0
+                  ? 'Стоимость уточняется'
+                  : formatPrice(totalPrice)}
+              </span>
             </div>
+            {items.some((item) => item.price === null) && (
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Стоимость позиций без установленной цены будет подтверждена менеджером.
+              </p>
+            )}
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Цены условно актуальные, включают НДС 22%. После оформления заказа, вы получите точный расчет. Детали уточняйте у консультанта.
+              Цены указаны с НДС 22%.
             </p>
             <div className="flex flex-col gap-2">
               <Link to="/store/checkout" className="block" onClick={closeCart}>

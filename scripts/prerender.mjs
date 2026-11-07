@@ -120,6 +120,26 @@ function normalizeSsrAssetUrls(markup) {
   );
 }
 
+function getMetaIdentity(tag) {
+  const name = tag.match(/\sname\s*=\s*["']([^"']+)["']/i)?.[1];
+  if (name) return `name:${name.toLowerCase()}`;
+
+  const property = tag.match(/\sproperty\s*=\s*["']([^"']+)["']/i)?.[1];
+  return property ? `property:${property.toLowerCase()}` : null;
+}
+
+function removeOverriddenBaseMetaTags(markup, renderedHead) {
+  const renderedMetaIdentities = new Set(
+    [...renderedHead.matchAll(/<meta\b[^>]*>/gi)]
+      .map(getMetaIdentity)
+      .filter(Boolean)
+  );
+
+  return markup.replace(/<meta\b[^>]*>/gi, (tag) =>
+    renderedMetaIdentities.has(getMetaIdentity(tag)) ? "" : tag
+  );
+}
+
 // --- 4. Поднимаем Vite в SSR-режиме (умеет .webp, css, alias @) ---
 const vite = await createServer({
   root: ROOT,
@@ -141,7 +161,10 @@ try {
     const head = normalizeSsrAssetUrls(page.head);
     const body = normalizeSsrAssetUrls(page.body);
 
-    let html = baseHtml.replace(/<title>[^<]*<\/title>/, "");
+    let html = removeOverriddenBaseMetaTags(
+      baseHtml.replace(/<title>[^<]*<\/title>/, ""),
+      head
+    );
     html = html.replace("<head>", `<head>\n    ${head}`);
 
     // Store content depends on the live Supabase response/local cache. Keep

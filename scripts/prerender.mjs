@@ -112,10 +112,11 @@ function resolveProductionAssetUrl(ssrUrl) {
   return resolvedUrl;
 }
 
-function normalizeSsrAssetUrls(head) {
-  return head.replace(
-    /https:\/\/pressovac-msk\.ru\/src\/assets\/[^"'\s<>]+/g,
-    resolveProductionAssetUrl
+function normalizeSsrAssetUrls(markup) {
+  return markup.replace(
+    /(?:https:\/\/pressovac-msk\.ru)?\/src\/assets\/[^"'()\s<>]+/g,
+    (ssrUrl) =>
+      resolveProductionAssetUrl(new URL(ssrUrl, SITE_URL).href)
   );
 }
 
@@ -128,19 +129,37 @@ const vite = await createServer({
 });
 
 try {
-  const { renderHead } = await vite.ssrLoadModule("/scripts/render-head.tsx");
+  const { renderPage } = await vite.ssrLoadModule("/scripts/render-head.tsx");
 
   for (const route of ALL_ROUTES) {
-    let head = "";
+    let page = { head: "", body: "" };
     try {
-      head = renderHead(route);
+      page = renderPage(route);
     } catch (e) {
-      console.warn(`⚠ ${route} — head render failed: ${e.message}`);
+      console.warn(`⚠ ${route} — SSR render failed: ${e.message}`);
     }
-    head = normalizeSsrAssetUrls(head);
+    const head = normalizeSsrAssetUrls(page.head);
+    const body = normalizeSsrAssetUrls(page.body);
 
     let html = baseHtml.replace(/<title>[^<]*<\/title>/, "");
     html = html.replace("<head>", `<head>\n    ${head}`);
+
+    // Store content depends on the live Supabase response/local cache. Keep
+    // those routes client-rendered until their data can be supplied reliably.
+    const isStoreRoute = route === "/store" || route.startsWith("/store/");
+    if (!isStoreRoute) {
+      const rootPlaceholder = '<div id="root"></div>';
+      if (!baseHtml.includes(rootPlaceholder)) {
+        throw new Error("Не найден пустой #root для prerender-вставки");
+      }
+      if (!page.body.trim()) {
+        throw new Error(`SSR не вернул содержимое для ${route}`);
+      }
+      html = html.replace(
+        rootPlaceholder,
+        `<div id="root" data-prerendered="true">${body}</div>`
+      );
+    }
 
     const outDir =
       route === "/" ? DIST : resolve(DIST, ...route.slice(1).split("/"));

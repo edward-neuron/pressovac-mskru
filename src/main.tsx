@@ -1,4 +1,4 @@
-import { createRoot } from "react-dom/client";
+import { createRoot, hydrateRoot } from "react-dom/client";
 import { HelmetProvider } from "react-helmet-async";
 import App from "./App.tsx";
 // Self-hosted fonts (Russia blocks fonts.googleapis.com / fonts.gstatic.com on some ISPs)
@@ -11,8 +11,15 @@ import "./index.css";
 
 // Build marker: force production rebuild — video poster preload fix (2026-06-07 rebuild #3)
 
-createRoot(document.getElementById("root")!).render(
+const rootElement = document.getElementById("root")!;
+const app = (
   <HelmetProvider>
     <App />
   </HelmetProvider>
 );
+
+if (rootElement.dataset.prerendered === "true") {
+  hydrateRoot(rootElement, app);
+} else {
+  createRoot(rootElement).render(app);
+}

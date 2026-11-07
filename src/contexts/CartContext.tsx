@@ -28,18 +28,37 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 const CART_STORAGE_KEY = 'pressovac-cart';
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
+  const isPrerenderedPage =
+    typeof document !== 'undefined' &&
+    document.getElementById('root')?.dataset.prerendered === 'true';
   const [items, setItems] = useState<CartItem[]>(() => {
-    if (typeof window !== 'undefined') {
+    if (isPrerenderedPage || typeof window === 'undefined') return [];
+    try {
       const saved = localStorage.getItem(CART_STORAGE_KEY);
       return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
     }
-    return [];
   });
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [cartReady, setCartReady] = useState(!isPrerenderedPage);
 
   useEffect(() => {
+    if (!isPrerenderedPage) return;
+
+    try {
+      const saved = localStorage.getItem(CART_STORAGE_KEY);
+      if (saved) setItems(JSON.parse(saved));
+    } catch {
+      setItems([]);
+    }
+    setCartReady(true);
+  }, [isPrerenderedPage]);
+
+  useEffect(() => {
+    if (!cartReady) return;
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
-  }, [items]);
+  }, [items, cartReady]);
 
   const addItem = (item: Omit<CartItem, 'quantity'>) => {
     onAddToCart(

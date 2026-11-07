@@ -9,10 +9,10 @@ import { AppContent } from "../src/App";
 const HelmetProvider =
   helmetAsync.HelmetProvider ?? (helmetAsync as any).default?.HelmetProvider;
 
-export function renderHead(route: string): string {
+export function renderPage(route: string): { head: string; body: string } {
   const helmetContext: Record<string, any> = {};
 
-  renderToStaticMarkup(
+  const body = renderToStaticMarkup(
     React.createElement(
       HelmetProvider,
       { context: helmetContext },
@@ -25,14 +25,16 @@ export function renderHead(route: string): string {
   );
 
   const { helmet } = helmetContext as any;
-  if (!helmet) return "";
+  const head = helmet
+    ? [
+        helmet.title.toString(),
+        helmet.meta.toString(),
+        helmet.link.toString(),
+        helmet.script.toString(),
+      ]
+        .filter(Boolean)
+        .join("\n    ")
+    : "";
 
-  return [
-    helmet.title.toString(),
-    helmet.meta.toString(),
-    helmet.link.toString(),
-    helmet.script.toString(),
-  ]
-    .filter(Boolean)
-    .join("\n    ");
+  return { head, body };
 }

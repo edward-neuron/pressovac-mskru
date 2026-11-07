@@ -131,7 +131,7 @@ function getMetaIdentity(tag) {
 function removeOverriddenBaseMetaTags(markup, renderedHead) {
   const renderedMetaIdentities = new Set(
     [...renderedHead.matchAll(/<meta\b[^>]*>/gi)]
-      .map(getMetaIdentity)
+      .map(([tag]) => getMetaIdentity(tag))
       .filter(Boolean)
   );
 

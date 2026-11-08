@@ -811,9 +811,6 @@ const Store = () => {
                                   {minOrder ? product.name.replace(/\s*\(\s*5\s*канистр\s*\)\s*$/i, '').trim() : product.name}
                                 </h3>
                               </Link>
-                              {product.cardDescription && (
-                                <p className="whitespace-pre-line text-xs leading-relaxed text-muted-foreground">{product.cardDescription}</p>
-                              )}
                               {R40_PRODUCT_IDS.has(product.id) ? (
                                 <p className="text-xs text-muted-foreground">Арт.</p>
                               ) : product.vendorCode && (
@@ -1056,9 +1053,6 @@ const Store = () => {
                                           {minOrder ? product.name.replace(/\s*\(\s*5\s*канистр\s*\)\s*$/i, '').trim() : product.name}
                                         </h3>
                                       </Link>
-                                      {product.cardDescription && (
-                                        <p className="whitespace-pre-line text-xs leading-relaxed text-muted-foreground">{product.cardDescription}</p>
-                                      )}
                                       {R40_PRODUCT_IDS.has(product.id) ? (
                                         <p className="text-xs text-muted-foreground">Арт.</p>
                                       ) : product.vendorCode && (

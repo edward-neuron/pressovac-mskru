@@ -745,7 +745,7 @@ const Store = () => {
                   </div>
 
                   {productsToShow.length > 0 ? (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                    <div className={`grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 ${selectedCategory?.id === R40_CATEGORY_ID ? 'auto-rows-fr' : ''}`}>
                       {productsToShow.map((product, index) => {
                         const cartQty = getCartQuantity(product.id);
                         const minOrder = getMinOrderConfig(product.name, product.vendorCode);
@@ -755,11 +755,11 @@ const Store = () => {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.02 }}
-                            className="group bg-card rounded-xl border border-border/50 overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300"
+                            className={`group bg-card rounded-xl border border-border/50 overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300 ${R40_PRODUCT_IDS.has(product.id) ? 'h-full flex flex-col' : ''}`}
                           >
                             <Link
                               to={storeProductPath(product.id)}
-                              className="block w-full aspect-square bg-white relative overflow-hidden cursor-pointer"
+                              className={`block w-full ${R40_PRODUCT_IDS.has(product.id) && product.priceNum !== null ? 'aspect-[1.12/1]' : 'aspect-square'} bg-white relative overflow-hidden cursor-pointer`}
                             >
                               {product.picture ? (
                                 <img
@@ -789,7 +789,7 @@ const Store = () => {
                                 </>
                               )}
                             </Link>
-                            <div className="p-3 space-y-2">
+                            <div className={`p-3 space-y-2 ${R40_PRODUCT_IDS.has(product.id) ? 'flex flex-1 flex-col' : ''}`}>
                               <div className="space-y-0.5">
                                 <div className="text-lg font-bold text-primary">
                                   {product.priceNum !== null && formatPrice(product.priceNum)}
@@ -985,7 +985,7 @@ const Store = () => {
                         onDragEnd={handleDragEndProducts}
                       >
                         <SortableContext items={productsToShow.map(p => p.id)} strategy={rectSortingStrategy}>
-                          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                          <div className={`grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 ${selectedCategory?.id === R40_CATEGORY_ID ? 'auto-rows-fr' : ''}`}>
                             {productsToShow.map((product, index) => {
                               const cartQty = getCartQuantity(product.id);
                               const minOrder = getMinOrderConfig(product.name, product.vendorCode);
@@ -995,12 +995,12 @@ const Store = () => {
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: index * 0.02 }}
-                                    className="group bg-card rounded-xl border border-border/50 overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300"
+                                    className={`group bg-card rounded-xl border border-border/50 overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300 ${R40_PRODUCT_IDS.has(product.id) ? 'h-full flex flex-col' : ''}`}
                                   >
                                     <Link
                                       to={storeProductPath(product.id)}
                                       onClick={isEditMode ? (e) => e.preventDefault() : undefined}
-                                      className="block w-full aspect-square bg-white relative overflow-hidden cursor-pointer"
+                                      className={`block w-full ${R40_PRODUCT_IDS.has(product.id) && product.priceNum !== null ? 'aspect-[1.12/1]' : 'aspect-square'} bg-white relative overflow-hidden cursor-pointer`}
                                     >
                                       {product.picture ? (
                                         <img
@@ -1030,7 +1030,7 @@ const Store = () => {
                                         </>
                                       )}
                                     </Link>
-                                    <div className="p-3 space-y-2">
+                                    <div className={`p-3 space-y-2 ${R40_PRODUCT_IDS.has(product.id) ? 'flex flex-1 flex-col' : ''}`}>
                                       <div className="space-y-0.5">
                                         <div className="text-lg font-bold text-primary">
                                           {product.priceNum !== null && formatPrice(product.priceNum)}

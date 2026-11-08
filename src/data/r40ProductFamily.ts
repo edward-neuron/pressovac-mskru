@@ -1,7 +1,7 @@
 import type { YmlCategory, YmlProduct } from '@/hooks/useYmlStore';
 
 export const R40_CATEGORY_ID = 'r40-family';
-export const R40_CATEGORY_NAME = 'Щеточный Мультиробот R-40 с видеоинспекцией для очистки';
+export const R40_CATEGORY_NAME = 'Щеточный Мультиробот R-40 с видеоинспекцией';
 export const R40_CATEGORY_DESCRIPTION =
   'Щеточный Мультиробот R-40 Brushing с видеоинспекцией для очистки от Ø400 до Ø1000 мм';
 

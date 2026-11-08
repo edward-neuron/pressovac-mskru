@@ -868,7 +868,7 @@ const Store = () => {
                           <SortableItem key={category.id} id={category.id} isEditMode={isEditMode}>
                             <CategoryCard
                               category={category}
-                              image={getCustomCategoryImage(category.name) || getCategoryImage(category.id)}
+                              image={category.id === R40_CATEGORY_ID ? R40_CARD_IMAGE : getCustomCategoryImage(category.name) || getCategoryImage(category.id)}
                               productCount={getProductsCount(category.id)}
                               onClick={() => !isEditMode && navigateToCategory(category.id)}
                               index={index}

@@ -60,7 +60,7 @@ export const R40_CATEGORY: YmlCategory = {
 export const R40_PRODUCTS: YmlProduct[] = [
   {
     id: 'r40-brushing-robot',
-    name: 'R-40 Brushing Robot',
+    name: 'R-40 Brushing Robot\nОчистка каналов с инспекцией\nот Ø400 до Ø1000 мм',
     description: `${R40_PRODUCT_DESCRIPTION}\n\nДиапазон очистки: Ø 400-1000 мм. Рабочий вылет: до 40 м.`,
     price: '2 769 890 ₽',
     priceNum: 2769890,
@@ -71,7 +71,7 @@ export const R40_PRODUCTS: YmlProduct[] = [
   },
   {
     id: 'i40-inspection-robot',
-    name: 'I-40 Inspection Robot',
+    name: 'I-40 Inspection Robot\n\nВидеоинспекция \nот Ø400 до Ø1000 мм',
     description: 'Инспекционный робот для осмотра воздуховодов. Минимальный размер канала: 150 мм по высоте и 250 мм по ширине.',
     price: '1 481 570 ₽',
     priceNum: 1481570,

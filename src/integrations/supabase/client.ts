@@ -6,11 +6,6 @@ import { brokeredPreviewStorage } from "./previewAuthStorage";
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || "https://api.pressovac-msk.ru";
 const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
-// 🚦 Сторож: предупредит, если адрес сервера изменили
-if (!SUPABASE_URL.includes("api.pressovac-msk.ru")) {
-  console.warn("⚠️ ВНИМАНИЕ: адрес сервера изменён! Проверь .env — должно быть api.pressovac-msk.ru");
-}
-
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
 

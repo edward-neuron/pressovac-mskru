@@ -50,12 +50,6 @@ export const R40_KEY_FEATURES = [
 const brushDescription =
   'В комплект поставки входят пять щеток типа R — по одной щетке каждого размера для воздуховодов диаметром от Ø315 до Ø800 мм; на выбор предлагаются варианты с Мягкой, Жесткой или Твердосплавной щетиной. Набор предназначен для очистки воздуховодов и совместим с мульти-роботом R-40 Brushing Robot.';
 
-const brushCardDescription = [
-  'Размер каналов: Ø 315-800 мм',
-  'Тип каналов: Прямоугольные / Круглые',
-  'Совместимость: Мультиробот R-40',
-].join('\n');
-
 export const R40_CATEGORY: YmlCategory = {
   id: R40_CATEGORY_ID,
   name: R40_CATEGORY_NAME,
@@ -100,7 +94,6 @@ export const R40_PRODUCTS: YmlProduct[] = [
     id: 'r-brush-set-standard',
     name: 'Комплект щеток R-brush Стандарт (5 щеток, Ø 315–800 мм)',
     description: brushDescription,
-    cardDescription: brushCardDescription,
     price: '',
     priceNum: null,
     url: '',
@@ -112,7 +105,6 @@ export const R40_PRODUCTS: YmlProduct[] = [
     id: 'r-brush-set-hard',
     name: 'Комплект щеток R-brush Жесткие (5 щеток, Ø 315–800 мм)',
     description: brushDescription,
-    cardDescription: brushCardDescription,
     price: '',
     priceNum: null,
     url: '',
@@ -124,7 +116,6 @@ export const R40_PRODUCTS: YmlProduct[] = [
     id: 'r-brush-set-abrasive',
     name: 'Комплект щеток R-brush Абразивные (5 щеток, Ø 315–800 мм)',
     description: brushDescription,
-    cardDescription: brushCardDescription,
     price: '',
     priceNum: null,
     url: '',

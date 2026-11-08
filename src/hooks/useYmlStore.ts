@@ -37,7 +37,6 @@ export interface YmlProduct {
   id: string;
   name: string;
   description?: string;
-  cardDescription?: string;
   price: string;
   priceNum: number | null;
   url: string;

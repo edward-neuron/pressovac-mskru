@@ -71,7 +71,7 @@ export const R40_PRODUCTS: YmlProduct[] = [
   },
   {
     id: 'i40-inspection-robot',
-    name: 'I-40 Inspection Robot\n\nВидеоинспекция \nот Ø400 до Ø1000 мм',
+    name: 'I-40 Inspection Robot Видеоинспекция. Минимальный размер канала 150Х250 мм',
     description: 'Инспекционный робот для осмотра воздуховодов. Минимальный размер канала: 150 мм по высоте и 250 мм по ширине.',
     price: '1 481 570 ₽',
     priceNum: 1481570,

@@ -26,7 +26,7 @@ interface OrderItem {
   name: string;
   sku?: string;
   quantity: number;
-  price: number;
+  price: number | null;
   image?: string;
 }
 
@@ -61,10 +61,12 @@ interface InquiryRequest {
   turnstileToken?: string;
 }
 
-function formatPrice(price: number): string {
+function formatPrice(price: number | null): string {
+  if (price === null) return "Стоимость уточняется";
+
   return new Intl.NumberFormat('ru-RU', {
     style: 'currency',
-    currency: 'EUR',
+    currency: 'RUB',
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(price);
@@ -275,6 +277,10 @@ const handler = async (req: Request): Promise<Response> => {
     if (isStoreOrder) {
       // Build order items table
       const orderItems = data.orderItems || [];
+      const hasUnpricedItems = orderItems.some(item => item.price === null);
+      const totalPriceLabel = hasUnpricedItems && !data.totalPrice
+        ? "Стоимость уточняется"
+        : formatPrice(data.totalPrice ?? 0);
       const orderItemsHtml = orderItems.map(item => `
         <tr>
           <td style="padding: 12px; border-bottom: 1px solid #eee;">
@@ -291,7 +297,7 @@ const handler = async (req: Request): Promise<Response> => {
             ${formatPrice(item.price)}
           </td>
           <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: right; font-weight: bold;">
-            ${formatPrice(item.price * item.quantity)}
+            ${formatPrice(item.price === null ? null : item.price * item.quantity)}
           </td>
         </tr>
       `).join('');
@@ -339,17 +345,17 @@ const handler = async (req: Request): Promise<Response> => {
             <tfoot>
               <tr style="background: #e8f4fd;">
                 <td colspan="4" style="padding: 15px; text-align: right; font-weight: bold; font-size: 18px;">
-                  ИТОГО:
+                  ${hasUnpricedItems && data.totalPrice ? 'ИТОГО ПО ПОЗИЦИЯМ С ЦЕНОЙ:' : 'ИТОГО:'}
                 </td>
                 <td style="padding: 15px; text-align: right; font-weight: bold; font-size: 18px; color: #0066cc;">
-                  ${formatPrice(data.totalPrice || 0)}
+                  ${totalPriceLabel}
                 </td>
               </tr>
             </tfoot>
           </table>
           
           <p style="color: #666; font-size: 12px; font-style: italic;">
-            * Цены условно актуальные, включают НДС 22%. Требуется уточнение.
+            * Указанные цены включают НДС 22%. Стоимость позиций без цены уточнит менеджер.
           </p>
 
           ${messageContent ? `
@@ -436,6 +442,10 @@ const handler = async (req: Request): Promise<Response> => {
       if (isStoreOrder) {
         // Order confirmation for store
         const orderItems = data.orderItems || [];
+        const hasUnpricedItems = orderItems.some(item => item.price === null);
+        const totalPriceLabel = hasUnpricedItems && !data.totalPrice
+          ? "Стоимость уточняется"
+          : formatPrice(data.totalPrice ?? 0);
         const orderItemsClientHtml = orderItems.map(item => `
           <tr>
             <td style="padding: 10px; border-bottom: 1px solid #eee;">
@@ -446,7 +456,7 @@ const handler = async (req: Request): Promise<Response> => {
               ${item.quantity} шт.
             </td>
             <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: right;">
-              ${formatPrice(item.price * item.quantity)}
+              ${formatPrice(item.price === null ? null : item.price * item.quantity)}
             </td>
           </tr>
         `).join('');
@@ -476,15 +486,15 @@ const handler = async (req: Request): Promise<Response> => {
                 </tbody>
                 <tfoot>
                   <tr>
-                    <td colspan="2" style="padding: 15px; text-align: right; font-weight: bold;">ИТОГО:</td>
+                    <td colspan="2" style="padding: 15px; text-align: right; font-weight: bold;">${hasUnpricedItems && data.totalPrice ? 'ИТОГО ПО ПОЗИЦИЯМ С ЦЕНОЙ:' : 'ИТОГО:'}</td>
                     <td style="padding: 15px; text-align: right; font-weight: bold; color: #0066cc;">
-                      ${formatPrice(data.totalPrice || 0)}
+                      ${totalPriceLabel}
                     </td>
                   </tr>
                 </tfoot>
               </table>
               <p style="color: #666; font-size: 12px; margin-top: 10px;">
-                * Цены условно актуальные. Точный расчёт будет предоставлен менеджером.
+                * Указанные цены включают НДС 22%. Стоимость позиций без цены уточнит менеджер.
               </p>
             </div>
 

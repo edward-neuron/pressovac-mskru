@@ -37,7 +37,8 @@
   "88505003": "konusy-vrezki-adaptery-perekhodniki",
   "88505008": "barernye-zagraditelnye-zaglushki",
   "88505013": "skrebki-udaleniya-tverdykh-otlozheniy",
-  "88505018": "video-inspektsionnoe-oborudovanie-250-800"
+  "88505018": "video-inspektsionnoe-oborudovanie-250-800",
+  "r40-family": "r-40-brushing-robot"
  },
  "products": {
   "198978976": "product/p40-201-001-102",
@@ -235,6 +236,13 @@
   "216996770": "product/servisnyy-lyuk-kruglogo-vozdukhovoda-215-001-007",
   "216996775": "product/servisnyy-lyuk-kruglogo-vozdukhovoda-215-001-008",
   "216996776": "product/servisnyy-lyuk-kruglogo-vozdukhovoda-215-001-009",
-  "216996781": "product/servisnyy-lyuk-kruglogo-vozdukhovoda-215-001-010"
+  "216996781": "product/servisnyy-lyuk-kruglogo-vozdukhovoda-215-001-010",
+  "r40-brushing-robot": "product/r40-brushing-robot",
+  "i40-inspection-robot": "product/i-40-inspection-robot",
+  "r40-transport-case": "product/transport-case-r-40",
+  "r-brush-set-standard": "product/r-brush-set-standard",
+  "r-brush-set-hard": "product/r-brush-set-hard",
+  "r-brush-set-abrasive": "product/r-brush-set-abrasive"
+
  }
 }

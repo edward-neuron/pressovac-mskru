@@ -24,6 +24,12 @@ import { Button } from '@/components/ui/button';
 import { CartDrawer } from '@/components/store/CartDrawer';
 import { SortableItem } from '@/components/store/SortableItem';
 import { ProductDetailDrawer } from '@/components/store/ProductDetailDrawer';
+import {
+  R40_CARD_IMAGE,
+  R40_CATEGORY_DESCRIPTION,
+  R40_CATEGORY_ID,
+  R40_PRODUCT_IDS,
+} from '@/data/r40ProductFamily';
 
 import { useCart } from '@/contexts/CartContext';
 import { useYmlStore, YmlProduct, YmlCategory } from '@/hooks/useYmlStore';
@@ -49,6 +55,7 @@ const CATEGORY_DESCRIPTIONS: Record<string, string> = {
   '88504983': 'Аксессуары Pressovac для обслуживания систем вентиляции: гибкие шланги, люки, врезки, адаптеры и переходники для круглых и прямоугольных воздуховодов.',
   '88505018': 'Видеоинспекционное оборудование Pressovac для дистанционного осмотра воздуховодов диаметром 250–800 мм без разборки системы вентиляции.',
   '86975935': 'Компрессоры Pressovac Premium серии 24/7 для непрерывной работы. Надёжный источник сжатого воздуха для пневматических щёточных машин.',
+  'r40-family': R40_CATEGORY_DESCRIPTION,
 };
 
 // Pricing notice is shown across these root categories and their nested categories.
@@ -71,6 +78,7 @@ import category13 from '@/assets/store/category-13-v2.webp';
 
 // Mapping of category names to custom images
 const categoryImageMap: Record<string, string> = {
+  'Щеточный Мультиробот R-40 с видеоинспекцией для очистки': R40_CARD_IMAGE,
   'Готовые решения и комплекты оборудования': category1,
   'Щеточные машины для сухой очистки и дезинфекции': category2,
   'Оборудование с маркировкой взрывозащиты ATEX': category3,
@@ -103,6 +111,7 @@ const formatPrice = (price: number): string => {
 interface CategoryCardProps {
   category: YmlCategory;
   image?: string;
+  description?: string;
   productCount: number;
   onClick: () => void;
   index: number;
@@ -142,7 +151,7 @@ const getShortAccessoryName = (name: string): string => {
   return name.replace(/\s+для\s+/i, ' ');
 };
 
-const CategoryCard = ({ category, image, productCount, onClick, index }: CategoryCardProps) => {
+const CategoryCard = ({ category, image, description, productCount, onClick, index }: CategoryCardProps) => {
   const isAccessory = isAccessorySubcategory(category.name);
   
   // For accessory subcategories, show a flat banner instead of square card
@@ -211,6 +220,7 @@ const CategoryCard = ({ category, image, productCount, onClick, index }: Categor
         <h3 className="text-xs font-medium text-primary leading-tight hover:underline whitespace-pre-line">
           {category.name}
         </h3>
+        {description && <p className="mt-1 text-[11px] leading-tight text-muted-foreground">{description}</p>}
         <span className="text-xs text-muted-foreground">
           {productCount}
         </span>
@@ -438,7 +448,13 @@ const Store = () => {
   const rootCategories = useMemo(() => {
     return getRootCategories()
       .map(cat => ({ ...cat, customOrder: getCategorySortOrder(cat.id, cat.sortOrder) }))
-      .sort((a, b) => a.customOrder - b.customOrder);
+      .sort((a, b) => {
+        if (a.id === '86975750') return -1;
+        if (b.id === '86975750') return 1;
+        if (a.id === R40_CATEGORY_ID) return -1;
+        if (b.id === R40_CATEGORY_ID) return 1;
+        return a.customOrder - b.customOrder;
+      });
   }, [getRootCategories, getCategorySortOrder]);
 
   // Get and sort subcategories
@@ -527,7 +543,7 @@ const Store = () => {
     onProductView({
       item_id: product.id,
       item_name: product.name,
-      price: product.priceNum,
+      ...(product.priceNum !== null ? { price: product.priceNum } : {}),
     });
     loadProductDetails(product).then((fullProduct) => {
       setSelectedProduct(fullProduct);
@@ -641,7 +657,14 @@ const Store = () => {
                   <ShoppingCart className="w-5 h-5 mr-2" />
                   {totalItems > 0 ? (
                     <>
-                      <span className="font-semibold">{formatPrice(totalPrice)}</span>
+                      {items.some((item) => item.price === null) && totalPrice > 0 && (
+                        <span className="mr-2 text-xs text-muted-foreground">Сумма по позициям с ценой:</span>
+                      )}
+                      <span className="font-semibold">
+                        {items.some((item) => item.price === null) && totalPrice === 0
+                          ? 'Стоимость уточняется'
+                          : formatPrice(totalPrice)}
+                      </span>
                       <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs w-6 h-6 rounded-full flex items-center justify-center font-bold">
                         {totalItems}
                       </span>
@@ -746,9 +769,13 @@ const Store = () => {
                                   loading="lazy"
                                 />
                               ) : (
-                                <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                                  <ShoppingCart className="w-12 h-12 opacity-20" />
-                                </div>
+                                R40_PRODUCT_IDS.has(product.id) ? (
+                                  <div className="h-full w-full bg-slate-200" aria-label="Изображение пока не добавлено" />
+                                ) : (
+                                  <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                                    <ShoppingCart className="w-12 h-12 opacity-20" />
+                                  </div>
+                                )
                               )}
 
                               {minOrder && (
@@ -765,12 +792,12 @@ const Store = () => {
                             <div className="p-3 space-y-2">
                               <div className="space-y-0.5">
                                 <div className="text-lg font-bold text-primary">
-                                  {formatPrice(product.priceNum)}
+                                  {product.priceNum !== null && formatPrice(product.priceNum)}
                                   {minOrder && (
                                     <span className="text-xs font-medium text-muted-foreground"> / канистра</span>
                                   )}
                                 </div>
-                                {minOrder && (
+                                {minOrder && product.priceNum !== null && (
                                   <p className="text-xs text-primary">
                                     Мин. партия: {minOrder.minQuantity} канистр ({formatPrice(product.priceNum * minOrder.minQuantity)})
                                   </p>
@@ -784,7 +811,12 @@ const Store = () => {
                                   {minOrder ? product.name.replace(/\s*\(\s*5\s*канистр\s*\)\s*$/i, '').trim() : product.name}
                                 </h3>
                               </Link>
-                              {product.vendorCode && (
+                              {product.cardDescription && (
+                                <p className="whitespace-pre-line text-xs leading-relaxed text-muted-foreground">{product.cardDescription}</p>
+                              )}
+                              {R40_PRODUCT_IDS.has(product.id) ? (
+                                <p className="text-xs text-muted-foreground">Арт.</p>
+                              ) : product.vendorCode && (
                                 <p className="text-xs text-muted-foreground">Арт: {product.vendorCode}</p>
                               )}
                               <Button
@@ -981,9 +1013,13 @@ const Store = () => {
                                           loading="lazy"
                                         />
                                       ) : (
-                                        <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                                          <ShoppingCart className="w-12 h-12 opacity-20" />
-                                        </div>
+                                        R40_PRODUCT_IDS.has(product.id) ? (
+                                          <div className="h-full w-full bg-slate-200" aria-label="Изображение пока не добавлено" />
+                                        ) : (
+                                          <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                                            <ShoppingCart className="w-12 h-12 opacity-20" />
+                                          </div>
+                                        )
                                       )}
 
                                       {minOrder && (
@@ -1000,12 +1036,12 @@ const Store = () => {
                                     <div className="p-3 space-y-2">
                                       <div className="space-y-0.5">
                                         <div className="text-lg font-bold text-primary">
-                                          {formatPrice(product.priceNum)}
+                                          {product.priceNum !== null && formatPrice(product.priceNum)}
                                           {minOrder && (
                                             <span className="text-xs font-medium text-muted-foreground"> / канистра</span>
                                           )}
                                         </div>
-                                        {minOrder && (
+                                        {minOrder && product.priceNum !== null && (
                                           <p className="text-xs text-primary">
                                             Мин. партия: {minOrder.minQuantity} канистр ({formatPrice(product.priceNum * minOrder.minQuantity)})
                                           </p>
@@ -1020,7 +1056,12 @@ const Store = () => {
                                           {minOrder ? product.name.replace(/\s*\(\s*5\s*канистр\s*\)\s*$/i, '').trim() : product.name}
                                         </h3>
                                       </Link>
-                                      {product.vendorCode && (
+                                      {product.cardDescription && (
+                                        <p className="whitespace-pre-line text-xs leading-relaxed text-muted-foreground">{product.cardDescription}</p>
+                                      )}
+                                      {R40_PRODUCT_IDS.has(product.id) ? (
+                                        <p className="text-xs text-muted-foreground">Арт.</p>
+                                      ) : product.vendorCode && (
                                         <p className="text-xs text-muted-foreground">Арт: {product.vendorCode}</p>
                                       )}
                                       <Button
@@ -1065,7 +1106,12 @@ const Store = () => {
           >
             <Button size="lg" className="rounded-full shadow-lg h-14 px-6">
               <ShoppingCart className="w-5 h-5 mr-2" />
-              {formatPrice(totalPrice)}
+              {items.some((item) => item.price === null) && totalPrice > 0 && (
+                <span className="mr-2 text-xs text-muted-foreground">Сумма по позициям с ценой:</span>
+              )}
+              {items.some((item) => item.price === null) && totalPrice === 0
+                ? 'Стоимость уточняется'
+                : formatPrice(totalPrice)}
               <span className="ml-2 bg-primary-foreground/20 px-2 py-0.5 rounded-full text-sm">
                 {totalItems}
               </span>

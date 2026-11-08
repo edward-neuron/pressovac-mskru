@@ -189,6 +189,11 @@
       "id": "88505018",
       "name": "Видео-инспекционное оборудование от 250 до 800 мм",
       "parent_id": null
+    },
+    {
+      "id": "r40-family",
+      "name": "Щеточный Мультиробот R-40 с видеоинспекцией для очистки",
+      "parent_id": null
     }
   ],
   "products": [
@@ -2150,6 +2155,66 @@
       "picture": "/images/products/service-hatch-800.webp",
       "vendor_code": "215.001.010",
       "description": "&lt;div class=&quot;product-details-module__title ec-header-h6&quot; style=&quot;margin:0px 0px 10px;padding:0px;background:#fcf9f8 none;border:0px;font-size:16px;float:none;color:#191919;text-align:left;&quot;&gt;&lt;strong&gt;Информация о товаре&lt;/strong&gt;&lt;br /&gt;&lt;span class=&quot;details-product-attribute__title&quot; style=&quot;margin:0px;padding:0px;background:none;float:none;&quot;&gt;Pressovac Oy: &lt;/span&gt;&lt;span class=&quot;details-product-attribute__value&quot; style=&quot;margin:0px;padding:0px;background:none;float:none;&quot;&gt;Финляндия&lt;br /&gt;&lt;br /&gt;&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;product-details-module__content&quot; style=&quot;margin:0px;padding:0px;background:#fcf9f8 none;border:0px;font-size:16px;float:none;color:#191919;text-align:left;&quot;&gt;&lt;div class=&quot;product-details__product-description&quot; style=&quot;margin:0px;padding:0px;background:none;border:0px;font-size:16px;float:none;&quot;&gt;&lt;div style=&quot;margin:0px;padding:0px;background:none;border:0px;font-size:16px;float:none;&quot;&gt;&lt;p style=&quot;margin:0px;padding:0px;background:none;text-align:justify;&quot;&gt;&lt;strong style=&quot;margin:0px;padding:0px;background:#fcf9f8 none;border:0px;font-size:16px;float:none;color:#191919;text-align:justify;&quot;&gt;&lt;span style=&quot;margin:0px;padding:0px;background:none;float:none;font-size:16px;&quot;&gt;TTL Ø800 мм Лючок для круглых каналов&lt;/span&gt;&lt;/strong&gt;&lt;span style=&quot;color:#191919;font-size:16px;text-align:justify;background-color:#fcf9f8;display:inline;float:none;&quot;&gt;. Новые неизолированные модели лючков доступа для круглых каналов. Простая установка (самоклеющийся шаблон включен в комплект поставки). Не нужно устанавливать рамки и уплотнения. Герметичные. Система быстрого механизма для открытия и закрытия&quot; (просто поверните пластиковую ручку), что делает лючки легкими в использовании и без инструментов. Все модели сделаны в соответствии с европейскими стандартами и требованиями. Инспекционные лючки облегчают обслуживание и чистку вентиляции. Продукция финского производства ― профессиональные системы вентиляционных элементов.&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;&lt;img src=&quot;https://s3.amazonaws.com/images.ecwid.com/images/wysiwyg/product/72953070/460928605/1676917769204116683219/installation_of_access_hatches_jpg&quot; alt=&quot;installation_of_access_hatches_jpg&quot; width=&quot;601&quot; height=&quot;309&quot; loading=&quot;lazy&quot; style=&quot;border:0px solid;&quot; /&gt;&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;//images.tomas.kz/i3/firms/111/5470/5470475/pic_89bc45e61f7320b2e0f36295baaf4cb2_1920x9000_1.jpg&quot; alt=&quot;pic_3d8ad524559750a96cecae8dbb15499b_1920x9000_1.jpg&quot; title=&quot;pic_3d8ad524559750a96cecae8dbb15499b_1920x9000_1.jpg&quot; width=&quot;600&quot; height=&quot;424&quot; loading=&quot;lazy&quot; style=&quot;border:0px solid;float:none;margin:10px 2px 10px 2px;&quot; /&gt;&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;",
+      "available": true
+    },
+    {
+      "id": "r40-brushing-robot",
+      "name": "R-40 Brushing Robot",
+      "price": 2769890,
+      "category_id": "r40-family",
+      "picture": "/images/products/r40-family/r40-gallery-01.webp",
+      "vendor_code": null,
+      "description": "Компактный и легкий щеточный мультиробот R-40 для чистки и осмотра круглых и прямоугольных воздуховодов до 1000 мм и длиной до 40 м.",
+      "available": true
+    },
+    {
+      "id": "i40-inspection-robot",
+      "name": "I-40 Inspection Robot",
+      "price": 1481570,
+      "category_id": "r40-family",
+      "picture": "/images/products/r40-family/i40-gallery-01.webp",
+      "vendor_code": null,
+      "description": "Инспекционный робот для осмотра воздуховодов. Минимальный размер канала: 150 мм по высоте и 250 мм по ширине.",
+      "available": true
+    },
+    {
+      "id": "r40-transport-case",
+      "name": "Кейс для транспортировки R-40",
+      "price": 103340,
+      "category_id": "r40-family",
+      "picture": null,
+      "vendor_code": null,
+      "description": "Транспортировочный кейс для робота R-40.",
+      "available": true
+    },
+    {
+      "id": "r-brush-set-standard",
+      "name": "Комплект щеток R-brush Стандарт (5 щеток, Ø 315–800 мм)",
+      "price": null,
+      "category_id": "r40-family",
+      "picture": "/images/products/r40-family/r-brush-set.webp",
+      "vendor_code": null,
+      "description": "В комплект поставки входят пять щеток типа R — по одной щетке каждого размера для воздуховодов диаметром от Ø315 до Ø800 мм; на выбор предлагаются варианты с Мягкой, Жесткой или Твердосплавной щетиной. Набор предназначен для очистки воздуховодов и совместим с мульти-роботом R-40 Brushing Robot.",
+      "available": true
+    },
+    {
+      "id": "r-brush-set-hard",
+      "name": "Комплект щеток R-brush Жесткие (5 щеток, Ø 315–800 мм)",
+      "price": null,
+      "category_id": "r40-family",
+      "picture": "/images/products/r40-family/r-brush-set.webp",
+      "vendor_code": null,
+      "description": "В комплект поставки входят пять щеток типа R — по одной щетке каждого размера для воздуховодов диаметром от Ø315 до Ø800 мм; на выбор предлагаются варианты с Мягкой, Жесткой или Твердосплавной щетиной. Набор предназначен для очистки воздуховодов и совместим с мульти-роботом R-40 Brushing Robot.",
+      "available": true
+    },
+    {
+      "id": "r-brush-set-abrasive",
+      "name": "Комплект щеток R-brush Абразивные (5 щеток, Ø 315–800 мм)",
+      "price": null,
+      "category_id": "r40-family",
+      "picture": "/images/products/r40-family/r-brush-set.webp",
+      "vendor_code": null,
+      "description": "В комплект поставки входят пять щеток типа R — по одной щетке каждого размера для воздуховодов диаметром от Ø315 до Ø800 мм; на выбор предлагаются варианты с Мягкой, Жесткой или Твердосплавной щетиной. Набор предназначен для очистки воздуховодов и совместим с мульти-роботом R-40 Brushing Robot.",
       "available": true
     }
   ]

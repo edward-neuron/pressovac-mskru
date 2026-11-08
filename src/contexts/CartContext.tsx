@@ -4,7 +4,7 @@ import { onAddToCart, track } from '@/lib/analytics';
 export interface CartItem {
   id: string;
   name: string;
-  price: number;
+  price: number | null;
   quantity: number;
   image?: string;
   article?: string;
@@ -61,10 +61,12 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, [items, cartReady]);
 
   const addItem = (item: Omit<CartItem, 'quantity'>) => {
-    onAddToCart(
-      { item_id: item.id, item_name: item.name, price: item.price },
-      item.price
-    );
+    if (item.price !== null) {
+      onAddToCart(
+        { item_id: item.id, item_name: item.name, price: item.price },
+        item.price
+      );
+    }
     setItems(prev => {
       const existing = prev.find(i => i.id === item.id);
       if (existing) {
@@ -99,7 +101,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const closeCart = () => setIsCartOpen(false);
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
-  const totalPrice = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const totalPrice = items.reduce((sum, item) => sum + (item.price ?? 0) * item.quantity, 0);
 
   return (
     <CartContext.Provider value={{

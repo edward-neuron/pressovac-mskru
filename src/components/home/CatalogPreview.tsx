@@ -26,7 +26,7 @@ const categories = [
   },
   {
     icon: GraduationCap,
-    title: 'Дезинфекция',
+    title: 'Дезинфекция вентиляции',
     description: 'Оборудование для антибактериальной обработки и дезинфекции вентиляционных систем',
     href: '/catalog#disinfection',
     color: 'from-indigo-500 to-indigo-600',

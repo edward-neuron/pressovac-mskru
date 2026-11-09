@@ -69,7 +69,7 @@ jobs:
             if (comparison.data.ahead_by === 0) {
               await core.summary
                 .addHeading("Lovable branch has no new commits")
-                .addText("There are no commits in `lovable-work` to propose to `main`.")
+                .addRaw("There are no commits in `lovable-work` to propose to `main`.")
                 .write();
               return;
             }
@@ -96,7 +96,7 @@ jobs:
               await core.summary
                 .addHeading("Lovable PR updated")
                 .addLink(pr.html_url, pr.html_url)
-                .addText("New commits were pushed to the existing PR. Review the changed files and successful build, then merge manually.")
+                .addRaw("New commits were pushed to the existing PR. Review the changed files and successful build, then merge manually.")
                 .write();
               return;
             }
@@ -126,7 +126,7 @@ jobs:
               if (error.status === 422 && /no commits between/i.test(error.message ?? "")) {
                 await core.summary
                   .addHeading("No unmerged Lovable changes")
-                  .addText("The changes from `lovable-work` are already present in `main`; no PR is needed.")
+                  .addRaw("The changes from `lovable-work` are already present in `main`; no PR is needed.")
                   .write();
                 return;
               }
@@ -136,5 +136,5 @@ jobs:
             await core.summary
               .addHeading("Lovable PR created")
               .addLink(pr.data.html_url, pr.data.html_url)
-              .addText("Review the changed files and successful build. Merge into main manually when ready.")
+              .addRaw("Review the changed files and successful build. Merge into main manually when ready.")
               .write();

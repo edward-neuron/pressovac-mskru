@@ -186,6 +186,7 @@ const CategoryCard = ({ category, image, description, productCount, onClick, ind
   }
   
   const isKitsCategory = category.id === '86975750';
+  const isNewCategory = category.id === R40_CATEGORY_ID;
 
   return (
     <motion.a
@@ -208,6 +209,11 @@ const CategoryCard = ({ category, image, description, productCount, onClick, ind
         ) : (
           <div className="w-full h-full bg-white flex items-center justify-center text-muted-foreground">
             <ShoppingCart className="w-12 h-12 opacity-20" />
+          </div>
+        )}
+        {isNewCategory && (
+          <div className="absolute top-2 left-2 rounded-md bg-destructive px-2.5 py-1 text-[10px] sm:text-xs font-bold uppercase tracking-wider text-destructive-foreground shadow-md">
+            Новинка
           </div>
         )}
         {isKitsCategory && (
@@ -745,7 +751,7 @@ const Store = () => {
                   </div>
 
                   {productsToShow.length > 0 ? (
-                    <div className={`grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 ${selectedCategory?.id === R40_CATEGORY_ID ? 'auto-rows-fr' : ''}`}>
+                    <div className={`grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 ${selectedCategory === R40_CATEGORY_ID ? 'auto-rows-fr' : ''}`}>
                       {productsToShow.map((product, index) => {
                         const cartQty = getCartQuantity(product.id);
                         const minOrder = getMinOrderConfig(product.name, product.vendorCode);
@@ -985,7 +991,7 @@ const Store = () => {
                         onDragEnd={handleDragEndProducts}
                       >
                         <SortableContext items={productsToShow.map(p => p.id)} strategy={rectSortingStrategy}>
-                          <div className={`grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 ${selectedCategory?.id === R40_CATEGORY_ID ? 'auto-rows-fr' : ''}`}>
+                          <div className={`grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 ${selectedCategory === R40_CATEGORY_ID ? 'auto-rows-fr' : ''}`}>
                             {productsToShow.map((product, index) => {
                               const cartQty = getCartQuantity(product.id);
                               const minOrder = getMinOrderConfig(product.name, product.vendorCode);

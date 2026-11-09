@@ -1,10 +1,22 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Zap, Shield, Wrench, GraduationCap, ShoppingCart } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
+import brushMachinesSquare from '@/assets/brush-machines-square.webp';
 
-const categories = [
+type CatalogCategory = {
+  icon: LucideIcon;
+  image?: string;
+  title: string;
+  description: string;
+  href: string;
+  color: string;
+};
+
+const categories: CatalogCategory[] = [
   {
     icon: Zap,
+    image: brushMachinesSquare,
     title: 'Щёточные машины',
     description: 'Профессиональные щёточные машины для механической очистки воздуховодов любого сечения',
     href: '/catalog#brush-machines',
@@ -81,21 +93,49 @@ export const CatalogPreview = () => {
             <motion.div key={category.title} variants={itemVariants}>
               <Link
                 to={category.href}
-                className="group block h-full bg-background rounded-2xl p-6 border border-border card-hover"
+                className={`group block h-full bg-background rounded-2xl border border-border card-hover overflow-hidden ${category.image ? '' : 'p-6'}`}
               >
-                <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${category.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                  <category.icon className="w-7 h-7 text-white" />
-                </div>
-                <h3 className="font-display font-semibold text-lg mb-2 group-hover:text-primary transition-colors">
-                  {category.title}
-                </h3>
-                <p className="text-muted-foreground text-sm mb-4 leading-relaxed">
-                  {category.description}
-                </p>
-                <span className="inline-flex items-center gap-1 text-sm font-medium text-primary">
-                  Подробнее
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </span>
+                {category.image ? (
+                  <>
+                    <div className="w-full aspect-[4/3] overflow-hidden bg-muted/30">
+                      <img
+                        src={category.image}
+                        alt={category.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
+                    <div className="p-6">
+                      <h3 className="font-display font-semibold text-lg mb-2 group-hover:text-primary transition-colors">
+                        {category.title}
+                      </h3>
+                      <p className="text-muted-foreground text-sm mb-4 leading-relaxed">
+                        {category.description}
+                      </p>
+                      <span className="inline-flex items-center gap-1 text-sm font-medium text-primary">
+                        Подробнее
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </span>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${category.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                      <category.icon className="w-7 h-7 text-white" />
+                    </div>
+                    <h3 className="font-display font-semibold text-lg mb-2 group-hover:text-primary transition-colors">
+                      {category.title}
+                    </h3>
+                    <p className="text-muted-foreground text-sm mb-4 leading-relaxed">
+                      {category.description}
+                    </p>
+                    <span className="inline-flex items-center gap-1 text-sm font-medium text-primary">
+                      Подробнее
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </span>
+                  </>
+                )}
               </Link>
             </motion.div>
           ))}

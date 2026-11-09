@@ -1,0 +1,128 @@
+name: Open or update Lovable PR
+
+on:
+  push:
+    branches:
+      - lovable-work
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: lovable-work-to-main-pr
+  cancel-in-progress: false
+
+jobs:
+  pull-request:
+    name: Create or reuse Lovable PR
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check GitHub App secrets
+        id: app-secrets
+        env:
+          APP_ID: ${{ secrets.PRESSOVAC_PR_APP_ID }}
+          APP_PRIVATE_KEY: ${{ secrets.PRESSOVAC_PR_APP_PRIVATE_KEY }}
+        shell: bash
+        run: |
+          if [[ -z "$APP_ID" || -z "$APP_PRIVATE_KEY" ]]; then
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            {
+              echo "## One-time setup required"
+              echo
+              echo "Create/install a GitHub App for this repository and add Actions secrets:"
+              echo "- `PRESSOVAC_PR_APP_ID`"
+              echo "- `PRESSOVAC_PR_APP_PRIVATE_KEY`"
+              echo
+              echo "See the Lovable workflow instructions in `AGENTS.md`. No PR was created."
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          echo "configured=true" >> "$GITHUB_OUTPUT"
+
+      - name: Create scoped GitHub App token
+        id: app-token
+        if: steps.app-secrets.outputs.configured == 'true'
+        uses: actions/create-github-app-token@v3.2.0
+        with:
+          app-id: ${{ secrets.PRESSOVAC_PR_APP_ID }}
+          private-key: ${{ secrets.PRESSOVAC_PR_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: pressovac-mskru
+          permission-contents: read
+          permission-pull-requests: write
+
+      - name: Open PR or report existing PR
+        if: steps.app-secrets.outputs.configured == 'true'
+        uses: actions/github-script@v9
+        with:
+          github-token: ${{ steps.app-token.outputs.token }}
+          script: |
+            const { owner, repo } = context.repo;
+            const head = "lovable-work";
+            const base = "main";
+
+            const comparison = await github.rest.repos.compareCommits({
+              owner, repo, base, head,
+            });
+
+            if (comparison.data.ahead_by === 0) {
+              await core.summary
+                .addHeading("Lovable branch has no new commits")
+                .addText("There are no commits in `lovable-work` to propose to `main`.")
+                .write();
+              return;
+            }
+
+            const openPRs = await github.paginate(github.rest.pulls.list, {
+              owner,
+              repo,
+              state: "open",
+              head: `${owner}:${head}`,
+              per_page: 100,
+            });
+
+            if (openPRs.length > 1) {
+              core.setFailed(`Found ${openPRs.length} open PRs from ${head}. Close duplicates and keep one PR into ${base}.`);
+              return;
+            }
+
+            if (openPRs.length === 1) {
+              const pr = openPRs[0];
+              if (pr.base.ref !== base) {
+                core.setFailed(`An open PR from ${head} targets ${pr.base.ref}, not ${base}. Retarget or close it before continuing.`);
+                return;
+              }
+              await core.summary
+                .addHeading("Lovable PR updated")
+                .addLink(pr.html_url, pr.html_url)
+                .addText("New commits were pushed to the existing PR. Review the changed files and successful build, then merge manually.")
+                .write();
+              return;
+            }
+
+            const pr = await github.rest.pulls.create({
+              owner,
+              repo,
+              head,
+              base,
+              title: "Обновления из Lovable",
+              body: [
+                "## Что это",
+                "Автоматический PR с сохранёнными изменениями из ветки `lovable-work` в `main`.",
+                "",
+                "## Дальше",
+                "- Проверьте список изменённых файлов и результат проверки `Build site with production npm path`.",
+                "- Владелец проекта вручную сливает PR в `main`.",
+                "- После слияния Dairing автоматически забирает `main` и обновляет боевой сайт.",
+                "",
+                "Lovable Publish обновляет только сайт `*.lovable.app` и не заменяет проверку/слияние этого PR.",
+              ].join("\n"),
+              maintainer_can_modify: true,
+            });
+
+            await core.summary
+              .addHeading("Lovable PR created")
+              .addLink(pr.data.html_url, pr.data.html_url)
+              .addText("Review the changed files and successful build. Merge into main manually when ready.")
+              .write();

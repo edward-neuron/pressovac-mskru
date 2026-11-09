@@ -1,10 +1,22 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Zap, Shield, Wrench, GraduationCap, ShoppingCart } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
+import brushMachinesSquare from '@/assets/brush-machines-square.webp';
 
-const categories = [
+type CatalogCategory = {
+  icon: LucideIcon;
+  image?: string;
+  title: string;
+  description: string;
+  href: string;
+  color: string;
+};
+
+const categories: CatalogCategory[] = [
   {
     icon: Zap,
+    image: brushMachinesSquare,
     title: 'Щёточные машины',
     description: 'Профессиональные щёточные машины для механической очистки воздуховодов любого сечения',
     href: '/catalog#brush-machines',
@@ -83,9 +95,21 @@ export const CatalogPreview = () => {
                 to={category.href}
                 className="group block h-full bg-background rounded-2xl p-6 border border-border card-hover"
               >
-                <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${category.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                  <category.icon className="w-7 h-7 text-white" />
-                </div>
+                {category.image ? (
+                  <div className="w-14 h-14 rounded-xl overflow-hidden ring-1 ring-border bg-muted/30 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <img
+                      src={category.image}
+                      alt={category.title}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                ) : (
+                  <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${category.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                    <category.icon className="w-7 h-7 text-white" />
+                  </div>
+                )}
                 <h3 className="font-display font-semibold text-lg mb-2 group-hover:text-primary transition-colors">
                   {category.title}
                 </h3>

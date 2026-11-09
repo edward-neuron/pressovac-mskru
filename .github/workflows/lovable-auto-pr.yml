@@ -101,25 +101,37 @@ jobs:
               return;
             }
 
-            const pr = await github.rest.pulls.create({
-              owner,
-              repo,
-              head,
-              base,
-              title: "Обновления из Lovable",
-              body: [
-                "## Что это",
-                "Автоматический PR с сохранёнными изменениями из ветки `lovable-work` в `main`.",
-                "",
-                "## Дальше",
-                "- Проверьте список изменённых файлов и результат проверки `Build site with production npm path`.",
-                "- Владелец проекта вручную сливает PR в `main`.",
-                "- После слияния Dairing автоматически забирает `main` и обновляет боевой сайт.",
-                "",
-                "Lovable Publish обновляет только сайт `*.lovable.app` и не заменяет проверку/слияние этого PR.",
-              ].join("\n"),
-              maintainer_can_modify: true,
-            });
+            let pr;
+            try {
+              pr = await github.rest.pulls.create({
+                owner,
+                repo,
+                head,
+                base,
+                title: "Обновления из Lovable",
+                body: [
+                  "## Что это",
+                  "Автоматический PR с сохранёнными изменениями из ветки `lovable-work` в `main`.",
+                  "",
+                  "## Дальше",
+                  "- Проверьте список изменённых файлов и результат проверки `Build site with production npm path`.",
+                  "- Владелец проекта вручную сливает PR в `main`.",
+                  "- После слияния Dairing автоматически забирает `main` и обновляет боевой сайт.",
+                  "",
+                  "Lovable Publish обновляет только сайт `*.lovable.app` и не заменяет проверку/слияние этого PR.",
+                ].join("\\n"),
+                maintainer_can_modify: true,
+              });
+            } catch (error) {
+              if (error.status === 422 && /no commits between/i.test(error.message ?? "")) {
+                await core.summary
+                  .addHeading("No unmerged Lovable changes")
+                  .addText("The changes from `lovable-work` are already present in `main`; no PR is needed.")
+                  .write();
+                return;
+              }
+              throw error;
+            }
 
             await core.summary
               .addHeading("Lovable PR created")

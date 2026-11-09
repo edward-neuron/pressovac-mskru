@@ -119,7 +119,7 @@ jobs:
                   "- После слияния Dairing автоматически забирает `main` и обновляет боевой сайт.",
                   "",
                   "Lovable Publish обновляет только сайт `*.lovable.app` и не заменяет проверку/слияние этого PR.",
-                ].join("\\n"),
+                ].join(String.fromCharCode(10)),
                 maintainer_can_modify: true,
               });
             } catch (error) {

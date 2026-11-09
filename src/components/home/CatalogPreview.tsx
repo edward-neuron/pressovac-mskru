@@ -20,7 +20,6 @@ const categories: CatalogCategory[] = [
   {
     icon: Zap,
     image: brushingUnit,
-    image: brushMachinesSquare,
     title: 'Щёточные машины',
     description: 'Профессиональные щёточные машины для механической очистки воздуховодов любого сечения',
     href: '/catalog#brush-machines',

@@ -61,7 +61,7 @@ export const HeroSection = memo(() => {
             <p className="text-lg text-muted-foreground leading-relaxed max-w-lg">
               Профессиональное финское оборудование PRESSOVAC для очистки и дезинфекции
               систем вентиляции. История PRESSOVAC в этой сфере началась в 1979 году,
-              производство оборудования ведётся с 1991 года.
+              запуск производства оборудования введён с 1991 года.
             </p>
 
             <ul className="grid grid-cols-2 gap-3">

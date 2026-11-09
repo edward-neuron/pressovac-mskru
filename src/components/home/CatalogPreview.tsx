@@ -2,7 +2,10 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Zap, Shield, Wrench, GraduationCap, ShoppingCart } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import brushMachinesSquare from '@/assets/brush-machines-square.webp';
+import brushingUnit from '@/assets/home-catalog/_brushing-unit_4.3.webp';
+import vacuumUnit from '@/assets/home-catalog/_vacuum-unit_4.3.webp';
+import filterUnit from '@/assets/home-catalog/_filter-unit_4.3.webp';
+import disinfectionUnit from '@/assets/home-catalog/_dezinfection-unit_4.3.webp';
 
 type CatalogCategory = {
   icon: LucideIcon;
@@ -16,7 +19,7 @@ type CatalogCategory = {
 const categories: CatalogCategory[] = [
   {
     icon: Zap,
-    image: brushMachinesSquare,
+    image: brushingUnit,
     title: 'Щёточные машины',
     description: 'Профессиональные щёточные машины для механической очистки воздуховодов любого сечения',
     href: '/catalog#brush-machines',
@@ -24,6 +27,7 @@ const categories: CatalogCategory[] = [
   },
   {
     icon: Shield,
+    image: vacuumUnit,
     title: 'Вакуумные установки',
     description: 'Мощные вакуумные системы для эффективного сбора загрязнений при очистке',
     href: '/catalog#vacuum',
@@ -31,6 +35,7 @@ const categories: CatalogCategory[] = [
   },
   {
     icon: Wrench,
+    image: filterUnit,
     title: 'Фильтрующие установки',
     description: 'Высокоэффективные фильтры для очистки воздуха и сбора мелкодисперсных частиц',
     href: '/catalog#filters',
@@ -38,6 +43,7 @@ const categories: CatalogCategory[] = [
   },
   {
     icon: GraduationCap,
+    image: disinfectionUnit,
     title: 'Дезинфекция вентиляции',
     description: 'Оборудование для антибактериальной обработки и дезинфекции вентиляционных систем',
     href: '/catalog#disinfection',

@@ -7,10 +7,10 @@ import { AnimatedWaves } from './AnimatedWaves';
 import equipmentHero from '@/assets/equipment-hero.webp';
 
 const features = [
-  'Опыт в очистке вентиляции с 1979 года',
-  'Официальная гарантия',
-  'Сервисная поддержка',
-  'Обучение персонала',
+  'Промышленные решения',
+  'Сухая очистка и удаление жира',
+  'Подбор оборудования',
+  'Обучение и техподдержка',
 ];
 
 // Memoized feature item for performance
@@ -107,24 +107,6 @@ export const HeroSection = memo(() => {
               />
             </div>
             
-            {/* Stats Badge */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.4 }}
-              className="absolute -bottom-6 -left-6 bg-card rounded-2xl p-4 shadow-card border border-border"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <span className="font-display font-bold text-xl text-primary">1979</span>
-                </div>
-                <div>
-                  <p className="font-display font-semibold text-foreground">начало работы</p>
-                  <p className="text-sm text-muted-foreground">в сфере очистки вентиляции</p>
-                </div>
-              </div>
-            </motion.div>
-
             {/* Quality Badge */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}

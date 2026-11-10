@@ -116,7 +116,7 @@ export const HeroSection = memo(() => {
             >
               <div className="flex items-center gap-3">
                 <div className="flex shrink-0 items-center justify-center rounded-xl bg-primary/10 px-3 py-2">
-                  <span className="whitespace-nowrap font-display font-bold text-base text-primary">Год 2008</span>
+                  <span className="whitespace-nowrap font-display font-bold text-base text-primary">2008</span>
                 </div>
                 <p className="font-display font-semibold leading-snug text-foreground">
                   Дистрибуция в России и СНГ

@@ -319,7 +319,7 @@ const Catalog = () => {
       {/* Баннер нового робота R-40 */}
       <section className="py-8 md:py-10">
         <div className="container-custom">
-          <div className="overflow-hidden rounded-2xl border border-border bg-card">
+          <div className="relative overflow-hidden rounded-2xl border border-border bg-card">
             <img
               src={r40Banner}
               alt="Новинка PRESSOVAC R-40 Brushing Robot"
@@ -327,14 +327,16 @@ const Catalog = () => {
               loading="lazy"
               decoding="async"
             />
-            <div className="flex justify-end p-4 md:p-5">
-              <Button asChild className="text-base font-semibold shadow-md">
-                <Link to="/store/r-40-brushing-robot">
-                  Подробнее
-                  <ArrowRight className="w-5 h-5" />
-                </Link>
-              </Button>
-            </div>
+            <Button
+              asChild
+              size="sm"
+              className="absolute bottom-3 left-3 z-10 font-semibold shadow-md sm:bottom-5 sm:left-5"
+            >
+              <Link to="/store/r-40-brushing-robot">
+                Подробнее
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </Button>
           </div>
         </div>
       </section>

@@ -107,6 +107,23 @@ export const HeroSection = memo(() => {
               />
             </div>
             
+            {/* Stats Badge */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.4 }}
+              className="absolute -bottom-6 -left-6 bg-card rounded-2xl p-4 shadow-card border border-border"
+            >
+              <div className="flex items-center gap-3">
+                <div className="flex shrink-0 items-center justify-center rounded-xl bg-primary/10 px-3 py-2">
+                  <span className="whitespace-nowrap font-display font-bold text-base text-primary">Год 2008</span>
+                </div>
+                <p className="font-display font-semibold leading-snug text-foreground">
+                  Дистрибуция в России и СНГ
+                </p>
+              </div>
+            </motion.div>
+
             {/* Quality Badge */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}

@@ -36,6 +36,7 @@ import scannerLocators31 from '@/assets/scanner-locators-3-1.webp';
 import compressorSquareV2 from '@/assets/compressor-square-v2.webp';
 import accessories31 from '@/assets/accessories-3-1.webp';
 import catalogHeroBanner from '@/assets/catalog-hero-banner.webp';
+import r40Banner from '@/assets/r-40-banner-21-9.webp';
 // SEO data
 const catalogBreadcrumbs = [
   { name: 'Главная', url: '/' },
@@ -312,6 +313,29 @@ const Catalog = () => {
               <ArrowRight className="w-5 h-5" />
             </Link>
           </Button>
+        </div>
+      </section>
+
+      {/* Баннер нового робота R-40 */}
+      <section className="py-8 md:py-10">
+        <div className="container-custom">
+          <div className="overflow-hidden rounded-2xl border border-border bg-card">
+            <img
+              src={r40Banner}
+              alt="Новинка PRESSOVAC R-40 Brushing Robot"
+              className="block h-auto w-full"
+              loading="lazy"
+              decoding="async"
+            />
+            <div className="flex justify-end p-4 md:p-5">
+              <Button asChild className="text-base font-semibold shadow-md">
+                <Link to="/store/r-40-brushing-robot">
+                  Подробнее
+                  <ArrowRight className="w-5 h-5" />
+                </Link>
+              </Button>
+            </div>
+          </div>
         </div>
       </section>
 

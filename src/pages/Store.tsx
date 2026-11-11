@@ -909,6 +909,19 @@ const Store = () => {
   </p>
 )}
 
+                  {selectedCategory === R40_CATEGORY_ID && (
+                    <div className="mb-6 w-full max-w-4xl overflow-hidden rounded-xl border border-border bg-black">
+                      <video
+                        className="block h-auto w-full"
+                        src="/videos/TensorPix%20-%20New%20R-40.mp4"
+                        controls
+                        playsInline
+                        preload="metadata"
+                        aria-label="Промо-видео робота PRESSOVAC R-40"
+                      />
+                    </div>
+                  )}
+
                   {showPricingNotice && (
                     <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4 mb-6">
                       <p className="font-semibold text-amber-700 dark:text-amber-400 mb-2">Условия цены и заказа</p>

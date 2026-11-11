@@ -910,7 +910,7 @@ const Store = () => {
 )}
 
                   {selectedCategory === R40_CATEGORY_ID && (
-                    <div className="mb-6 w-full max-w-4xl overflow-hidden rounded-xl border border-border bg-black">
+                    <div className="mb-6 w-full md:w-1/2 overflow-hidden rounded-xl border border-border bg-black">
                       <video
                         className="block h-auto w-full"
                         src="/videos/TensorPix%20-%20New%20R-40.mp4"

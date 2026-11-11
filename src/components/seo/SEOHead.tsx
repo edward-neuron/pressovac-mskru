@@ -93,8 +93,17 @@ export const SEOHead = ({
     allStructuredData.push(generateFAQSchema(faq));
   }
 
+  const structuredDataScripts = allStructuredData.length > 0
+    ? [{
+        type: 'application/ld+json',
+        innerHTML: JSON.stringify(
+          allStructuredData.length === 1 ? allStructuredData[0] : allStructuredData
+        ).replace(/</g, '\\u003c'),
+      }]
+    : [];
+
   return (
-    <Helmet>
+    <Helmet script={structuredDataScripts}>
       <title>{title}</title>
       <meta name="description" content={description} />
       <meta name="keywords" content={keywords} />
@@ -134,12 +143,7 @@ export const SEOHead = ({
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={fullOgImage} />
 
-      {/* Structured Data */}
-      {allStructuredData.length > 0 && (
-        <script type="application/ld+json">
-          {JSON.stringify(allStructuredData.length === 1 ? allStructuredData[0] : allStructuredData)}
-        </script>
-      )}
+      {/* Structured data is passed through Helmet's server-serializable script prop. */}
     </Helmet>
   );
 };

@@ -37,8 +37,19 @@ const saveToLocalStorage = (data: SortOrderData) => {
   }
 };
 
+const getInitialSortOrder = (): SortOrderData => {
+  if (
+    typeof document !== 'undefined' &&
+    document.getElementById('root')?.dataset.prerendered === 'true'
+  ) {
+    return { categories: {}, products: {} };
+  }
+
+  return getStoredOrder();
+};
+
 export function useSortOrder() {
-  const [sortOrder, setSortOrder] = useState<SortOrderData>(getStoredOrder);
+  const [sortOrder, setSortOrder] = useState<SortOrderData>(getInitialSortOrder);
   const [isEditMode, setIsEditMode] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);

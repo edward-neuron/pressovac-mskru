@@ -201,16 +201,14 @@ function formatPrice(price: number | null): string {
 }
 
 export function useYmlStore() {
-  const initialCache = cachedData || readPersistentCache();
-
-  if (!cachedData && initialCache) {
-    cachedData = initialCache;
-  }
+  // Keep the first server render and browser hydration on the same repository snapshot.
+  // The live API refresh runs after hydration and replaces this fallback when available.
+  const initialCache = cachedData || getEmbeddedFallbackStoreData();
 
   const [state, setState] = useState<YmlStoreState>({
     categories: initialCache?.categories || [],
     products: initialCache?.products || [],
-    isLoading: !initialCache,
+    isLoading: false,
     error: null,
     fetchedAt: initialCache?.fetchedAt || null
   });
@@ -222,8 +220,6 @@ export function useYmlStore() {
     }
 
     const fetchData = async () => {
-      setState(prev => ({ ...prev, isLoading: true }));
-      
       try {
         const [categoriesRes, productsRes] = await withRetry(() => Promise.all([
           supabase.from('product_categories').select('*').order('id'),

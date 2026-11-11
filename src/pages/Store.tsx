@@ -286,26 +286,6 @@ const Store = () => {
   const slugIds = resolveStoreSlug(routeParams.slug ?? routeParams.productId);
   const urlProductId = slugIds.productId ?? routeParams.productId ?? searchParams.get('product');
   const urlCategoryId = slugIds.categoryId ?? routeParams.categoryId ?? searchParams.get('category');
-  // Редирект старых адресов тестовых товаров/разделов на ЧПУ
-  useEffect(() => {
-    if (routeParams.slug && LEGACY_SLUG_REDIRECTS[routeParams.slug]) {
-      navigate(LEGACY_SLUG_REDIRECTS[routeParams.slug], { replace: true });
-      return;
-    }
-    if (routeParams.slug) return;
-    const keys = [...searchParams.keys()];
-    const pid = routeParams.productId ?? (keys.length === 1 ? searchParams.get('product') : null);
-    const cid = routeParams.categoryId ?? (keys.length === 1 ? searchParams.get('category') : null);
-    if (pid && PRODUCT_SLUGS[pid]) navigate(`/store/${PRODUCT_SLUGS[pid]}`, { replace: true });
-    else if (cid && CATEGORY_SLUGS[cid]) navigate(`/store/${CATEGORY_SLUGS[cid]}`, { replace: true });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  const [categoryHistory, setCategoryHistory] = useState<string[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedProduct, setSelectedProduct] = useState<YmlProduct | null>(null);
-  const [productDrawerOpen, setProductDrawerOpen] = useState(false);
-  const [urlInitialized, setUrlInitialized] = useState(false);
-  const { totalItems, totalPrice, addItem, items, openCart } = useCart();
   const { 
     isLoading, 
     error, 
@@ -320,6 +300,43 @@ const Store = () => {
     refetch,
     loadProductDetails
   } = useYmlStore();
+
+  // Редирект старых адресов тестовых товаров/разделов на ЧПУ
+  useEffect(() => {
+    if (routeParams.slug && LEGACY_SLUG_REDIRECTS[routeParams.slug]) {
+      navigate(LEGACY_SLUG_REDIRECTS[routeParams.slug], { replace: true });
+      return;
+    }
+    if (routeParams.slug) return;
+    const keys = [...searchParams.keys()];
+    const pid = routeParams.productId ?? (keys.length === 1 ? searchParams.get('product') : null);
+    const cid = routeParams.categoryId ?? (keys.length === 1 ? searchParams.get('category') : null);
+    if (pid && PRODUCT_SLUGS[pid]) navigate(`/store/${PRODUCT_SLUGS[pid]}`, { replace: true });
+    else if (cid && CATEGORY_SLUGS[cid]) navigate(`/store/${CATEGORY_SLUGS[cid]}`, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const initialProduct = allProducts.find((product) => product.id === urlProductId) ?? null;
+  const initialCategoryPath = (() => {
+    const targetCategoryId = urlCategoryId ?? initialProduct?.categoryId;
+    const path: string[] = [];
+    let current = categories.find((category) => category.id === targetCategoryId);
+
+    while (current) {
+      path.unshift(current.id);
+      current = current.parentId
+        ? categories.find((category) => category.id === current!.parentId)
+        : undefined;
+    }
+
+    return path;
+  })();
+
+  const [categoryHistory, setCategoryHistory] = useState<string[]>(initialCategoryPath);
+  const [searchQuery, setSearchQuery] = useState(() => searchParams.get('search') ?? '');
+  const [selectedProduct, setSelectedProduct] = useState<YmlProduct | null>(initialProduct);
+  const [productDrawerOpen, setProductDrawerOpen] = useState(Boolean(initialProduct && urlProductId));
+  const [urlInitialized, setUrlInitialized] = useState(false);
+  const { totalItems, totalPrice, addItem, items, openCart } = useCart();
   
   const [isRefreshing, setIsRefreshing] = useState(false);
   const isUpdatingFromUrl = useRef(false);

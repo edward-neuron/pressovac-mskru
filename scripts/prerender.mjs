@@ -167,22 +167,25 @@ try {
     );
     html = html.replace("<head>", `<head>\n    ${head}`);
 
-    // Store content depends on the live Supabase response/local cache. Keep
-    // those routes client-rendered until their data can be supplied reliably.
-    const isStoreRoute = route === "/store" || route.startsWith("/store/");
-    if (!isStoreRoute) {
-      const rootPlaceholder = '<div id="root"></div>';
-      if (!baseHtml.includes(rootPlaceholder)) {
-        throw new Error("Не найден пустой #root для prerender-вставки");
-      }
-      if (!page.body.trim()) {
-        throw new Error(`SSR не вернул содержимое для ${route}`);
-      }
-      html = html.replace(
-        rootPlaceholder,
-        `<div id="root" data-prerendered="true">${body}</div>`
-      );
+    const rootPlaceholder = '<div id="root"></div>';
+    if (!baseHtml.includes(rootPlaceholder)) {
+      throw new Error("Не найден пустой #root для prerender-вставки");
     }
+    if (!page.body.trim()) {
+      throw new Error(`SSR не вернул содержимое для ${route}`);
+    }
+
+    const isProductRoute =
+      route.startsWith("/store/product/") ||
+      Object.values(slugs.products).some((slug) => `/store/${slug}` === route);
+    if (isProductRoute && !head.includes("application/ld+json")) {
+      throw new Error(`В исходном HTML товара отсутствует Product JSON-LD: ${route}`);
+    }
+
+    html = html.replace(
+      rootPlaceholder,
+      `<div id="root" data-prerendered="true">${body}</div>`
+    );
 
     const outDir =
       route === "/" ? DIST : resolve(DIST, ...route.slice(1).split("/"));

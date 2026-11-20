@@ -89,5 +89,12 @@ export const onLeadContact = () => track("lead_contact");
 export const onLeadCallback = () => track("lead_callback");
 
 /** Микроконверсии. */
-export const onPhoneClick = () => track("phone_click");
-export const onMessengerClick = (kind = "whatsapp") => track("messenger_click", { kind });
+function trackGA4Interaction(event: string, params: Params = {}) {
+  if (typeof window === "undefined") return;
+  window.gtag?.("event", event, params);
+}
+
+export const onPhoneClick = () => trackGA4Interaction("phone_click");
+export const onEmailClick = () => trackGA4Interaction("email_click");
+export const onMessengerClick = (kind = "whatsapp") =>
+  trackGA4Interaction("messenger_click", { kind });

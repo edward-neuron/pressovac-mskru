@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { invokeWithTimeout } from '@/lib/invokeWithTimeout';
 import Honeypot, { isBotSubmission } from '@/components/Honeypot';
 import { showTechWorksAlert } from '@/components/TechWorksAlert';
+import { onPhoneClick } from '@/lib/analytics';
 
 export const CTASection = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -149,7 +150,7 @@ export const CTASection = () => {
                 className="bg-primary-foreground text-primary hover:bg-primary-foreground/90"
                 asChild
               >
-                <a href="tel:+79258534974">
+                <a href="tel:+79258534974" onClick={onPhoneClick}>
                   <Phone className="w-5 h-5" />
                   Позвонить нам
                 </a>

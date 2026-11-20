@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Phone, ShoppingCart } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import pressovacLogo from '@/assets/pressovac-logo.webp';
+import { onPhoneClick } from '@/lib/analytics';
 
 const navigation = [
   { name: 'Главная', href: '/' },
@@ -58,6 +59,7 @@ export const Header = () => {
           {/* CTA Buttons */}
           <div className="hidden xl:flex items-center gap-3 shrink-0">
             <a
+              onClick={onPhoneClick}
               href="tel:+79258534974"
               className="flex shrink-0 items-center gap-2 whitespace-nowrap text-sm font-medium text-foreground hover:text-primary transition-colors"
             >
@@ -119,6 +121,7 @@ export const Header = () => {
                 ))}
                 <div className="pt-4 border-t border-border space-y-3">
                   <a
+                    onClick={onPhoneClick}
                     href="tel:+79258534974"
                     className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-foreground"
                   >

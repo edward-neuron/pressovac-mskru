@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useCart } from '@/contexts/CartContext';
-import { trackPurchase } from '@/lib/analytics';
+import { onPhoneClick, trackPurchase } from '@/lib/analytics';
 import { formatPrice } from '@/data/storeData';
 import { ArrowLeft, ShoppingBag, Check, Loader2, Minus, Plus, Trash2, Upload, X, Phone, FileText, CheckCircle2 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -287,6 +287,7 @@ const Checkout = () => {
                 <h2 className="font-semibold mb-4">Наши контакты</h2>
                 <div className="space-y-3 text-left">
                   <a 
+                    onClick={onPhoneClick}
                     href="tel:+79258534974" 
                     className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors"
                   >

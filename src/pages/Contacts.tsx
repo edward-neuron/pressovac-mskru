@@ -13,7 +13,7 @@ import { Link } from 'react-router-dom';
 import CallbackFormModal from '@/components/CallbackFormModal';
 import Honeypot, { isBotSubmission } from '@/components/Honeypot';
 import { showTechWorksAlert } from '@/components/TechWorksAlert';
-import { onLeadContact } from '@/lib/analytics';
+import { onEmailClick, onLeadContact, onMessengerClick, onPhoneClick } from '@/lib/analytics';
 import {
   Tooltip,
   TooltipContent,
@@ -433,6 +433,10 @@ const Contacts = () => {
                 <motion.a
                   key={item.label}
                   href={item.href}
+                  onClick={() => {
+                    if (item.href.startsWith("tel:")) onPhoneClick();
+                    else if (item.href.startsWith("mailto:")) onEmailClick();
+                  }}
                   target={item.target}
                   rel={item.target === '_blank' ? 'noopener noreferrer' : undefined}
                   initial={{ opacity: 0, y: 20 }}
@@ -953,7 +957,7 @@ const Contacts = () => {
                 </li>
               </ul>
               <div className="flex flex-col gap-3">
-                <a href="tel:+79258534974">
+                <a href="tel:+79258534974" onClick={onPhoneClick}>
                   <Button size="lg" className="w-full">
                     <Phone className="w-5 h-5" />
                     Позвонить
@@ -982,7 +986,8 @@ const Contacts = () => {
               <h3 className="font-display font-bold text-xl mb-6">Мессенджеры</h3>
               <div className="flex flex-col gap-3">
                 <a 
-                  href="https://t.me/pressovac_chat" 
+                  href="https://t.me/pressovac_chat"
+                  onClick={() => onMessengerClick("telegram")} 
                   target="_blank" 
                   rel="noopener noreferrer"
                 >
@@ -995,7 +1000,8 @@ const Contacts = () => {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <a 
-                        href="https://wa.me/79258534974" 
+                        href="https://wa.me/79258534974"
+                        onClick={() => onMessengerClick("whatsapp")} 
                         target="_blank" 
                         rel="noopener noreferrer"
                       >

@@ -50,21 +50,11 @@ export interface GAItem {
   item_category?: string;
 }
 
-/** Главная конверсия — заказ. Метрика: цель order_complete. GA4: purchase. */
-export function trackPurchase(
-  orderId: string,
-  value: number,
-  items: GAItem[],
-  currency = "RUB"
-) {
+/** Отправка заказа из корзины. Это запрос на оборудование, а не онлайн-оплата. */
+export function trackStoreOrderInquiry(value: number, currency = "RUB") {
   if (typeof window === "undefined") return;
   window.ym?.(YM_ID, "reachGoal", "order_complete", { order_price: value, currency });
-  window.gtag?.("event", "purchase", {
-    transaction_id: orderId,
-    value,
-    currency,
-    items,
-  });
+  window.gtag?.("event", "store_order_inquiry");
 }
 
 /* ------------------------------------------------------------------

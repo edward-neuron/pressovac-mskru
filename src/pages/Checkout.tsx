@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useCart } from '@/contexts/CartContext';
-import { trackPurchase } from '@/lib/analytics';
+import { trackStoreOrderInquiry } from '@/lib/analytics';
 import { formatPrice } from '@/data/storeData';
 import { ArrowLeft, ShoppingBag, Check, Loader2, Minus, Plus, Trash2, Upload, X, Phone, FileText, CheckCircle2 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -229,18 +229,9 @@ const Checkout = () => {
 
       if (error) throw error;
 
-      // Метрика (order_complete) + GA4 (purchase) через единый слой
+      // Отправленная форма магазина: GA4 учитывает отдельный запрос без события оплаты.
       if (!hasUnpricedItems) {
-        trackPurchase(
-          String(generatedOrderNumber),
-          totalPrice,
-          orderItems.map((i) => ({
-            item_id: i.sku || i.name,
-            item_name: i.name,
-            price: i.price as number,
-            quantity: i.quantity,
-          }))
-        );
+        trackStoreOrderInquiry(totalPrice);
       }
 
       setOrderNumber(generatedOrderNumber);
